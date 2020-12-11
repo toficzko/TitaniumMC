@@ -82,8 +82,8 @@ function enableCommitSigningIfNeeded {
     echo "Importing MC-DEV"
     ./scripts/importmcdev.sh "$basedir" || exit 1
 (
-    (applyPatch Paper/Paper-API Purpur-API HEAD ../Purpur/server/api "$API_REPO" &&
-    applyPatch Paper/Paper-Server Purpur-upstream-Server HEAD ../Purpur/server/server "$SERVER_REPO" &&
+    (applyPatch Paper/Paper-API Purpur-API HEAD ../Purpur/patches/api "$API_REPO" &&
+    applyPatch Paper/Paper-Server Purpur-upstream-Server HEAD ../Purpur/patches/server "$SERVER_REPO" &&
     applyPatch Purpur-upstream-Server Purpur-Server HEAD server "$SERVER_REPO") || exit 1
     enableCommitSigningIfNeeded
 ) || (
