@@ -1,0 +1,329 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mykyta Komarnytskyy <nkomarn@hotmail.com>
+Date: Sat, 5 Dec 2020 13:04:20 -0600
+Subject: [PATCH] (Hydrinity) Async Entity tracker
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
+index 36b879ef1..cc7f3f0ab 100644
+--- a/src/main/java/net/minecraft/server/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/EntityPlayer.java
+@@ -48,7 +48,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+     public NetworkManager networkManager; // Paper
+     public final MinecraftServer server;
+     public final PlayerInteractManager playerInteractManager;
+-    public final Deque<Integer> removeQueue = new ArrayDeque<>(); // Paper
++    public final Deque<Integer> removeQueue = new java.util.concurrent.ConcurrentLinkedDeque<>(); // Paper // Yatopia
+     private AdvancementDataPlayer advancementDataPlayer; // Paper - remove final
+     private final java.util.concurrent.CompletableFuture<AdvancementDataPlayer> advancementDataPlayerCompletableFuture; // Paper - async advancements
+     private final ServerStatisticManager serverStatisticManager;
+diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
+index 29731da08..825062d9e 100644
+--- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
++++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
+@@ -74,7 +74,7 @@ public class EntityTrackerEntry {
+ 
+     public final void tick() { this.a(); } // Paper - OBFHELPER
+     public void a() {
+-        com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Tracker update"); // Tuinity
++        // com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Tracker update"); // Tuinity // Yatopia
+         List<Entity> list = this.tracker.getPassengers();
+ 
+         if (!list.equals(this.p)) {
+@@ -88,6 +88,7 @@ public class EntityTrackerEntry {
+             ItemStack itemstack = entityitemframe.getItem();
+ 
+             if (this.tickCounter % 10 == 0 && itemstack.getItem() instanceof ItemWorldMap) { // CraftBukkit - Moved this.tickCounter % 10 logic here so item frames do not enter the other blocks
++                MCUtil.ensureMain(() -> { // Yatopia start - handle maps on main
+                 WorldMap worldmap = ItemWorldMap.getSavedMap(itemstack, this.b);
+                 Iterator iterator = this.trackedPlayers.iterator(); // CraftBukkit
+ 
+@@ -101,6 +102,7 @@ public class EntityTrackerEntry {
+                         entityplayer.playerConnection.sendPacket(packet);
+                     }
+                 }
++                }); // Yatopia end
+             }
+ 
+             this.c();
+@@ -249,6 +251,7 @@ public class EntityTrackerEntry {
+         ++this.tickCounter;
+         if (this.tracker.velocityChanged) {
+             // CraftBukkit start - Create PlayerVelocity event
++            MCUtil.ensureMain(() -> { // Yatopia start - fire velocity event on main
+             boolean cancelled = false;
+ 
+             if (this.tracker instanceof EntityPlayer) {
+@@ -268,6 +271,7 @@ public class EntityTrackerEntry {
+             if (!cancelled) {
+                 this.broadcastIncludingSelf(new PacketPlayOutEntityVelocity(this.tracker));
+             }
++            }); // Yatopia end
+             // CraftBukkit end
+             this.tracker.velocityChanged = false;
+         }
+diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+index 0c4dcccfa..3df8aac9e 100644
+--- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
++++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+@@ -120,6 +120,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     private final Queue<Runnable> A; private final Queue<Runnable> getUnloadQueueTasks() { return this.A; } // Paper - OBFHELPER
+     int viewDistance; // Paper - private -> package private
+     public final com.destroystokyo.paper.util.PlayerMobDistanceMap playerMobDistanceMap; // Paper
++    private static final java.util.concurrent.ExecutorService trackerExecutor = java.util.concurrent.Executors.newCachedThreadPool(new com.google.common.util.concurrent.ThreadFactoryBuilder().setDaemon(true).setNameFormat("Entity Tracker - %d").build()); // Yatopia - async entity tracker
+ 
+     // CraftBukkit start - recursion-safe executor for Chunk loadCallback() and unloadCallback()
+     public final CallbackExecutor callbackExecutor = new CallbackExecutor();
+@@ -324,7 +325,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+         this.unloadQueue = new LongOpenHashSet();
+         this.u = new AtomicInteger();
+         this.playerMap = new PlayerMap();
+-        this.trackedEntities = new Int2ObjectOpenHashMap();
++        this.trackedEntities = new org.yatopiamc.yatopia.server.map.ConcurrentTrackerMap<>(); // Yatopia
+         this.z = new Long2ByteOpenHashMap();
+         this.A = new com.destroystokyo.paper.utils.CachedSizeConcurrentLinkedQueue<>(); // Paper - need constant-time size()
+         this.definedStructureManager = definedstructuremanager;
+@@ -2082,7 +2083,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     }
+ 
+     protected void addEntity(Entity entity) {
+-        org.spigotmc.AsyncCatcher.catchOp("entity track"); // Spigot
++        // org.spigotmc.AsyncCatcher.catchOp("entity track"); // Spigot // Yatopia
+         // Paper start - ignore and warn about illegal addEntity calls instead of crashing server
+         if (!entity.valid || entity.world != this.world || this.trackedEntities.containsKey(entity.getId())) {
+             new Throwable("[ERROR] Illegal PlayerChunkMap::addEntity for world " + this.world.getWorld().getName()
+@@ -2126,7 +2127,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     }
+ 
+     protected void removeEntity(Entity entity) {
+-        org.spigotmc.AsyncCatcher.catchOp("entity untrack"); // Spigot
++        // org.spigotmc.AsyncCatcher.catchOp("entity untrack"); // Spigot // Yatopia
+         if (entity instanceof EntityPlayer) {
+             EntityPlayer entityplayer = (EntityPlayer) entity;
+ 
+@@ -2178,6 +2179,18 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     protected void g() {
+         // Paper start - optimized tracker
+         if (true) {
++            // Yatopia start - async entity tracker
++            if (net.pl3x.purpur.PurpurConfig.asyncEntityTracker) {
++                trackerExecutor.execute(() -> {
++                    for (PlayerChunkMap.EntityTracker tracker : trackedEntities.values()) {
++                        Entity entity = tracker.tracker;
++                        if (entity == null) continue;
++                        tracker.updatePlayers(entity.getPlayersInTrackRange());
++                        tracker.trackerEntry.tick();
++                    }
++                });
++            } else
++            // Yatopia end
+             this.processTrackQueue();
+             return;
+         }
+@@ -2419,7 +2432,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+         // Paper start
+         // Replace trackedPlayers Set with a Map. The value is true until the player receives
+         // their first update (which is forced to have absolute coordinates), false afterward.
+-        public java.util.Map<EntityPlayer, Boolean> trackedPlayerMap = new java.util.HashMap<>();
++        public java.util.Map<EntityPlayer, Boolean> trackedPlayerMap = new java.util.concurrent.ConcurrentHashMap<>(); // Yatopia
+         public Set<EntityPlayer> trackedPlayers = trackedPlayerMap.keySet();
+ 
+         public EntityTracker(Entity entity, int i, int j, boolean flag) {
+@@ -2504,7 +2517,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+         }
+ 
+         public void clear(EntityPlayer entityplayer) {
+-            org.spigotmc.AsyncCatcher.catchOp("player tracker clear"); // Spigot
++            // org.spigotmc.AsyncCatcher.catchOp("player tracker clear"); // Spigot // Yatopia
+             if (this.trackedPlayers.remove(entityplayer)) {
+                 this.trackerEntry.a(entityplayer);
+             }
+@@ -2512,7 +2525,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+         }
+ 
+         public void updatePlayer(EntityPlayer entityplayer) {
+-            org.spigotmc.AsyncCatcher.catchOp("player tracker update"); // Spigot
++            // org.spigotmc.AsyncCatcher.catchOp("player tracker update"); // Spigot // Yatopia
+             if (entityplayer != this.tracker) {
+                 // Paper start - remove allocation of Vec3D here
+                 //Vec3D vec3d = entityplayer.getPositionVector().d(this.tracker.getPositionVector()); // MC-155077, SPIGOT-5113
+diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
+index bba520053..8f16e57c8 100644
+--- a/src/main/java/net/minecraft/server/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/PlayerConnection.java
+@@ -1735,6 +1735,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+     }
+ 
+     public void sendPacket(Packet<?> packet) {
++        if (!minecraftServer.isMainThread()) minecraftServer.processQueue.add(() -> this.a(packet, null)); else // Yatopia - async entity tracker
+         this.a(packet, (GenericFutureListener) null);
+     }
+ 
+diff --git a/src/main/java/net/pl3x/purpur/PurpurConfig.java b/src/main/java/net/pl3x/purpur/PurpurConfig.java
+index 3b55704ac..bf17530d1 100644
+--- a/src/main/java/net/pl3x/purpur/PurpurConfig.java
++++ b/src/main/java/net/pl3x/purpur/PurpurConfig.java
+@@ -279,4 +279,10 @@ public class PurpurConfig {
+     private static void tpsCatchup() {
+         tpsCatchup = getBoolean("settings.tps-catchup", tpsCatchup);
+     }
++    
++    public static boolean asyncEntityTracker = false;
++    private static void asyncEntityTracker() {
++         asyncEntityTracker = getBoolean("settings.async-entity-tracker", asyncEntityTracker);
++    }
+ }
++
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/map/ConcurrentTrackerMap.java b/src/main/java/org/yatopiamc/yatopia/server/map/ConcurrentTrackerMap.java
+new file mode 100644
+index 000000000..a5726512b
+--- /dev/null
++++ b/src/main/java/org/yatopiamc/yatopia/server/map/ConcurrentTrackerMap.java
+@@ -0,0 +1,146 @@
++package org.yatopiamc.yatopia.server.map;
++
++
++import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
++import it.unimi.dsi.fastutil.ints.IntSet;
++import it.unimi.dsi.fastutil.objects.AbstractObjectCollection;
++import it.unimi.dsi.fastutil.objects.ObjectCollection;
++import it.unimi.dsi.fastutil.objects.ObjectIterator;
++import it.unimi.dsi.fastutil.objects.ObjectSet;
++
++import java.util.Iterator;
++import java.util.Map;
++import java.util.concurrent.ConcurrentHashMap;
++import java.util.function.Consumer;
++
++/**
++ * A {@link ConcurrentHashMap} wrapper that implements {@link Int2ObjectMap}.
++ * This is used for the entity tracker, where the expected map type is an
++ * Int2ObjectMap. However, the asynchronous tracker implementation requires
++ * a concurrent map. In order to not break support for plugins that make direct
++ * calls to the maps and expect an Int2ObjectMap, such as Citizens, this wrapper
++ * is used.
++ *
++ * @param <V>
++ */
++public class ConcurrentTrackerMap<V> implements Int2ObjectMap<V> {
++
++    protected transient Map<Integer, V> delegate;
++    protected transient ObjectCollection<V> values;
++
++    public ConcurrentTrackerMap() {
++        this.delegate = new ConcurrentHashMap<>();
++    }
++
++    @Override
++    public int size() {
++        return delegate.size();
++    }
++
++    @Override
++    public void defaultReturnValue(V v) {
++        // unused
++    }
++
++    @Override
++    public V defaultReturnValue() {
++        return null; // unused
++    }
++
++    @Override
++    public ObjectSet<Entry<V>> int2ObjectEntrySet() {
++        return null; // unused
++    }
++
++    @Override
++    public IntSet keySet() {
++        return null; // unused
++    }
++
++    @Override
++    public ObjectCollection<V> values() {
++        if (this.values == null) {
++            this.values = new AbstractObjectCollection<V>() {
++                public ObjectIterator<V> iterator() {
++                    return new ValueIterator(delegate.values().iterator());
++                }
++
++                public int size() {
++                    return delegate.size();
++                }
++
++                public boolean contains(Object v) {
++                    return delegate.containsValue(v);
++                }
++
++                public void clear() {
++                    delegate.clear();
++                }
++
++                public void forEach(Consumer<? super V> consumer) {
++                    delegate.forEach((integer, v) -> consumer.accept(v));
++                }
++            };
++        }
++
++        return this.values;
++    }
++
++    @Override
++    public boolean containsKey(int i) {
++        return delegate.containsKey(i);
++    }
++
++    @Override
++    public V get(int i) {
++        return delegate.get(i);
++    }
++
++    @Override
++    public V put(int key, V value) {
++        return delegate.put(key, value);
++    }
++
++    @Override
++    public boolean remove(int key, Object value) {
++        return delegate.remove(key, value);
++    }
++
++    @Override
++    public V remove(int key) {
++        return delegate.remove(key);
++    }
++
++    @Override
++    public boolean isEmpty() {
++        return delegate.isEmpty();
++    }
++
++    @Override
++    public boolean containsValue(Object value) {
++        return delegate.containsValue(value);
++    }
++
++    @Override
++    public void putAll(Map<? extends Integer, ? extends V> m) {
++        delegate.putAll(m);
++    }
++
++    private final class ValueIterator implements ObjectIterator<V> {
++
++        protected transient Iterator<V> iterator;
++
++        public ValueIterator(Iterator<V> iterator) {
++            this.iterator = iterator;
++        }
++
++        @Override
++        public boolean hasNext() {
++            return iterator.hasNext();
++        }
++
++        public V next() {
++            return iterator.next();
++        }
++    }
++}
+\ No newline at end of file

@@ -1,0 +1,9 @@
+[submodule "Purpur"]
+	path = Purpur
+	url = https://github.com/pl3xgaming/Purpur
+[submodule "Paper"]
+	path = Paper
+	url = https://github.com/PaperMC/Paper
+[submodule "KibblePatcher"]
+	path = KibblePatcher
+	url = https://github.com/KibbleLands/KibblePatcher.git

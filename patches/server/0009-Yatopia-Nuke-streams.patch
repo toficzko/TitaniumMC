@@ -1,0 +1,109 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Sat, 28 Nov 2020 02:46:24 -0500
+Subject: [PATCH] (Yatopia) Nuke streams
+
+This patch combines both 0033-Nuke-streams-off-BlockPosition.patch and 0034-Nuke-streams-off-SectionPosition.patch from Yatopia
+
+diff --git a/src/main/java/net/minecraft/server/BehaviorUtil.java b/src/main/java/net/minecraft/server/BehaviorUtil.java
+index d0e7c6b4c..daef515bd 100644
+--- a/src/main/java/net/minecraft/server/BehaviorUtil.java
++++ b/src/main/java/net/minecraft/server/BehaviorUtil.java
+@@ -84,12 +84,25 @@ public class BehaviorUtil {
+ 
+     public static SectionPosition a(WorldServer worldserver, SectionPosition sectionposition, int i) {
+         int j = worldserver.b(sectionposition);
++        // Yatopia start - replace stream
++        SectionPosition best = null;
++        for (SectionPosition pos : SectionPosition.getPosList(sectionposition, i)) {
++            if (worldserver.b(pos) < j) {
++                if (best == null || worldserver.b(pos) < worldserver.b(best)) {
++                    best = pos;
++                }
++            }
++        }
++        if (best == null) best = sectionposition;
++        return best;
++        /*
+         Stream<SectionPosition> stream = SectionPosition.a(sectionposition, i).filter((sectionposition1) -> { // CraftBukkit - decompile error
+             return worldserver.b(sectionposition1) < j;
+         });
+ 
+         worldserver.getClass();
+         return (SectionPosition) stream.min(Comparator.comparingInt(worldserver::b)).orElse(sectionposition);
++        */ // Yatopia end
+     }
+ 
+     public static boolean a(EntityInsentient entityinsentient, EntityLiving entityliving, int i) {
+diff --git a/src/main/java/net/minecraft/server/BlockBase.java b/src/main/java/net/minecraft/server/BlockBase.java
+index 5550693a4..fda93bcd0 100644
+--- a/src/main/java/net/minecraft/server/BlockBase.java
++++ b/src/main/java/net/minecraft/server/BlockBase.java
+@@ -717,6 +717,7 @@ public abstract class BlockBase {
+             return this.getBlock().getInventory(this.p(), world, blockposition);
+         }
+ 
++        public final boolean hasTag(Tag<Block> tag) { return a(tag); } // Yatopia - OBFHELPER
+         public boolean a(Tag<Block> tag) {
+             return this.getBlock().a(tag);
+         }
+@@ -726,6 +727,7 @@ public abstract class BlockBase {
+         }
+ 
+         public boolean equals(Block block) { return a(block); } // Purpur - OBFHELPER
++        public final boolean isBlock(Block block) { return a(block); } // Yatopia - OBFHELPER
+         public boolean a(Block block) {
+             return this.getBlock().a(block);
+         }
+diff --git a/src/main/java/net/minecraft/server/BlockPosition.java b/src/main/java/net/minecraft/server/BlockPosition.java
+index 45ca8d50f..b1e2ea24b 100644
+--- a/src/main/java/net/minecraft/server/BlockPosition.java
++++ b/src/main/java/net/minecraft/server/BlockPosition.java
+@@ -318,7 +318,15 @@ public class BlockPosition extends BaseBlockPosition {
+     }
+ 
+     public static Optional<BlockPosition> a(BlockPosition blockposition, int i, int j, Predicate<BlockPosition> predicate) {
+-        return b(blockposition, i, j, i).filter(predicate).findFirst();
++        // Yatopia start - avoid using stream
++        // return b(blockposition, i, j, i).filter(predicate).findFirst();
++        for (BlockPosition pos : a(blockposition, i, j, i)) {
++            if (predicate.test(pos)) {
++                return Optional.of(pos);
++            }
++        }
++        return Optional.empty();
++        // Yatopia end
+     }
+ 
+     public static Stream<BlockPosition> b(BlockPosition blockposition, int i, int j, int k) {
+diff --git a/src/main/java/net/minecraft/server/Raid.java b/src/main/java/net/minecraft/server/Raid.java
+index 988e4c33e..a472767fd 100644
+--- a/src/main/java/net/minecraft/server/Raid.java
++++ b/src/main/java/net/minecraft/server/Raid.java
+@@ -355,6 +355,18 @@ public class Raid {
+     }
+ 
+     private void z() {
++        // Yatopia start - replace impl
++        BlockPosition best = null;
++        for (SectionPosition pos : SectionPosition.getPosList(SectionPosition.a(center), 2)) {
++            if (world.a(pos)) {
++                BlockPosition asBlockPos = pos.q();
++                if (best == null || asBlockPos.distanceSquared(center) < best.distanceSquared(center)) {
++                    best = asBlockPos;
++                }
++            }
++        }
++        if (best != null) this.c(best);
++        /*
+         Stream<SectionPosition> stream = SectionPosition.a(SectionPosition.a(this.center), 2);
+         WorldServer worldserver = this.world;
+ 
+@@ -362,6 +374,7 @@ public class Raid {
+         stream.filter(worldserver::a).map(SectionPosition::q).min(Comparator.comparingDouble((blockposition) -> {
+             return blockposition.j(this.center);
+         })).ifPresent(this::c);
++        */ // Yatopia end
+     }
+ 
+     private Optional<BlockPosition> d(int i) {
