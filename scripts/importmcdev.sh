@@ -72,9 +72,10 @@ function importLibrary() {
   fi
 )
 
-files=$(cat patches/server/* | grep "+++ b/src/main/java/net/minecraft/server/" | sort | uniq | sed 's/\+\+\+ b\/src\/main\/java\/net\/minecraft\/server\///g' | sed 's/.java//g')
+files=$((cat patches/server/* && cat Purpur/patches/server/*) | grep "+++ b/src/main/java/net/minecraft/server/" | sort | uniq | sed 's/\+\+\+ b\/src\/main\/java\/net\/minecraft\/server\///g' | sed 's/.java//g')
 
-nonnms=$(cat patches/server/* | grep "create mode " | grep -Po "src/main/java/net/minecraft/server/(.*?).java" | sort | uniq | sed 's/src\/main\/java\/net\/minecraft\/server\///g' | sed 's/.java//g')
+
+nonnms=$((cat patches/server/* && cat Purpur/patches/server/*) | grep "create mode " | grep -Po "src/main/java/net/minecraft/server/(.*?).java" | sort | uniq | sed 's/src\/main\/java\/net\/minecraft\/server\///g' | sed 's/.java//g')
 
 for f in $files; do
   containsElement "$f" "${nonnms[@]}"
@@ -96,14 +97,14 @@ done
 ###############################################################################################
 
 # import Foo
-import EnumAxisCycle
-import GenLayerZoomVoronoi
-import NoiseGeneratorPerlin
-import PistonExtendsChecker
-import TileEntityEnchantTable
-import BehaviorController
-import ChunkMap
-import EntityMinecartHopper
+# import EnumAxisCycle
+# import GenLayerZoomVoronoi
+# import NoiseGeneratorPerlin
+# import PistonExtendsChecker
+# import TileEntityEnchantTable
+# import BehaviorController
+# import ChunkMap
+# import EntityMinecartHopper
 
 
 

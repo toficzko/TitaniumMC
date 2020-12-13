@@ -62,7 +62,7 @@ function applyPatch {
     git reset --hard upstream/upstream
     echo "  Applying patches to $target..."
     git am --abort >/dev/null 2>&1
-    if ! git am --3way --ignore-whitespace "$basedir/patches/$patch_folder/"*.patch
+    if ! git am --3way --ignore-whitespace "$basedir/$patch_folder/"*.patch
     then
         echo "  Something did not apply cleanly to $target."
         echo "  Please review above details and finish the apply then"
@@ -82,9 +82,9 @@ function enableCommitSigningIfNeeded {
     echo "Importing MC-DEV"
     ./scripts/importmcdev.sh "$basedir" || exit 1
 (
-    (applyPatch Paper/Paper-API Purpur-API HEAD ../Purpur/patches/api "$API_REPO" &&
-    applyPatch Paper/Paper-Server Purpur-upstream-Server HEAD ../Purpur/patches/server "$SERVER_REPO" &&
-    applyPatch Purpur-upstream-Server Purpur-Server HEAD server "$SERVER_REPO") || exit 1
+    (applyPatch Paper/Paper-API Purpur-API HEAD Purpur/patches/api "$API_REPO" &&
+    applyPatch Paper/Paper-Server Purpur-upstream-Server HEAD Purpur/patches/server "$SERVER_REPO" &&
+    applyPatch Purpur-upstream-Server Purpur-Server HEAD patches/server "$SERVER_REPO") || exit 1
     enableCommitSigningIfNeeded
 ) || (
     echo "Failed to apply patches"

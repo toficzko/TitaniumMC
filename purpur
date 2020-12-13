@@ -33,18 +33,13 @@ case "$1" in
   (
     basedir
     mvn -N install
-    cd Purpur-API
-    mvn -e clean install
-    cd ../Paper/Paper-MojangAPI
-    mvn -e clean install
-    cd ../../Purpur-Server
+    # cd Purpur-API
+    # mvn -e clean install
+    # cd ../Paper/Paper-MojangAPI
+    # mvn -e clean install
+    cd "$basedir"/Purpur-Server/
     mvn -e clean install
   )
-  ;;
-"applyKibblePatcher")
-  (
-    scripts/applyKibblePatcher.sh "$basedir" || exit 1
-  ) || failed=1
   ;;
 "rb" | "rbp" | "rebuild")
   (
@@ -55,9 +50,9 @@ case "$1" in
   ;;
 "am" | "amend")
   (
-    cd "$basedir"/Purpur-API/
-    git add .
-    git commit --amend --no-edit
+    # cd "$basedir"/Purpur-API/
+    # git add .
+    # git commit --amend --no-edit
     cd "$basedir"/Purpur-Server/
     git add .
     git commit --amend --no-edit
@@ -80,11 +75,11 @@ case "$1" in
       ./scripts/apply.sh "$basedir"
       cd "$basedir"
       mvn -N install
-      cd Purpur-API
-      mvn -e clean install
-      cd ../Paper/Paper-MojangAPI
-      mvn -e clean install
-      cd ../../Purpur-Server
+      # cd Purpur-API
+      # mvn -e clean install
+      # cd ../Paper/Paper-MojangAPI
+      # mvn -e clean install
+      cd "$basedir"/Purpur-Server
       mvn -e clean install
       cd "$basedir"
     fi

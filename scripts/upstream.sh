@@ -24,6 +24,14 @@ if [[ "$1" == up* ]]; then
   )
 fi
 
+cd "$basedir/Purpur/" || exit
+git submodule update --init
+# rm -frv Purpur-Server Purpur-Api
+# ./purpur up
+# ./purpur patch
+# ./purpur rebuild
+# rm -frv Purpur-Server Purpur-Api
+
 paperVer=$(gethead Paper)
 cd "$basedir/Paper/" || exit
 

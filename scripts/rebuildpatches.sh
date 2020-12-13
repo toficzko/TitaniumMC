@@ -37,6 +37,6 @@ function savePatches() {
   echo "  Patches saved for $what to patches/$2"
 }
 
-# savePatches Purpur-API api
+#savePatches Purpur-API api
 #savePatches Purpur-upstream-Server server
 savePatches Purpur-Server server
