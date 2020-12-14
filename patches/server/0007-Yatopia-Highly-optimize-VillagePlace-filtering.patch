@@ -107,10 +107,10 @@ index 271fddbbf..7d5935be5 100644
          int i = Math.abs(chunkcoordintpair.x - chunkcoordintpair1.x) + 1;
          int j = Math.abs(chunkcoordintpair.z - chunkcoordintpair1.z) + 1;
 diff --git a/src/main/java/net/minecraft/server/EntityBee.java b/src/main/java/net/minecraft/server/EntityBee.java
-index ded4e10f5..bce7e37cd 100644
+index 5ea6430ae..9d16a5b66 100644
 --- a/src/main/java/net/minecraft/server/EntityBee.java
 +++ b/src/main/java/net/minecraft/server/EntityBee.java
-@@ -776,15 +776,20 @@ public class EntityBee extends EntityAnimal implements IEntityAngerable, EntityB
+@@ -784,15 +784,20 @@ public class EntityBee extends EntityAnimal implements IEntityAngerable, EntityB
          private List<BlockPosition> j() {
              BlockPosition blockposition = EntityBee.this.getChunkCoordinates();
              VillagePlace villageplace = ((WorldServer) EntityBee.this.world).y();
