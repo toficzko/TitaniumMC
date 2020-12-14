@@ -148,10 +148,10 @@ index 0c4dcccfa..3df8aac9e 100644
                  // Paper start - remove allocation of Vec3D here
                  //Vec3D vec3d = entityplayer.getPositionVector().d(this.tracker.getPositionVector()); // MC-155077, SPIGOT-5113
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index f4f4127b0..97aafadb6 100644
+index dcbed41f6..ca1939369 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -1733,6 +1733,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -1738,6 +1738,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
      }
  
      public void sendPacket(Packet<?> packet) {
