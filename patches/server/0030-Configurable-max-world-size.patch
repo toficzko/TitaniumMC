@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 16:24:54 -0500
+Date: Tue, 15 Dec 2020 17:24:21 -0500
 Subject: [PATCH] Configurable max world size
 
 
@@ -200,6 +200,21 @@ index 780474397..91c72127e 100644
          this.syncChunkWrites = this.getBoolean("sync-chunk-writes", true) && Boolean.getBoolean("Paper.enable-sync-chunk-writes"); // Paper - hide behind flag
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index a274526a8..cb52830a8 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -1533,8 +1533,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+     }
+ 
+     public void f(double d0, double d1, double d2) {
+-        double d3 = MathHelper.a(d0, -3.0E7D, 3.0E7D);
+-        double d4 = MathHelper.a(d2, -3.0E7D, 3.0E7D);
++        double d3 = MathHelper.a(d0, -me.titaniumtown.misc.WborderSize, me.titaniumtown.misc.WborderSize);
++        double d4 = MathHelper.a(d2, -me.titaniumtown.misc.WborderSize, me.titaniumtown.misc.WborderSize);
+ 
+         this.lastX = d3;
+         this.lastY = d1;
 diff --git a/src/main/java/net/minecraft/server/IWorldReader.java b/src/main/java/net/minecraft/server/IWorldReader.java
 index eb7282c33..9e71ab0ac 100644
 --- a/src/main/java/net/minecraft/server/IWorldReader.java
@@ -226,6 +241,19 @@ index 2678d4f39..a6333894c 100644
      }
  
      @Override
+diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
+index ca1939369..e9d4d82dc 100644
+--- a/src/main/java/net/minecraft/server/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/PlayerConnection.java
+@@ -378,7 +378,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+     }
+ 
+     private static boolean b(PacketPlayInFlying packetplayinflying) {
+-        return Doubles.isFinite(packetplayinflying.a(0.0D)) && Doubles.isFinite(packetplayinflying.b(0.0D)) && Doubles.isFinite(packetplayinflying.c(0.0D)) && Floats.isFinite(packetplayinflying.b(0.0F)) && Floats.isFinite(packetplayinflying.a(0.0F)) ? Math.abs(packetplayinflying.a(0.0D)) > 3.0E7D || Math.abs(packetplayinflying.b(0.0D)) > 3.0E7D || Math.abs(packetplayinflying.c(0.0D)) > 3.0E7D : true;
++        return Doubles.isFinite(packetplayinflying.a(0.0D)) && Doubles.isFinite(packetplayinflying.b(0.0D)) && Doubles.isFinite(packetplayinflying.c(0.0D)) && Floats.isFinite(packetplayinflying.b(0.0F)) && Floats.isFinite(packetplayinflying.a(0.0F)) ? Math.abs(packetplayinflying.a(0.0D)) > me.titaniumtown.misc.WborderSize || Math.abs(packetplayinflying.b(0.0D)) > me.titaniumtown.misc.WborderSize || Math.abs(packetplayinflying.c(0.0D)) > me.titaniumtown.misc.WborderSize : true;
+     }
+ 
+     private static boolean b(PacketPlayInVehicleMove packetplayinvehiclemove) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
 index 34993cb34..fd9ec7bb9 100644
 --- a/src/main/java/net/minecraft/server/World.java
@@ -292,7 +320,7 @@ index b3bc2d908..7f81a7dd5 100644
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorldBorder.java b/src/main/java/org/bukkit/craftbukkit/CraftWorldBorder.java
-index 044d46ac8..8d59ccc9f 100644
+index 044d46ac8..36a1343f6 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorldBorder.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorldBorder.java
 @@ -18,7 +18,7 @@ public class CraftWorldBorder implements WorldBorder {
@@ -313,3 +341,14 @@ index 044d46ac8..8d59ccc9f 100644
          time = Math.min(9223372036854775L, Math.max(0L, time));
  
          if (time > 0L) {
+@@ -60,8 +60,8 @@ public class CraftWorldBorder implements WorldBorder {
+     @Override
+     public void setCenter(double x, double z) {
+         // PAIL: TODO: Magic Values
+-        x = Math.min(3.0E7D, Math.max(-3.0E7D, x));
+-        z = Math.min(3.0E7D, Math.max(-3.0E7D, z));
++        x = Math.min(me.titaniumtown.misc.WborderSize, Math.max(-me.titaniumtown.misc.WborderSize, x));
++        z = Math.min(me.titaniumtown.misc.WborderSize, Math.max(-me.titaniumtown.misc.WborderSize, z));
+ 
+         this.handle.setCenter(x, z);
+     }
