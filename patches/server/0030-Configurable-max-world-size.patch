@@ -1,12 +1,12 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 18:00:34 -0500
+Date: Tue, 15 Dec 2020 18:05:28 -0500
 Subject: [PATCH] Configurable max world size
 
 
 diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
 new file mode 100644
-index 000000000..35be83307
+index 000000000..74d0e073c
 --- /dev/null
 +++ b/src/main/java/me/titaniumtown/misc.java
 @@ -0,0 +1,6 @@
@@ -14,7 +14,7 @@ index 000000000..35be83307
 +
 +public class misc {
 +    public static double WborderSize = 4.294967294E9D;
-+    public static int biggestInt = Integer.MAX_VAUE;
++    public static int biggestInt = Integer.MAX_VALUE;
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BaseBlockPosition.java b/src/main/java/net/minecraft/server/BaseBlockPosition.java
