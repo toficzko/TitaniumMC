@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 16:07:46 -0500
+Date: Tue, 15 Dec 2020 16:24:54 -0500
 Subject: [PATCH] Configurable max world size
 
 
@@ -31,7 +31,7 @@ index e811295b4..17044c25e 100644
      public boolean isInvalidYLocation() {
          return b < 0 || b >= 256;
 diff --git a/src/main/java/net/minecraft/server/CommandForceload.java b/src/main/java/net/minecraft/server/CommandForceload.java
-index 57e9e737f..9de04e053 100644
+index 57e9e737f..cca96445f 100644
 --- a/src/main/java/net/minecraft/server/CommandForceload.java
 +++ b/src/main/java/net/minecraft/server/CommandForceload.java
 @@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -51,20 +51,95 @@ index 57e9e737f..9de04e053 100644
              worldserver.setForceLoaded(ChunkCoordIntPair.getX(i), ChunkCoordIntPair.getZ(i), false);
          });
          commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload.removed.all", new Object[]{resourcekey.a()}), true);
-@@ -93,7 +94,7 @@ public class CommandForceload {
+@@ -93,51 +94,47 @@ public class CommandForceload {
          int k = Math.max(blockposition2d.a, blockposition2d1.a);
          int l = Math.max(blockposition2d.b, blockposition2d1.b);
  
 -        if (i >= -30000000 && j >= -30000000 && k < 30000000 && l < 30000000) {
-+        if (true) {
-             int i1 = i >> 4;
-             int j1 = j >> 4;
-             int k1 = k >> 4;
+-            int i1 = i >> 4;
+-            int j1 = j >> 4;
+-            int k1 = k >> 4;
+-            int l1 = l >> 4;
+-            long i2 = ((long) (k1 - i1) + 1L) * ((long) (l1 - j1) + 1L);
++        int i1 = i >> 4;
++        int j1 = j >> 4;
++        int k1 = k >> 4;
++        int l1 = l >> 4;
++        long i2 = ((long) (k1 - i1) + 1L) * ((long) (l1 - j1) + 1L);
+ 
+-            if (i2 > 256L) {
+-                throw CommandForceload.a.create(256, i2);
+-            } else {
+-                WorldServer worldserver = commandlistenerwrapper.getWorld();
+-                ResourceKey<World> resourcekey = worldserver.getDimensionKey();
+-                ChunkCoordIntPair chunkcoordintpair = null;
+-                int j2 = 0;
+-
+-                for (int k2 = i1; k2 <= k1; ++k2) {
+-                    for (int l2 = j1; l2 <= l1; ++l2) {
+-                        boolean flag1 = worldserver.setForceLoaded(k2, l2, flag);
+-
+-                        if (flag1) {
+-                            ++j2;
+-                            if (chunkcoordintpair == null) {
+-                                chunkcoordintpair = new ChunkCoordIntPair(k2, l2);
+-                            }
++        if (i2 > 256L) {
++            throw CommandForceload.a.create(256, i2);
++        } else {
++            WorldServer worldserver = commandlistenerwrapper.getWorld();
++            ResourceKey<World> resourcekey = worldserver.getDimensionKey();
++            ChunkCoordIntPair chunkcoordintpair = null;
++            int j2 = 0;
++
++            for (int k2 = i1; k2 <= k1; ++k2) {
++                for (int l2 = j1; l2 <= l1; ++l2) {
++                    boolean flag1 = worldserver.setForceLoaded(k2, l2, flag);
++
++                    if (flag1) {
++                        ++j2;
++                        if (chunkcoordintpair == null) {
++                            chunkcoordintpair = new ChunkCoordIntPair(k2, l2);
+                         }
+                     }
+                 }
++            }
+ 
+-                if (j2 == 0) {
+-                    throw (flag ? CommandForceload.c : CommandForceload.d).create();
++            if (j2 == 0) {
++                throw (flag ? CommandForceload.c : CommandForceload.d).create();
++            } else {
++                if (j2 == 1) {
++                    commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload." + (flag ? "added" : "removed") + ".single", new Object[]{chunkcoordintpair, resourcekey.a()}), true);
+                 } else {
+-                    if (j2 == 1) {
+-                        commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload." + (flag ? "added" : "removed") + ".single", new Object[]{chunkcoordintpair, resourcekey.a()}), true);
+-                    } else {
+-                        ChunkCoordIntPair chunkcoordintpair1 = new ChunkCoordIntPair(i1, j1);
+-                        ChunkCoordIntPair chunkcoordintpair2 = new ChunkCoordIntPair(k1, l1);
++                    ChunkCoordIntPair chunkcoordintpair1 = new ChunkCoordIntPair(i1, j1);
++                    ChunkCoordIntPair chunkcoordintpair2 = new ChunkCoordIntPair(k1, l1);
+ 
+-                        commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload." + (flag ? "added" : "removed") + ".multiple", new Object[]{j2, resourcekey.a(), chunkcoordintpair1, chunkcoordintpair2}), true);
+-                    }
+-
+-                    return j2;
++                    commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload." + (flag ? "added" : "removed") + ".multiple", new Object[]{j2, resourcekey.a(), chunkcoordintpair1, chunkcoordintpair2}), true);
+                 }
++
++                return j2;
+             }
+-        } else {
+-            throw ArgumentPosition.b.create();
+         }
+     }
+ }
 diff --git a/src/main/java/net/minecraft/server/CommandTeleport.java b/src/main/java/net/minecraft/server/CommandTeleport.java
-index ddc978279..ac797203a 100644
+index ddc978279..db9c28b51 100644
 --- a/src/main/java/net/minecraft/server/CommandTeleport.java
 +++ b/src/main/java/net/minecraft/server/CommandTeleport.java
-@@ -119,12 +119,8 @@ public class CommandTeleport {
+@@ -119,12 +119,6 @@ public class CommandTeleport {
  
      private static void a(CommandListenerWrapper commandlistenerwrapper, Entity entity, WorldServer worldserver, double d0, double d1, double d2, Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set, float f, float f1, @Nullable CommandTeleport.a commandteleport_a) throws CommandSyntaxException {
          BlockPosition blockposition = new BlockPosition(d0, d1, d2);
@@ -74,8 +149,6 @@ index ddc978279..ac797203a 100644
 -            return;
 -        }
 -        // Paper end
-+        org.bukkit.Bukkit.getLogger().warning("Refused to teleport " + entity.getName() + " to " + d0 + ", " + d1 + ", " + d2);
-+        return;
  
          if (!World.l(blockposition)) {
              throw CommandTeleport.a.create();
