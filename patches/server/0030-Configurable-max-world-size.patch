@@ -1,12 +1,12 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 17:24:21 -0500
+Date: Tue, 15 Dec 2020 18:00:34 -0500
 Subject: [PATCH] Configurable max world size
 
 
 diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
 new file mode 100644
-index 000000000..1cea90e5f
+index 000000000..35be83307
 --- /dev/null
 +++ b/src/main/java/me/titaniumtown/misc.java
 @@ -0,0 +1,6 @@
@@ -14,7 +14,7 @@ index 000000000..1cea90e5f
 +
 +public class misc {
 +    public static double WborderSize = 4.294967294E9D;
-+    public static int biggestInt = 2147483647;
++    public static int biggestInt = Integer.MAX_VAUE;
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BaseBlockPosition.java b/src/main/java/net/minecraft/server/BaseBlockPosition.java
@@ -31,7 +31,7 @@ index e811295b4..17044c25e 100644
      public boolean isInvalidYLocation() {
          return b < 0 || b >= 256;
 diff --git a/src/main/java/net/minecraft/server/CommandForceload.java b/src/main/java/net/minecraft/server/CommandForceload.java
-index 57e9e737f..cca96445f 100644
+index 57e9e737f..be8b5e632 100644
 --- a/src/main/java/net/minecraft/server/CommandForceload.java
 +++ b/src/main/java/net/minecraft/server/CommandForceload.java
 @@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -51,107 +51,28 @@ index 57e9e737f..cca96445f 100644
              worldserver.setForceLoaded(ChunkCoordIntPair.getX(i), ChunkCoordIntPair.getZ(i), false);
          });
          commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload.removed.all", new Object[]{resourcekey.a()}), true);
-@@ -93,51 +94,47 @@ public class CommandForceload {
+@@ -93,7 +94,7 @@ public class CommandForceload {
          int k = Math.max(blockposition2d.a, blockposition2d1.a);
          int l = Math.max(blockposition2d.b, blockposition2d1.b);
  
 -        if (i >= -30000000 && j >= -30000000 && k < 30000000 && l < 30000000) {
--            int i1 = i >> 4;
--            int j1 = j >> 4;
--            int k1 = k >> 4;
--            int l1 = l >> 4;
--            long i2 = ((long) (k1 - i1) + 1L) * ((long) (l1 - j1) + 1L);
-+        int i1 = i >> 4;
-+        int j1 = j >> 4;
-+        int k1 = k >> 4;
-+        int l1 = l >> 4;
-+        long i2 = ((long) (k1 - i1) + 1L) * ((long) (l1 - j1) + 1L);
- 
--            if (i2 > 256L) {
--                throw CommandForceload.a.create(256, i2);
--            } else {
--                WorldServer worldserver = commandlistenerwrapper.getWorld();
--                ResourceKey<World> resourcekey = worldserver.getDimensionKey();
--                ChunkCoordIntPair chunkcoordintpair = null;
--                int j2 = 0;
--
--                for (int k2 = i1; k2 <= k1; ++k2) {
--                    for (int l2 = j1; l2 <= l1; ++l2) {
--                        boolean flag1 = worldserver.setForceLoaded(k2, l2, flag);
--
--                        if (flag1) {
--                            ++j2;
--                            if (chunkcoordintpair == null) {
--                                chunkcoordintpair = new ChunkCoordIntPair(k2, l2);
--                            }
-+        if (i2 > 256L) {
-+            throw CommandForceload.a.create(256, i2);
-+        } else {
-+            WorldServer worldserver = commandlistenerwrapper.getWorld();
-+            ResourceKey<World> resourcekey = worldserver.getDimensionKey();
-+            ChunkCoordIntPair chunkcoordintpair = null;
-+            int j2 = 0;
-+
-+            for (int k2 = i1; k2 <= k1; ++k2) {
-+                for (int l2 = j1; l2 <= l1; ++l2) {
-+                    boolean flag1 = worldserver.setForceLoaded(k2, l2, flag);
-+
-+                    if (flag1) {
-+                        ++j2;
-+                        if (chunkcoordintpair == null) {
-+                            chunkcoordintpair = new ChunkCoordIntPair(k2, l2);
-                         }
-                     }
-                 }
-+            }
- 
--                if (j2 == 0) {
--                    throw (flag ? CommandForceload.c : CommandForceload.d).create();
-+            if (j2 == 0) {
-+                throw (flag ? CommandForceload.c : CommandForceload.d).create();
-+            } else {
-+                if (j2 == 1) {
-+                    commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload." + (flag ? "added" : "removed") + ".single", new Object[]{chunkcoordintpair, resourcekey.a()}), true);
-                 } else {
--                    if (j2 == 1) {
--                        commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload." + (flag ? "added" : "removed") + ".single", new Object[]{chunkcoordintpair, resourcekey.a()}), true);
--                    } else {
--                        ChunkCoordIntPair chunkcoordintpair1 = new ChunkCoordIntPair(i1, j1);
--                        ChunkCoordIntPair chunkcoordintpair2 = new ChunkCoordIntPair(k1, l1);
-+                    ChunkCoordIntPair chunkcoordintpair1 = new ChunkCoordIntPair(i1, j1);
-+                    ChunkCoordIntPair chunkcoordintpair2 = new ChunkCoordIntPair(k1, l1);
- 
--                        commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload." + (flag ? "added" : "removed") + ".multiple", new Object[]{j2, resourcekey.a(), chunkcoordintpair1, chunkcoordintpair2}), true);
--                    }
--
--                    return j2;
-+                    commandlistenerwrapper.sendMessage(new ChatMessage("commands.forceload." + (flag ? "added" : "removed") + ".multiple", new Object[]{j2, resourcekey.a(), chunkcoordintpair1, chunkcoordintpair2}), true);
-                 }
-+
-+                return j2;
-             }
--        } else {
--            throw ArgumentPosition.b.create();
-         }
-     }
- }
++        if (i >= -me.titaniumtown.misc.biggestInt && j >= -me.titaniumtown.misc.biggestInt && k < me.titaniumtown.misc.biggestInt && l < me.titaniumtown.misc.biggestInt) {
+             int i1 = i >> 4;
+             int j1 = j >> 4;
+             int k1 = k >> 4;
 diff --git a/src/main/java/net/minecraft/server/CommandTeleport.java b/src/main/java/net/minecraft/server/CommandTeleport.java
-index ddc978279..db9c28b51 100644
+index ddc978279..b74a1640a 100644
 --- a/src/main/java/net/minecraft/server/CommandTeleport.java
 +++ b/src/main/java/net/minecraft/server/CommandTeleport.java
-@@ -119,12 +119,6 @@ public class CommandTeleport {
- 
+@@ -120,7 +120,7 @@ public class CommandTeleport {
      private static void a(CommandListenerWrapper commandlistenerwrapper, Entity entity, WorldServer worldserver, double d0, double d1, double d2, Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set, float f, float f1, @Nullable CommandTeleport.a commandteleport_a) throws CommandSyntaxException {
          BlockPosition blockposition = new BlockPosition(d0, d1, d2);
--        // Paper start - Don't allow teleport command to invalid locations
+         // Paper start - Don't allow teleport command to invalid locations
 -        if (d0 <= -30000000 || d2 <= -30000000 || d0 > 30000000 || d2 > 30000000 || d1 > 30000000 || d1 <= -30000000) { // Copy/pasta from BaseBlockPosition#isValidLocation
--            org.bukkit.Bukkit.getLogger().warning("Refused to teleport " + entity.getName() + " to " + d0 + ", " + d1 + ", " + d2);
--            return;
--        }
--        // Paper end
- 
-         if (!World.l(blockposition)) {
-             throw CommandTeleport.a.create();
++        if (d0 <= -me.titaniumtown.misc.biggestInt || d2 <= -me.titaniumtown.misc.biggestInt || d0 > me.titaniumtown.misc.biggestInt || d2 > me.titaniumtown.misc.biggestInt || d1 > me.titaniumtown.misc.biggestInt || d1 <= -me.titaniumtown.misc.biggestInt) { // Copy/pasta from BaseBlockPosition#isValidLocation
+             org.bukkit.Bukkit.getLogger().warning("Refused to teleport " + entity.getName() + " to " + d0 + ", " + d1 + ", " + d2);
+             return;
+         }
 diff --git a/src/main/java/net/minecraft/server/CommandWorldBorder.java b/src/main/java/net/minecraft/server/CommandWorldBorder.java
 index 11ad785b2..38d0eba70 100644
 --- a/src/main/java/net/minecraft/server/CommandWorldBorder.java
