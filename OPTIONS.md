@@ -1,4 +1,4 @@
-### Just a list of the config options I added in my custom patches:
+### Just a list of the config options I added in my custom patches: (NOT YET WORKING)
 
 #### titanium.yml
 - Toggle sand dupe fix: `settings.experimental.allow-sand-dupe`

@@ -1,25 +1,28 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 19:44:36 -0500
+Date: Tue, 15 Dec 2020 20:47:21 -0500
 Subject: [PATCH] Configurable max world size
 
 
 diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
-index b65dae08b..ca3141886 100644
+index aad757414..381580929 100644
 --- a/src/main/java/me/titaniumtown/misc.java
 +++ b/src/main/java/me/titaniumtown/misc.java
-@@ -113,7 +113,11 @@ public class misc {
-     }
-     
-     public static boolean allowSandDupe = false;
-+    public static double WborderSize = 6.0E7D; // max: 4.294967294E9D
-+    public static int biggestInt = 29999984; // max: 2147483647
-     private static void experimental() {
-         allowSandDupe = getBoolean("settings.experimental.allow-sand-dupe", allowSandDupe);
-+        WborderSize = getDouble("settings.experimental.world-border-size", WborderSize);
-+        biggestInt = getInt("settings.experimental.world-max-int", biggestInt);
-     }
-  }
+@@ -19,4 +19,12 @@ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+ 
+-public static boolean allowSandDupe = true;
+\ No newline at end of file
++public static boolean allowSandDupe = true; // default: false
++
++// vanilla
++// public static double WborderSize = 6.0E7D;
++// public static int biggestInt = 29999984; 
++
++// max
++public static double WborderSize = 4.294967294E9D;
++public static int biggestInt = 2147483647;
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BaseBlockPosition.java b/src/main/java/net/minecraft/server/BaseBlockPosition.java
 index e811295b4..be591ff0b 100644
