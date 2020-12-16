@@ -1,11 +1,25 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Fri, 27 Nov 2020 16:39:45 -0500
+Date: Tue, 15 Dec 2020 19:41:16 -0500
 Subject: [PATCH] add toggle for sand dupe
 
 
+diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
+index e1f8f292f..b1a621050 100644
+--- a/src/main/java/me/titaniumtown/misc.java
++++ b/src/main/java/me/titaniumtown/misc.java
+@@ -111,4 +111,8 @@ import java.util.Map;0
+         return config.getString(path, config.getString(path));
+     }
+     
++    public static boolean allowSandDupe = false;
++    private static void experimental() {
++        allowSandDupe = getBoolean("settings.experimental.allow-sand-dupe", allowSandDupe);
++    }
+  }
+\ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/EntityFallingBlock.java b/src/main/java/net/minecraft/server/EntityFallingBlock.java
-index 76aac1b13..0a994f99b 100644
+index 76aac1b13..a90e76e80 100644
 --- a/src/main/java/net/minecraft/server/EntityFallingBlock.java
 +++ b/src/main/java/net/minecraft/server/EntityFallingBlock.java
 @@ -64,8 +64,8 @@ public class EntityFallingBlock extends Entity {
@@ -14,8 +28,8 @@ index 76aac1b13..0a994f99b 100644
      public void tick() {
 -        // Paper start - fix sand duping
 -        if (this.dead) {
-+        // Paper start - fix sand duping // Purpur - add config option for sand duping
-+        if (this.dead && !world.purpurConfig.allowSandDupe) {
++        // Paper start - fix sand duping // Titanium - add config option for sand duping
++        if (this.dead && !me.titaniumtown.misc.allowSandDupe) {
              return;
          }
          // Paper end - fix sand duping
@@ -25,13 +39,13 @@ index 76aac1b13..0a994f99b 100644
  
 -            // Paper start - fix sand duping
 -            if (this.dead) {
-+            // Paper start - fix sand duping // Purpur - add config option for sand duping
-+            if (this.dead && !world.purpurConfig.allowSandDupe) {
++            // Paper start - fix sand duping // Titanium - add config option for sand duping
++            if (this.dead && !me.titaniumtown.misc.allowSandDupe) {
                  return;
              }
              // Paper end - fix sand duping
 diff --git a/src/main/java/net/pl3x/purpur/PurpurWorldConfig.java b/src/main/java/net/pl3x/purpur/PurpurWorldConfig.java
-index 83849136e..5f51bab11 100644
+index 784024dac..f33b89b3a 100644
 --- a/src/main/java/net/pl3x/purpur/PurpurWorldConfig.java
 +++ b/src/main/java/net/pl3x/purpur/PurpurWorldConfig.java
 @@ -241,7 +241,9 @@ public class PurpurWorldConfig {

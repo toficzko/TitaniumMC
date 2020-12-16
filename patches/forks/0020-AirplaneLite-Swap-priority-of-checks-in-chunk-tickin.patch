@@ -7,7 +7,7 @@ World.V showed up a lot in lag spikes for some reason, although I wonder
 if it's just Spark getting JVM safe points.
 
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index dd8e284b2..6cf13e9b5 100644
+index 790473d51..c66be7387 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -1082,7 +1082,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {

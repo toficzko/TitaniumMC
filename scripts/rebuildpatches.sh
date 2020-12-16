@@ -36,7 +36,5 @@ function savePatches() {
   cleanupPatches "$basedir"/patches/"$2"/
   echo "  Patches saved for $what to patches/$2"
 }
-
-#savePatches Purpur-API api
-#savePatches Purpur-upstream-Server server
+savePatches Purpur-forks-Server forks
 savePatches Purpur-Server server

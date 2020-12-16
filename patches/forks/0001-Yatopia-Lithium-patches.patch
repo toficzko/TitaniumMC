@@ -292,7 +292,7 @@ index 000000000..2d79932db
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/AxisAlignedBB.java b/src/main/java/net/minecraft/server/AxisAlignedBB.java
-index 8cd5363c2..334b81cd6 100644
+index 9fbb77e70..82c0f6e4a 100644
 --- a/src/main/java/net/minecraft/server/AxisAlignedBB.java
 +++ b/src/main/java/net/minecraft/server/AxisAlignedBB.java
 @@ -185,12 +185,38 @@ public class AxisAlignedBB {
@@ -631,7 +631,7 @@ index e69093b41..4a14431b1 100644
  
      public <T> void set(DataWatcherObject<T> datawatcherobject, T t0) {
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index a5a7b426e..c689047e2 100644
+index e3ac6ebfd..acc2e2c90 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -2589,10 +2589,12 @@ public abstract class EntityLiving extends Entity {

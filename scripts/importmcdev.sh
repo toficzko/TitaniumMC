@@ -72,10 +72,10 @@ function importLibrary() {
   fi
 )
 
-files=$((cat patches/server/* && cat Purpur/patches/server/*) | grep "+++ b/src/main/java/net/minecraft/server/" | sort | uniq | sed 's/\+\+\+ b\/src\/main\/java\/net\/minecraft\/server\///g' | sed 's/.java//g')
+files=$((cat patches/server/* && cat Purpur/patches/server/* && cat patches/forks/*) | grep "+++ b/src/main/java/net/minecraft/server/" | sort | uniq | sed 's/\+\+\+ b\/src\/main\/java\/net\/minecraft\/server\///g' | sed 's/.java//g')
 
 
-nonnms=$((cat patches/server/* && cat Purpur/patches/server/*) | grep "create mode " | grep -Po "src/main/java/net/minecraft/server/(.*?).java" | sort | uniq | sed 's/src\/main\/java\/net\/minecraft\/server\///g' | sed 's/.java//g')
+nonnms=$((cat patches/server/* && cat Purpur/patches/server/* && cat patches/forks/*) | grep "create mode " | grep -Po "src/main/java/net/minecraft/server/(.*?).java" | sort | uniq | sed 's/src\/main\/java\/net\/minecraft\/server\///g' | sed 's/.java//g')
 
 for f in $files; do
   containsElement "$f" "${nonnms[@]}"
