@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Wed, 16 Dec 2020 10:08:58 -0500
+Subject: [PATCH] vanilla settings
+
+
+diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
+index 83206e4da..5bac43b60 100644
+--- a/src/main/java/me/titaniumtown/misc.java
++++ b/src/main/java/me/titaniumtown/misc.java
+@@ -20,17 +20,19 @@ import java.util.List;
+ import java.util.Map;
+ 
+ public class misc {
+-    public static boolean allowSandDupe = true;
++    // public static boolean allowSandDupe = true;
++    public static boolean allowSandDupe = false;
+     
+     // vanilla
+-    // public static double WborderSize = 6.0E7D;
+-    // public static int biggestInt = 29999984; 
+-    // public static float biggestFloat = 6.0E7F;
++    public static double WborderSize = 6.0E7D;
++    public static int biggestInt = 29999984; 
++    public static float biggestFloat = 6.0E7F;
+ 
+     // max
+-    public static double WborderSize = 4.294967294E9D;
+-    public static int biggestInt = 2147483647;
+-    public static float biggestFloat = 4294967294F;
++    // public static double WborderSize = 4.294967294E9D;
++    // public static int biggestInt = 2147483647;
++    // public static float biggestFloat = 4294967294F;
+ 
+-    public static boolean farlands = true;
++    // public static boolean farlands = true;
++    public static boolean farlands = false;
+ }
+\ No newline at end of file

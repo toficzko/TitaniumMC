@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 23:49:09 -0500
+Date: Wed, 16 Dec 2020 10:07:01 -0500
 Subject: [PATCH] Configurable max world size
 
 
@@ -25,7 +25,7 @@ index 347d0fdd2..224bff554 100644
  }
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BaseBlockPosition.java b/src/main/java/net/minecraft/server/BaseBlockPosition.java
-index e811295b4..be591ff0b 100644
+index e811295b4..056cb868b 100644
 --- a/src/main/java/net/minecraft/server/BaseBlockPosition.java
 +++ b/src/main/java/net/minecraft/server/BaseBlockPosition.java
 @@ -22,7 +22,7 @@ public class BaseBlockPosition implements Comparable<BaseBlockPosition> {
@@ -33,7 +33,7 @@ index e811295b4..be591ff0b 100644
      // Paper start
      public boolean isValidLocation() {
 -        return getX() >= -30000000 && getZ() >= -30000000 && getX() < 30000000 && getZ() < 30000000 && getY() >= 0 && getY() < 256;
-+        return getY() < 256; // Titanium - Remove world border limitations
++        return getX() >= -me.titaniumtown.misc.biggestInt && getZ() >= -me.titaniumtown.misc.biggestInt && getX() < me.titaniumtown.misc.biggestInt && getZ() < me.titaniumtown.misc.biggestInt && getY() >= 0 && getY() < 256; // Titanium - Remove world border limitations
      }
      public boolean isInvalidYLocation() {
          return b < 0 || b >= 256;
@@ -158,7 +158,7 @@ index a274526a8..37c371293 100644
          this.lastX = d3;
          this.lastY = d1;
 diff --git a/src/main/java/net/minecraft/server/IWorldReader.java b/src/main/java/net/minecraft/server/IWorldReader.java
-index eb7282c33..b4075678f 100644
+index eb7282c33..72c892d82 100644
 --- a/src/main/java/net/minecraft/server/IWorldReader.java
 +++ b/src/main/java/net/minecraft/server/IWorldReader.java
 @@ -139,7 +139,7 @@ public interface IWorldReader extends IBlockLightAccess, ICollisionAccess, Biome
@@ -166,7 +166,7 @@ index eb7282c33..b4075678f 100644
  
      default int c(BlockPosition blockposition, int i) {
 -        return blockposition.getX() >= -30000000 && blockposition.getZ() >= -30000000 && blockposition.getX() < 30000000 && blockposition.getZ() < 30000000 ? this.getLightLevel(blockposition, i) : 15;
-+        return this.getLightLevel(blockposition, i); // Titanium - Remove world border limitations
++        return blockposition.getX() >= -me.titaniumtown.misc.biggestInt && blockposition.getZ() >= -me.titaniumtown.misc.biggestInt && blockposition.getX() < me.titaniumtown.misc.biggestInt && blockposition.getZ() < me.titaniumtown.misc.biggestInt ? this.getLightLevel(blockposition, i) : 15; // Titanium - Remove world border limitations
      }
  
      @Deprecated
@@ -197,7 +197,7 @@ index dcbed41f6..c3471b963 100644
  
      private static boolean b(PacketPlayInVehicleMove packetplayinvehiclemove) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 34993cb34..f46c6f783 100644
+index 34993cb34..0c24add74 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -418,7 +418,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
@@ -205,27 +205,23 @@ index 34993cb34..f46c6f783 100644
  
      private static boolean D(BlockPosition blockposition) {
 -        return blockposition.getX() >= -30000000 && blockposition.getZ() >= -30000000 && blockposition.getX() < 30000000 && blockposition.getZ() < 30000000;
-+        return true; // Titanium - Remove world border limitations
++        return blockposition.getX() >= -me.titaniumtown.misc.biggestInt && blockposition.getZ() >= -me.titaniumtown.misc.biggestInt && blockposition.getX() < me.titaniumtown.misc.biggestInt && blockposition.getZ() < me.titaniumtown.misc.biggestInt; // Titanium - Remove world border limitations
      }
  
      private static boolean d(int i) {
-@@ -805,16 +805,13 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
-     public final int getHighestBlockY(final HeightMap.Type heightmap, final int x, final int z) { return this.a(heightmap, x, z); } // Paper - OBFHELPER
+@@ -806,7 +806,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      @Override public int a(HeightMap.Type heightmap_type, int i, int j) { // Paper - OBFHELPER
          int k;
--
+ 
 -        if (i >= -30000000 && j >= -30000000 && i < 30000000 && j < 30000000) {
--            if (this.isChunkLoaded(i >> 4, j >> 4)) {
--                k = this.getChunkAt(i >> 4, j >> 4).getHighestBlock(heightmap_type, i & 15, j & 15) + 1;
--            } else {
--                k = 0;
--            }
 +        // Titanium start - Remove world border limitations
-+        if (this.isChunkLoaded(i >> 4, j >> 4)) {
-+            k = this.getChunkAt(i >> 4, j >> 4).getHighestBlock(heightmap_type, i & 15, j & 15) + 1;
++        if (i >= -me.titaniumtown.misc.biggestInt && j >= -me.titaniumtown.misc.biggestInt && i < me.titaniumtown.misc.biggestInt && j < me.titaniumtown.misc.biggestInt) {
+             if (this.isChunkLoaded(i >> 4, j >> 4)) {
+                 k = this.getChunkAt(i >> 4, j >> 4).getHighestBlock(heightmap_type, i & 15, j & 15) + 1;
+             } else {
+@@ -815,6 +816,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
          } else {
--            k = this.getSeaLevel() + 1;
-+            k = 0;
+             k = this.getSeaLevel() + 1;
          }
 +        // Titanium end
  
