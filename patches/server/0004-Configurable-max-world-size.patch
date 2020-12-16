@@ -1,31 +1,29 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Wed, 16 Dec 2020 11:25:32 -0500
+Date: Wed, 16 Dec 2020 14:48:49 -0500
 Subject: [PATCH] Configurable max world size
 
 
 diff --git a/src/main/java/me/titaniumtown/TitaniumConfig.java b/src/main/java/me/titaniumtown/TitaniumConfig.java
-index 663f033bd..634aeff96 100644
+index 663f033bd..178d588fe 100644
 --- a/src/main/java/me/titaniumtown/TitaniumConfig.java
 +++ b/src/main/java/me/titaniumtown/TitaniumConfig.java
-@@ -158,4 +158,20 @@ public class TitaniumConfig {
+@@ -158,4 +158,18 @@ public class TitaniumConfig {
          allowSandDupe = getBoolean("settings.experimental.allow-sand-dupe", allowSandDupe);
      }
  
 +    public static double WborderSize = 6.0E7D; // Vanilla 6.0E7D; Max: 4.294967294E9D
 +    public static int biggestInt = 29999984; // Vanilla: 29999984; Max: 2147483647
-+    public static float biggestFloat = 6.0E7F; // Vanilla: 6.0E7F; Max: 4294967294F
 +    private static void world() {
 +        WborderSize = getDouble("settings.experimental.world.world-border-size", WborderSize);
 +        biggestInt = getInt("settings.experimental.world.world-max-int", biggestInt);
-+        biggestFloat = getFloat("settings.experimental.world.world-max-float", biggestFloat);
 +
 +        // Start - World size settings checks
 +        if (WborderSize > 4.294967294E9D) Bukkit.getLogger().log(Level.SEVERE, "Titanium: settings.experimental.world.world-border-size is set over it's maximum value");
 +        if (biggestInt > 2147483647) Bukkit.getLogger().log(Level.SEVERE, "Titanium: settings.experimental.world.world-max-int is set over it's maximum value");
-+        if (biggestFloat > 4294967294F) Bukkit.getLogger().log(Level.SEVERE, "Titanium: settings.experimental.world.world-max-float is set over it's maximum value");
 +        // End - World size settings checks
 +    }
++    public static float biggestFloat = (float)WborderSize;
 +
 +
  }
@@ -147,8 +145,21 @@ index 780474397..91c72127e 100644
          this.syncChunkWrites = this.getBoolean("sync-chunk-writes", true) && Boolean.getBoolean("Paper.enable-sync-chunk-writes"); // Paper - hide behind flag
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
+diff --git a/src/main/java/net/minecraft/server/DimensionManager.java b/src/main/java/net/minecraft/server/DimensionManager.java
+index 286ffd7e6..afbddd6c8 100644
+--- a/src/main/java/net/minecraft/server/DimensionManager.java
++++ b/src/main/java/net/minecraft/server/DimensionManager.java
+@@ -22,7 +22,7 @@ public class DimensionManager {
+             return optionallong.isPresent() ? Optional.of(optionallong.getAsLong()) : Optional.empty();
+         }).forGetter((dimensionmanager) -> {
+             return dimensionmanager.fixedTime;
+-        }), Codec.BOOL.fieldOf("has_skylight").forGetter(DimensionManager::hasSkyLight), Codec.BOOL.fieldOf("has_ceiling").forGetter(DimensionManager::hasCeiling), Codec.BOOL.fieldOf("ultrawarm").forGetter(DimensionManager::isNether), Codec.BOOL.fieldOf("natural").forGetter(DimensionManager::isNatural), Codec.doubleRange(9.999999747378752E-6D, 3.0E7D).fieldOf("coordinate_scale").forGetter(DimensionManager::getCoordinateScale), Codec.BOOL.fieldOf("piglin_safe").forGetter(DimensionManager::isPiglinSafe), Codec.BOOL.fieldOf("bed_works").forGetter(DimensionManager::isBedWorks), Codec.BOOL.fieldOf("respawn_anchor_works").forGetter(DimensionManager::isRespawnAnchorWorks), Codec.BOOL.fieldOf("has_raids").forGetter(DimensionManager::hasRaids), Codec.intRange(0, 256).fieldOf("logical_height").forGetter(DimensionManager::getLogicalHeight), MinecraftKey.a.fieldOf("infiniburn").forGetter((dimensionmanager) -> {
++        }), Codec.BOOL.fieldOf("has_skylight").forGetter(DimensionManager::hasSkyLight), Codec.BOOL.fieldOf("has_ceiling").forGetter(DimensionManager::hasCeiling), Codec.BOOL.fieldOf("ultrawarm").forGetter(DimensionManager::isNether), Codec.BOOL.fieldOf("natural").forGetter(DimensionManager::isNatural), Codec.doubleRange(9.999999747378752E-6D, ((float)me.titaniumtown.TitaniumConfig.biggestInt+16.0D)).fieldOf("coordinate_scale").forGetter(DimensionManager::getCoordinateScale), Codec.BOOL.fieldOf("piglin_safe").forGetter(DimensionManager::isPiglinSafe), Codec.BOOL.fieldOf("bed_works").forGetter(DimensionManager::isBedWorks), Codec.BOOL.fieldOf("respawn_anchor_works").forGetter(DimensionManager::isRespawnAnchorWorks), Codec.BOOL.fieldOf("has_raids").forGetter(DimensionManager::hasRaids), Codec.intRange(0, 256).fieldOf("logical_height").forGetter(DimensionManager::getLogicalHeight), MinecraftKey.a.fieldOf("infiniburn").forGetter((dimensionmanager) -> {
+             return dimensionmanager.infiniburn;
+         }), MinecraftKey.a.fieldOf("effects").orElse(DimensionManager.OVERWORLD_KEY).forGetter((dimensionmanager) -> {
+             return dimensionmanager.effects;
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index a274526a8..8dd3e2882 100644
+index a274526a8..610becfb4 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -1533,8 +1533,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
@@ -162,6 +173,23 @@ index a274526a8..8dd3e2882 100644
  
          this.lastX = d3;
          this.lastY = d1;
+@@ -2902,10 +2902,12 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+                 return null;
+             } else {
+                 WorldBorder worldborder = worldserver.getWorldBorder();
+-                double d0 = Math.max(-2.9999872E7D, worldborder.e() + 16.0D);
+-                double d1 = Math.max(-2.9999872E7D, worldborder.f() + 16.0D);
+-                double d2 = Math.min(2.9999872E7D, worldborder.g() - 16.0D);
+-                double d3 = Math.min(2.9999872E7D, worldborder.h() - 16.0D);
++                // Titanium Start - Remove world border limitations
++                double d0 = Math.max(-((float)me.titaniumtown.TitaniumConfig.biggestInt-112.0D), worldborder.e() + 16.0D);
++                double d1 = Math.max(-((float)me.titaniumtown.TitaniumConfig.biggestInt-112.0D), worldborder.f() + 16.0D);
++                double d2 = Math.min(((float)me.titaniumtown.TitaniumConfig.biggestInt-112.0D), worldborder.g() - 16.0D);
++                double d3 = Math.min(((float)me.titaniumtown.TitaniumConfig.biggestInt-112.0D), worldborder.h() - 16.0D);
++                // Titanium End - Remove world border limitations
+                 double d4 = DimensionManager.a(this.world.getDimensionManager(), worldserver.getDimensionManager());
+                 BlockPosition blockposition = new BlockPosition(MathHelper.a(this.locX() * d4, d0, d2), this.locY(), MathHelper.a(this.locZ() * d4, d1, d3));
+                 // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/server/IWorldReader.java b/src/main/java/net/minecraft/server/IWorldReader.java
 index eb7282c33..a3d1f40b3 100644
 --- a/src/main/java/net/minecraft/server/IWorldReader.java
