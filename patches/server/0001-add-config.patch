@@ -1,15 +1,15 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 19:38:44 -0500
+Date: Tue, 15 Dec 2020 19:58:23 -0500
 Subject: [PATCH] add config
 
 
 diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
 new file mode 100644
-index 000000000..e1f8f292f
+index 000000000..9fd68b4da
 --- /dev/null
 +++ b/src/main/java/me/titaniumtown/misc.java
-@@ -0,0 +1,114 @@
+@@ -0,0 +1,115 @@
 +package me.titaniumtown;
 + 
 +import co.aikar.timings.TimingsManager;
@@ -29,7 +29,8 @@ index 000000000..e1f8f292f
 +import java.lang.reflect.Modifier;
 +import java.util.HashMap;
 +import java.util.List;
-+import java.util.Map;0
++import java.util.Map;
++public class misc {
 +    // Config format based off of Purpur's
 +    private static final String HEADER = "This is the primary configuration file for Titanium (https://github.com/Titaniumtown/mcserver)";
 +    private static File CONFIG_FILE;

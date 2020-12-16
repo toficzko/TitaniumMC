@@ -5,10 +5,10 @@ Subject: [PATCH] Configurable max world size
 
 
 diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
-index b1a621050..fb4090bed 100644
+index b65dae08b..ca3141886 100644
 --- a/src/main/java/me/titaniumtown/misc.java
 +++ b/src/main/java/me/titaniumtown/misc.java
-@@ -112,7 +112,11 @@ import java.util.Map;0
+@@ -113,7 +113,11 @@ public class misc {
      }
      
      public static boolean allowSandDupe = false;
