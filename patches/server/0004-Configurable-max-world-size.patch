@@ -1,31 +1,36 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Wed, 16 Dec 2020 10:07:01 -0500
+Date: Wed, 16 Dec 2020 11:25:32 -0500
 Subject: [PATCH] Configurable max world size
 
 
-diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
-index 347d0fdd2..224bff554 100644
---- a/src/main/java/me/titaniumtown/misc.java
-+++ b/src/main/java/me/titaniumtown/misc.java
-@@ -21,4 +21,14 @@ import java.util.Map;
+diff --git a/src/main/java/me/titaniumtown/TitaniumConfig.java b/src/main/java/me/titaniumtown/TitaniumConfig.java
+index 663f033bd..634aeff96 100644
+--- a/src/main/java/me/titaniumtown/TitaniumConfig.java
++++ b/src/main/java/me/titaniumtown/TitaniumConfig.java
+@@ -158,4 +158,20 @@ public class TitaniumConfig {
+         allowSandDupe = getBoolean("settings.experimental.allow-sand-dupe", allowSandDupe);
+     }
  
- public class misc {
-     public static boolean allowSandDupe = true;
-+    
-+    // vanilla
-+    // public static double WborderSize = 6.0E7D;
-+    // public static int biggestInt = 29999984; 
-+    // public static float biggestFloat = 6.0E7F;
++    public static double WborderSize = 6.0E7D; // Vanilla 6.0E7D; Max: 4.294967294E9D
++    public static int biggestInt = 29999984; // Vanilla: 29999984; Max: 2147483647
++    public static float biggestFloat = 6.0E7F; // Vanilla: 6.0E7F; Max: 4294967294F
++    private static void world() {
++        WborderSize = getDouble("settings.experimental.world.world-border-size", WborderSize);
++        biggestInt = getInt("settings.experimental.world.world-max-int", biggestInt);
++        biggestFloat = getFloat("settings.experimental.world.world-max-float", biggestFloat);
 +
-+    // max
-+    public static double WborderSize = 4.294967294E9D;
-+    public static int biggestInt = 2147483647;
-+    public static float biggestFloat = 4294967294F;
++        // Start - World size settings checks
++        if (WborderSize > 4.294967294E9D) Bukkit.getLogger().log(Level.SEVERE, "Titanium: settings.experimental.world.world-border-size is set over it's maximum value");
++        if (biggestInt > 2147483647) Bukkit.getLogger().log(Level.SEVERE, "Titanium: settings.experimental.world.world-max-int is set over it's maximum value");
++        if (biggestFloat > 4294967294F) Bukkit.getLogger().log(Level.SEVERE, "Titanium: settings.experimental.world.world-max-float is set over it's maximum value");
++        // End - World size settings checks
++    }
++
++
  }
-\ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BaseBlockPosition.java b/src/main/java/net/minecraft/server/BaseBlockPosition.java
-index e811295b4..056cb868b 100644
+index e811295b4..6c286eb79 100644
 --- a/src/main/java/net/minecraft/server/BaseBlockPosition.java
 +++ b/src/main/java/net/minecraft/server/BaseBlockPosition.java
 @@ -22,7 +22,7 @@ public class BaseBlockPosition implements Comparable<BaseBlockPosition> {
@@ -33,12 +38,12 @@ index e811295b4..056cb868b 100644
      // Paper start
      public boolean isValidLocation() {
 -        return getX() >= -30000000 && getZ() >= -30000000 && getX() < 30000000 && getZ() < 30000000 && getY() >= 0 && getY() < 256;
-+        return getX() >= -me.titaniumtown.misc.biggestInt && getZ() >= -me.titaniumtown.misc.biggestInt && getX() < me.titaniumtown.misc.biggestInt && getZ() < me.titaniumtown.misc.biggestInt && getY() >= 0 && getY() < 256; // Titanium - Remove world border limitations
++        return getX() >= -me.titaniumtown.TitaniumConfig.biggestInt && getZ() >= -me.titaniumtown.TitaniumConfig.biggestInt && getX() < me.titaniumtown.TitaniumConfig.biggestInt && getZ() < me.titaniumtown.TitaniumConfig.biggestInt && getY() >= 0 && getY() < 256; // Titanium - Remove world border limitations
      }
      public boolean isInvalidYLocation() {
          return b < 0 || b >= 256;
 diff --git a/src/main/java/net/minecraft/server/CommandForceload.java b/src/main/java/net/minecraft/server/CommandForceload.java
-index 57e9e737f..645def9eb 100644
+index 57e9e737f..09b89752b 100644
 --- a/src/main/java/net/minecraft/server/CommandForceload.java
 +++ b/src/main/java/net/minecraft/server/CommandForceload.java
 @@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -63,12 +68,12 @@ index 57e9e737f..645def9eb 100644
          int l = Math.max(blockposition2d.b, blockposition2d1.b);
  
 -        if (i >= -30000000 && j >= -30000000 && k < 30000000 && l < 30000000) {
-+        if (i >= -me.titaniumtown.misc.biggestInt && j >= -me.titaniumtown.misc.biggestInt && k < me.titaniumtown.misc.biggestInt && l < me.titaniumtown.misc.biggestInt) {  // Titanium - Remove world border limitations
++        if (i >= -me.titaniumtown.TitaniumConfig.biggestInt && j >= -me.titaniumtown.TitaniumConfig.biggestInt && k < me.titaniumtown.TitaniumConfig.biggestInt && l < me.titaniumtown.TitaniumConfig.biggestInt) {  // Titanium - Remove world border limitations
              int i1 = i >> 4;
              int j1 = j >> 4;
              int k1 = k >> 4;
 diff --git a/src/main/java/net/minecraft/server/CommandTeleport.java b/src/main/java/net/minecraft/server/CommandTeleport.java
-index ddc978279..c343cffab 100644
+index ddc978279..9ed0d4f91 100644
 --- a/src/main/java/net/minecraft/server/CommandTeleport.java
 +++ b/src/main/java/net/minecraft/server/CommandTeleport.java
 @@ -120,7 +120,7 @@ public class CommandTeleport {
@@ -76,12 +81,12 @@ index ddc978279..c343cffab 100644
          BlockPosition blockposition = new BlockPosition(d0, d1, d2);
          // Paper start - Don't allow teleport command to invalid locations
 -        if (d0 <= -30000000 || d2 <= -30000000 || d0 > 30000000 || d2 > 30000000 || d1 > 30000000 || d1 <= -30000000) { // Copy/pasta from BaseBlockPosition#isValidLocation
-+        if (d0 <= -me.titaniumtown.misc.biggestInt || d2 <= -me.titaniumtown.misc.biggestInt || d0 > me.titaniumtown.misc.biggestInt || d2 > me.titaniumtown.misc.biggestInt || d1 > me.titaniumtown.misc.biggestInt || d1 <= -me.titaniumtown.misc.biggestInt) { // Copy/pasta from BaseBlockPosition#isValidLocation  // Titanium - Remove world border limitations
++        if (d0 <= -me.titaniumtown.TitaniumConfig.biggestInt || d2 <= -me.titaniumtown.TitaniumConfig.biggestInt || d0 > me.titaniumtown.TitaniumConfig.biggestInt || d2 > me.titaniumtown.TitaniumConfig.biggestInt || d1 > me.titaniumtown.TitaniumConfig.biggestInt || d1 <= -me.titaniumtown.TitaniumConfig.biggestInt) { // Copy/pasta from BaseBlockPosition#isValidLocation  // Titanium - Remove world border limitations
              org.bukkit.Bukkit.getLogger().warning("Refused to teleport " + entity.getName() + " to " + d0 + ", " + d1 + ", " + d2);
              return;
          }
 diff --git a/src/main/java/net/minecraft/server/CommandWorldBorder.java b/src/main/java/net/minecraft/server/CommandWorldBorder.java
-index 11ad785b2..169910053 100644
+index 11ad785b2..b0fb6ec21 100644
 --- a/src/main/java/net/minecraft/server/CommandWorldBorder.java
 +++ b/src/main/java/net/minecraft/server/CommandWorldBorder.java
 @@ -23,11 +23,11 @@ public class CommandWorldBorder {
@@ -89,12 +94,12 @@ index 11ad785b2..169910053 100644
          com_mojang_brigadier_commanddispatcher.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandDispatcher.a("worldborder").requires((commandlistenerwrapper) -> {
              return commandlistenerwrapper.hasPermission(2);
 -        })).then(CommandDispatcher.a("add").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-6.0E7F, 6.0E7F)).executes((commandcontext) -> {
-+        })).then(CommandDispatcher.a("add").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-me.titaniumtown.misc.biggestFloat, me.titaniumtown.misc.biggestFloat)).executes((commandcontext) -> {
++        })).then(CommandDispatcher.a("add").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-me.titaniumtown.TitaniumConfig.biggestFloat, me.titaniumtown.TitaniumConfig.biggestFloat)).executes((commandcontext) -> {
              return a((CommandListenerWrapper) commandcontext.getSource(), ((CommandListenerWrapper) commandcontext.getSource()).getWorld().getWorldBorder().getSize() + (double) FloatArgumentType.getFloat(commandcontext, "distance"), 0L);
          })).then(CommandDispatcher.a("time", (ArgumentType) IntegerArgumentType.integer(0)).executes((commandcontext) -> {
              return a((CommandListenerWrapper) commandcontext.getSource(), ((CommandListenerWrapper) commandcontext.getSource()).getWorld().getWorldBorder().getSize() + (double) FloatArgumentType.getFloat(commandcontext, "distance"), ((CommandListenerWrapper) commandcontext.getSource()).getWorld().getWorldBorder().j() + (long) IntegerArgumentType.getInteger(commandcontext, "time") * 1000L);
 -        }))))).then(CommandDispatcher.a("set").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-6.0E7F, 6.0E7F)).executes((commandcontext) -> {
-+        }))))).then(CommandDispatcher.a("set").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-me.titaniumtown.misc.biggestFloat, me.titaniumtown.misc.biggestFloat)).executes((commandcontext) -> {
++        }))))).then(CommandDispatcher.a("set").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-me.titaniumtown.TitaniumConfig.biggestFloat, me.titaniumtown.TitaniumConfig.biggestFloat)).executes((commandcontext) -> {
              return a((CommandListenerWrapper) commandcontext.getSource(), (double) FloatArgumentType.getFloat(commandcontext, "distance"), 0L);
          })).then(CommandDispatcher.a("time", (ArgumentType) IntegerArgumentType.integer(0)).executes((commandcontext) -> {
              return a((CommandListenerWrapper) commandcontext.getSource(), (double) FloatArgumentType.getFloat(commandcontext, "distance"), (long) IntegerArgumentType.getInteger(commandcontext, "time") * 1000L);
@@ -103,20 +108,20 @@ index 11ad785b2..169910053 100644
          } else if (d0 < 1.0D) {
              throw CommandWorldBorder.c.create();
 -        } else if (d0 > 6.0E7D) {
-+        } else if (d0 > me.titaniumtown.misc.WborderSize) {  // Titanium - Remove world border limitations
++        } else if (d0 > me.titaniumtown.TitaniumConfig.WborderSize) {  // Titanium - Remove world border limitations
              throw CommandWorldBorder.d.create();
          } else {
              if (i > 0L) {
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index 3ee8d31c4..711686264 100644
+index 047d287ca..35f0925b8 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -547,7 +547,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+@@ -556,7 +556,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
  
      @Override
      public int au() {
 -        return this.getDedicatedServerProperties().maxWorldSize;
-+        return me.titaniumtown.misc.biggestInt; // Titanium - Remove world border limitations
++        return me.titaniumtown.TitaniumConfig.biggestInt; // Titanium - Remove world border limitations
      }
  
      @Override
@@ -143,7 +148,7 @@ index 780474397..91c72127e 100644
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index a274526a8..37c371293 100644
+index a274526a8..8dd3e2882 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -1533,8 +1533,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
@@ -152,13 +157,13 @@ index a274526a8..37c371293 100644
      public void f(double d0, double d1, double d2) {
 -        double d3 = MathHelper.a(d0, -3.0E7D, 3.0E7D);
 -        double d4 = MathHelper.a(d2, -3.0E7D, 3.0E7D);
-+        double d3 = MathHelper.a(d0, -me.titaniumtown.misc.WborderSize, me.titaniumtown.misc.WborderSize); // Titanium - Remove world border limitations
-+        double d4 = MathHelper.a(d2, -me.titaniumtown.misc.WborderSize, me.titaniumtown.misc.WborderSize); // Titanium - Remove world border limitations
++        double d3 = MathHelper.a(d0, -me.titaniumtown.TitaniumConfig.WborderSize, me.titaniumtown.TitaniumConfig.WborderSize); // Titanium - Remove world border limitations
++        double d4 = MathHelper.a(d2, -me.titaniumtown.TitaniumConfig.WborderSize, me.titaniumtown.TitaniumConfig.WborderSize); // Titanium - Remove world border limitations
  
          this.lastX = d3;
          this.lastY = d1;
 diff --git a/src/main/java/net/minecraft/server/IWorldReader.java b/src/main/java/net/minecraft/server/IWorldReader.java
-index eb7282c33..72c892d82 100644
+index eb7282c33..a3d1f40b3 100644
 --- a/src/main/java/net/minecraft/server/IWorldReader.java
 +++ b/src/main/java/net/minecraft/server/IWorldReader.java
 @@ -139,7 +139,7 @@ public interface IWorldReader extends IBlockLightAccess, ICollisionAccess, Biome
@@ -166,12 +171,12 @@ index eb7282c33..72c892d82 100644
  
      default int c(BlockPosition blockposition, int i) {
 -        return blockposition.getX() >= -30000000 && blockposition.getZ() >= -30000000 && blockposition.getX() < 30000000 && blockposition.getZ() < 30000000 ? this.getLightLevel(blockposition, i) : 15;
-+        return blockposition.getX() >= -me.titaniumtown.misc.biggestInt && blockposition.getZ() >= -me.titaniumtown.misc.biggestInt && blockposition.getX() < me.titaniumtown.misc.biggestInt && blockposition.getZ() < me.titaniumtown.misc.biggestInt ? this.getLightLevel(blockposition, i) : 15; // Titanium - Remove world border limitations
++        return blockposition.getX() >= -me.titaniumtown.TitaniumConfig.biggestInt && blockposition.getZ() >= -me.titaniumtown.TitaniumConfig.biggestInt && blockposition.getX() < me.titaniumtown.TitaniumConfig.biggestInt && blockposition.getZ() < me.titaniumtown.TitaniumConfig.biggestInt ? this.getLightLevel(blockposition, i) : 15; // Titanium - Remove world border limitations
      }
  
      @Deprecated
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 2678d4f39..77b05beba 100644
+index 2678d4f39..feabe45c8 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1843,7 +1843,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -179,12 +184,12 @@ index 2678d4f39..77b05beba 100644
  
      public int au() {
 -        return 29999984;
-+        return me.titaniumtown.misc.biggestInt; // Titanium - Remove world border limitations
++        return me.titaniumtown.TitaniumConfig.biggestInt; // Titanium - Remove world border limitations
      }
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index dcbed41f6..c3471b963 100644
+index dcbed41f6..b4d10f802 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
 @@ -378,7 +378,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
@@ -192,12 +197,12 @@ index dcbed41f6..c3471b963 100644
  
      private static boolean b(PacketPlayInFlying packetplayinflying) {
 -        return Doubles.isFinite(packetplayinflying.a(0.0D)) && Doubles.isFinite(packetplayinflying.b(0.0D)) && Doubles.isFinite(packetplayinflying.c(0.0D)) && Floats.isFinite(packetplayinflying.b(0.0F)) && Floats.isFinite(packetplayinflying.a(0.0F)) ? Math.abs(packetplayinflying.a(0.0D)) > 3.0E7D || Math.abs(packetplayinflying.b(0.0D)) > 3.0E7D || Math.abs(packetplayinflying.c(0.0D)) > 3.0E7D : true;
-+        return Doubles.isFinite(packetplayinflying.a(0.0D)) && Doubles.isFinite(packetplayinflying.b(0.0D)) && Doubles.isFinite(packetplayinflying.c(0.0D)) && Floats.isFinite(packetplayinflying.b(0.0F)) && Floats.isFinite(packetplayinflying.a(0.0F)) ? Math.abs(packetplayinflying.a(0.0D)) > me.titaniumtown.misc.WborderSize || Math.abs(packetplayinflying.b(0.0D)) > me.titaniumtown.misc.WborderSize || Math.abs(packetplayinflying.c(0.0D)) > me.titaniumtown.misc.WborderSize : true; // Titanium - Remove world border limitations
++        return Doubles.isFinite(packetplayinflying.a(0.0D)) && Doubles.isFinite(packetplayinflying.b(0.0D)) && Doubles.isFinite(packetplayinflying.c(0.0D)) && Floats.isFinite(packetplayinflying.b(0.0F)) && Floats.isFinite(packetplayinflying.a(0.0F)) ? Math.abs(packetplayinflying.a(0.0D)) > me.titaniumtown.TitaniumConfig.WborderSize || Math.abs(packetplayinflying.b(0.0D)) > me.titaniumtown.TitaniumConfig.WborderSize || Math.abs(packetplayinflying.c(0.0D)) > me.titaniumtown.TitaniumConfig.WborderSize : true; // Titanium - Remove world border limitations
      }
  
      private static boolean b(PacketPlayInVehicleMove packetplayinvehiclemove) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 34993cb34..0c24add74 100644
+index 34993cb34..6a00ba544 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -418,7 +418,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
@@ -205,7 +210,7 @@ index 34993cb34..0c24add74 100644
  
      private static boolean D(BlockPosition blockposition) {
 -        return blockposition.getX() >= -30000000 && blockposition.getZ() >= -30000000 && blockposition.getX() < 30000000 && blockposition.getZ() < 30000000;
-+        return blockposition.getX() >= -me.titaniumtown.misc.biggestInt && blockposition.getZ() >= -me.titaniumtown.misc.biggestInt && blockposition.getX() < me.titaniumtown.misc.biggestInt && blockposition.getZ() < me.titaniumtown.misc.biggestInt; // Titanium - Remove world border limitations
++        return blockposition.getX() >= -me.titaniumtown.TitaniumConfig.biggestInt && blockposition.getZ() >= -me.titaniumtown.TitaniumConfig.biggestInt && blockposition.getX() < me.titaniumtown.TitaniumConfig.biggestInt && blockposition.getZ() < me.titaniumtown.TitaniumConfig.biggestInt; // Titanium - Remove world border limitations
      }
  
      private static boolean d(int i) {
@@ -215,7 +220,7 @@ index 34993cb34..0c24add74 100644
  
 -        if (i >= -30000000 && j >= -30000000 && i < 30000000 && j < 30000000) {
 +        // Titanium start - Remove world border limitations
-+        if (i >= -me.titaniumtown.misc.biggestInt && j >= -me.titaniumtown.misc.biggestInt && i < me.titaniumtown.misc.biggestInt && j < me.titaniumtown.misc.biggestInt) {
++        if (i >= -me.titaniumtown.TitaniumConfig.biggestInt && j >= -me.titaniumtown.TitaniumConfig.biggestInt && i < me.titaniumtown.TitaniumConfig.biggestInt && j < me.titaniumtown.TitaniumConfig.biggestInt) {
              if (this.isChunkLoaded(i >> 4, j >> 4)) {
                  k = this.getChunkAt(i >> 4, j >> 4).getHighestBlock(heightmap_type, i & 15, j & 15) + 1;
              } else {
@@ -228,7 +233,7 @@ index 34993cb34..0c24add74 100644
          return k;
      }
 diff --git a/src/main/java/net/minecraft/server/WorldBorder.java b/src/main/java/net/minecraft/server/WorldBorder.java
-index 0d10d317c..fe06dfcd2 100644
+index 0d10d317c..e6706bc3e 100644
 --- a/src/main/java/net/minecraft/server/WorldBorder.java
 +++ b/src/main/java/net/minecraft/server/WorldBorder.java
 @@ -14,9 +14,9 @@ public class WorldBorder {
@@ -238,14 +243,14 @@ index 0d10d317c..fe06dfcd2 100644
 -    private int i = 29999984;
 -    private WorldBorder.a j = new WorldBorder.d(6.0E7D);
 -    public static final WorldBorder.c c = new WorldBorder.c(0.0D, 0.0D, 0.2D, 5.0D, 5, 15, 6.0E7D, 0L, 0.0D);
-+    private int i = me.titaniumtown.misc.biggestInt; // Titanium - Remove world border limitations
-+    private WorldBorder.a j = new WorldBorder.d(me.titaniumtown.misc.WborderSize); // Titanium - Remove world border limitations
-+    public static final WorldBorder.c c = new WorldBorder.c(0.0D, 0.0D, 0.2D, 5.0D, 5, 15, me.titaniumtown.misc.WborderSize, 0L, 0.0D); // Titanium - Remove world border limitations
++    private int i = me.titaniumtown.TitaniumConfig.biggestInt; // Titanium - Remove world border limitations
++    private WorldBorder.a j = new WorldBorder.d(me.titaniumtown.TitaniumConfig.WborderSize); // Titanium - Remove world border limitations
++    public static final WorldBorder.c c = new WorldBorder.c(0.0D, 0.0D, 0.2D, 5.0D, 5, 15, me.titaniumtown.TitaniumConfig.WborderSize, 0L, 0.0D); // Titanium - Remove world border limitations
      public WorldServer world; // CraftBukkit
  
      public WorldBorder() {}
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index b3bc2d908..4af1d3b61 100644
+index c8a03b1b7..491c91fa4 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -652,7 +652,7 @@ public final class CraftServer implements Server {
@@ -253,12 +258,12 @@ index b3bc2d908..4af1d3b61 100644
      @Override
      public int getMaxWorldSize() {
 -        return this.getProperties().maxWorldSize;
-+        return me.titaniumtown.misc.biggestInt; // Titanium - Remove world border limitations
++        return me.titaniumtown.TitaniumConfig.biggestInt; // Titanium - Remove world border limitations
      }
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorldBorder.java b/src/main/java/org/bukkit/craftbukkit/CraftWorldBorder.java
-index 044d46ac8..316d04423 100644
+index 044d46ac8..bf9e7bf53 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorldBorder.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorldBorder.java
 @@ -18,7 +18,7 @@ public class CraftWorldBorder implements WorldBorder {
@@ -266,7 +271,7 @@ index 044d46ac8..316d04423 100644
      @Override
      public void reset() {
 -        this.setSize(6.0E7D);
-+        this.setSize(me.titaniumtown.misc.WborderSize); // Titanium - Remove world border limitations
++        this.setSize(me.titaniumtown.TitaniumConfig.WborderSize); // Titanium - Remove world border limitations
          this.setDamageAmount(0.2D);
          this.setDamageBuffer(5.0D);
          this.setWarningDistance(5);
@@ -275,7 +280,7 @@ index 044d46ac8..316d04423 100644
      public void setSize(double newSize, long time) {
          // PAIL: TODO: Magic Values
 -        newSize = Math.min(6.0E7D, Math.max(1.0D, newSize));
-+        newSize = Math.min(me.titaniumtown.misc.WborderSize, Math.max(1.0D, newSize)); // Titanium - Remove world border limitations
++        newSize = Math.min(me.titaniumtown.TitaniumConfig.WborderSize, Math.max(1.0D, newSize)); // Titanium - Remove world border limitations
          time = Math.min(9223372036854775L, Math.max(0L, time));
  
          if (time > 0L) {
@@ -285,8 +290,8 @@ index 044d46ac8..316d04423 100644
          // PAIL: TODO: Magic Values
 -        x = Math.min(3.0E7D, Math.max(-3.0E7D, x));
 -        z = Math.min(3.0E7D, Math.max(-3.0E7D, z));
-+        x = Math.min(me.titaniumtown.misc.WborderSize, Math.max(-me.titaniumtown.misc.WborderSize, x)); // Titanium - Remove world border limitations
-+        z = Math.min(me.titaniumtown.misc.WborderSize, Math.max(-me.titaniumtown.misc.WborderSize, z)); // Titanium - Remove world border limitations
++        x = Math.min(me.titaniumtown.TitaniumConfig.WborderSize, Math.max(-me.titaniumtown.TitaniumConfig.WborderSize, x)); // Titanium - Remove world border limitations
++        z = Math.min(me.titaniumtown.TitaniumConfig.WborderSize, Math.max(-me.titaniumtown.TitaniumConfig.WborderSize, z)); // Titanium - Remove world border limitations
  
          this.handle.setCenter(x, z);
      }

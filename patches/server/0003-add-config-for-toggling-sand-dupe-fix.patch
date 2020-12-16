@@ -1,23 +1,25 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 22:45:23 -0500
-Subject: [PATCH] allow toggle for sand duper
+Date: Wed, 16 Dec 2020 10:59:57 -0500
+Subject: [PATCH] add config for toggling sand dupe fix
 
 
-diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
-index 64d4fe56e..347d0fdd2 100644
---- a/src/main/java/me/titaniumtown/misc.java
-+++ b/src/main/java/me/titaniumtown/misc.java
-@@ -20,5 +20,5 @@ import java.util.List;
- import java.util.Map;
+diff --git a/src/main/java/me/titaniumtown/TitaniumConfig.java b/src/main/java/me/titaniumtown/TitaniumConfig.java
+index 9bb47ab46..663f033bd 100644
+--- a/src/main/java/me/titaniumtown/TitaniumConfig.java
++++ b/src/main/java/me/titaniumtown/TitaniumConfig.java
+@@ -153,4 +153,9 @@ public class TitaniumConfig {
+         return config.getString(path, config.getString(path));
+     }
  
- public class misc {
--    
-+    public static boolean allowSandDupe = true;
++    public static boolean allowSandDupe = false;
++    private static void experimental() {
++        allowSandDupe = getBoolean("settings.experimental.allow-sand-dupe", allowSandDupe);
++    }
++
  }
-\ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/EntityFallingBlock.java b/src/main/java/net/minecraft/server/EntityFallingBlock.java
-index 76aac1b13..a90e76e80 100644
+index 76aac1b13..7236d5112 100644
 --- a/src/main/java/net/minecraft/server/EntityFallingBlock.java
 +++ b/src/main/java/net/minecraft/server/EntityFallingBlock.java
 @@ -64,8 +64,8 @@ public class EntityFallingBlock extends Entity {
@@ -27,7 +29,7 @@ index 76aac1b13..a90e76e80 100644
 -        // Paper start - fix sand duping
 -        if (this.dead) {
 +        // Paper start - fix sand duping // Titanium - add config option for sand duping
-+        if (this.dead && !me.titaniumtown.misc.allowSandDupe) {
++        if (this.dead && !me.titaniumtown.TitaniumConfig.allowSandDupe) {
              return;
          }
          // Paper end - fix sand duping
@@ -38,7 +40,7 @@ index 76aac1b13..a90e76e80 100644
 -            // Paper start - fix sand duping
 -            if (this.dead) {
 +            // Paper start - fix sand duping // Titanium - add config option for sand duping
-+            if (this.dead && !me.titaniumtown.misc.allowSandDupe) {
++            if (this.dead && !me.titaniumtown.TitaniumConfig.allowSandDupe) {
                  return;
              }
              // Paper end - fix sand duping
