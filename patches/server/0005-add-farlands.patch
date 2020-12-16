@@ -1,0 +1,36 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Wed, 16 Dec 2020 00:57:08 -0500
+Subject: [PATCH] add farlands
+
+
+diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
+index 224bff554..83206e4da 100644
+--- a/src/main/java/me/titaniumtown/misc.java
++++ b/src/main/java/me/titaniumtown/misc.java
+@@ -31,4 +31,6 @@ public class misc {
+     public static double WborderSize = 4.294967294E9D;
+     public static int biggestInt = 2147483647;
+     public static float biggestFloat = 4294967294F;
++
++    public static boolean farlands = true;
+ }
+\ No newline at end of file
+diff --git a/src/main/java/net/minecraft/server/NoiseGeneratorOctaves.java b/src/main/java/net/minecraft/server/NoiseGeneratorOctaves.java
+index 1b7454609..8d13fc44c 100644
+--- a/src/main/java/net/minecraft/server/NoiseGeneratorOctaves.java
++++ b/src/main/java/net/minecraft/server/NoiseGeneratorOctaves.java
+@@ -142,7 +142,12 @@ public class NoiseGeneratorOctaves implements NoiseGenerator {
+     }
+ 
+     public static double a(double d0) {
+-        return d0 - (double) MathHelper.d(d0 / 3.3554432E7D + 0.5D) * 3.3554432E7D;
++        if (me.titaniumtown.misc.farlands) {
++            return d0;
++        } else {
++            return d0 - (double) MathHelper.d(d0 / 3.3554432E7D + 0.5D) * 3.3554432E7D;
++        }
++        
+     }
+ 
+     @Override

@@ -1,14 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 22:50:20 -0500
+Date: Tue, 15 Dec 2020 23:49:09 -0500
 Subject: [PATCH] Configurable max world size
 
 
 diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
-index 347d0fdd2..d3b08a917 100644
+index 347d0fdd2..224bff554 100644
 --- a/src/main/java/me/titaniumtown/misc.java
 +++ b/src/main/java/me/titaniumtown/misc.java
-@@ -21,4 +21,12 @@ import java.util.Map;
+@@ -21,4 +21,14 @@ import java.util.Map;
  
  public class misc {
      public static boolean allowSandDupe = true;
@@ -16,10 +16,12 @@ index 347d0fdd2..d3b08a917 100644
 +    // vanilla
 +    // public static double WborderSize = 6.0E7D;
 +    // public static int biggestInt = 29999984; 
-+    
++    // public static float biggestFloat = 6.0E7F;
++
 +    // max
 +    public static double WborderSize = 4.294967294E9D;
 +    public static int biggestInt = 2147483647;
++    public static float biggestFloat = 4294967294F;
  }
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BaseBlockPosition.java b/src/main/java/net/minecraft/server/BaseBlockPosition.java
@@ -79,9 +81,23 @@ index ddc978279..c343cffab 100644
              return;
          }
 diff --git a/src/main/java/net/minecraft/server/CommandWorldBorder.java b/src/main/java/net/minecraft/server/CommandWorldBorder.java
-index 11ad785b2..c01bcb626 100644
+index 11ad785b2..169910053 100644
 --- a/src/main/java/net/minecraft/server/CommandWorldBorder.java
 +++ b/src/main/java/net/minecraft/server/CommandWorldBorder.java
+@@ -23,11 +23,11 @@ public class CommandWorldBorder {
+     public static void a(com.mojang.brigadier.CommandDispatcher<CommandListenerWrapper> com_mojang_brigadier_commanddispatcher) {
+         com_mojang_brigadier_commanddispatcher.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandDispatcher.a("worldborder").requires((commandlistenerwrapper) -> {
+             return commandlistenerwrapper.hasPermission(2);
+-        })).then(CommandDispatcher.a("add").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-6.0E7F, 6.0E7F)).executes((commandcontext) -> {
++        })).then(CommandDispatcher.a("add").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-me.titaniumtown.misc.biggestFloat, me.titaniumtown.misc.biggestFloat)).executes((commandcontext) -> {
+             return a((CommandListenerWrapper) commandcontext.getSource(), ((CommandListenerWrapper) commandcontext.getSource()).getWorld().getWorldBorder().getSize() + (double) FloatArgumentType.getFloat(commandcontext, "distance"), 0L);
+         })).then(CommandDispatcher.a("time", (ArgumentType) IntegerArgumentType.integer(0)).executes((commandcontext) -> {
+             return a((CommandListenerWrapper) commandcontext.getSource(), ((CommandListenerWrapper) commandcontext.getSource()).getWorld().getWorldBorder().getSize() + (double) FloatArgumentType.getFloat(commandcontext, "distance"), ((CommandListenerWrapper) commandcontext.getSource()).getWorld().getWorldBorder().j() + (long) IntegerArgumentType.getInteger(commandcontext, "time") * 1000L);
+-        }))))).then(CommandDispatcher.a("set").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-6.0E7F, 6.0E7F)).executes((commandcontext) -> {
++        }))))).then(CommandDispatcher.a("set").then(((RequiredArgumentBuilder) CommandDispatcher.a("distance", (ArgumentType) FloatArgumentType.floatArg(-me.titaniumtown.misc.biggestFloat, me.titaniumtown.misc.biggestFloat)).executes((commandcontext) -> {
+             return a((CommandListenerWrapper) commandcontext.getSource(), (double) FloatArgumentType.getFloat(commandcontext, "distance"), 0L);
+         })).then(CommandDispatcher.a("time", (ArgumentType) IntegerArgumentType.integer(0)).executes((commandcontext) -> {
+             return a((CommandListenerWrapper) commandcontext.getSource(), (double) FloatArgumentType.getFloat(commandcontext, "distance"), (long) IntegerArgumentType.getInteger(commandcontext, "time") * 1000L);
 @@ -121,7 +121,7 @@ public class CommandWorldBorder {
              throw CommandWorldBorder.b.create();
          } else if (d0 < 1.0D) {
