@@ -1,18 +1,20 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 20:42:22 -0500
-Subject: [PATCH] allow toggle for sand dupe
+Date: Tue, 15 Dec 2020 22:45:23 -0500
+Subject: [PATCH] allow toggle for sand duper
 
 
 diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
-index e8048e0bb..aad757414 100644
+index 64d4fe56e..347d0fdd2 100644
 --- a/src/main/java/me/titaniumtown/misc.java
 +++ b/src/main/java/me/titaniumtown/misc.java
-@@ -19,3 +19,4 @@ import java.util.HashMap;
- import java.util.List;
+@@ -20,5 +20,5 @@ import java.util.List;
  import java.util.Map;
  
-+public static boolean allowSandDupe = true;
+ public class misc {
+-    
++    public static boolean allowSandDupe = true;
+ }
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/EntityFallingBlock.java b/src/main/java/net/minecraft/server/EntityFallingBlock.java
 index 76aac1b13..a90e76e80 100644

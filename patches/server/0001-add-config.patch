@@ -1,15 +1,15 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 15 Dec 2020 20:40:09 -0500
+Date: Tue, 15 Dec 2020 22:42:50 -0500
 Subject: [PATCH] add config
 
 
 diff --git a/src/main/java/me/titaniumtown/misc.java b/src/main/java/me/titaniumtown/misc.java
 new file mode 100644
-index 000000000..e8048e0bb
+index 000000000..64d4fe56e
 --- /dev/null
 +++ b/src/main/java/me/titaniumtown/misc.java
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,24 @@
 +package me.titaniumtown;
 + 
 +import co.aikar.timings.TimingsManager;
@@ -31,41 +31,7 @@ index 000000000..e8048e0bb
 +import java.util.List;
 +import java.util.Map;
 +
-diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index 3ee8d31c4..b66bced51 100644
---- a/src/main/java/net/minecraft/server/DedicatedServer.java
-+++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -176,6 +176,14 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
-         }
-         net.pl3x.purpur.PurpurConfig.registerCommands();
-         // Purpur end
-+        // Titanium start
-+        try {
-+            me.titaniumtown.misc.init((java.io.File) options.valueOf("titanium-settings"));
-+        } catch (Exception e) {
-+            DedicatedServer.LOGGER.error("Unable to load server configuration", e);
-+            return false;
-+        }
-+        // Titanium end
-         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
-         // Paper end
-         com.tuinity.tuinity.config.TuinityConfig.init((java.io.File) options.valueOf("tuinity-settings")); // Tuinity - Server Config
-diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index a5394b04a..0f90e894e 100644
---- a/src/main/java/org/bukkit/craftbukkit/Main.java
-+++ b/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -154,6 +154,14 @@ public class Main {
-                         .describedAs("Yml file");
-                 // Purpur end
- 
-+                // Titanium Start
-+                acceptsAll(asList("titanium", "titanium-settings"), "File for titanium settings")
-+                        .withRequiredArg()
-+                        .ofType(File.class)
-+                        .defaultsTo(new File("titanium.yml"))
-+                        .describedAs("Yml file");
-+                // Titanium end
-+
-                 // Paper start
-                 acceptsAll(asList("server-name"), "Name of the server")
-                         .withRequiredArg()
++public class misc {
++    
++}
+\ No newline at end of file
