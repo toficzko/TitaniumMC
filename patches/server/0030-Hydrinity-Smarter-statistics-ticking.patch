@@ -1,0 +1,66 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mykyta Komarnytskyy <nkomarn@hotmail.com>
+Date: Sat, 24 Oct 2020 21:03:53 -0500
+Subject: [PATCH] (Hydrinity) Smarter statistics ticking
+
+In vanilla, statistics that count time spent for an action (i.e. time played or sneak time) are incremented every tick. This is retarded. With this patch and a configured interval of 20, the statistics are only ticked every 20th tick and are incremented by 20 ticks at a time. This means a lot less ticking with the same accurate counting.
+
+With an interval of 20, this patch saves roughly 3ms per tick on a server w/ 80 players online.
+
+This patch was created for the Hydrinity project <https://github.com/Hydrinity/Hydrinity> by Mykyta Komarnytskyy <nkomarn@hotmail.com> under the MIT license.
+
+diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
+index a72ce4ea5a45fce35a47fd5f9c21b9500adbe265..47dff67ff013a1d8eec6bb7d673977ad479cab5b 100644
+--- a/src/main/java/net/minecraft/server/EntityHuman.java
++++ b/src/main/java/net/minecraft/server/EntityHuman.java
+@@ -174,18 +174,25 @@ public abstract class EntityHuman extends EntityLiving {
+         this.p();
+         if (!this.world.isClientSide) {
+             this.foodData.a(this);
+-            this.a(StatisticList.PLAY_ONE_MINUTE);
+-            if (this.isAlive()) {
+-                this.a(StatisticList.TIME_SINCE_DEATH);
+-            }
++            // Titanium start - Implement smarter statistics tracking from Hydrinity
++            // this.a(StatisticList.PLAY_ONE_MINUTE);
++            int interval = 20;
++            if (ticksLived % interval == 0) {
++                this.a(StatisticList.PLAY_ONE_MINUTE, interval);
++            
++                if (this.isAlive()) {
++                    this.a(StatisticList.TIME_SINCE_DEATH, interval);
++                }
+ 
+-            if (this.bx()) {
+-                this.a(StatisticList.SNEAK_TIME);
+-            }
++                if (this.bx()) {
++                    this.a(StatisticList.SNEAK_TIME, interval);
++                }
+ 
+-            if (!this.isSleeping()) {
+-                this.a(StatisticList.TIME_SINCE_REST);
++                if (!this.isSleeping()) {
++                    this.a(StatisticList.TIME_SINCE_REST, interval);
++                }
+             }
++            // Titanium end
+         }
+ 
+         int i = 29999999;
+diff --git a/src/main/java/net/pl3x/purpur/PurpurConfig.java b/src/main/java/net/pl3x/purpur/PurpurConfig.java
+index c44bc2249dc9dfcfc923c4ea005ed5a0744c5cba..d0a0f9e60d3ac8574603de765f9eae13d13a9a56 100644
+--- a/src/main/java/net/pl3x/purpur/PurpurConfig.java
++++ b/src/main/java/net/pl3x/purpur/PurpurConfig.java
+@@ -257,6 +257,11 @@ public class PurpurConfig {
+     private static void disableMushroomBlockUpdates() {
+         disableMushroomBlockUpdates= getBoolean("settings.blocks.disable-mushroom-updates", disableMushroomBlockUpdates);
+     }
++    
++    public static int playerTimeStatisticsInterval = 1;
++    private static void intervals() {
++        playerTimeStatisticsInterval = getInt("settings.intervals.player-time-statistics", playerTimeStatisticsInterval);
++    }
+ 
+     public static boolean loggerSuppressInitLegacyMaterialError = false;
+     public static boolean loggerSuppressIgnoredAdvancementWarnings = false;

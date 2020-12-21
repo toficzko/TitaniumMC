@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: foss-mc <69294560+foss-mc@users.noreply.github.com>
+Date: Sat, 12 Sep 2020 11:12:23 +0800
+Subject: [PATCH] (Yatopia) Shutdown Bootstrap thread pool
+
+
+diff --git a/src/main/java/net/minecraft/server/DataConverterRegistry.java b/src/main/java/net/minecraft/server/DataConverterRegistry.java
+index 48e31e9142ffeb2725af6b1f483de67410e25694..b149e32aac86ce2f7521958fa7394e4f5b852174 100644
+--- a/src/main/java/net/minecraft/server/DataConverterRegistry.java
++++ b/src/main/java/net/minecraft/server/DataConverterRegistry.java
+@@ -15,14 +15,16 @@ public class DataConverterRegistry {
+ 
+     private static final BiFunction<Integer, Schema, Schema> a = Schema::new;
+     private static final BiFunction<Integer, Schema, Schema> b = DataConverterSchemaNamed::new;
+-    private static final DataFixer c = b();
+-
+-    private static DataFixer b() {
++    // Yatopia start
++    private static final DataFixer c;
++    static {
+         DataFixerBuilder datafixerbuilder = new DataFixerBuilder(SharedConstants.getGameVersion().getWorldVersion());
+ 
+         a(datafixerbuilder);
+-        return datafixerbuilder.build(SystemUtils.e());
++        c = datafixerbuilder.build(SystemUtils.d);
++        SystemUtils.d.shutdown();
+     }
++    // Yatopia end
+ 
+     public static DataFixer getDataFixer() { return a(); } // Paper - OBFHELPER
+     public static DataFixer a() {
+diff --git a/src/main/java/net/minecraft/server/SystemUtils.java b/src/main/java/net/minecraft/server/SystemUtils.java
+index 916a6a1fc1ccc73e4fb974ad77310d16fd8bd7e6..61d399077f87fc1f198811ee31fc779b6f0ecfa9 100644
+--- a/src/main/java/net/minecraft/server/SystemUtils.java
++++ b/src/main/java/net/minecraft/server/SystemUtils.java
+@@ -48,7 +48,7 @@ import org.apache.logging.log4j.Logger;
+ public class SystemUtils {
+ 
+     private static final AtomicInteger c = new AtomicInteger(1);
+-    private static final ExecutorService d = a("Bootstrap", -2); // Paper - add -2 priority
++    public static final ExecutorService d = a("Bootstrap", -2); // Paper - add -2 priority // Yatopia - private -> public
+     private static final ExecutorService e = a("Main", -1); // Paper - add -1 priority
+     private static final ExecutorService f = n();
+     public static LongSupplier a = System::nanoTime;

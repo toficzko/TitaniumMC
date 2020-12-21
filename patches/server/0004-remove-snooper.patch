@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Wed, 2 Dec 2020 14:56:35 -0500
+Subject: [PATCH] remove snooper
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index d39b04e2a3d87be04625d85f42f3ab8263e91747..f507f14464da35d272e96752fa73e83b5892b74e 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1322,14 +1322,6 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         //} // Paper
+ 
+         this.methodProfiler.enter("snooper");
+-        if (((DedicatedServer) this).getDedicatedServerProperties().snooperEnabled && !this.snooper.d() && this.ticks > 100) { // Spigot
+-            this.snooper.a();
+-        }
+-
+-        if (((DedicatedServer) this).getDedicatedServerProperties().snooperEnabled && this.ticks % 6000 == 0) { // Spigot
+-            this.snooper.b();
+-        }
+-
+         this.methodProfiler.exit();
+ 
+         // Paper start - move executeAll() into full server tick timing

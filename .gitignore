@@ -52,11 +52,9 @@ manifest.mf
 run/
 docs/build/
 
-Purpur-Server
-Purpur-upstream-Server
-Purpur-forks-Server
-Purpur-API
+Titanium-Server
+Titanium-API
 mc-dev
-purpurclip.jar
+titaniumclip.jar
 *clip.jar
 last-paper

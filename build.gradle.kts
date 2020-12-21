@@ -18,7 +18,7 @@ toothpick {
     upstream = "Purpur"
     upstreamBranch = "origin/ver/1.16.4"
 
-    paperclipName = "launcher-airplanelite.jar"
+    paperclipName = "titaniumclip.jar"
 
     server {
         project = project(":$forkNameLowercase-server")

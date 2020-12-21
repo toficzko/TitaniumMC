@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Thu, 17 Dec 2020 15:58:38 -0500
+Subject: [PATCH] server.properties tweaks
+
+
+diff --git a/src/main/java/net/minecraft/server/DedicatedServerProperties.java b/src/main/java/net/minecraft/server/DedicatedServerProperties.java
+index 38f16bfab23b03e26ed72334f556f564f7c5c3a8..a522e1578f5e722373b8bf726c2334355a5ef442 100644
+--- a/src/main/java/net/minecraft/server/DedicatedServerProperties.java
++++ b/src/main/java/net/minecraft/server/DedicatedServerProperties.java
+@@ -87,8 +87,8 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
+ 
+         this.snooperEnabled = false;
+         this.useNativeTransport = this.getBoolean("use-native-transport", true);
+-        this.enableCommandBlock = this.getBoolean("enable-command-block", false);
+-        this.spawnProtection = this.getInt("spawn-protection", 16);
++        this.enableCommandBlock = this.getBoolean("enable-command-block", true); // Titanium - server.properties tweaks
++        this.spawnProtection = this.getInt("spawn-protection", 0); // Titanium - server.properties tweaks
+         this.opPermissionLevel = this.getInt("op-permission-level", 4);
+         this.functionPermissionLevel = this.getInt("function-permission-level", 2);
+         this.maxTickTime = this.getLong("max-tick-time", TimeUnit.MINUTES.toMillis(1L));
