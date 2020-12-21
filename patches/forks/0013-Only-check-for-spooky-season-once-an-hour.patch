@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Paul Sauve <paul@technove.co>
 Date: Sun, 13 Dec 2020 17:53:08 -0600
-Subject: [PATCH] (AirplaneLite) Only check for spooky season once an hour
+Subject: [PATCH] Only check for spooky season once an hour
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityBat.java b/src/main/java/net/minecraft/server/EntityBat.java

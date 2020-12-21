@@ -86,10 +86,10 @@ index 6891e61bc..37172d3de 100644
          this.am = EntityFishingHook.HookState.FLYING;
          this.Y = true;
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index cc6a54e06..36b879ef1 100644
+index cee95fa97..5d99d2139 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
-@@ -189,7 +189,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+@@ -191,7 +191,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
              long l = k * k;
              int i1 = l > 2147483647L ? Integer.MAX_VALUE : (int) l;
              int j1 = this.u(i1);
@@ -98,7 +98,7 @@ index cc6a54e06..36b879ef1 100644
  
              for (int l1 = 0; l1 < i1; ++l1) {
                  int i2 = (k1 + j1 * l1) % i1;
-@@ -227,7 +227,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+@@ -229,7 +229,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
              long l = k * k;
              int i1 = l > 2147483647L ? Integer.MAX_VALUE : (int) l;
              int j1 = this.u(i1);
