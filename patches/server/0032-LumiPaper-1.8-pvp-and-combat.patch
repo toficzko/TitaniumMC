@@ -1,0 +1,215 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Mon, 21 Dec 2020 21:55:12 -0500
+Subject: [PATCH] (LumiPaper) 1.8 pvp and combat
+
+
+diff --git a/src/main/java/me/titaniumtown/TitaniumConfig.java b/src/main/java/me/titaniumtown/TitaniumConfig.java
+index 5b4acca15aeacab34d5fe946aa7d0b4aa2f3c6ea..5bd706ab08efde4fa0e953cdb9caae164ff042dc 100644
+--- a/src/main/java/me/titaniumtown/TitaniumConfig.java
++++ b/src/main/java/me/titaniumtown/TitaniumConfig.java
+@@ -175,5 +175,17 @@ public class TitaniumConfig {
+     public static double replace1 = ((double)biggestInt)-112.0D; // replacement for 2.9999872E7D
+     public static double replace2 = WborderSize/2; // replacement for 3.0E7D
+     public static int replace3 = biggestInt + 16; // replacement for 30000000
+-
++    
++    // Titanium start - old combat options
++    public static boolean disableSweeping;
++    public static boolean oldToolDamage;
++    public static boolean oldKnockback;
++    public static boolean disableNewHitSounds;
++    private static void combatSettings() {
++        disableSweeping = getBoolean("settings.combat.disable-sweeping", disableSweeping);
++        oldToolDamage = getBoolean("settings.combat.old-tool-damage", oldToolDamage);
++        oldKnockback = getBoolean("settings.combat.old-knockback", oldKnockback);
++        disableNewHitSounds = getBoolean("settings.combat.disable-new-hit-sounds", disableNewHitSounds);
++    }
++    // Titanium end
+ }
+diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
+index 35f0925b8ea9e6187766d1d3d9fd92c901a0cc5a..bbc8d7e15c0f06b352b46cc0d01868cab4f183bf 100644
+--- a/src/main/java/net/minecraft/server/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/DedicatedServer.java
+@@ -187,6 +187,12 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+         // Titanium end - Add config
+         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
+         // Paper end
++        // Titanium start - old combat options
++        if (me.titaniumtown.TitaniumConfig.oldToolDamage) {
++            net.minecraft.server.Items.setOldToolDamageValues();
++        }
++        // Titanium end
++
+         com.tuinity.tuinity.config.TuinityConfig.init((java.io.File) options.valueOf("tuinity-settings")); // Tuinity - Server Config
+ 
+         this.setPVP(dedicatedserverproperties.pvp);
+diff --git a/src/main/java/net/minecraft/server/EnchantmentWeaponDamage.java b/src/main/java/net/minecraft/server/EnchantmentWeaponDamage.java
+index 4571cdf0217d840a32427efeeb5d8b993bdcf326..f33ba374e8d1cbbfb174862d471f6687a968eed6 100644
+--- a/src/main/java/net/minecraft/server/EnchantmentWeaponDamage.java
++++ b/src/main/java/net/minecraft/server/EnchantmentWeaponDamage.java
+@@ -30,7 +30,12 @@ public class EnchantmentWeaponDamage extends Enchantment {
+ 
+     @Override
+     public float a(int i, EnumMonsterType enummonstertype) {
+-        return this.a == 0 ? 1.0F + (float) Math.max(0, i - 1) * 0.5F : (this.a == 1 && enummonstertype == EnumMonsterType.UNDEAD ? (float) i * 2.5F : (this.a == 2 && enummonstertype == EnumMonsterType.ARTHROPOD ? (float) i * 2.5F : 0.0F));
++        // Titanium start - old tool damage
++        if (me.titaniumtown.TitaniumConfig.oldToolDamage) {
++            return this.a == 0 ? 1.0F + (float) Math.max(0, i - 1) * 0.5F : (this.a == 1 && enummonstertype == EnumMonsterType.UNDEAD ? (float) i * 2.5F : (this.a == 2 && enummonstertype == EnumMonsterType.ARTHROPOD ? (float) i * 2.5F : 0.0F));
++        }
++        // Titanium end
++        return this.a == 0 ? i * 1.25F : (this.a == 1 && enummonstertype == EnumMonsterType.UNDEAD ? (float) i * 2.5F : (this.a == 2 && enummonstertype == EnumMonsterType.ARTHROPOD ? (float) i * 2.5F : 0.0F));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
+index 47dff67ff013a1d8eec6bb7d673977ad479cab5b..84c6ce8d559391ba9d4a880e10647d97b20e3677 100644
+--- a/src/main/java/net/minecraft/server/EntityHuman.java
++++ b/src/main/java/net/minecraft/server/EntityHuman.java
+@@ -1058,6 +1058,7 @@ public abstract class EntityHuman extends EntityLiving {
+                     int i = b0 + EnchantmentManager.b((EntityLiving) this);
+ 
+                     if (this.isSprinting() && flag) {
++                        if (!me.titaniumtown.TitaniumConfig.disableNewHitSounds) // Titanium - disable new hit sound
+                         sendSoundEffect(this, this.locX(), this.locY(), this.locZ(), SoundEffects.ENTITY_PLAYER_ATTACK_KNOCKBACK, this.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
+                         ++i;
+                         flag1 = true;
+@@ -1076,7 +1077,7 @@ public abstract class EntityHuman extends EntityLiving {
+                     boolean flag3 = false;
+                     double d0 = (double) (this.A - this.z);
+ 
+-                    if (flag && !flag2 && !flag1 && this.onGround && d0 < (double) this.dN()) {
++                    if (!me.titaniumtown.TitaniumConfig.disableSweeping && flag && !flag2 && !flag1 && this.onGround && d0 < (double) this.dM()) { // Titanium - disable sweeping
+                         ItemStack itemstack = this.b(EnumHand.MAIN_HAND);
+ 
+                         if (itemstack.getItem() instanceof ItemSword) {
+@@ -1228,6 +1229,7 @@ public abstract class EntityHuman extends EntityLiving {
+ 
+                         this.applyExhaustion(world.spigotConfig.combatExhaustion); // Spigot - Change to use configurable value
+                     } else {
++                        if (!me.titaniumtown.TitaniumConfig.disableNewHitSounds) // Titanium - disable new hit sound
+                         sendSoundEffect(this, this.locX(), this.locY(), this.locZ(), SoundEffects.ENTITY_PLAYER_ATTACK_NODAMAGE, this.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
+                         if (flag4) {
+                             entity.extinguish();
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index de42ea7296120f0b46c6ab49766a2d7d536a960b..27cbee903a92a5f0ee07237f4b4633291433e9fd 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -1587,7 +1587,13 @@ public abstract class EntityLiving extends Entity {
+             Vec3D vec3d = this.getMot();
+             Vec3D vec3d1 = (new Vec3D(d0, 0.0D, d1)).d().a((double) f);
+ 
+-            this.setMot(vec3d.x / 2.0D - vec3d1.x, this.onGround ? Math.min(0.4D, vec3d.y / 2.0D + (double) f) : vec3d.y, vec3d.z / 2.0D - vec3d1.z);
++            // Titanium start - old knockback
++            if (me.titaniumtown.TitaniumConfig.oldKnockback) {
++                this.setMot(vec3d.x / 2.0D - vec3d1.x, Math.min(0.4D, vec3d.y / 2.0D + (double) f), vec3d.z / 2.0D - vec3d1.z);
++            } else {
++                this.setMot(vec3d.x / 2.0D - vec3d1.x, this.onGround ? Math.min(0.36D, vec3d.y / 2.0D + (double) f) : vec3d.y, vec3d.z / 2.0D - vec3d1.z);
++            }
++            // Titanium end
+ 
+             // Paper start - call EntityKnockbackByEntityEvent
+             Vec3D currentMot = this.getMot();
+diff --git a/src/main/java/net/minecraft/server/EnumToolMaterial.java b/src/main/java/net/minecraft/server/EnumToolMaterial.java
+index af74bd2c04cc391076717cd4da71e36fd0f86eb6..45a0bb10504df087b461a0552df9ec3afbdc9792 100644
+--- a/src/main/java/net/minecraft/server/EnumToolMaterial.java
++++ b/src/main/java/net/minecraft/server/EnumToolMaterial.java
+@@ -21,7 +21,7 @@ public enum EnumToolMaterial implements ToolMaterial {
+     private final int g;
+     private final int h;
+     private final float i;
+-    private final float j;
++    private final float j; public float getExtraDamage() {return j;} // Titanium
+     private final int k;
+     private final LazyInitVar<RecipeItemStack> l;
+ 
+diff --git a/src/main/java/net/minecraft/server/ItemSword.java b/src/main/java/net/minecraft/server/ItemSword.java
+index 3e7d6fc0e37b4d08e960d406e3756aa38bdbba18..d12e27821d7333a686a3d42a5268d9051a3846eb 100644
+--- a/src/main/java/net/minecraft/server/ItemSword.java
++++ b/src/main/java/net/minecraft/server/ItemSword.java
+@@ -6,7 +6,7 @@ import com.google.common.collect.Multimap;
+ 
+ public class ItemSword extends ItemToolMaterial implements ItemVanishable {
+ 
+-    private final float a;
++    private float a; public void setDamage(float damage) {this.a = damage;} // Titanium
+     private final Multimap<AttributeBase, AttributeModifier> b;
+ 
+     public ItemSword(ToolMaterial toolmaterial, int i, float f, Item.Info item_info) {
+diff --git a/src/main/java/net/minecraft/server/ItemTool.java b/src/main/java/net/minecraft/server/ItemTool.java
+index f62734285def730272b49e1c1223e56baae1c342..e05b40d8404d1d2e1d7c561ac659007d493c89af 100644
+--- a/src/main/java/net/minecraft/server/ItemTool.java
++++ b/src/main/java/net/minecraft/server/ItemTool.java
+@@ -9,7 +9,7 @@ public class ItemTool extends ItemToolMaterial implements ItemVanishable {
+ 
+     private final Set<Block> a;
+     protected final float b;
+-    private final float c;
++    private float c; public void setDamage(float damage) {this.c = damage;} // Titanium
+     private final Multimap<AttributeBase, AttributeModifier> d;
+ 
+     protected ItemTool(float f, float f1, ToolMaterial toolmaterial, Set<Block> set, Item.Info item_info) {
+diff --git a/src/main/java/net/minecraft/server/Items.java b/src/main/java/net/minecraft/server/Items.java
+index ea6b61c9b88f33d29f7266d7614c80372db31b72..f03b411a63dcb18468432a83353b65109da3cf6a 100644
+--- a/src/main/java/net/minecraft/server/Items.java
++++ b/src/main/java/net/minecraft/server/Items.java
+@@ -1006,4 +1006,43 @@ public class Items {
+ 
+         return (Item) IRegistry.a((IRegistry) IRegistry.ITEM, minecraftkey, (Object) item);
+     }
++    // Titanium start - old tool damage
++    public static void setOldToolDamageValues() {
++        setToolDamage(Items.WOODEN_SHOVEL, 1, EnumToolMaterial.WOOD);
++        setToolDamage(Items.STONE_SHOVEL, 1, EnumToolMaterial.STONE);
++        setToolDamage(Items.IRON_SHOVEL, 1, EnumToolMaterial.IRON);
++        setToolDamage(Items.GOLDEN_SHOVEL, 1, EnumToolMaterial.GOLD);
++        setToolDamage(Items.DIAMOND_SHOVEL, 1, EnumToolMaterial.DIAMOND);
++        setToolDamage(Items.NETHERITE_SHOVEL, 1, EnumToolMaterial.NETHERITE);
++
++        setToolDamage(Items.WOODEN_PICKAXE, 2, EnumToolMaterial.WOOD);
++        setToolDamage(Items.STONE_PICKAXE, 2, EnumToolMaterial.STONE);
++        setToolDamage(Items.IRON_PICKAXE, 2, EnumToolMaterial.IRON);
++        setToolDamage(Items.GOLDEN_PICKAXE, 2, EnumToolMaterial.GOLD);
++        setToolDamage(Items.DIAMOND_PICKAXE, 2, EnumToolMaterial.DIAMOND);
++        setToolDamage(Items.NETHERITE_PICKAXE, 2, EnumToolMaterial.NETHERITE);
++
++        setToolDamage(Items.WOODEN_AXE, 3, EnumToolMaterial.WOOD);
++        setToolDamage(Items.STONE_AXE, 3, EnumToolMaterial.STONE);
++        setToolDamage(Items.IRON_AXE, 3, EnumToolMaterial.IRON);
++        setToolDamage(Items.GOLDEN_AXE, 3, EnumToolMaterial.GOLD);
++        setToolDamage(Items.DIAMOND_AXE, 3, EnumToolMaterial.DIAMOND);
++        setToolDamage(Items.NETHERITE_AXE, 3, EnumToolMaterial.NETHERITE);
++
++        setSwordDamage(Items.WOODEN_SWORD, 4, EnumToolMaterial.WOOD);
++        setSwordDamage(Items.STONE_SWORD, 4, EnumToolMaterial.STONE);
++        setSwordDamage(Items.IRON_SWORD, 4, EnumToolMaterial.IRON);
++        setSwordDamage(Items.GOLDEN_SWORD, 4, EnumToolMaterial.GOLD);
++        setSwordDamage(Items.DIAMOND_SWORD, 4, EnumToolMaterial.DIAMOND);
++        setSwordDamage(Items.NETHERITE_SWORD, 4, EnumToolMaterial.NETHERITE);
++    }
++
++    private static void setSwordDamage(Item item, int baseDamage, EnumToolMaterial enumToolMaterial) {
++        ((ItemSword) item).setDamage(baseDamage + enumToolMaterial.getExtraDamage());
++    }
++
++    private static void setToolDamage(Item item, int baseDamage, EnumToolMaterial enumToolMaterial) {
++        ((ItemTool) item).setDamage(baseDamage + enumToolMaterial.getExtraDamage());
++    }
++    // Titanium end
+ }
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 491c91fa4c8901c5c3ec61679508211556164890..17150d6222462d91b2bfc968bc52c03b4581cb81 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -861,6 +861,11 @@ public final class CraftServer implements Server {
+ 
+         org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
+         com.destroystokyo.paper.PaperConfig.init((File) console.options.valueOf("paper-settings")); // Paper
++        // Titanium start - old combat options
++        if (me.titaniumtown.TitaniumConfig.oldToolDamage) {
++            net.minecraft.server.Items.setOldToolDamageValues();
++        }
++        // Titanium end
+         com.tuinity.tuinity.config.TuinityConfig.init((File) console.options.valueOf("tuinity-settings")); // Tuinity - Server Config
+         net.pl3x.purpur.PurpurConfig.init((File) console.options.valueOf("purpur-settings")); // Purpur
+         me.titaniumtown.TitaniumConfig.init((File) console.options.valueOf("titanium-settings")); // Titanium - Add config
