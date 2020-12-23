@@ -12,10 +12,10 @@ As well, since the fluid collision option is set to NONE, the entire
 fluid collision system is completely unneeded, yet used anyways.
 
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 666f7ff5b9304ba81b31eb5fb6d2c1fbafa39422..de42ea7296120f0b46c6ab49766a2d7d536a960b 100644
+index 98104434539f8d95d9e1f13bc6d7f5da7f6a213c..f311fa3582eb9cfde143798b9241feea1b87f04c 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
-@@ -3039,7 +3039,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3045,7 +3045,7 @@ public abstract class EntityLiving extends Entity {
          Vec3D vec3d = new Vec3D(this.locX(), this.getHeadY(), this.locZ());
          Vec3D vec3d1 = new Vec3D(entity.locX(), entity.getHeadY(), entity.locZ());
  

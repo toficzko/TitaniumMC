@@ -471,10 +471,10 @@ index e69093b411f76ea4090789576f8fb6635bd02ca5..4a14431b198c227eb6f0f68eaac14f5c
  
      public <T> void set(DataWatcherObject<T> datawatcherobject, T t0) {
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 9423e2e7975b1401fcc57506b733bf5034e7fe36..666f7ff5b9304ba81b31eb5fb6d2c1fbafa39422 100644
+index 32cc85bdef9594df2d23b1c469d0314ce414a06a..98104434539f8d95d9e1f13bc6d7f5da7f6a213c 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
-@@ -2595,10 +2595,12 @@ public abstract class EntityLiving extends Entity {
+@@ -2601,10 +2601,12 @@ public abstract class EntityLiving extends Entity {
  
      }
  
