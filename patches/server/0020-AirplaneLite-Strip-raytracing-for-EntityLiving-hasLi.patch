@@ -12,10 +12,10 @@ As well, since the fluid collision option is set to NONE, the entire
 fluid collision system is completely unneeded, yet used anyways.
 
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 98104434539f8d95d9e1f13bc6d7f5da7f6a213c..f311fa3582eb9cfde143798b9241feea1b87f04c 100644
+index 261e71a4aac4014792e28e74af365fa07bdf5c37..0e1013916d41d29566d42cef1eabe293f788b616 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
-@@ -3045,7 +3045,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3048,7 +3048,7 @@ public abstract class EntityLiving extends Entity {
          Vec3D vec3d = new Vec3D(this.locX(), this.getHeadY(), this.locZ());
          Vec3D vec3d1 = new Vec3D(entity.locX(), entity.getHeadY(), entity.locZ());
  
@@ -46,7 +46,7 @@ index 5c3eb4fc7e5aec2ad8d0050673fc8f4d2bff6a71..ec5f41abb635fe231ee6fcdbea160804
      default MovingObjectPositionBlock rayTraceBlock(RayTrace raytrace1, BlockPosition blockposition) {
              // Paper start - Prevent raytrace from loading chunks
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index ad9b7145e64befab373a0bb2cc1f441aabc7f858..45fc38353fd5f28a1790342e6ddc1911a9358230 100644
+index ac5af9beae26324a8d8bb7442e59da05adc5316e..afe3b32313eecb9f6aacfeab4b549beb82c76210 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -332,6 +332,83 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
