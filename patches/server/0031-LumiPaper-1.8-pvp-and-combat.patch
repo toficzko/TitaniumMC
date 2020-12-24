@@ -63,10 +63,10 @@ index 4571cdf0217d840a32427efeeb5d8b993bdcf326..f33ba374e8d1cbbfb174862d471f6687
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
-index 47dff67ff013a1d8eec6bb7d673977ad479cab5b..84c6ce8d559391ba9d4a880e10647d97b20e3677 100644
+index 2e811777bfcc0e99b696077824b5557b1bf7f0b0..0f5e4a324a9be63bdc28ce2abb350f9894bce9dd 100644
 --- a/src/main/java/net/minecraft/server/EntityHuman.java
 +++ b/src/main/java/net/minecraft/server/EntityHuman.java
-@@ -1058,6 +1058,7 @@ public abstract class EntityHuman extends EntityLiving {
+@@ -1068,6 +1068,7 @@ public abstract class EntityHuman extends EntityLiving {
                      int i = b0 + EnchantmentManager.b((EntityLiving) this);
  
                      if (this.isSprinting() && flag) {
@@ -74,7 +74,7 @@ index 47dff67ff013a1d8eec6bb7d673977ad479cab5b..84c6ce8d559391ba9d4a880e10647d97
                          sendSoundEffect(this, this.locX(), this.locY(), this.locZ(), SoundEffects.ENTITY_PLAYER_ATTACK_KNOCKBACK, this.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
                          ++i;
                          flag1 = true;
-@@ -1076,7 +1077,7 @@ public abstract class EntityHuman extends EntityLiving {
+@@ -1086,7 +1087,7 @@ public abstract class EntityHuman extends EntityLiving {
                      boolean flag3 = false;
                      double d0 = (double) (this.A - this.z);
  
@@ -83,7 +83,7 @@ index 47dff67ff013a1d8eec6bb7d673977ad479cab5b..84c6ce8d559391ba9d4a880e10647d97
                          ItemStack itemstack = this.b(EnumHand.MAIN_HAND);
  
                          if (itemstack.getItem() instanceof ItemSword) {
-@@ -1228,6 +1229,7 @@ public abstract class EntityHuman extends EntityLiving {
+@@ -1238,6 +1239,7 @@ public abstract class EntityHuman extends EntityLiving {
  
                          this.applyExhaustion(world.spigotConfig.combatExhaustion); // Spigot - Change to use configurable value
                      } else {
