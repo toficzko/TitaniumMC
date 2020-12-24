@@ -19,7 +19,7 @@ should be internally consistent, easily-updatable, and reversible with a --force
 This will likely conflict with plugins and programs expecting region files to be compressed using the current standard.
 
 diff --git a/pom.xml b/pom.xml
-index 422bed88a0860f768e162a38a1c16265451f5990..b760bc71527ce310e02ca42bcd4d787fd5ad2148 100644
+index 422bed88a0860f768e162a38a1c16265451f5990..80e2c9032115e9a37e1848b3e92e7db318eea357 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -126,6 +126,18 @@
@@ -35,7 +35,7 @@ index 422bed88a0860f768e162a38a1c16265451f5990..b760bc71527ce310e02ca42bcd4d787f
 +        <dependency>
 +            <groupId>com.github.luben</groupId>
 +            <artifactId>zstd-jni</artifactId>
-+            <version>1.4.5-11</version>
++            <version>1.4.8-1</version>
 +        </dependency>
 +        <!-- Paper end -->
          <!-- testing -->
