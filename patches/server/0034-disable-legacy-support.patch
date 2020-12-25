@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Thu, 24 Dec 2020 22:09:11 -0500
+Subject: [PATCH] disable legacy support
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/legacy/CraftLegacy.java b/src/main/java/org/bukkit/craftbukkit/legacy/CraftLegacy.java
+index d25204f7d4af1ddd37005ccbcbe6c03d8eefcf47..3574c59b0a47b1fcf38e847454b6a027dbf231e4 100644
+--- a/src/main/java/org/bukkit/craftbukkit/legacy/CraftLegacy.java
++++ b/src/main/java/org/bukkit/craftbukkit/legacy/CraftLegacy.java
+@@ -256,6 +256,10 @@ public final class CraftLegacy {
+     static {
+         if (!net.pl3x.purpur.PurpurConfig.loggerSuppressInitLegacyMaterialError) // Purpur
+         System.err.println("Initializing Legacy Material Support. Unless you have legacy plugins and/or data this is a bug!");
++        // Titanium start - disable legacy support
++        System.err.println("Legacy support is disabled but something is still trying to access it...");
++        new Exception().printStackTrace();
++        // Titanium end
+         if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isDebugging()) {
+             new Exception().printStackTrace();
+         }
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+index 0eb5b7e8bbf3e4ab1c0badfaab571bed0a0b47df..8ebc8151c6f0640a9eb1bbc6f3334166a554b71d 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+@@ -322,8 +322,11 @@ public final class CraftMagicNumbers implements UnsafeValues {
+             }
+         } else {
+             if (minimumIndex == -1) {
+-                CraftLegacy.init();
+-                Bukkit.getLogger().log(Level.WARNING, "Legacy plugin " + pdf.getFullName() + " does not specify an api-version.");
++                // Titanium start - disable legacy support
++                System.err.println("Legacy support has been depreciated, but the plugin " + getFullName() + " is still trying to use it, please stop using or replace that plugin with an up to date version");
++                // CraftLegacy.init();
++                // Bukkit.getLogger().log(Level.WARNING, "Legacy plugin " + pdf.getFullName() + " does not specify an api-version.");
++                // Titanium end
+             } else {
+                 throw new InvalidPluginException("Plugin API version " + pdf.getAPIVersion() + " is lower than the minimum allowed version. Please update or replace it.");
+             }
+@@ -337,7 +340,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+     @Override
+     public byte[] processClass(PluginDescriptionFile pdf, String path, byte[] clazz) {
+         try {
+-            clazz = Commodore.convert(clazz, !isLegacy(pdf));
++            // clazz = Commodore.convert(clazz, !isLegacy(pdf));
+         } catch (Exception ex) {
+             Bukkit.getLogger().log(Level.SEVERE, "Fatal error trying to convert " + pdf.getFullName() + ":" + path, ex);
+         }
