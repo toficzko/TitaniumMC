@@ -48,19 +48,3 @@ index d9d7a5df16ae9854a69103a936de89b2086e9465..2e811777bfcc0e99b696077824b5557b
          }
  
          int i = 29999999;
-diff --git a/src/main/java/net/pl3x/purpur/PurpurConfig.java b/src/main/java/net/pl3x/purpur/PurpurConfig.java
-index c44bc2249dc9dfcfc923c4ea005ed5a0744c5cba..d0a0f9e60d3ac8574603de765f9eae13d13a9a56 100644
---- a/src/main/java/net/pl3x/purpur/PurpurConfig.java
-+++ b/src/main/java/net/pl3x/purpur/PurpurConfig.java
-@@ -257,6 +257,11 @@ public class PurpurConfig {
-     private static void disableMushroomBlockUpdates() {
-         disableMushroomBlockUpdates= getBoolean("settings.blocks.disable-mushroom-updates", disableMushroomBlockUpdates);
-     }
-+    
-+    public static int playerTimeStatisticsInterval = 1;
-+    private static void intervals() {
-+        playerTimeStatisticsInterval = getInt("settings.intervals.player-time-statistics", playerTimeStatisticsInterval);
-+    }
- 
-     public static boolean loggerSuppressInitLegacyMaterialError = false;
-     public static boolean loggerSuppressIgnoredAdvancementWarnings = false;
