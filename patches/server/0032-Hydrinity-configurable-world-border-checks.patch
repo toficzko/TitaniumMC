@@ -1,0 +1,55 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Thu, 24 Dec 2020 19:40:05 -0500
+Subject: [PATCH] (Hydrinity) configurable world border checks
+
+
+diff --git a/src/main/java/me/titaniumtown/TitaniumConfig.java b/src/main/java/me/titaniumtown/TitaniumConfig.java
+index 5bd706ab08efde4fa0e953cdb9caae164ff042dc..548207f0a096c332f4c675ca1e3855e602d45bfa 100644
+--- a/src/main/java/me/titaniumtown/TitaniumConfig.java
++++ b/src/main/java/me/titaniumtown/TitaniumConfig.java
+@@ -154,8 +154,10 @@ public class TitaniumConfig {
+     }
+ 
+     public static boolean allowSandDupe = false;
++    public static boolean worldBorderChecks = true;
+     private static void experimental() {
+         allowSandDupe = getBoolean("settings.experimental.allow-sand-dupe", allowSandDupe);
++        worldBorderChecks = getBoolean("settings.experimental.world-border-checks", worldBorderChecks);
+     }
+ 
+     public static double WborderSize = 6.0E7D; // Vanilla 6.0E7D; Max: 4.294967294E9D // replacement for 6.0E7D
+diff --git a/src/main/java/net/minecraft/server/WorldBorder.java b/src/main/java/net/minecraft/server/WorldBorder.java
+index e6706bc3eda7214d24469b8ede368b09c83c0c2f..bff4d2f44e0805d511fc63173b06551d01cfb9fa 100644
+--- a/src/main/java/net/minecraft/server/WorldBorder.java
++++ b/src/main/java/net/minecraft/server/WorldBorder.java
+@@ -21,8 +21,15 @@ public class WorldBorder {
+ 
+     public WorldBorder() {}
+ 
++    // Titanium start - configurable world border checks
++    private boolean skipChecks() {
++        return !me.titaniumtown.TitaniumConfig.worldBorderChecks;
++    }
++    // Titanium end
++
+     public final boolean isInBounds(BlockPosition blockposition) { return this.a(blockposition); } // Paper - OBFHELPER
+     public boolean a(BlockPosition blockposition) {
++        if (skipChecks()) return true; // Titanium
+         return (double) (blockposition.getX() + 1) > this.e() && (double) blockposition.getX() < this.g() && (double) (blockposition.getZ() + 1) > this.f() && (double) blockposition.getZ() < this.h();
+     }
+ 
+@@ -39,11 +46,13 @@ public class WorldBorder {
+     // Paper end
+ 
+     public boolean isInBounds(ChunkCoordIntPair chunkcoordintpair) {
++        if (skipChecks()) return true; // Titanium
+         return (double) chunkcoordintpair.f() > this.e() && (double) chunkcoordintpair.d() < this.g() && (double) chunkcoordintpair.g() > this.f() && (double) chunkcoordintpair.e() < this.h();
+     }
+ 
+     public final boolean isInBounds(AxisAlignedBB aabb) { return this.a(aabb); } // Paper - OBFHELPER
+     public boolean a(AxisAlignedBB axisalignedbb) {
++        if (skipChecks()) return true; // Titanium
+         return axisalignedbb.maxX > this.e() && axisalignedbb.minX < this.g() && axisalignedbb.maxZ > this.f() && axisalignedbb.minZ < this.h();
+     }
+ 
