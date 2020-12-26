@@ -92,7 +92,7 @@ index 2e811777bfcc0e99b696077824b5557b1bf7f0b0..0f5e4a324a9be63bdc28ce2abb350f98
                          if (flag4) {
                              entity.extinguish();
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 0e1013916d41d29566d42cef1eabe293f788b616..d30e2e6fe1a29c0eca34452c3cf3e6ee59ef40cf 100644
+index 564d34f6d5daead441faed3ea5c966d9cd25fc3a..84ee6e400749f7d008486ed01c794a89cee573f2 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -1590,7 +1590,13 @@ public abstract class EntityLiving extends Entity {
