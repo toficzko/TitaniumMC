@@ -1,0 +1,118 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Sat, 26 Dec 2020 21:27:28 -0500
+Subject: [PATCH] add dupes
+
+
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index 9a34b54bab152c742767ac882ae9ec71efc059ed..50c0c7daeb9da7428c260c50797321eab8c13c1a 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -2151,12 +2151,11 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+         } else {
+             // CraftBukkit start - Capture drops for death event
+             if (this instanceof EntityLiving && !((EntityLiving) this).forceDrops) {
+-                ((EntityLiving) this).drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack)); // Paper - mirror so we can destroy it later
++                ((EntityLiving) this).drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitCopy(itemstack)); // Titanium - re-add duplication bugs
+                 return null;
+             }
+             // CraftBukkit end
+-            EntityItem entityitem = new EntityItem(this.world, this.locX(), this.locY() + (double) f, this.locZ(), itemstack.cloneItemStack()); // Paper - clone so we can destroy original
+-            itemstack.setCount(0); // Paper - destroy this item - if this ever leaks due to game bugs, ensure it doesn't dupe
++            EntityItem entityitem = new EntityItem(this.world, this.locX(), this.locY() + (double) f, this.locZ(), itemstack); // Titanium - re-add duplication bugs
+ 
+             entityitem.defaultPickupDelay();
+             // CraftBukkit start
+@@ -2823,12 +2822,6 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+     @Nullable
+     public Entity teleportTo(WorldServer worldserver, BlockPosition location) {
+         // CraftBukkit end
+-        // Paper start - fix bad state entities causing dupes
+-        if (!isAlive() || !valid) {
+-            LOGGER.warn("Illegal Entity Teleport " + this + " to " + worldserver + ":" + location, new Throwable());
+-            return null;
+-        }
+-        // Paper end
+         if (this.world instanceof WorldServer && !this.dead) {
+             this.world.getMethodProfiler().enter("changeDimension");
+             // CraftBukkit start
+@@ -2864,7 +2857,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+                     entity.bukkitEntity = this.getBukkitEntity();
+ 
+                     if (this instanceof EntityInsentient) {
+-                        ((EntityInsentient) this).unleash(true, true); // Paper drop lead
++                        ((EntityInsentient) this).unleash(true, false); // Unleash to prevent duping of leads.
+                     }
+                     // CraftBukkit end
+                 }
+@@ -2986,7 +2979,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+     }
+ 
+     public boolean canPortal() {
+-        return isAlive() && valid && (world.purpurConfig.entitiesCanUsePortals || this instanceof EntityPlayer); // Paper // Purpur
++        return true; // Titanium - re-add duplication bugs
+     }
+ 
+     public float a(Explosion explosion, IBlockAccess iblockaccess, BlockPosition blockposition, IBlockData iblockdata, Fluid fluid, float f) {
+diff --git a/src/main/java/net/minecraft/server/EntityArmorStand.java b/src/main/java/net/minecraft/server/EntityArmorStand.java
+index 6efe59e0385e144c59804e9e5e18e6910b1f6667..69eafa01c5830d8164e81af60886559ab19294f3 100644
+--- a/src/main/java/net/minecraft/server/EntityArmorStand.java
++++ b/src/main/java/net/minecraft/server/EntityArmorStand.java
+@@ -573,7 +573,7 @@ public class EntityArmorStand extends EntityLiving {
+         for (i = 0; i < this.handItems.size(); ++i) {
+             itemstack = (ItemStack) this.handItems.get(i);
+             if (!itemstack.isEmpty()) {
+-                drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack)); // CraftBukkit - add to drops // Paper - mirror so we can destroy it later - though this call site was safe
++                drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitCopy(itemstack)); // CraftBukkit - add to drops // Titanium - re-add duplication bugs
+                 this.handItems.set(i, ItemStack.b);
+             }
+         }
+@@ -581,7 +581,7 @@ public class EntityArmorStand extends EntityLiving {
+         for (i = 0; i < this.armorItems.size(); ++i) {
+             itemstack = (ItemStack) this.armorItems.get(i);
+             if (!itemstack.isEmpty()) {
+-                drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack)); // CraftBukkit - add to drops // Paper - mirror so we can destroy it later - though this call site was safe
++                drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitCopy(itemstack)); // CraftBukkit - add to drops // Titanium - re-add duplication bugs
+                 this.armorItems.set(i, ItemStack.b);
+             }
+         }
+diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
+index e7fc241d879ec96862d9a82d784538f93e559051..67267fbd57f09df91b1fa9565343a0e40d9c0d14 100644
+--- a/src/main/java/net/minecraft/server/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/EntityPlayer.java
+@@ -2382,7 +2382,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+ 
+     @Override
+     public boolean isFrozen() { // Paper - protected > public
+-        return super.isFrozen() || frozen || (this.playerConnection != null && this.playerConnection.isDisconnected()); // Paper // Purpur
++        return super.isFrozen() || !getBukkitEntity().isOnline(); // Titanium - re-add duplication bugs
+     }
+ 
+     // Purpur start
+diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
+index 5f20859edce96a67f7e40f708d4f16a89de5fd58..d93e1772ba807350cc1c0bb97de388a39d38a239 100644
+--- a/src/main/java/net/minecraft/server/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/PlayerConnection.java
+@@ -3012,7 +3012,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+     // Paper end
+ 
+     public final boolean isDisconnected() {
+-        return (!this.player.joining && !this.networkManager.isConnected()) || this.processedDisconnect; // Paper
++        return !this.player.joining && !this.networkManager.isConnected(); // Titanium - re-add duplication bugs
+     }
+     // CraftBukkit end
+ 
+diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+index 110db570c8c917e6b9eeab534e47ce9135ad09c9..f52b678964727e7b778d477e1074d2bf92d19721 100644
+--- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -823,8 +823,7 @@ public class CraftEventFactory {
+         for (org.bukkit.inventory.ItemStack stack : event.getDrops()) {
+             if (stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0) continue;
+ 
+-            world.dropItem(entity.getLocation(), stack); // Paper - note: dropItem already clones due to this being bukkit -> NMS
+-            if (stack instanceof CraftItemStack) stack.setAmount(0); // Paper - destroy this item - if this ever leaks due to game bugs, ensure it doesn't dupe, but don't nuke bukkit stacks of manually added items
++            world.dropItem(entity.getLocation(), stack); // Titanium - re-add duplication bugs
+         }
+ 
+         return event;
