@@ -8,10 +8,10 @@ This patch reduces object allocation and only loops through advancements once, w
 This patch was originally created for the Yatopia project by Ivan Pekov <ivan@mrivanplays.com> under the MIT license.
 
 diff --git a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
-index a3b89a4f2a291b9a9bf847e059c6b926ea9db9b2..eaea39d24605addd176251193366443ecf6d2d9e 100644
+index eaa1063ff2bc5621e93043c4de41ca62f1323fde..db8069a5e06c0457d3cdee7646e144239dcf2073 100644
 --- a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
 +++ b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
-@@ -162,10 +162,8 @@ public class AdvancementDataPlayer {
+@@ -161,10 +161,8 @@ public class AdvancementDataPlayer {
                      }
  
                      Stream<Entry<MinecraftKey, AdvancementProgress>> stream = map.entrySet().stream().sorted(Comparator.comparing(Entry::getValue));
@@ -24,7 +24,7 @@ index a3b89a4f2a291b9a9bf847e059c6b926ea9db9b2..eaea39d24605addd176251193366443e
                          Advancement advancement = advancementdataworld.a((MinecraftKey) entry.getKey());
  
                          if (advancement == null) {
-@@ -178,7 +176,8 @@ public class AdvancementDataPlayer {
+@@ -177,7 +175,8 @@ public class AdvancementDataPlayer {
                          } else {
                              this.a(advancement, (AdvancementProgress) entry.getValue());
                          }
@@ -34,7 +34,7 @@ index a3b89a4f2a291b9a9bf847e059c6b926ea9db9b2..eaea39d24605addd176251193366443e
                  } catch (Throwable throwable1) {
                      throwable = throwable1;
                      throw throwable1;
-@@ -203,9 +202,23 @@ public class AdvancementDataPlayer {
+@@ -202,9 +201,23 @@ public class AdvancementDataPlayer {
              }
          }
  
