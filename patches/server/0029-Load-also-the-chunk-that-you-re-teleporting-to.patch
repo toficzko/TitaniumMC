@@ -6,7 +6,7 @@ Subject: [PATCH] Load also the chunk that you're teleporting to
 Fixes Tuinity-178
 
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index c66be7387bd437c667461cca65687e30a948fa22..dbb5534e66741424eb2e54d3045d42570027577c 100644
+index 1268492d4140ec9deab7f958ac549d92bfe04c5f..a29e4307bdec2d14e0e55ac47a9e8e13f1e0cbe1 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -239,7 +239,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {

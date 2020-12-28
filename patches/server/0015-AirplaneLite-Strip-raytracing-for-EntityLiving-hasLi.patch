@@ -12,7 +12,7 @@ As well, since the fluid collision option is set to NONE, the entire
 fluid collision system is completely unneeded, yet used anyways.
 
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 261e71a4aac4014792e28e74af365fa07bdf5c37..0e1013916d41d29566d42cef1eabe293f788b616 100644
+index 8202912b185c65394f503f843f30a47c5b0b5809..9802ba04a52d693c1415d5fbd05e375722cb96f8 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -3048,7 +3048,7 @@ public abstract class EntityLiving extends Entity {
