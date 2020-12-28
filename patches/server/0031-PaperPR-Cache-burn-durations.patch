@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas <lukasalt98@gmail.com>
+Date: Sun, 27 Dec 2020 16:47:00 +0100
+Subject: [PATCH] (PaperPR) Cache burn durations
+
+
+diff --git a/src/main/java/net/minecraft/server/TileEntityFurnace.java b/src/main/java/net/minecraft/server/TileEntityFurnace.java
+index 1a47f0ae48acca8badc418838bb767bb6fbddbcb..60b196bc129c307949f95b43f36e2eadfb3d602c 100644
+--- a/src/main/java/net/minecraft/server/TileEntityFurnace.java
++++ b/src/main/java/net/minecraft/server/TileEntityFurnace.java
+@@ -83,6 +83,16 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
+         this.c = recipes;
+     }
+ 
++    // Paper start - cache burn durations
++    private static Map<Item, Integer> cachedBurnDurations;
++    public static Map<Item, Integer> getBurnDurations() {
++        if(cachedBurnDurations == null) {
++            cachedBurnDurations = f();
++        }
++        return cachedBurnDurations;
++    }
++    // Paper end
++    
+     public static Map<Item, Integer> f() {
+         Map<Item, Integer> map = Maps.newLinkedHashMap();
+ 
+@@ -418,7 +428,7 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
+         } else {
+             Item item = itemstack.getItem();
+ 
+-            return (Integer) f().getOrDefault(item, 0);
++            return getBurnDurations().getOrDefault(item, 0); // Paper - cache burn durations
+         }
+     }
+ 
+@@ -427,7 +437,7 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
+     }
+ 
+     public static boolean isFuel(ItemStack itemstack) {
+-        return f().containsKey(itemstack.getItem());
++        return getBurnDurations().containsKey(itemstack.getItem()); // Paper - cache burn durations
+     }
+ 
+     @Override
