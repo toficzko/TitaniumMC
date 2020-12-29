@@ -19,10 +19,10 @@ index b40f5167d2a9772658c115091f13706fbb4959b7..52a70475de458a58690b21822103eda2
  
                  Block.a(iblockdata, iblockdata1, generatoraccess, blockposition_mutableblockposition, i, j);
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 0d265a7f28a91e6eb7af73b14a15ef574559f0ca..4d4150e59caaaf50386f7a49b8bfd6687f88e561 100644
+index a85fd2483bb572f37b843a2d9118046ad75eba9e..be1d50c4c78601e0441a3399cd883d53046391e9 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -767,7 +767,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -690,7 +690,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      public void neighborChanged(BlockPosition pos, Block blockIn, BlockPosition fromPos) { a(pos, blockIn, fromPos); } // Paper - OBFHELPER
      public void a(BlockPosition blockposition, Block block, BlockPosition blockposition1) {
          if (!this.isClientSide) {

@@ -5,10 +5,10 @@ Subject: [PATCH] (PaperPR) Optimized tick ready check
 
 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 4d4150e59caaaf50386f7a49b8bfd6687f88e561..c6176acc09a99e91893df8be7fc3f86c1b30d0b4 100644
+index be1d50c4c78601e0441a3399cd883d53046391e9..dbd6d97089abf1c6fa16e4a983f39973fa8b2f96 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -959,8 +959,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -882,8 +882,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
  
              if (!tileentity.isRemoved() && tileentity.hasWorld()) {
                  BlockPosition blockposition = tileentity.getPosition();

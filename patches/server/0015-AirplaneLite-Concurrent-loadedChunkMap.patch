@@ -220,10 +220,10 @@ index 12d9b73ccc2f4406957932397746cac7902d650e..fbee2dd63b1f13f09c9b2b75f86c3239
  
      private long syncLoadCounter; // Tuinity - prevent plugin unloads from removing our ticket
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index e714470b31ffed19d69d3d32156cded6ceffd55e..0d265a7f28a91e6eb7af73b14a15ef574559f0ca 100644
+index c9ce5039b89c98751aad6edbe1cd5e3f14d5882b..a85fd2483bb572f37b843a2d9118046ad75eba9e 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -443,12 +443,12 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -366,12 +366,12 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      public final Chunk getChunkAt(int i, int j) { // Paper - final to help inline
          // Tuinity start - make sure loaded chunks get the inlined variant of this function
          ChunkProviderServer cps = ((WorldServer)this).chunkProvider;
