@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas <lukasalt98@gmail.com>
+Date: Sun, 27 Dec 2020 17:19:51 +0100
+Subject: [PATCH] (PaperPR) Optimized tick ready check
+
+
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index 4d4150e59caaaf50386f7a49b8bfd6687f88e561..c6176acc09a99e91893df8be7fc3f86c1b30d0b4 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -959,8 +959,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+ 
+             if (!tileentity.isRemoved() && tileentity.hasWorld()) {
+                 BlockPosition blockposition = tileentity.getPosition();
+-
+-                if (this.getChunkProvider().a(blockposition) && this.getWorldBorder().a(blockposition)) {
++                Chunk chunk; PlayerChunk playerChunk; if ((chunk = tileentity.getCurrentChunk()) != null && (playerChunk = chunk.playerChunk) != null && playerChunk.isTickingReady() && this.getWorldBorder().a(blockposition)) { // Paper - optimized tick ready check by inlining ChunkProviderServer.a(BlockPosition). Chunk lookup is no longer required and we can use the PlayerChunk directly available through the tile entity
+                     try {
+                         gameprofilerfiller.a(() -> {
+                             return String.valueOf(TileEntityTypes.a(tileentity.getTileType()));
