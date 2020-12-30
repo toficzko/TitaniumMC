@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Sat, 26 Dec 2020 21:27:28 -0500
+Date: Tue, 29 Dec 2020 20:58:55 -0500
 Subject: [PATCH] add dupes
 
 
@@ -90,10 +90,52 @@ index 5e4cc5e8f71c1c657041159305ce3e4a9aa9f46b..555fc5723f9e49cd6e3a56f04dfc5588
  
      // Purpur start
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 5f20859edce96a67f7e40f708d4f16a89de5fd58..d93e1772ba807350cc1c0bb97de388a39d38a239 100644
+index 5f20859edce96a67f7e40f708d4f16a89de5fd58..2e9c5eda7a0449271c149b49b4b98732ee2e12fe 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -3012,7 +3012,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -939,12 +939,14 @@ public class PlayerConnection implements PacketListenerPlayIn {
+         ItemStack testStack = packetplayinbedit.getBook();
+         if (!server.isPrimaryThread() && !testStack.isEmpty() && testStack.getTag() != null) {
+             NBTTagList pageList = testStack.getTag().getList("pages", 8);
+-            if (pageList.size() > 100) {
+-                PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send a book with too many pages");
+-                net.pl3x.purpur.event.player.PlayerBookTooLargeEvent event = new net.pl3x.purpur.event.player.PlayerBookTooLargeEvent(player.getBukkitEntity(), testStack.asBukkitCopy()); if (event.shouldKickPlayer()) // Purpur
+-                minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
+-                return;
+-            }
++            // Titanium start - unpatch dupes
++            // if (pageList.size() > 100) {
++            //     PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send a book with too many pages");
++            //     net.pl3x.purpur.event.player.PlayerBookTooLargeEvent event = new net.pl3x.purpur.event.player.PlayerBookTooLargeEvent(player.getBukkitEntity(), testStack.asBukkitCopy()); if (event.shouldKickPlayer()) // Purpur
++            //     minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
++            //     return;
++            // }
++            // Titanium end
+             long byteTotal = 0;
+             int maxBookPageSize = com.destroystokyo.paper.PaperConfig.maxBookPageSize;
+             double multiplier = Math.max(0.3D, Math.min(1D, com.destroystokyo.paper.PaperConfig.maxBookTotalSizeMultiplier));
+@@ -952,12 +954,14 @@ public class PlayerConnection implements PacketListenerPlayIn {
+             for (int i = 0; i < pageList.size(); ++i) {
+                 String testString = pageList.getString(i);
+                 int byteLength = testString.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+-                if (byteLength > 256 * 4) {
+-                    PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send a book with with a page too large!");
+-                    net.pl3x.purpur.event.player.PlayerBookTooLargeEvent event = new net.pl3x.purpur.event.player.PlayerBookTooLargeEvent(player.getBukkitEntity(), testStack.asBukkitCopy()); if (event.shouldKickPlayer()) // Purpur
+-                    minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
+-                    return;
+-                }
++                // Titanium start - unpatch dupes
++                // if (byteLength > 256 * 4) {
++                //     PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send a book with with a page too large!");
++                //     net.pl3x.purpur.event.player.PlayerBookTooLargeEvent event = new net.pl3x.purpur.event.player.PlayerBookTooLargeEvent(player.getBukkitEntity(), testStack.asBukkitCopy()); if (event.shouldKickPlayer()) // Purpur
++                //     minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
++                //     return;
++                // }
++                // Titanium stop
+                 byteTotal += byteLength;
+                 int length = testString.length();
+                 int multibytes = 0;
+@@ -3012,7 +3016,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
      // Paper end
  
      public final boolean isDisconnected() {
