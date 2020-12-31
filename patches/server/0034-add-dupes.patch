@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Thu, 31 Dec 2020 17:39:53 -0500
+Date: Thu, 31 Dec 2020 18:21:38 -0500
 Subject: [PATCH] add dupes
 
 
@@ -21,7 +21,7 @@ index 4166b163724f2cc4ceedf0f43f92510f4efc5c1b..cc128896477ae03f1d6fa1849094496a
  
      public static double WborderSize = 6.0E7D; // Vanilla 6.0E7D; Max: 4.294967294E9D // replacement for 6.0E7D
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 5f20859edce96a67f7e40f708d4f16a89de5fd58..f0237252bf94c73b99cb6eee5f8de8badc22e4d9 100644
+index 5f20859edce96a67f7e40f708d4f16a89de5fd58..7469b967a86106d9eddcfcd4b9187aa6902af03b 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
 @@ -935,55 +935,54 @@ public class PlayerConnection implements PacketListenerPlayIn {
@@ -48,7 +48,7 @@ index 5f20859edce96a67f7e40f708d4f16a89de5fd58..f0237252bf94c73b99cb6eee5f8de8ba
 -                if (byteLength > 256 * 4) {
 -                    PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send a book with with a page too large!");
 -                    net.pl3x.purpur.event.player.PlayerBookTooLargeEvent event = new net.pl3x.purpur.event.player.PlayerBookTooLargeEvent(player.getBukkitEntity(), testStack.asBukkitCopy()); if (event.shouldKickPlayer()) // Purpur
-+        if (me.titaniumtown.TitaniumConfig.allowAllDupes) {
++        if (!me.titaniumtown.TitaniumConfig.allowAllDupes) {
 +            // Paper start
 +            ItemStack testStack = packetplayinbedit.getBook();
 +            if (!server.isPrimaryThread() && !testStack.isEmpty() && testStack.getTag() != null) {
