@@ -1,99 +1,30 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Simon Gardling <titaniumtown@gmail.com>
-Date: Tue, 29 Dec 2020 21:37:58 -0500
+Date: Thu, 31 Dec 2020 17:39:53 -0500
 Subject: [PATCH] add dupes
 
 
-diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 163b4a967528446fa6fa9b56d0b239edc42bb832..51db19b04d88799ea2f871bc0c9856c4dd4fa67a 100644
---- a/src/main/java/net/minecraft/server/Entity.java
-+++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -2162,12 +2162,11 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
-         } else {
-             // CraftBukkit start - Capture drops for death event
-             if (this instanceof EntityLiving && !((EntityLiving) this).forceDrops) {
--                ((EntityLiving) this).drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack)); // Paper - mirror so we can destroy it later
-+                ((EntityLiving) this).drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitCopy(itemstack)); // Titanium - re-add duplication bugs
-                 return null;
-             }
-             // CraftBukkit end
--            EntityItem entityitem = new EntityItem(this.world, this.locX(), this.locY() + (double) f, this.locZ(), itemstack.cloneItemStack()); // Paper - clone so we can destroy original
--            itemstack.setCount(0); // Paper - destroy this item - if this ever leaks due to game bugs, ensure it doesn't dupe
-+            EntityItem entityitem = new EntityItem(this.world, this.locX(), this.locY() + (double) f, this.locZ(), itemstack); // Titanium - re-add duplication bugs
+diff --git a/src/main/java/me/titaniumtown/TitaniumConfig.java b/src/main/java/me/titaniumtown/TitaniumConfig.java
+index 4166b163724f2cc4ceedf0f43f92510f4efc5c1b..cc128896477ae03f1d6fa1849094496a9bb9948e 100644
+--- a/src/main/java/me/titaniumtown/TitaniumConfig.java
++++ b/src/main/java/me/titaniumtown/TitaniumConfig.java
+@@ -155,9 +155,11 @@ public class TitaniumConfig {
  
-             entityitem.defaultPickupDelay();
-             // CraftBukkit start
-@@ -2834,12 +2833,6 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
-     @Nullable
-     public Entity teleportTo(WorldServer worldserver, BlockPosition location) {
-         // CraftBukkit end
--        // Paper start - fix bad state entities causing dupes
--        if (!isAlive() || !valid) {
--            LOGGER.warn("Illegal Entity Teleport " + this + " to " + worldserver + ":" + location, new Throwable());
--            return null;
--        }
--        // Paper end
-         if (this.world instanceof WorldServer && !this.dead) {
-             this.world.getMethodProfiler().enter("changeDimension");
-             // CraftBukkit start
-@@ -2862,7 +2855,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
-                 this.world.getMethodProfiler().exitEnter("reloading");
-                 // Paper start - Change lead drop timing to prevent dupe
-                 if (this instanceof EntityInsentient) {
--                    ((EntityInsentient) this).unleash(true, true); // Paper drop lead
-+                    ((EntityInsentient) this).unleash(true, false); // Paper drop lead // Titanium unpatch dupe
-                 }
-                 // Paper end
-                 Entity entity = this.getEntityType().a((World) worldserver);
-@@ -2998,7 +2991,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+     public static boolean allowSandDupe = false;
+     public static boolean worldBorderChecks = true;
++    public static boolean allowAllDupes = false;
+     private static void experimental() {
+         allowSandDupe = getBoolean("settings.experimental.allow-sand-dupe", allowSandDupe);
+         worldBorderChecks = getBoolean("settings.experimental.world-border-checks", worldBorderChecks);
++        allowAllDupes = getBoolean("settings.experimental.allow-all-dupes", allowAllDupes);
      }
  
-     public boolean canPortal() {
--        return isAlive() && valid && (world.purpurConfig.entitiesCanUsePortals || this instanceof EntityPlayer); // Paper // Purpur
-+        return true; // Titanium - re-add duplication bugs
-     }
- 
-     public float a(Explosion explosion, IBlockAccess iblockaccess, BlockPosition blockposition, IBlockData iblockdata, Fluid fluid, float f) {
-diff --git a/src/main/java/net/minecraft/server/EntityArmorStand.java b/src/main/java/net/minecraft/server/EntityArmorStand.java
-index 6efe59e0385e144c59804e9e5e18e6910b1f6667..69eafa01c5830d8164e81af60886559ab19294f3 100644
---- a/src/main/java/net/minecraft/server/EntityArmorStand.java
-+++ b/src/main/java/net/minecraft/server/EntityArmorStand.java
-@@ -573,7 +573,7 @@ public class EntityArmorStand extends EntityLiving {
-         for (i = 0; i < this.handItems.size(); ++i) {
-             itemstack = (ItemStack) this.handItems.get(i);
-             if (!itemstack.isEmpty()) {
--                drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack)); // CraftBukkit - add to drops // Paper - mirror so we can destroy it later - though this call site was safe
-+                drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitCopy(itemstack)); // CraftBukkit - add to drops // Titanium - re-add duplication bugs
-                 this.handItems.set(i, ItemStack.b);
-             }
-         }
-@@ -581,7 +581,7 @@ public class EntityArmorStand extends EntityLiving {
-         for (i = 0; i < this.armorItems.size(); ++i) {
-             itemstack = (ItemStack) this.armorItems.get(i);
-             if (!itemstack.isEmpty()) {
--                drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemstack)); // CraftBukkit - add to drops // Paper - mirror so we can destroy it later - though this call site was safe
-+                drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitCopy(itemstack)); // CraftBukkit - add to drops // Titanium - re-add duplication bugs
-                 this.armorItems.set(i, ItemStack.b);
-             }
-         }
-diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 5e4cc5e8f71c1c657041159305ce3e4a9aa9f46b..555fc5723f9e49cd6e3a56f04dfc55883d25e2e5 100644
---- a/src/main/java/net/minecraft/server/EntityPlayer.java
-+++ b/src/main/java/net/minecraft/server/EntityPlayer.java
-@@ -2393,7 +2393,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
- 
-     @Override
-     public boolean isFrozen() { // Paper - protected > public
--        return super.isFrozen() || frozen || (this.playerConnection != null && this.playerConnection.isDisconnected()); // Paper // Purpur
-+        return super.isFrozen() || !getBukkitEntity().isOnline(); // Titanium - re-add duplication bugs
-     }
- 
-     // Purpur start
+     public static double WborderSize = 6.0E7D; // Vanilla 6.0E7D; Max: 4.294967294E9D // replacement for 6.0E7D
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 5f20859edce96a67f7e40f708d4f16a89de5fd58..e5d386e712d8d1be53373d4c2720021e66993e66 100644
+index 5f20859edce96a67f7e40f708d4f16a89de5fd58..f0237252bf94c73b99cb6eee5f8de8badc22e4d9 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -935,55 +935,6 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -935,55 +935,54 @@ public class PlayerConnection implements PacketListenerPlayIn {
  
      @Override
      public void a(PacketPlayInBEdit packetplayinbedit) {
@@ -117,9 +48,16 @@ index 5f20859edce96a67f7e40f708d4f16a89de5fd58..e5d386e712d8d1be53373d4c2720021e
 -                if (byteLength > 256 * 4) {
 -                    PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send a book with with a page too large!");
 -                    net.pl3x.purpur.event.player.PlayerBookTooLargeEvent event = new net.pl3x.purpur.event.player.PlayerBookTooLargeEvent(player.getBukkitEntity(), testStack.asBukkitCopy()); if (event.shouldKickPlayer()) // Purpur
--                    minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
--                    return;
--                }
++        if (me.titaniumtown.TitaniumConfig.allowAllDupes) {
++            // Paper start
++            ItemStack testStack = packetplayinbedit.getBook();
++            if (!server.isPrimaryThread() && !testStack.isEmpty() && testStack.getTag() != null) {
++                NBTTagList pageList = testStack.getTag().getList("pages", 8);
++                if (pageList.size() > 100) {
++                    PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send a book with too many pages");
+                     minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
+                     return;
+                 }
 -                byteTotal += byteLength;
 -                int length = testString.length();
 -                int multibytes = 0;
@@ -127,48 +65,69 @@ index 5f20859edce96a67f7e40f708d4f16a89de5fd58..e5d386e712d8d1be53373d4c2720021e
 -                    for (char c : testString.toCharArray()) {
 -                        if (c > 127) {
 -                            multibytes++;
--                        }
--                    }
++                long byteTotal = 0;
++                int maxBookPageSize = com.destroystokyo.paper.PaperConfig.maxBookPageSize;
++                double multiplier = Math.max(0.3D, Math.min(1D, com.destroystokyo.paper.PaperConfig.maxBookTotalSizeMultiplier));
++                long byteAllowed = maxBookPageSize;
++                for (int i = 0; i < pageList.size(); ++i) {
++                    String testString = pageList.getString(i);
++                    int byteLength = testString.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
++                    if (byteLength > 256 * 4) {
++                        PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send a book with with a page too large!");
++                        minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
++                        return;
++                    }
++                    byteTotal += byteLength;
++                    int length = testString.length();
++                    int multibytes = 0;
++                    if (byteLength != length) {
++                        for (char c : testString.toCharArray()) {
++                            if (c > 127) {
++                                multibytes++;
++                            }
+                         }
+                     }
 -                }
 -                byteAllowed += (maxBookPageSize * Math.min(1, Math.max(0.1D, (double) length / 255D))) * multiplier;
--
++                    byteAllowed += (maxBookPageSize * Math.min(1, Math.max(0.1D, (double) length / 255D))) * multiplier;
+ 
 -                if (multibytes > 1) {
 -                    // penalize MB
 -                    byteAllowed -= multibytes;
--                }
++                    if (multibytes > 1) {
++                        // penalize MB
++                        byteAllowed -= multibytes;
++                    }
+                 }
 -            }
--
+ 
 -            if (byteTotal > byteAllowed) {
 -                PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send too large of a book. Book Size: " + byteTotal + " - Allowed:  "+ byteAllowed + " - Pages: " + pageList.size());
 -                net.pl3x.purpur.event.player.PlayerBookTooLargeEvent event = new net.pl3x.purpur.event.player.PlayerBookTooLargeEvent(player.getBukkitEntity(), testStack.asBukkitCopy()); if (event.shouldKickPlayer()) // Purpur
 -                minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
 -                return;
--            }
--        }
++                if (byteTotal > byteAllowed) {
++                    PlayerConnection.LOGGER.warn(this.player.getName() + " tried to send too large of a book. Book Size: " + byteTotal + " - Allowed:  "+ byteAllowed + " - Pages: " + pageList.size());
++                    minecraftServer.scheduleOnMain(() -> this.disconnect("Book too large!"));
++                    return;
++                }
+             }
++            // Paper end
+         }
 -        // Paper end
          // CraftBukkit start
          if (this.lastBookTick + 20 > MinecraftServer.currentTick) {
              this.disconnect("Book edited too quickly!");
-@@ -3012,7 +2963,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -3012,7 +3011,11 @@ public class PlayerConnection implements PacketListenerPlayIn {
      // Paper end
  
      public final boolean isDisconnected() {
 -        return (!this.player.joining && !this.networkManager.isConnected()) || this.processedDisconnect; // Paper
-+        return !this.player.joining && !this.networkManager.isConnected(); // Titanium - re-add duplication bugs
++        if (me.titaniumtown.TitaniumConfig.allowAllDupes) {
++            return !this.player.joining && !this.networkManager.isConnected(); // Titanium - re-add duplication bugs
++        } else {
++            return (!this.player.joining && !this.networkManager.isConnected()) || this.processedDisconnect; // Paper
++        }
      }
      // CraftBukkit end
  
-diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index eec1e49f615f8491b28b6a921c192ffae803b478..b8c9a403f0c4b4d3402201bd4135bd66af92d137 100644
---- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-+++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -827,8 +827,7 @@ public class CraftEventFactory {
-         for (org.bukkit.inventory.ItemStack stack : event.getDrops()) {
-             if (stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0) continue;
- 
--            world.dropItem(entity.getLocation(), stack); // Paper - note: dropItem already clones due to this being bukkit -> NMS
--            if (stack instanceof CraftItemStack) stack.setAmount(0); // Paper - destroy this item - if this ever leaks due to game bugs, ensure it doesn't dupe, but don't nuke bukkit stacks of manually added items
-+            world.dropItem(entity.getLocation(), stack); // Titanium - re-add duplication bugs
-         }
- 
-         return event;
