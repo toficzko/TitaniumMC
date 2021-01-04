@@ -40,7 +40,7 @@ index 6c286eb7907fbcf3c9e21837db8af3ee6ba2c79e..1db2c4939075cec66bdc31d9d44df5de
          return this.getY() == baseblockposition.getY() ? (this.getZ() == baseblockposition.getZ() ? this.getX() - baseblockposition.getX() : this.getZ() - baseblockposition.getZ()) : this.getY() - baseblockposition.getY();
      }
 diff --git a/src/main/java/net/minecraft/server/BlockPosition.java b/src/main/java/net/minecraft/server/BlockPosition.java
-index f13b4e6ec815792c2f2b49193707da94df427424..7a70cdeb7191d24694489c48d1a5fb9c9ec613c3 100644
+index f13b4e6ec815792c2f2b49193707da94df427424..dc99803839e51c3722050aabf95de292bb441ba5 100644
 --- a/src/main/java/net/minecraft/server/BlockPosition.java
 +++ b/src/main/java/net/minecraft/server/BlockPosition.java
 @@ -477,6 +477,7 @@ public class BlockPosition extends BaseBlockPosition {
@@ -65,7 +65,7 @@ index f13b4e6ec815792c2f2b49193707da94df427424..7a70cdeb7191d24694489c48d1a5fb9c
  
          public final void q(int i) {
              ((BaseBlockPosition)this).e = i;
-+            his.recalcHashCode(); // Akarin - cache hashcode
++            this.recalcHashCode(); // Akarin - cache hashcode
          }
          // Tuinity end
  
