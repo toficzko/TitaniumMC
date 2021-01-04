@@ -1,0 +1,62 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Mon, 4 Jan 2021 11:11:35 -0500
+Subject: [PATCH] POM changes
+
+
+diff --git a/pom.xml b/pom.xml
+index e324d64139ad66c22668a9924627c248b85c18ed..2e9b5982be8bff17b7e64f6de3cbcd25a1aa1684 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -43,7 +43,7 @@
+         <dependency>
+             <groupId>io.netty</groupId>
+             <artifactId>netty-all</artifactId>
+-            <version>4.1.50.Final</version>
++            <version>4.1.56.Final</version>
+         </dependency>
+         <!-- Tuinity end - fix compile issue (cannot see new api) by moving netty include BEFORE server jar -->
+         <dependency>
+@@ -97,7 +97,7 @@
+         <dependency>
+             <groupId>org.ow2.asm</groupId>
+             <artifactId>asm</artifactId>
+-            <version>8.0.1</version>
++            <version>9.0</version>
+             <scope>compile</scope>
+         </dependency>
+         <dependency>
+@@ -117,13 +117,13 @@
+         <dependency>
+             <groupId>org.xerial</groupId>
+             <artifactId>sqlite-jdbc</artifactId>
+-            <version>3.32.3</version>
++            <version>3.34.0</version>
+             <scope>runtime</scope>
+         </dependency>
+         <dependency>
+             <groupId>mysql</groupId>
+             <artifactId>mysql-connector-java</artifactId>
+-            <version>5.1.49</version>
++            <version>8.0.22</version>
+             <scope>runtime</scope>
+         </dependency>
+         <!-- testing -->
+@@ -150,7 +150,7 @@
+         <dependency>
+             <groupId>com.velocitypowered</groupId>
+             <artifactId>velocity-native</artifactId>
+-            <version>1.1.0-SNAPSHOT</version>
++            <version>2.0.0-SNAPSHOT</version>
+             <scope>compile</scope>
+         </dependency>
+         <!-- Titanium - add commons-math3 for lithium patches -->
+@@ -209,7 +209,7 @@
+                 <version>3.2.0</version>
+                 <configuration>
+                     <forceCreation>true</forceCreation> <!-- Required to prevent shading the jar multiple times -->
+-                    <archive>
++                    <archive>org.apache.commons
+                         <manifest>
+                             <addDefaultEntries>false</addDefaultEntries>
+                         </manifest>
