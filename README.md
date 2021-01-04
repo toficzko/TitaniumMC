@@ -1,7 +1,7 @@
 # TitaniumMC
-Reasons why to use my fork over others:
+TitaniumMC is a highly experimental fork of Purpur aiming for:
 - Options to disable and enable dupe fixes
-- Extra optimizations that can't be found in other forks
+- Better performance
 - Experimental options to play with
 
 Discord: https://discord.gg/cpD333fBRz
