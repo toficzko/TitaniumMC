@@ -8,7 +8,7 @@ This Patch is simply the following patches merged into one: 0150-Yatopia-lithium
 These lithium optimizations were originally ported by the YatopiaMC project (https://github.com/YatopiaMC/Yatopia)
 
 diff --git a/pom.xml b/pom.xml
-index 422bed88a0860f768e162a38a1c16265451f5990..e324d64139ad66c22668a9924627c248b85c18ed 100644
+index aafe4d0962d641866bb0f82728719c102c56fcc1..c5f88a0ac1204ea206e951810fd58a5a8da13102 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -153,6 +153,12 @@

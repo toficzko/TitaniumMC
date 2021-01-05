@@ -5,7 +5,7 @@ Subject: [PATCH] remove some coords checks
 
 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index becf06982ef77785679b465b5c309360225877e5..c9ce5039b89c98751aad6edbe1cd5e3f14d5882b 100644
+index 2a583b3dced0402d326dcbab652e9105f58b08be..215805d17cd42c7446f95cac1b403b8771a8136d 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -341,7 +341,9 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
