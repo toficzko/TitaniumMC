@@ -157,12 +157,12 @@ index 7718ec8ad3c1833e0bcc713c2e96e054e87453ad..5a05987539abbc5f7b4d5f64d08da618
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java b/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
-index 4d5af11734eef45821a106873b58061ea6aa7db7..e7a0651ab453c3a2a9f57a6f3c1d0ab0b8ebc22c 100644
+index ee4c26de15a5c304889f38f49f4584e8d4ccc5fe..99dd57c19fb9a362a71a6973556d17499232d34c 100644
 --- a/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
 +++ b/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
 @@ -111,11 +111,7 @@ public abstract class EntitySkeletonAbstract extends EntityMonster implements IR
          this.eL();
-         this.setCanPickupLoot(this.random.nextFloat() < 0.55F * difficultydamagescaler.d());
+         this.setCanPickupLoot(this.world.paperConfig.skeletonsAlwaysCanPickUpLoot || this.random.nextFloat() < 0.55F * difficultydamagescaler.d()); // Paper
          if (this.getEquipment(EnumItemSlot.HEAD).isEmpty()) {
 -            LocalDate localdate = LocalDate.now();
 -            int i = localdate.get(ChronoField.DAY_OF_MONTH);
@@ -174,10 +174,10 @@ index 4d5af11734eef45821a106873b58061ea6aa7db7..e7a0651ab453c3a2a9f57a6f3c1d0ab0
                  this.dropChanceArmor[EnumItemSlot.HEAD.b()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/server/EntityZombie.java b/src/main/java/net/minecraft/server/EntityZombie.java
-index d73e463ca045e7c8755eb5cb257e7245d3521d0e..4047ffe87a0f646b732dc0b7cf65a9b0a7346efd 100644
+index ea5a568509d5c44c3f15d8e813a554957784016b..c1cf2189adb852dc77f1e2d98cc6a4bedf9b3863 100644
 --- a/src/main/java/net/minecraft/server/EntityZombie.java
 +++ b/src/main/java/net/minecraft/server/EntityZombie.java
-@@ -517,11 +517,7 @@ public class EntityZombie extends EntityMonster {
+@@ -519,11 +519,7 @@ public class EntityZombie extends EntityMonster {
          }
  
          if (this.getEquipment(EnumItemSlot.HEAD).isEmpty()) {

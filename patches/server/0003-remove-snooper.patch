@@ -5,10 +5,10 @@ Subject: [PATCH] remove snooper
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index d33047a57f232ea2260289d86836264f91a52d86..0cd3a84ea42cc4bfc4e9fc642646952796eea40c 100644
+index 9399b3c1571dfbbc58476e3d92599f589fa0094a..585a02f1bae2cfb13c7efc7c5e2b2eb95fdb8344 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1322,14 +1322,6 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1317,14 +1317,6 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          //} // Paper
  
          this.methodProfiler.enter("snooper");

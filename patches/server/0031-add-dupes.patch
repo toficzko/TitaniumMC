@@ -21,7 +21,7 @@ index 4166b163724f2cc4ceedf0f43f92510f4efc5c1b..cc128896477ae03f1d6fa1849094496a
  
      public static double WborderSize = 6.0E7D; // Vanilla 6.0E7D; Max: 4.294967294E9D // replacement for 6.0E7D
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 5f20859edce96a67f7e40f708d4f16a89de5fd58..7469b967a86106d9eddcfcd4b9187aa6902af03b 100644
+index 30947e31981b5c44cfc73b7ef2f4803b32f4f038..4a7ddfdc0de02cc88536614e73326704254e7e70 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
 @@ -935,55 +935,54 @@ public class PlayerConnection implements PacketListenerPlayIn {

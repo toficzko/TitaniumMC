@@ -21,12 +21,12 @@ which is why it can be disabled in the configuration.
 Co-authored-by: Yannick Lamprecht <yannicklamprecht@live.de>
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-index ec74c712b3bfc8f0c89240f27f9e632bc3958a34..530cc5c9f98f0b1ca873072034988800d9940a7d 100644
+index b21da8af71fa6af82156aa83d983e99c6ac6502a..554c878fdcf7a45c493982e4784ff4b1f07dc5af 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-@@ -719,4 +719,9 @@ public class PaperWorldConfig {
-     private void disableMobSpawnerSpawnEggTransformation() {
-         disableMobSpawnerSpawnEggTransformation = getBoolean("game-mechanics.disable-mob-spawner-spawn-egg-transformation", disableMobSpawnerSpawnEggTransformation);
+@@ -741,4 +741,9 @@ public class PaperWorldConfig {
+     private void projectileSaveLimit() {
+         projectileSaveLimit = getInt("projectile-load-save-per-chunk-limit", projectileSaveLimit);
      }
 +
 +    public boolean isHopperPushBased;

@@ -51,7 +51,7 @@ index 98c3884f478aed1eba82c15f258ebfa1c7203b14..244b58a7c41d2b0ba3117550282e68a1
          } catch (ParseException parseexception) {
              throw new JsonSyntaxException("Invalid datetime: " + s, parseexception);
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 50cd947d0e47e7897a071fdf8ff6e5834e137d58..5e4cc5e8f71c1c657041159305ce3e4a9aa9f46b 100644
+index 157300c0320a136d36994d463a69a5b0fe022683..da36880d68c7cb802b4f91d39dfa358eb7ed14b7 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -51,7 +51,8 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -111,10 +111,10 @@ index 50cd947d0e47e7897a071fdf8ff6e5834e137d58..5e4cc5e8f71c1c657041159305ce3e4a
      }
  
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index d15172484801fd9808768873067aee35fb50ec64..1fd7cec23b0e5cec99065af26b7182944ea7893e 100644
+index d490398d14c5cbf3fe6141940cfec0432ba5ce94..68471de8f7e8ee10ac1f85e919aee4db4c6ba008 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -2309,6 +2309,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -2311,6 +2311,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          return methodprofilerresults;
      }
  

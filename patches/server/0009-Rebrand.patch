@@ -33,10 +33,10 @@ index c1280478ee4565003883df9607d4a8a0e8fe4faa..209f84f4e7cc80b144798f6b04fd3325
                  .completer(new ConsoleCommandCompleter(this.server))
          );
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index f2e0506219a0b29a5d82de8b6c6a1820e2a88984..d15172484801fd9808768873067aee35fb50ec64 100644
+index dd8b4a5f4321b3de822d62c6feaeb8521ef237d2..d490398d14c5cbf3fe6141940cfec0432ba5ce94 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1521,7 +1521,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1516,7 +1516,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
      }
  
      public String getServerModName() {

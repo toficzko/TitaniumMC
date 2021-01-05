@@ -18,7 +18,7 @@ index 91c72127efb4107fa6b41555a9596434e453eadb..38f16bfab23b03e26ed72334f556f564
      public final String motd = this.getString("motd", "A Minecraft Server");
      public final boolean forceGamemode = this.getBoolean("force-gamemode", false);
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 4c66ccb62a48ad9f2e011101f0a1318a3a9c651c..5f20859edce96a67f7e40f708d4f16a89de5fd58 100644
+index 97421262166fdb1a2822a12a2b908807d2c9e650..30947e31981b5c44cfc73b7ef2f4803b32f4f038 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
 @@ -179,11 +179,14 @@ public class PlayerConnection implements PacketListenerPlayIn {
