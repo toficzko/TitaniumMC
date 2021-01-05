@@ -1,0 +1,254 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Mon, 4 Jan 2021 21:06:13 -0500
+Subject: [PATCH] Dimentional Threading
+
+
+diff --git a/src/main/java/DimThread/DimThread.java b/src/main/java/DimThread/DimThread.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..1efdb1867ad7f8513f163f9c7277c135460eee5b
+--- /dev/null
++++ b/src/main/java/DimThread/DimThread.java
+@@ -0,0 +1,51 @@
++package dimthread;
++
++import dimthread.thread.IMutableMainThread;
++import dimthread.util.ServerManager;
++import threading.ThreadPool;
++import net.minecraft.server.WorldServer;
++import net.minecraft.server.MinecraftServer;
++
++public class DimThread {
++    public static final String MOD_ID = "dimthread";
++    public static final ServerManager MANAGER = new ServerManager();
++
++    public static ThreadPool getThreadPool(MinecraftServer server) {
++        return MANAGER.getThreadPool(server);
++    }
++
++    public static void swapThreadsAndRun(Runnable task, Object... threadedObjects) {
++        Thread currentThread = Thread.currentThread();
++        Thread[] oldThreads = new Thread[threadedObjects.length];
++
++        for(int i = 0; i < oldThreads.length; i++) {
++            oldThreads[i] = ((IMutableMainThread)threadedObjects[i]).getMainThread();
++            ((IMutableMainThread)threadedObjects[i]).setMainThread(currentThread);
++        }
++
++        task.run();
++
++        for(int i = 0; i < oldThreads.length; i++) {
++            ((IMutableMainThread)threadedObjects[i]).setMainThread(oldThreads[i]);
++        }
++    }
++
++    /**
++        * Makes it easy to understand what is happening in crash reports and helps identify dimthread workers.
++        * */
++    public static void attach(Thread thread, String name) {
++        thread.setName(MOD_ID + "_" + name);
++    }
++
++    public static void attach(Thread thread, WorldServer world) {
++        // attach(thread, world.getRegistryKey().getValue().getPath());
++        thread.setName(MOD_ID);
++    }
++
++    /**
++        * Checks if the given thread is a dimthread worker by checking the name. Probably quite fragile...
++        * */
++    public static boolean owns(Thread thread) {
++        return thread.getName().startsWith(MOD_ID);
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/DimThread/thread/IMutableMainThread.java b/src/main/java/DimThread/thread/IMutableMainThread.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..92a11050785d4fd6a56b2289edd15b679b8f846d
+--- /dev/null
++++ b/src/main/java/DimThread/thread/IMutableMainThread.java
+@@ -0,0 +1,6 @@
++package dimthread.thread;
++
++public interface IMutableMainThread {
++	Thread getMainThread();
++	void setMainThread(Thread thread);
++}
+\ No newline at end of file
+diff --git a/src/main/java/DimThread/util/ServerManager.java b/src/main/java/DimThread/util/ServerManager.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..e3e0b4b1d6b0277466162cf0d22a944903fe5c4b
+--- /dev/null
++++ b/src/main/java/DimThread/util/ServerManager.java
+@@ -0,0 +1,39 @@
++package dimthread.util;
++
++import net.minecraft.server.MinecraftServer;
++import threading.ThreadPool;
++
++import java.util.Collections;
++import java.util.ConcurrentModificationException;
++import java.util.Map;
++import java.util.WeakHashMap;
++
++public class ServerManager {
++
++	private final Map<MinecraftServer, Boolean> actives = Collections.synchronizedMap(new WeakHashMap<>());
++	private final Map<MinecraftServer, ThreadPool> threadPools = Collections.synchronizedMap(new WeakHashMap<>());
++
++	public boolean isActive(MinecraftServer server) {
++		return me.titaniumtown.TitaniumConfig.dimThreading;
++	}
++
++	public void setActive(MinecraftServer server) {
++		this.actives.put(server, me.titaniumtown.TitaniumConfig.dimThreading);
++	}
++
++	public ThreadPool getThreadPool(MinecraftServer server) {
++		return this.threadPools.computeIfAbsent(server, s -> new ThreadPool(me.titaniumtown.TitaniumConfig.dimThreadingThreads));
++	}
++
++	public void setThreadCount(MinecraftServer server) {
++		ThreadPool current = this.threadPools.get(server);
++
++		// if(current.getActiveCount() != 0) {
++		// 	throw new ConcurrentModificationException("Setting the thread count in wrong phase");
++		// }
++
++		this.threadPools.put(server, new ThreadPool(me.titaniumtown.TitaniumConfig.dimThreadingThreads));
++		current.shutdown();
++	}
++
++}
+\ No newline at end of file
+diff --git a/src/main/java/me/titaniumtown/TitaniumConfig.java b/src/main/java/me/titaniumtown/TitaniumConfig.java
+index 4737daae4b0acd65dbbc5e56134885c50ce36e64..e6dadbcec9a4b4311bdbb4e221174ec3c6278774 100644
+--- a/src/main/java/me/titaniumtown/TitaniumConfig.java
++++ b/src/main/java/me/titaniumtown/TitaniumConfig.java
+@@ -156,10 +156,14 @@ public class TitaniumConfig {
+     public static boolean allowSandDupe = false;
+     public static boolean worldBorderChecks = true;
+     public static boolean allowAllDupes = false;
++    public static int dimThreadingThreads = 4;
++    public static boolean dimThreading = false;
+     private static void experimental() {
+         allowSandDupe = getBoolean("settings.experimental.allow-sand-dupe", allowSandDupe);
+         worldBorderChecks = getBoolean("settings.experimental.world-border-checks", worldBorderChecks);
+         allowAllDupes = getBoolean("settings.experimental.allow-all-dupes", allowAllDupes);
++        dimThreadingThreads = getInt("settings.experimental.dimentional-threads", dimThreadingThreads);
++        dimThreading = getBoolean("settings.experimental.dimentional-threading", dimThreading); 
+     }
+ 
+     public static boolean logPlayerLoginLoc = false;
+diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
+index 10362598b8246bee6d434df43af6fd58af2bea0b..343c21d38707b28d22c8767ed474748f74bad87c 100644
+--- a/src/main/java/net/minecraft/server/PlayerList.java
++++ b/src/main/java/net/minecraft/server/PlayerList.java
+@@ -43,6 +43,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+ import org.bukkit.util.Vector;
+ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+ // CraftBukkit end
++import dimthread.DimThread; 
+ 
+ public abstract class PlayerList {
+ 
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index 3e8d62a55b2dbd3a488e578f177fda599312c0c9..3a57679d82bb0f610721f0139f3843a7d95707df 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -32,8 +32,18 @@ import org.bukkit.craftbukkit.block.CraftBlockState;
+ import org.bukkit.craftbukkit.block.data.CraftBlockData;
+ import org.bukkit.event.block.BlockPhysicsEvent;
+ // CraftBukkit end
++import dimthread.thread.IMutableMainThread;
+ 
+-public abstract class World implements GeneratorAccess, AutoCloseable {
++public abstract class World implements GeneratorAccess, AutoCloseable, IMutableMainThread {
++    private Thread thread;
++
++	public Thread getMainThread() {
++		return this.thread;
++	}
++
++	public void setMainThread(Thread thread) {
++		this.thread = thread;
++	}
+ 
+     protected static final Logger LOGGER = LogManager.getLogger();
+     public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
+diff --git a/src/main/java/threading/ThreadPool.java b/src/main/java/threading/ThreadPool.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..c1450063b1fbaae31bf994907614af97f2540da5
+--- /dev/null
++++ b/src/main/java/threading/ThreadPool.java
+@@ -0,0 +1,70 @@
++package threading;
++
++import java.util.Iterator;
++import java.util.concurrent.Executors;
++import java.util.concurrent.ThreadPoolExecutor;
++import java.util.concurrent.atomic.AtomicInteger;
++import java.util.function.Consumer;
++
++public class ThreadPool {
++
++    private ThreadPoolExecutor executor;
++    private final int threadCount;
++
++    private final AtomicInteger activeCount = new AtomicInteger();
++
++    public ThreadPool(int threadCount) {
++        this.threadCount = threadCount;
++        this.restart();
++    }
++
++    public int getThreadCount() {
++        return this.threadCount;
++    }
++
++    public ThreadPoolExecutor getExecutor() {
++        return this.executor;
++    }
++
++    public void run(Runnable action) {
++        this.activeCount.getAndIncrement();
++
++        this.executor.execute(() -> {
++            action.run();
++            activeCount.getAndDecrement();
++        });
++    }
++
++    public <T> void iterate(Iterable<T> iterable, Consumer<T> action) {
++        iterable.forEach(t -> this.run(() -> action.accept(t)));
++    }
++
++    public <T> void iterate(Iterator<T> iterator, Consumer<T> action) {
++        iterator.forEachRemaining(t -> this.run(() -> action.accept(t)));
++    }
++
++    public void awaitFreeThread() {
++        while(this.activeCount.get() >= this.getThreadCount()) {
++            try {Thread.sleep(5);}
++            catch(InterruptedException ignored) {}
++        }
++    }
++
++    public void awaitCompletion() {
++        while(this.activeCount.get() != 0) {
++            try {Thread.sleep(5);}
++            catch(InterruptedException ignored) {}
++        }
++    }
++
++    public void restart() {
++        if(this.executor == null || this.executor.isShutdown()) {
++            this.executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(this.threadCount);
++        }
++    }
++
++    public void shutdown() {
++        this.executor.shutdown();
++    }
++
++}
