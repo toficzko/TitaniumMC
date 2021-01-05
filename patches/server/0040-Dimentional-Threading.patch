@@ -140,18 +140,6 @@ index 4737daae4b0acd65dbbc5e56134885c50ce36e64..e6dadbcec9a4b4311bdbb4e221174ec3
      }
  
      public static boolean logPlayerLoginLoc = false;
-diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 10362598b8246bee6d434df43af6fd58af2bea0b..343c21d38707b28d22c8767ed474748f74bad87c 100644
---- a/src/main/java/net/minecraft/server/PlayerList.java
-+++ b/src/main/java/net/minecraft/server/PlayerList.java
-@@ -43,6 +43,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
- import org.bukkit.util.Vector;
- import org.spigotmc.event.player.PlayerSpawnLocationEvent;
- // CraftBukkit end
-+import dimthread.DimThread; 
- 
- public abstract class PlayerList {
- 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
 index 3e8d62a55b2dbd3a488e578f177fda599312c0c9..3a57679d82bb0f610721f0139f3843a7d95707df 100644
 --- a/src/main/java/net/minecraft/server/World.java
