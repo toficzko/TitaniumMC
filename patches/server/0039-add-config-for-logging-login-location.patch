@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Mon, 4 Jan 2021 19:17:22 -0500
+Subject: [PATCH] add config for logging login location
+
+
+diff --git a/src/main/java/me/titaniumtown/TitaniumConfig.java b/src/main/java/me/titaniumtown/TitaniumConfig.java
+index cc128896477ae03f1d6fa1849094496a9bb9948e..4737daae4b0acd65dbbc5e56134885c50ce36e64 100644
+--- a/src/main/java/me/titaniumtown/TitaniumConfig.java
++++ b/src/main/java/me/titaniumtown/TitaniumConfig.java
+@@ -162,6 +162,11 @@ public class TitaniumConfig {
+         allowAllDupes = getBoolean("settings.experimental.allow-all-dupes", allowAllDupes);
+     }
+ 
++    public static boolean logPlayerLoginLoc = false;
++    private static void general() {
++        logPlayerLoginLoc = getBoolean("settings.general.log-player-login-location", logPlayerLoginLoc);
++    }
++
+     public static double WborderSize = 6.0E7D; // Vanilla 6.0E7D; Max: 4.294967294E9D // replacement for 6.0E7D
+     public static int biggestInt = 29999984; // Vanilla: 29999984; Max: 2147483647
+     private static void world() {
+diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
+index 628771e6b450f8053eaca6499f1bbecac7337071..10362598b8246bee6d434df43af6fd58af2bea0b 100644
+--- a/src/main/java/net/minecraft/server/PlayerList.java
++++ b/src/main/java/net/minecraft/server/PlayerList.java
+@@ -395,7 +395,11 @@ public abstract class PlayerList {
+         }
+         // Paper end
+         // CraftBukkit - Moved from above, added world
+-        PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", entityplayer.getDisplayName().getString(), s1, entityplayer.getId(), worldserver1.worldDataServer.getName(), entityplayer.locX(), entityplayer.locY(), entityplayer.locZ());
++        if (me.titaniumtown.TitaniumConfig.logPlayerLoginLoc) {
++            PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", entityplayer.getDisplayName().getString(), s1, entityplayer.getId(), worldserver1.worldDataServer.getName(), entityplayer.locX(), entityplayer.locY(), entityplayer.locZ());
++        } else {
++            PlayerList.LOGGER.info("{}[{}] logged in with entity id {}", entityplayer.getDisplayName().getString(), s1, entityplayer.getId());
++        }
+     }
+ 
+     public void sendScoreboard(ScoreboardServer scoreboardserver, EntityPlayer entityplayer) {
