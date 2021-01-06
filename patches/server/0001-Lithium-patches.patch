@@ -566,7 +566,7 @@ index a7c2543fdd4d5f6a04c45ec42472837ccaea9619..92ab79532d29341e8840341ff5ee8f52
      };
  
 diff --git a/src/main/java/net/minecraft/server/EnumDirection.java b/src/main/java/net/minecraft/server/EnumDirection.java
-index e3ba447eb7f3023406b71aab97e3d30523540588..d273b8240367a0a567eba1e3775b2c9b53321322 100644
+index 83366996a0f9ae4684cc5424ace7630cc72b75f7..f4fe50507bd8960bee23ff9e11e2780063d299a7 100644
 --- a/src/main/java/net/minecraft/server/EnumDirection.java
 +++ b/src/main/java/net/minecraft/server/EnumDirection.java
 @@ -20,13 +20,13 @@ public enum EnumDirection implements INamable {
@@ -599,7 +599,7 @@ index e3ba447eb7f3023406b71aab97e3d30523540588..d273b8240367a0a567eba1e3775b2c9b
      }
  
      public EnumDirection rotateCW() { return g(); } // Purpur - OBFHELPER
-@@ -188,8 +192,12 @@ public enum EnumDirection implements INamable {
+@@ -200,8 +204,12 @@ public enum EnumDirection implements INamable {
          return (float) ((this.i & 3) * 90);
      }
  
