@@ -4,6 +4,28 @@ Date: Fri, 18 Dec 2020 12:47:53 -0500
 Subject: [PATCH] Rebrand
 
 
+diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
+index 4d8740678049aa749b42618470e9cc838555528d..c0183c83e226aa83ab62d49588a42f9f57bb47bf 100644
+--- a/src/main/java/com/destroystokyo/paper/Metrics.java
++++ b/src/main/java/com/destroystokyo/paper/Metrics.java
+@@ -593,7 +593,7 @@ public class Metrics {
+             boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
+             // Only start Metrics, if it's enabled in the config
+             if (config.getBoolean("enabled", true)) {
+-                Metrics metrics = new Metrics("Purpur", serverUUID, logFailedRequests, Bukkit.getLogger()); // Purpur
++                Metrics metrics = new Metrics("Titanium", serverUUID, logFailedRequests, Bukkit.getLogger()); // Titanium
+ 
+                 metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+                     String minecraftVersion = Bukkit.getVersion();
+@@ -603,7 +603,7 @@ public class Metrics {
+ 
+                 metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+                 metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : (PaperConfig.isProxyOnlineMode() ? "bungee" : "offline"))); // Purpur
+-                metrics.addCustomChart(new Metrics.SimplePie("purpur_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Purpur
++                metrics.addCustomChart(new Metrics.SimplePie("titanium_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Titanium
+ 
+                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+                     Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 index 255bbd6e48b95c70fad02ba692c64c7579496827..dc2e28fee9d64fc6419061a55f6f7ec5f6712e41 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
@@ -66,6 +88,19 @@ index dbda80c9a57dc7a1882a00020b407dd69a187649..c44bc2249dc9dfcfc923c4ea005ed5a0
  
      public static String timingsUrl = "https://timings.pl3x.net";
      private static void timingsSettings() {
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 491c91fa4c8901c5c3ec61679508211556164890..5b4046ca3b311c2aeaca31bc0af6547cf6d064f7 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -232,7 +232,7 @@ import javax.annotation.Nullable; // Paper
+ import javax.annotation.Nonnull; // Paper
+ 
+ public final class CraftServer implements Server {
+-    private final String serverName = "Purpur"; // Paper // Tuinity // Purpur
++    private final String serverName = "Titanium"; // Paper // Tuinity // Purpur // Titanium
+     private final String serverVersion;
+     private final String bukkitVersion = Versioning.getBukkitVersion();
+     private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 index 65a85f226822bb2b7f9a3a67654d3f40d7c4bfa2..0eb5b7e8bbf3e4ab1c0badfaab571bed0a0b47df 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
