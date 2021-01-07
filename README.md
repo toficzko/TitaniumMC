@@ -7,4 +7,5 @@ TitaniumMC is a highly experimental fork of Purpur aiming to provide:
 - More customizability on top of Purpur
 
 Discord server: https://discord.gg/cpD333fBRz
+
 Download latest build: http://www.gardling.com/titaniumclip.jar
