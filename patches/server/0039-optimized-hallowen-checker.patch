@@ -168,10 +168,10 @@ index ee4c26de15a5c304889f38f49f4584e8d4ccc5fe..3838b212b203bb6e9f6c34d77905d24c
                  this.dropChanceArmor[EnumItemSlot.HEAD.b()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/server/EntityZombie.java b/src/main/java/net/minecraft/server/EntityZombie.java
-index ea5a568509d5c44c3f15d8e813a554957784016b..fe1ba7306ce6a8226a2807245afcb9eab3e5b51e 100644
+index a5699314be3f47ed9b27a5d21a396c5282592c7b..293c7d26354ef62858f5c6bd32ed5a28a503757e 100644
 --- a/src/main/java/net/minecraft/server/EntityZombie.java
 +++ b/src/main/java/net/minecraft/server/EntityZombie.java
-@@ -519,11 +519,7 @@ public class EntityZombie extends EntityMonster {
+@@ -520,11 +520,7 @@ public class EntityZombie extends EntityMonster {
          }
  
          if (this.getEquipment(EnumItemSlot.HEAD).isEmpty()) {

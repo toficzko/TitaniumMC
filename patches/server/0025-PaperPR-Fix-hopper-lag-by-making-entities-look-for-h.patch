@@ -21,10 +21,10 @@ which is why it can be disabled in the configuration.
 Co-authored-by: Yannick Lamprecht <yannicklamprecht@live.de>
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-index b21da8af71fa6af82156aa83d983e99c6ac6502a..554c878fdcf7a45c493982e4784ff4b1f07dc5af 100644
+index ff5e4812819f45c57a662b8fd63c836785782bdb..a3d5ff42bf6967bc3d95c84643e7b39c3040a7d4 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-@@ -741,4 +741,9 @@ public class PaperWorldConfig {
+@@ -769,4 +769,9 @@ public class PaperWorldConfig {
      private void projectileSaveLimit() {
          projectileSaveLimit = getInt("projectile-load-save-per-chunk-limit", projectileSaveLimit);
      }
@@ -88,7 +88,7 @@ index 0000000000000000000000000000000000000000..fdc6c7a3cf7b4842beec07521a1952b1
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
-index cbe03923d468bf75adc10245ebd9f63ff10987f9..7070bfbd1a16e9d8e6d0f0487ee42993d801233a 100644
+index b47481e72cb63c8652fbdf292be29af14c796103..755051f3046ec8945132fed030dba8a4327ef548 100644
 --- a/src/main/java/net/minecraft/server/EntityItem.java
 +++ b/src/main/java/net/minecraft/server/EntityItem.java
 @@ -12,7 +12,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
