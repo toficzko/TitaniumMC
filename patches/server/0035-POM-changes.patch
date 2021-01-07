@@ -5,7 +5,7 @@ Subject: [PATCH] POM changes
 
 
 diff --git a/pom.xml b/pom.xml
-index c5f88a0ac1204ea206e951810fd58a5a8da13102..2e9b5982be8bff17b7e64f6de3cbcd25a1aa1684 100644
+index c5f88a0ac1204ea206e951810fd58a5a8da13102..2a878ce5b85fa9fd812269614af36cea1a69757f 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -43,7 +43,7 @@
@@ -44,12 +44,3 @@ index c5f88a0ac1204ea206e951810fd58a5a8da13102..2e9b5982be8bff17b7e64f6de3cbcd25
              <scope>compile</scope>
          </dependency>
          <!-- Titanium - add commons-math3 for lithium patches -->
-@@ -209,7 +209,7 @@
-                 <version>3.2.0</version>
-                 <configuration>
-                     <forceCreation>true</forceCreation> <!-- Required to prevent shading the jar multiple times -->
--                    <archive>
-+                    <archive>org.apache.commons
-                         <manifest>
-                             <addDefaultEntries>false</addDefaultEntries>
-                         </manifest>
