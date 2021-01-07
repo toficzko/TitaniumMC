@@ -1,22 +1,17 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: VADemon <vad@syping.de>
-Date: Sun, 27 Dec 2020 08:56:22 -0500
-Subject: [PATCH] (PaperPR) Add HalloweenChecker to optimize halloween-related
- mobs
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Wed, 6 Jan 2021 22:39:01 -0500
+Subject: [PATCH] optimized hallowen checker
 
-Affected mobs: Zombie, Bats, SkeletonAbstract
-By default MC checks on every spawn attempt whether it's "halloween time", it's probably not. This patch keeps track of the next upcoming date to schedule the toggle at the right time, using logarithmic back-off.
-Both Halloween-Season and -Day checks are reduced to boolean comparisons.
 
-Supersedes #4939 (only included Bats).
-
-diff --git a/src/main/java/com/destroystokyo/paper/entity/HalloweenChecker.java b/src/main/java/com/destroystokyo/paper/entity/HalloweenChecker.java
+diff --git a/src/main/java/me/titaniumtown/HalloweenChecker.java b/src/main/java/me/titaniumtown/HalloweenChecker.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..52fb46f27cbc2a830a17af84561a9aace6eb0635
+index 0000000000000000000000000000000000000000..bbb9150bf834cd39f49184f57f350a9d671301bd
 --- /dev/null
-+++ b/src/main/java/com/destroystokyo/paper/entity/HalloweenChecker.java
-@@ -0,0 +1,107 @@
-+package com.destroystokyo.paper.entity;
++++ b/src/main/java/me/titaniumtown/HalloweenChecker.java
+@@ -0,0 +1,108 @@
++package me.titaniumtown;
++
 +
 +import java.time.LocalDate;
 +import java.time.LocalDateTime;
@@ -123,8 +118,9 @@ index 0000000000000000000000000000000000000000..52fb46f27cbc2a830a17af84561a9aac
 +        );
 +    }
 +}
+\ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/EntityBat.java b/src/main/java/net/minecraft/server/EntityBat.java
-index 7718ec8ad3c1833e0bcc713c2e96e054e87453ad..5a05987539abbc5f7b4d5f64d08da61860739455 100644
+index 7718ec8ad3c1833e0bcc713c2e96e054e87453ad..4a5775ef02a1351fd1f556a041eb5e8c2857be3b 100644
 --- a/src/main/java/net/minecraft/server/EntityBat.java
 +++ b/src/main/java/net/minecraft/server/EntityBat.java
 @@ -266,7 +266,6 @@ public class EntityBat extends EntityAmbient {
@@ -135,46 +131,44 @@ index 7718ec8ad3c1833e0bcc713c2e96e054e87453ad..5a05987539abbc5f7b4d5f64d08da618
              byte b0 = 4;
  
              if (eJ()) {
-@@ -274,17 +273,14 @@ public class EntityBat extends EntityAmbient {
-             } else if (random.nextBoolean()) {
+@@ -275,16 +274,13 @@ public class EntityBat extends EntityAmbient {
                  return false;
              }
--
-+            int i = generatoraccess.getLightLevel(blockposition); // Paper - moved getLightLevel() down here
+ 
++            int i = generatoraccess.getLightLevel(blockposition);
              return i > random.nextInt(b0) ? false : a(entitytypes, generatoraccess, enummobspawn, blockposition, random);
          }
      }
  
-+    
      private static boolean eJ() {
 -        LocalDate localdate = LocalDate.now();
 -        int i = localdate.get(ChronoField.DAY_OF_MONTH);
 -        int j = localdate.get(ChronoField.MONTH_OF_YEAR);
 -
 -        return j == 10 && i >= 20 || j == 11 && i <= 3;
-+        return com.destroystokyo.paper.entity.HalloweenChecker.isHalloweenSeason(); // Paper
++        return me.titaniumtown.HalloweenChecker.isHalloweenSeason();
      }
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java b/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
-index ee4c26de15a5c304889f38f49f4584e8d4ccc5fe..99dd57c19fb9a362a71a6973556d17499232d34c 100644
+index ee4c26de15a5c304889f38f49f4584e8d4ccc5fe..3838b212b203bb6e9f6c34d77905d24cc7ef1684 100644
 --- a/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
 +++ b/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
-@@ -111,11 +111,7 @@ public abstract class EntitySkeletonAbstract extends EntityMonster implements IR
+@@ -111,11 +111,8 @@ public abstract class EntitySkeletonAbstract extends EntityMonster implements IR
          this.eL();
          this.setCanPickupLoot(this.world.paperConfig.skeletonsAlwaysCanPickUpLoot || this.random.nextFloat() < 0.55F * difficultydamagescaler.d()); // Paper
          if (this.getEquipment(EnumItemSlot.HEAD).isEmpty()) {
 -            LocalDate localdate = LocalDate.now();
 -            int i = localdate.get(ChronoField.DAY_OF_MONTH);
 -            int j = localdate.get(ChronoField.MONTH_OF_YEAR);
--
+ 
 -            if (j == 10 && i == 31 && this.random.nextFloat() < 0.25F) {
-+            if (com.destroystokyo.paper.entity.HalloweenChecker.isHalloweenDay() && this.random.nextFloat() < 0.25F) { // Paper
++            if (me.titaniumtown.HalloweenChecker.isHalloweenSeason() && this.random.nextFloat() < 0.25F) {
                  this.setSlot(EnumItemSlot.HEAD, new ItemStack(this.random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN));
                  this.dropChanceArmor[EnumItemSlot.HEAD.b()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/server/EntityZombie.java b/src/main/java/net/minecraft/server/EntityZombie.java
-index ea5a568509d5c44c3f15d8e813a554957784016b..c1cf2189adb852dc77f1e2d98cc6a4bedf9b3863 100644
+index ea5a568509d5c44c3f15d8e813a554957784016b..fe1ba7306ce6a8226a2807245afcb9eab3e5b51e 100644
 --- a/src/main/java/net/minecraft/server/EntityZombie.java
 +++ b/src/main/java/net/minecraft/server/EntityZombie.java
 @@ -519,11 +519,7 @@ public class EntityZombie extends EntityMonster {
@@ -186,7 +180,7 @@ index ea5a568509d5c44c3f15d8e813a554957784016b..c1cf2189adb852dc77f1e2d98cc6a4be
 -            int j = localdate.get(ChronoField.MONTH_OF_YEAR);
 -
 -            if (j == 10 && i == 31 && this.random.nextFloat() < 0.25F) {
-+            if (com.destroystokyo.paper.entity.HalloweenChecker.isHalloweenDay() && this.random.nextFloat() < 0.25F) { // Paper
++            if (me.titaniumtown.HalloweenChecker.isHalloweenSeason()&& this.random.nextFloat() < 0.25F) {
                  this.setSlot(EnumItemSlot.HEAD, new ItemStack(this.random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN));
                  this.dropChanceArmor[EnumItemSlot.HEAD.b()] = 0.0F;
              }
