@@ -40,10 +40,10 @@ index 6c286eb7907fbcf3c9e21837db8af3ee6ba2c79e..1db2c4939075cec66bdc31d9d44df5de
          return this.getY() == baseblockposition.getY() ? (this.getZ() == baseblockposition.getZ() ? this.getX() - baseblockposition.getX() : this.getZ() - baseblockposition.getZ()) : this.getY() - baseblockposition.getY();
      }
 diff --git a/src/main/java/net/minecraft/server/BlockPosition.java b/src/main/java/net/minecraft/server/BlockPosition.java
-index f13b4e6ec815792c2f2b49193707da94df427424..dc99803839e51c3722050aabf95de292bb441ba5 100644
+index 7fddef0afbcf1f9f391c540b8fce1bebf8faa452..a84ddfa6299069aab04128a03f4798d473817a98 100644
 --- a/src/main/java/net/minecraft/server/BlockPosition.java
 +++ b/src/main/java/net/minecraft/server/BlockPosition.java
-@@ -477,6 +477,7 @@ public class BlockPosition extends BaseBlockPosition {
+@@ -469,6 +469,7 @@ public class BlockPosition extends BaseBlockPosition {
              ((BaseBlockPosition)this).a = i; // Tuinity - force inline
              ((BaseBlockPosition)this).b = j; // Tuinity - force inline
              ((BaseBlockPosition)this).e = k; // Tuinity - force inline
@@ -51,7 +51,7 @@ index f13b4e6ec815792c2f2b49193707da94df427424..dc99803839e51c3722050aabf95de292
              return this;
          }
  
-@@ -558,14 +559,17 @@ public class BlockPosition extends BaseBlockPosition {
+@@ -550,14 +551,17 @@ public class BlockPosition extends BaseBlockPosition {
  
          public final void o(int i) {
              ((BaseBlockPosition)this).a = i; // need cast thanks to name conflict
