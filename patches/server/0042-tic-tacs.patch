@@ -10803,7 +10803,7 @@ index 0000000000000000000000000000000000000000..00fbe5c9970079e90ee04dd4e38c1ecd
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 13948d6225efc4bbac87788d970d00e6a62586a1..cb5c031222cd5c4d281b3b1a3b12dc8a38ee953c 100644
+index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6e6cc222e 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -54,8 +54,115 @@ import org.apache.logging.log4j.LogManager;
@@ -10845,9 +10845,9 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..cb5c031222cd5c4d281b3b1a3b12dc8a
 +    public ChunkMainThreadExecutor chunkMainExecutor = new ChunkMainThreadExecutor(mainThread);
 +    public LightEngineThreaded lighting = this.lightengineThreaded;
 +
-+    tracker.PlayerChunkMap.a(watchDistance<int>);
++    tracker.PlayerChunkMap.a(watchDistance);
 +
-+    map.addListener(tracker<ChunkTracker>);
++    map.addListener(tracker);
 +    
 +    private TaskExecutor<Runnable> createWorldgenActor(Executor executor, String name) {
 +        return new VoidActor(name);
