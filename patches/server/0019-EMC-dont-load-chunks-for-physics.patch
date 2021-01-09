@@ -5,10 +5,10 @@ Subject: [PATCH] (EMC) dont load chunks for physics
 
 
 diff --git a/src/main/java/net/minecraft/server/BlockBase.java b/src/main/java/net/minecraft/server/BlockBase.java
-index b40f5167d2a9772658c115091f13706fbb4959b7..52a70475de458a58690b21822103eda253ba9861 100644
+index 657885cdaa086293f6b5aa6f3058acd16df0ba35..8724ad342bec7c733b3c825bd62dbfa5c28c06dd 100644
 --- a/src/main/java/net/minecraft/server/BlockBase.java
 +++ b/src/main/java/net/minecraft/server/BlockBase.java
-@@ -592,7 +592,8 @@ public abstract class BlockBase {
+@@ -593,7 +593,8 @@ public abstract class BlockBase {
                  EnumDirection enumdirection = aenumdirection[l];
  
                  blockposition_mutableblockposition.a((BaseBlockPosition) blockposition, enumdirection);

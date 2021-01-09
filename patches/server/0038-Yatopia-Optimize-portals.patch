@@ -45,10 +45,10 @@ index e10995ec30dd9a10d781b3c1709fd2db5a9becdd..456af55b5908f7192a63c6b15fb93a34
          return optional.map((villageplacerecord) -> {
              BlockPosition blockposition1 = villageplacerecord.f();
 diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
-index 370a074d3629c3617efc72b54cf586225d29db6c..7ab378bf4287241cf4bd064d057f42e93a54a792 100644
+index 920864766ea28ec494e59bbeda73a7ae742b89b3..c3b808f12148feaf6a62fa13a732a5b6c032cad3 100644
 --- a/src/main/java/net/minecraft/server/VillagePlace.java
 +++ b/src/main/java/net/minecraft/server/VillagePlace.java
-@@ -213,6 +213,18 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -214,6 +214,18 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
          }
          return ret;
      }
@@ -67,7 +67,7 @@ index 370a074d3629c3617efc72b54cf586225d29db6c..7ab378bf4287241cf4bd064d057f42e9
      public java.util.List<VillagePlaceRecord> cList(Predicate<VillagePlaceType> predicate, BlockPosition pos, int i, VillagePlace.Occupancy occupancy) {
          int j = i * i;
          java.util.List<VillagePlaceRecord> ret = new java.util.ArrayList<>();
-@@ -472,6 +484,18 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -474,6 +486,18 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
           */ // Yatopia end
      }
  

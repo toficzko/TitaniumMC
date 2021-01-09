@@ -146,10 +146,10 @@ index 97421262166fdb1a2822a12a2b908807d2c9e650..30947e31981b5c44cfc73b7ef2f4803b
                              this.player.setLocation(d4, d5, d6, f, f1);
                              if (!this.player.noclip && !this.player.isSleeping() && (flag1 && worldserver.getCubes(this.player, axisalignedbb) || (didCollide && this.a((IWorldReader) worldserver, axisalignedbb)))) { // Tuinity - optimise out the extra getCubes-like call most of the time
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 4f42bc21839086b2a40a35910a08d9b11c7649f9..d294b40fbb98f7076d0606719d6d9cb3c054730e 100644
+index f3aa7878d281ae5a147728f2b5addd5659f9a6bd..a87010d2fd6679e62cb58323d5b8df64a4306071 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -1654,9 +1654,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1659,9 +1659,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
      @Override
      public void setFlying(boolean value) {
          boolean needsUpdate = getHandle().abilities.isFlying != value; // Paper - Only refresh abilities if needed
