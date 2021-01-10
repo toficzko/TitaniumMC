@@ -5,7 +5,7 @@ Subject: [PATCH] server.properties tweaks
 
 
 diff --git a/src/main/java/net/minecraft/server/DedicatedServerProperties.java b/src/main/java/net/minecraft/server/DedicatedServerProperties.java
-index 38f16bfab23b03e26ed72334f556f564f7c5c3a8..a522e1578f5e722373b8bf726c2334355a5ef442 100644
+index 91c72127efb4107fa6b41555a9596434e453eadb..d376aad4da35654cb2c7a09ec8eab6f88f987e15 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServerProperties.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServerProperties.java
 @@ -87,8 +87,8 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
