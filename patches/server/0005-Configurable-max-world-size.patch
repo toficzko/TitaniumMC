@@ -148,7 +148,7 @@ index 780474397acb4d0e7ecb4540e1a2db5721e59d3d..91c72127efb4107fa6b41555a9596434
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 073be230a8c0e2ccf6b4304e2988c270749f1a35..163b4a967528446fa6fa9b56d0b239edc42bb832 100644
+index b521a9984c327f74bccd634a8bfe26f2cd638462..aafd8d96f955a03dfa516584675262816deb2952 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -1544,8 +1544,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
@@ -219,7 +219,7 @@ index e3cdeb2d899957901e99f0f997af92505cbe4582..97421262166fdb1a2822a12a2b908807
  
      private static boolean b(PacketPlayInVehicleMove packetplayinvehiclemove) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 7021875fd8f205049748fe96b945de8339f3ec58..2a583b3dced0402d326dcbab652e9105f58b08be 100644
+index 3c02c34a13995f7805cd0196b6e2fd150061250c..9d643df31ccadf082889f3a502ed139d3b8ec569 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -341,7 +341,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
