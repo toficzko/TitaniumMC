@@ -34,21 +34,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 0a8173a5bcd7212ebeff204fef5efdf1633aac78..f538493b4a59891ec5cf79901526a92520321a67 100644
+index 7842e65115cf6c37322c83ebff954a06408680b5..883f1dc18801e54e67e70c3346f732823877e464 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -53,6 +53,17 @@ public class Chunk implements IChunkAccess {
-     private final ChunkCoordIntPair loc; public final long coordinateKey; // Paper - cache coordinate key
+     private final ChunkCoordIntPair loc; public final long coordinateKey; public final int locX; public final int locZ; // Paper - cache coordinate key
      private volatile boolean x;
  
 +    // AirplaneL start - instead of using a random every time the chunk is ticked, define when lightning strikes preemptively
-+    private int lightningTick;
-+    public boolean shouldDoLighting() {
-+        if (this.lightningTick-- == 0) {
++    private int lightningTick = -1;
++    public boolean shouldDoLightning() {
++        boolean doTick = this.lightningTick == 0;
++        if (this.lightningTick-- <= 0) {
 +            this.lightningTick = this.world.random.nextInt(100000) << 1;
-+            return true;
 +        }
-+        return false;
++        return doTick;
 +    }
 +    // AirplaneL end
 +
@@ -56,10 +56,10 @@ index 0a8173a5bcd7212ebeff204fef5efdf1633aac78..f538493b4a59891ec5cf79901526a925
          this(world, chunkcoordintpair, biomestorage, ChunkConverter.a, TickListEmpty.b(), TickListEmpty.b(), 0L, (ChunkSection[]) null, (Consumer) null);
      }
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index 83e3dcbbe36ce1f947f387ec55067e51a1b7384a..41d20589cca42b74816a5801463ccec80bad1385 100644
+index 45db17d2f415197849c1fac5adce46d893e2a81d..ce2864f44dcc2003a85f7a211073b2b0bb617cd2 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-@@ -1020,6 +1020,7 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -965,6 +965,7 @@ public class ChunkProviderServer extends IChunkProvider {
              }
              // Paper end - optimize isOutisdeRange
              this.world.getMethodProfiler().enter("pollingChunks");
@@ -68,7 +68,7 @@ index 83e3dcbbe36ce1f947f387ec55067e51a1b7384a..41d20589cca42b74816a5801463ccec8
              boolean flag2 = world.ticksPerAnimalSpawns != 0L && worlddata.getTime() % world.ticksPerAnimalSpawns == 0L; // CraftBukkit
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 0e2bbf292be2bd20b01ec6e630ea3d8a8e8d3cc8..7060a447e603786ed0df57dab3945477a7e4afc5 100644
+index 5e7796732f5175053d0772aafca9a435aff70e9f..d9cdda0a85839fdbedc049f0b2597c94dd52d707 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -1020,6 +1020,8 @@ public class WorldServer extends World implements GeneratorAccessSeed {
@@ -85,7 +85,7 @@ index 0e2bbf292be2bd20b01ec6e630ea3d8a8e8d3cc8..7060a447e603786ed0df57dab3945477
          final BlockPosition.MutableBlockPosition blockposition = this.chunkTickMutablePosition; // Paper - use mutable to reduce allocation rate, final to force compile fail on change
  
 -        if (!this.paperConfig.disableThunder && flag && this.random.nextInt(100000) == 0 && this.W()) { // Paper - Disable thunder // AirplaneL - check this.W last
-+        if (!this.paperConfig.disableThunder && flag && chunk.shouldDoLighting() && this.W()) { // Paper - Disable thunder // AirplaneL - check this.W last // AirplaneL - replace random with shouldDoLighting
++        if (!this.paperConfig.disableThunder && flag && chunk.shouldDoLightning() && this.W()) { // Paper - Disable thunder // AirplaneL - check this.W last // AirplaneL - replace random with shouldDoLighting
              blockposition.setValues(this.a(this.a(j, 0, k, 15))); // Paper
              if (this.isRainingAt(blockposition)) {
                  DifficultyDamageScaler difficultydamagescaler = this.getDamageScaler(blockposition);

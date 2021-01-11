@@ -68,7 +68,7 @@ index dd8b4a5f4321b3de822d62c6feaeb8521ef237d2..d490398d14c5cbf3fe6141940cfec043
  
      public CrashReport b(CrashReport crashreport) {
 diff --git a/src/main/java/net/pl3x/purpur/PurpurConfig.java b/src/main/java/net/pl3x/purpur/PurpurConfig.java
-index dbda80c9a57dc7a1882a00020b407dd69a187649..c44bc2249dc9dfcfc923c4ea005ed5a0744c5cba 100644
+index 57571919e566ebc54204aa1b2ba8bd0e9be621a9..5da3fe9cb4d41a0827b3982fa0beff6896567a57 100644
 --- a/src/main/java/net/pl3x/purpur/PurpurConfig.java
 +++ b/src/main/java/net/pl3x/purpur/PurpurConfig.java
 @@ -180,10 +180,12 @@ public class PurpurConfig {
