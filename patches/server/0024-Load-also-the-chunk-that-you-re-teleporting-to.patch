@@ -6,7 +6,7 @@ Subject: [PATCH] Load also the chunk that you're teleporting to
 Fixes Tuinity-178
 
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 5828496818627516f61314de107f49833eb1d309..ee36ea64cde13f512a818d354dfebe423b5896ac 100644
+index 7b401e1b851fdf46ed3fa19951f3b09bcd78089a..ecf9e92cf87d44fc102a98415fc55921487857a2 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -239,7 +239,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
@@ -27,10 +27,10 @@ index 5828496818627516f61314de107f49833eb1d309..ee36ea64cde13f512a818d354dfebe42
      // Tuinity end
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-index eb0ce05d25ba33626d2dd3e3380d805c560bfe58..06d02d96af06ab28ab7cd30df620cb8495b36c1d 100644
+index b56ca054b37f5887e13b481baad8132f1d28638b..93ed7a74fb66e8e12595e8bdca80e976dc523aeb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-@@ -556,7 +556,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
+@@ -552,7 +552,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
          net.minecraft.server.WorldServer world = ((CraftWorld)locationClone.getWorld()).getHandle();
          java.util.concurrent.CompletableFuture<Boolean> ret = new java.util.concurrent.CompletableFuture<>();
  

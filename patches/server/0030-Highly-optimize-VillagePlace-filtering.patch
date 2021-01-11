@@ -192,10 +192,10 @@ index 0bb3ad0bffc04eba38cd827eaf5c63e8bf2aee93..8e90fabb0681457ec140f85537994630
          return StreamSupport.stream(new AbstractSpliterator<SectionPosition>((long) ((l - i + 1) * (i1 - j + 1) * (j1 - k + 1)), 64) {
              final CursorPosition a = new CursorPosition(i, j, k, l, i1, j1);
 diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
-index fd32be3362ef88d903fd49ff8fa90c1bb762d9ec..920864766ea28ec494e59bbeda73a7ae742b89b3 100644
+index be2ff3547c76584f42ff532f67526595f4a66209..370a074d3629c3617efc72b54cf586225d29db6c 100644
 --- a/src/main/java/net/minecraft/server/VillagePlace.java
 +++ b/src/main/java/net/minecraft/server/VillagePlace.java
-@@ -180,7 +180,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -179,7 +179,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
  
      public long count(Predicate<VillagePlaceType> predicate, BlockPosition blockposition, int i, VillagePlace.Occupancy villageplace_occupancy) { return a(predicate, blockposition, i, villageplace_occupancy); } // Purpur - OBFHELPER
      public long a(Predicate<VillagePlaceType> predicate, BlockPosition blockposition, int i, VillagePlace.Occupancy villageplace_occupancy) {
@@ -204,7 +204,7 @@ index fd32be3362ef88d903fd49ff8fa90c1bb762d9ec..920864766ea28ec494e59bbeda73a7ae
      }
  
      public boolean a(VillagePlaceType villageplacetype, BlockPosition blockposition) {
-@@ -201,6 +201,39 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -200,6 +200,39 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
          });
      }
  
@@ -244,7 +244,7 @@ index fd32be3362ef88d903fd49ff8fa90c1bb762d9ec..920864766ea28ec494e59bbeda73a7ae
      public Stream<VillagePlaceRecord> c(Predicate<VillagePlaceType> predicate, BlockPosition blockposition, int i, VillagePlace.Occupancy villageplace_occupancy) {
          int j = i * i;
  
-@@ -217,10 +250,28 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -216,10 +249,28 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
          });
      }
  
@@ -273,7 +273,7 @@ index fd32be3362ef88d903fd49ff8fa90c1bb762d9ec..920864766ea28ec494e59bbeda73a7ae
      public Stream<BlockPosition> b(Predicate<VillagePlaceType> predicate, Predicate<BlockPosition> predicate1, BlockPosition blockposition, int i, VillagePlace.Occupancy villageplace_occupancy) {
          return this.a(predicate, predicate1, blockposition, i, villageplace_occupancy).sorted(Comparator.comparingDouble((blockposition1) -> {
              return blockposition1.j(blockposition);
-@@ -228,31 +279,68 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -227,31 +278,68 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
      }
  
      public Optional<BlockPosition> c(Predicate<VillagePlaceType> predicate, Predicate<BlockPosition> predicate1, BlockPosition blockposition, int i, VillagePlace.Occupancy villageplace_occupancy) {
@@ -344,7 +344,7 @@ index fd32be3362ef88d903fd49ff8fa90c1bb762d9ec..920864766ea28ec494e59bbeda73a7ae
      }
  
      public boolean b(BlockPosition blockposition) {
-@@ -352,7 +440,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -350,7 +438,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
      }
  
      private void a(ChunkSection chunksection, SectionPosition sectionposition, BiConsumer<BlockPosition, VillagePlaceType> biconsumer) {
@@ -353,7 +353,7 @@ index fd32be3362ef88d903fd49ff8fa90c1bb762d9ec..920864766ea28ec494e59bbeda73a7ae
              IBlockData iblockdata = chunksection.getType(SectionPosition.b(blockposition.getX()), SectionPosition.b(blockposition.getY()), SectionPosition.b(blockposition.getZ()));
  
              VillagePlaceType.b(iblockdata).ifPresent((villageplacetype) -> {
-@@ -362,6 +450,16 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -360,6 +448,16 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
      }
  
      public void a(IWorldReader iworldreader, BlockPosition blockposition, int i) {
@@ -370,7 +370,7 @@ index fd32be3362ef88d903fd49ff8fa90c1bb762d9ec..920864766ea28ec494e59bbeda73a7ae
          SectionPosition.b(new ChunkCoordIntPair(blockposition), Math.floorDiv(i, 16)).map((sectionposition) -> {
              return Pair.of(sectionposition, this.d(sectionposition.s()));
          }).filter((pair) -> {
-@@ -373,6 +471,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -371,6 +469,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
          }).forEach((chunkcoordintpair) -> {
              iworldreader.getChunkAt(chunkcoordintpair.x, chunkcoordintpair.z, ChunkStatus.EMPTY);
          });
