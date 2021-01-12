@@ -342,65 +342,35 @@ index 0000000000000000000000000000000000000000..e4a08889b6778474d628d79ced281671
 \ No newline at end of file
 diff --git a/src/main/java/net/gegy1000/tictacs/TicTacs.java b/src/main/java/net/gegy1000/tictacs/TicTacs.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..9a1ca21191fb1cc204ce38bf50d93d36cc0ec40a
+index 0000000000000000000000000000000000000000..53590d003d4022bcc865522f5f5c6011de9278f5
 --- /dev/null
 +++ b/src/main/java/net/gegy1000/tictacs/TicTacs.java
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,26 @@
 +package net.gegy1000.tictacs;
 +
 +import com.google.common.reflect.Reflection;
-+import net.fabricmc.api.ModInitializer;
-+import net.fabricmc.loader.api.FabricLoader;
++// import net.fabricmc.api.ModInitializer;
++// import net.fabricmc.loader.api.FabricLoader;
 +import net.gegy1000.tictacs.chunk.upgrade.ChunkUpgradeFuture;
-+import net.gegy1000.tictacs.config.TicTacsConfig;
-+import net.minecraft.util.Identifier;
++// import net.gegy1000.tictacs.config.TicTacsConfig;
++// import net.minecraft.util.Identifier;
 +import org.apache.logging.log4j.LogManager;
 +import org.apache.logging.log4j.Logger;
 +
-+public final class TicTacs implements ModInitializer {
++public final class TicTacs {
 +    public static final String ID = "tic_tacs";
 +    public static final Logger LOGGER = LogManager.getLogger(ID);
 +
-+    public static final Identifier DEBUG_CHUNK_TICKETS = new Identifier(ID, "debug_chunk_tickets");
++    public static final boolean DEBUG = false;
 +
-+    public static final boolean DEBUG = FabricLoader.getInstance().isDevelopmentEnvironment();
++    // @Override
++    // public void onInitialize() {
++    //     TicTacsConfig.get();
 +
-+    @Override
-+    public void onInitialize() {
-+        TicTacsConfig.get();
-+
-+        // due to a classloader bug in multithreaded environments, we need to load the class before multiple threads
-+        // try to load it concurrently
-+        Reflection.initialize(ChunkUpgradeFuture.class);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/TicTacsClient.java b/src/main/java/net/gegy1000/tictacs/TicTacsClient.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..6f1a67140f754fd0422e10060ae161f87222d4c6
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/TicTacsClient.java
-@@ -0,0 +1,22 @@
-+package net.gegy1000.tictacs;
-+
-+import net.fabricmc.api.ClientModInitializer;
-+import net.fabricmc.api.EnvType;
-+import net.fabricmc.api.Environment;
-+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-+import net.gegy1000.tictacs.client.TicTacsDebugLevelTracker;
-+
-+@Environment(EnvType.CLIENT)
-+public class TicTacsClient implements ClientModInitializer {
-+    @Override
-+    public void onInitializeClient() {
-+        ClientSidePacketRegistry.INSTANCE.register(TicTacs.DEBUG_CHUNK_TICKETS, (packetContext, data) -> {
-+            long chunkPos = data.readLong();
-+            int toLevel = data.readInt();
-+
-+            packetContext.getTaskQueue().execute(() -> {
-+                TicTacsDebugLevelTracker.INSTANCE.setLevel(chunkPos, toLevel);
-+            });
-+        });
-+    }
++    //     // due to a classloader bug in multithreaded environments, we need to load the class before multiple threads
++    //     // try to load it concurrently
++    //     Reflection.initialize(ChunkUpgradeFuture.class);
++    // }
 +}
 diff --git a/src/main/java/net/gegy1000/tictacs/VoidActor.java b/src/main/java/net/gegy1000/tictacs/VoidActor.java
 new file mode 100644
@@ -1662,7 +1632,7 @@ index 0000000000000000000000000000000000000000..6a342dac89e89a01d7ec3cea4d717b30
 +}
 diff --git a/src/main/java/net/gegy1000/tictacs/chunk/ChunkLevelTracker.java b/src/main/java/net/gegy1000/tictacs/chunk/ChunkLevelTracker.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f8b2cca94c9bc88b8a2b781d2ba27a2e842e7ac9
+index 0000000000000000000000000000000000000000..ab8b4c54fd2264674fb6f4f95af2fceb923c5951
 --- /dev/null
 +++ b/src/main/java/net/gegy1000/tictacs/chunk/ChunkLevelTracker.java
 @@ -0,0 +1,111 @@
@@ -1673,7 +1643,7 @@ index 0000000000000000000000000000000000000000..f8b2cca94c9bc88b8a2b781d2ba27a2e
 +import net.gegy1000.tictacs.chunk.step.ChunkStep;
 +import io.netty.buffer.Unpooled;
 +import it.unimi.dsi.fastutil.longs.LongSet;
-+import net.gegy1000.tictacs.mixin.TacsAccessor;
++
 +import net.minecraft.server.EntityHuman;
 +import net.minecraft.server.EntityPlayer;
 +import net.minecraft.server.MinecraftKey;
@@ -1792,10 +1762,10 @@ index 0000000000000000000000000000000000000000..5c81e901ae8cdeff202785ad5d9445cb
 +}
 diff --git a/src/main/java/net/gegy1000/tictacs/chunk/ChunkMap.java b/src/main/java/net/gegy1000/tictacs/chunk/ChunkMap.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..09e48e72491a77602ac9c800c44bed0563dbca52
+index 0000000000000000000000000000000000000000..293513b48018083691c9a41a6fa9bb5b4491e1d0
 --- /dev/null
 +++ b/src/main/java/net/gegy1000/tictacs/chunk/ChunkMap.java
-@@ -0,0 +1,245 @@
+@@ -0,0 +1,244 @@
 +package net.gegy1000.tictacs.chunk;
 +
 +import net.gegy1000.tictacs.async.LinkedWaiter;
@@ -1809,7 +1779,6 @@ index 0000000000000000000000000000000000000000..09e48e72491a77602ac9c800c44bed05
 +import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 +import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 +import it.unimi.dsi.fastutil.objects.ObjectCollection;
-+import net.gegy1000.tictacs.mixin.TacsAccessor;
 +import net.minecraft.server.ChunkCoordIntPair;
 +import net.minecraft.server.PlayerChunkMap;
 +import net.minecraft.server.WorldServer;
@@ -1870,7 +1839,7 @@ index 0000000000000000000000000000000000000000..09e48e72491a77602ac9c800c44bed05
 +        PlayerChunkMap tacs = this.controller.asTacs();
 +        ChunkController accessor = this.controller;
 +
-+        ChunkEntry unloadingEntry = (ChunkEntry) accessor.getUnloadingChunks().remove(pos);
++        ChunkEntry unloadingEntry = (ChunkEntry) me.minecraft.server.PlayerChunkMap.pendingUnload.remove(pos);
 +        if (unloadingEntry != null) {
 +            unloadingEntry.setLevel(level);
 +            return unloadingEntry;
@@ -3932,10 +3901,10 @@ index 0000000000000000000000000000000000000000..5afcdefe08169836317fc87061d04c6d
 +}
 diff --git a/src/main/java/net/gegy1000/tictacs/chunk/step/ChunkStep.java b/src/main/java/net/gegy1000/tictacs/chunk/step/ChunkStep.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..1668c5730759489f8099fd5c3244937e02fc8f0c
+index 0000000000000000000000000000000000000000..8e3042210437e79f9906403ed1aeb876ba3695da
 --- /dev/null
 +++ b/src/main/java/net/gegy1000/tictacs/chunk/step/ChunkStep.java
-@@ -0,0 +1,449 @@
+@@ -0,0 +1,448 @@
 +package net.gegy1000.tictacs.chunk.step;
 +
 +import me.titaniumtown.TitaniumConfig;
@@ -3943,11 +3912,10 @@ index 0000000000000000000000000000000000000000..1668c5730759489f8099fd5c3244937e
 +import net.gegy1000.tictacs.chunk.ChunkLevelTracker;
 +import net.gegy1000.tictacs.chunk.ChunkLockType;
 +import net.gegy1000.tictacs.chunk.future.FutureHandle;
-+import net.gegy1000.tictacs.compatibility.TicTacsCompatibility;
 +import net.gegy1000.tictacs.justnow.future.Future;
 +import net.gegy1000.tictacs.justnow.tuple.Unit;
 +import it.unimi.dsi.fastutil.longs.LongSet;
-+import net.gegy1000.tictacs.mixin.TacsAccessor;
++
 +import net.minecraft.server.Chunk;
 +import net.minecraft.server.ChunkCoordIntPair;
 +import net.minecraft.server.ChunkGenerator;
@@ -6932,114 +6900,6 @@ index 0000000000000000000000000000000000000000..75e2350017ccd3e7c89d982ef95c4e99
 +        return JoinAllArray.poll(waker, this.loadFutures, this.loadedChunks);
 +    }
 +}
-diff --git a/src/main/java/net/gegy1000/tictacs/config/TicTacsConfig.java b/src/main/java/net/gegy1000/tictacs/config/TicTacsConfig.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..2582d4fda46ad94c3fb266fd2765bbae1cb0bb95
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/config/TicTacsConfig.java
-@@ -0,0 +1,102 @@
-+package net.gegy1000.tictacs.config;
-+
-+import com.google.gson.Gson;
-+import com.google.gson.GsonBuilder;
-+import com.google.gson.annotations.SerializedName;
-+import net.gegy1000.tictacs.TicTacs;
-+import net.minecraft.util.math.MathHelper;
-+import org.jetbrains.annotations.NotNull;
-+
-+import java.io.BufferedReader;
-+import java.io.BufferedWriter;
-+import java.io.IOException;
-+import java.io.Reader;
-+import java.nio.file.Files;
-+import java.nio.file.Path;
-+import java.nio.file.Paths;
-+
-+public final class TicTacsConfig {
-+    public static final int VERSION = 2;
-+
-+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-+
-+    private static TicTacsConfig config;
-+
-+    public int version = VERSION;
-+
-+    @SerializedName("thread_count")
-+    public int threadCount = computeDefaultThreadCount();
-+
-+    @SerializedName("max_view_distance")
-+    public int maxViewDistance = 32;
-+
-+    @SerializedName("feature_generation_radius")
-+    public int featureGenerationRadius = 2;
-+
-+    @SerializedName("debug")
-+    public Debug debug = new Debug();
-+
-+    public static class Debug {
-+        @SerializedName("chunk_levels")
-+        public boolean chunkLevels;
-+
-+        @SerializedName("chunk_map")
-+        public boolean chunkMap;
-+    }
-+
-+    private static int computeDefaultThreadCount() {
-+        return MathHelper.clamp(Runtime.getRuntime().availableProcessors() / 2, 1, 2);
-+    }
-+
-+    public boolean isSingleThreaded() {
-+        return this.threadCount == 1;
-+    }
-+
-+    @NotNull
-+    public static TicTacsConfig get() {
-+        if (config == null) {
-+            try {
-+                config = loadConfig();
-+            } catch (IOException e) {
-+                TicTacs.LOGGER.warn("Failed to read config file", e);
-+                config = new TicTacsConfig();
-+            }
-+        }
-+
-+        return config;
-+    }
-+
-+    private static TicTacsConfig loadConfig() throws IOException {
-+        Path path = Paths.get("config", "tictacs.json");
-+        if (!Files.exists(path)) {
-+            return createConfig(path);
-+        }
-+
-+        try (BufferedReader reader = Files.newBufferedReader(path)) {
-+            TicTacsConfig config = parseConfig(reader);
-+
-+            // version change: recreate the config
-+            if (config.version != VERSION) {
-+                return createConfig(path);
-+            }
-+
-+            return config;
-+        }
-+    }
-+
-+    private static TicTacsConfig createConfig(Path path) throws IOException {
-+        TicTacsConfig config = new TicTacsConfig();
-+
-+        Files.createDirectories(path.getParent());
-+
-+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-+            writer.write(GSON.toJson(config));
-+        }
-+
-+        return config;
-+    }
-+
-+    private static TicTacsConfig parseConfig(Reader reader) {
-+        return GSON.fromJson(reader, TicTacsConfig.class);
-+    }
-+}
 diff --git a/src/main/java/net/gegy1000/tictacs/justnow/NullWaker.java b/src/main/java/net/gegy1000/tictacs/justnow/NullWaker.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..6c794431d3caa4dd25809254a246400ae0f1d7fd
@@ -8403,3070 +8263,6 @@ index 0000000000000000000000000000000000000000..e2379a0bf52ea416dd7343d46dd4f014
 +public interface LightingExecutorHolder {
 +    LightingExecutor getLightingExecutor();
 +}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/ChunkHolderMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/ChunkHolderMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..0d951b46f2956b556e02462ba2d568481516426e
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/ChunkHolderMixin.java
-@@ -0,0 +1,50 @@
-+package net.gegy1000.tictacs.mixin;
-+
-+import net.gegy1000.tictacs.chunk.ChunkLevelTracker;
-+import net.gegy1000.tictacs.chunk.entry.ChunkEntry;
-+import net.minecraft.server.world.ChunkHolder;
-+import net.minecraft.util.math.MathHelper;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Redirect;
-+
-+import java.util.concurrent.CompletableFuture;
-+
-+@Mixin(ChunkHolder.class)
-+public class ChunkHolderMixin {
-+    @Shadow
-+    @Final
-+    private static ChunkHolder.LevelType[] LEVEL_TYPES;
-+
-+    /**
-+     * @reason we replace the future handling in {@link net.gegy1000.tictacs.chunk.entry.ChunkEntry}, and we don't want
-+     * vanilla's logic to mess with ours.
-+     * @author gegy1000
-+     */
-+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;complete(Ljava/lang/Object;)Z"))
-+    private <T> boolean complete(CompletableFuture<T> future, T result) {
-+        return true;
-+    }
-+
-+    /**
-+     * @reason replace with chunk step logic
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public static ChunkStatus getTargetStatusForLevel(int level) {
-+        return ChunkEntry.getTargetStep(level).getMaximumStatus();
-+    }
-+
-+    /**
-+     * @reason replace full level constant
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public static ChunkHolder.LevelType getLevelType(int distance) {
-+        return LEVEL_TYPES[MathHelper.clamp(ChunkLevelTracker.FULL_LEVEL - distance + 1, 0, LEVEL_TYPES.length - 1)];
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/ChunkStatusMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/ChunkStatusMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..e97598cfe12c0b49c8b86f9686467c433997dae9
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/ChunkStatusMixin.java
-@@ -0,0 +1,36 @@
-+package net.gegy1000.tictacs.mixin;
-+
-+import net.gegy1000.tictacs.chunk.step.ChunkStep;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+
-+@Mixin(ChunkStatus.class)
-+public class ChunkStatusMixin {
-+    /**
-+     * @reason replace with ChunkStep values
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public static int getMaxDistanceFromFull() {
-+        return ChunkStep.getMaxDistance() + 1;
-+    }
-+
-+    /**
-+     * @reason replace with ChunkStep values
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public static ChunkStatus byDistanceFromFull(int distance) {
-+        return ChunkStep.byDistanceFromFull(distance).getMaximumStatus();
-+    }
-+
-+    /**
-+     * @reason replace with ChunkStep values
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public static int getDistanceFromFull(ChunkStatus status) {
-+        return ChunkStep.getDistanceFromFull(ChunkStep.byStatus(status));
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/ChunkTicketManagerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/ChunkTicketManagerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..add15b46b449dad08bca084e1365cdc8e3c01931
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/ChunkTicketManagerMixin.java
-@@ -0,0 +1,30 @@
-+package net.gegy1000.tictacs.mixin;
-+
-+import net.gegy1000.tictacs.chunk.ChunkLevelTracker;
-+import net.minecraft.server.world.ChunkTicketManager;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.Constant;
-+import org.spongepowered.asm.mixin.injection.ModifyConstant;
-+
-+@Mixin(ChunkTicketManager.class)
-+public class ChunkTicketManagerMixin {
-+    @ModifyConstant(method = "<init>", constant = @Constant(intValue = 33))
-+    private int getFullLevelForNearbyChunkTicketUpdater(int level) {
-+        return ChunkLevelTracker.FULL_LEVEL;
-+    }
-+
-+    @ModifyConstant(method = "<clinit>", constant = @Constant(intValue = 33))
-+    private static int getFullLevelForNearbyPlayerTicketLevel(int level) {
-+        return ChunkLevelTracker.FULL_LEVEL;
-+    }
-+
-+    @ModifyConstant(method = "addTicket(Lnet/minecraft/server/world/ChunkTicketType;Lnet/minecraft/util/math/ChunkPos;ILjava/lang/Object;)V", constant = @Constant(intValue = 33))
-+    private int getFullChunkLevelForAddTicket(int level) {
-+        return ChunkLevelTracker.FULL_LEVEL;
-+    }
-+
-+    @ModifyConstant(method = "removeTicket(Lnet/minecraft/server/world/ChunkTicketType;Lnet/minecraft/util/math/ChunkPos;ILjava/lang/Object;)V", constant = @Constant(intValue = 33))
-+    private int getFullChunkLevelForRemoveTicket(int level) {
-+        return ChunkLevelTracker.FULL_LEVEL;
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/ServerChunkManagerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/ServerChunkManagerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..4e2287637acb3921dfdbc6c140a17b22fc2e706e
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/ServerChunkManagerMixin.java
-@@ -0,0 +1,305 @@
-+package net.gegy1000.tictacs.mixin;
-+
-+import com.mojang.datafixers.util.Either;
-+import net.gegy1000.tictacs.AsyncChunkAccess;
-+import net.gegy1000.tictacs.chunk.ChunkController;
-+import net.gegy1000.tictacs.chunk.ChunkLevelTracker;
-+import net.gegy1000.tictacs.chunk.LossyChunkCache;
-+import net.gegy1000.tictacs.chunk.entry.ChunkEntry;
-+import net.gegy1000.tictacs.chunk.step.ChunkStep;
-+import net.minecraft.entity.Entity;
-+import net.minecraft.server.world.ChunkHolder;
-+import net.minecraft.server.world.ChunkTicketManager;
-+import net.minecraft.server.world.ChunkTicketType;
-+import net.minecraft.server.world.ServerChunkManager;
-+import net.minecraft.server.world.ServerWorld;
-+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
-+import net.minecraft.util.math.BlockPos;
-+import net.minecraft.util.math.ChunkPos;
-+import net.minecraft.util.math.MathHelper;
-+import net.minecraft.util.profiler.Profiler;
-+import net.minecraft.world.BlockView;
-+import net.minecraft.world.chunk.Chunk;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import net.minecraft.world.chunk.WorldChunk;
-+import org.jetbrains.annotations.Nullable;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.Unique;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+import java.util.concurrent.CompletableFuture;
-+import java.util.function.Function;
-+
-+@Mixin(ServerChunkManager.class)
-+public abstract class ServerChunkManagerMixin implements AsyncChunkAccess {
-+    @Shadow
-+    @Final
-+    private ServerWorld world;
-+    @Shadow
-+    @Final
-+    private ChunkTicketManager ticketManager;
-+    @Shadow
-+    @Final
-+    private ServerChunkManager.MainThreadExecutor mainThreadExecutor;
-+    @Shadow
-+    @Final
-+    public ThreadedAnvilChunkStorage threadedAnvilChunkStorage;
-+
-+    @Shadow
-+    @Final
-+    private Thread serverThread;
-+
-+    @Unique
-+    private final LossyChunkCache fastCache = new LossyChunkCache(32);
-+
-+    @Inject(method = "initChunkCaches", at = @At("HEAD"))
-+    private void clearChunkCache(CallbackInfo ci) {
-+        this.fastCache.clear();
-+    }
-+
-+    /**
-+     * @reason optimize chunk query and cache logic and avoid blocking the main thread if possible
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    @Nullable
-+    public Chunk getChunk(int x, int z, ChunkStatus status, boolean create) {
-+        ChunkStep step = ChunkStep.byStatus(status);
-+        if (create) {
-+            if (Thread.currentThread() != this.serverThread) {
-+                return this.getOrCreateChunkOffThread(x, z, step);
-+            } else {
-+                return this.getOrCreateChunkOnThread(x, z, step);
-+            }
-+        } else {
-+            return this.getExistingChunk(x, z, step);
-+        }
-+    }
-+
-+    private Chunk getOrCreateChunkOnThread(int x, int z, ChunkStep step) {
-+        // first we test if the chunk already exists in our small cache
-+        Chunk cached = this.fastCache.get(x, z, step);
-+        if (cached != null) {
-+            return cached;
-+        }
-+
-+        // if it does not exist, try load it from the chunk entry
-+        ChunkEntry entry = this.getChunkEntry(x, z);
-+        Chunk chunk = this.getExistingChunkFor(entry, step);
-+
-+        // the chunk is not ready, we must interface and join the chunk future
-+        if (chunk == null) {
-+            Either<Chunk, ChunkHolder.Unloaded> result = this.joinFuture(this.createChunk(x, z, step));
-+
-+            chunk = result.map(
-+                    Function.identity(),
-+                    err -> { throw new IllegalStateException("Chunk not there when requested: " + err); }
-+            );
-+        }
-+
-+        this.fastCache.put(x, z, step, chunk);
-+
-+        return chunk;
-+    }
-+
-+    private <T> T joinFuture(CompletableFuture<T> future) {
-+        if (!future.isDone()) {
-+            this.mainThreadExecutor.runTasks(future::isDone);
-+        }
-+        return future.join();
-+    }
-+
-+    private Chunk getOrCreateChunkOffThread(int x, int z, ChunkStep step) {
-+        Either<Chunk, ChunkHolder.Unloaded> result = CompletableFuture.supplyAsync(
-+                () -> this.createChunk(x, z, step),
-+                this.mainThreadExecutor
-+        ).join().join();
-+
-+        return result.map(
-+                chunk -> chunk,
-+                unloaded -> {
-+                    throw new IllegalStateException("Chunk not there when requested: " + unloaded);
-+                }
-+        );
-+    }
-+
-+    /**
-+     * @reason optimize chunk query and cache logic and avoid blocking the main thread if possible
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    @Nullable
-+    public WorldChunk getWorldChunk(int x, int z) {
-+        return (WorldChunk) this.getExistingChunk(x, z, ChunkStep.FULL);
-+    }
-+
-+    /**
-+     * @reason optimize chunk query
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    @Nullable
-+    public BlockView getChunk(int x, int z) {
-+        ChunkEntry entry = this.getChunkEntry(x, z);
-+        if (entry != null) {
-+            return entry.getChunkAtLeast(ChunkStep.FEATURES);
-+        }
-+        return null;
-+    }
-+
-+    @Override
-+    public Chunk getExistingChunk(int x, int z, ChunkStep step) {
-+        if (Thread.currentThread() != this.serverThread) {
-+            return this.loadExistingChunk(x, z, step);
-+        }
-+
-+        Chunk cached = this.fastCache.get(x, z, step);
-+        if (cached != null) {
-+            return cached;
-+        }
-+
-+        Chunk chunk = this.loadExistingChunk(x, z, step);
-+        this.fastCache.put(x, z, step, chunk);
-+
-+        return chunk;
-+    }
-+
-+    @Override
-+    public Chunk getAnyExistingChunk(int x, int z) {
-+        ChunkEntry entry = this.getChunkEntry(x, z);
-+        if (entry != null) {
-+            return entry.getChunk();
-+        }
-+        return null;
-+    }
-+
-+    @Nullable
-+    private Chunk loadExistingChunk(int x, int z, ChunkStep step) {
-+        ChunkEntry entry = this.getChunkEntry(x, z);
-+        return this.getExistingChunkFor(entry, step);
-+    }
-+
-+    @Nullable
-+    private Chunk getExistingChunkFor(@Nullable ChunkEntry entry, ChunkStep step) {
-+        if (entry != null && entry.isValidAs(step)) {
-+            return entry.getChunkForStep(step);
-+        }
-+        return null;
-+    }
-+
-+    /**
-+     * @reason replace with implementation that will not return true for partially loaded chunks
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public boolean isChunkLoaded(int x, int z) {
-+        return this.getExistingChunk(x, z, ChunkStep.FULL) != null;
-+    }
-+
-+    @Override
-+    public CompletableFuture<Chunk> getOrCreateChunkAsync(int x, int z, ChunkStep step) {
-+        CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>> future;
-+
-+        if (Thread.currentThread() != this.serverThread) {
-+            future = CompletableFuture.supplyAsync(() -> this.createChunk(x, z, step), this.mainThreadExecutor)
-+                    .thenCompose(Function.identity());
-+        } else {
-+            future = this.createChunk(x, z, step);
-+        }
-+
-+        return future.thenApply(result -> result.map(
-+                chunk -> chunk,
-+                unloaded -> {
-+                    throw new IllegalStateException("Chunk not there when requested: " + unloaded);
-+                })
-+        );
-+    }
-+
-+    private CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>> createChunk(int x, int z, ChunkStep step) {
-+        ChunkEntry entry = this.getChunkEntry(x, z);
-+
-+        ChunkPos pos = new ChunkPos(x, z);
-+        int level = getLevelForStep(step);
-+        this.ticketManager.addTicketWithLevel(ChunkTicketType.UNKNOWN, pos, level, pos);
-+
-+        while (entry == null || !entry.isValidAs(step)) {
-+            Profiler profiler = this.world.getProfiler();
-+            profiler.push("chunkLoad");
-+
-+            // tick the ticket manager to propagate any changes and reacquire the chunk entry
-+            this.tick();
-+            entry = this.getChunkEntry(x, z);
-+
-+            profiler.pop();
-+
-+            if (entry == null || !entry.isValidAs(step)) {
-+                throw new IllegalStateException("No chunk entry after ticket has been added");
-+            }
-+        }
-+
-+        ChunkController controller = (ChunkController) this.threadedAnvilChunkStorage;
-+        return controller.getChunkAs(entry, step).asVanilla();
-+    }
-+
-+    @Override
-+    public boolean shouldChunkExist(int x, int z, ChunkStep step) {
-+        ChunkEntry entry = this.getChunkEntry(x, z);
-+        return entry != null && entry.getLevel() <= getLevelForStep(step);
-+    }
-+
-+    private static int getLevelForStep(ChunkStep step) {
-+        return ChunkLevelTracker.FULL_LEVEL + ChunkStep.getDistanceFromFull(step);
-+    }
-+
-+    @Nullable
-+    private ChunkEntry getChunkEntry(int x, int z) {
-+        return (ChunkEntry) this.getChunkHolder(ChunkPos.toLong(x, z));
-+    }
-+
-+    @Nullable
-+    private ChunkEntry getChunkEntry(long pos) {
-+        return (ChunkEntry) this.getChunkHolder(pos);
-+    }
-+
-+    /**
-+     * @reason direct logic to {@link ChunkEntry} and avoid allocation
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public boolean shouldTickEntity(Entity entity) {
-+        ChunkEntry entry = this.getChunkEntry(MathHelper.floor(entity.getX()) >> 4, MathHelper.floor(entity.getZ()) >> 4);
-+        return entry != null && entry.isTickingEntities();
-+    }
-+
-+    /**
-+     * @reason direct logic to {@link ChunkEntry} and avoid allocation
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public boolean shouldTickChunk(ChunkPos pos) {
-+        ChunkEntry entry = this.getChunkEntry(pos.toLong());
-+        return entry != null && entry.isTickingEntities();
-+    }
-+
-+    /**
-+     * @reason direct logic to {@link ChunkEntry} and avoid allocation
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public boolean shouldTickBlock(BlockPos pos) {
-+        ChunkEntry entry = this.getChunkEntry(pos.getX() >> 4, pos.getZ() >> 4);
-+        return entry != null && entry.isTicking();
-+    }
-+
-+    @Shadow
-+    protected abstract boolean tick();
-+
-+    @Shadow
-+    @Nullable
-+    protected abstract ChunkHolder getChunkHolder(long pos);
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/TacsAccessor.java b/src/main/java/net/gegy1000/tictacs/mixin/TacsAccessor.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..cc139d681f3935e8fac3d5baf1b0e3bdbc69c106
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/TacsAccessor.java
-@@ -0,0 +1,24 @@
-+package net.gegy1000.tictacs.mixin;
-+
-+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
-+import it.unimi.dsi.fastutil.longs.LongSet;
-+import net.minecraft.server.world.ChunkHolder;
-+import net.minecraft.server.world.ChunkTaskPrioritySystem;
-+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.gen.Accessor;
-+
-+@Mixin(ThreadedAnvilChunkStorage.class)
-+public interface TacsAccessor {
-+    @Accessor
-+    LongSet getLoadedChunks();
-+
-+    @Accessor("unloadedChunks")
-+    LongSet getQueuedUnloads();
-+
-+    @Accessor("chunksToUnload")
-+    Long2ObjectLinkedOpenHashMap<ChunkHolder> getUnloadingChunks();
-+
-+    @Accessor
-+    ChunkTaskPrioritySystem getChunkTaskPrioritySystem();
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/ThreadedAnvilChunkStorageMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/ThreadedAnvilChunkStorageMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..dc9c8ec5605429fde1125445b4365f3e51cdf655
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/ThreadedAnvilChunkStorageMixin.java
-@@ -0,0 +1,514 @@
-+package net.gegy1000.tictacs.mixin;
-+
-+import com.google.common.collect.Iterables;
-+import com.mojang.datafixers.DataFixer;
-+import com.mojang.datafixers.util.Either;
-+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
-+import it.unimi.dsi.fastutil.objects.ObjectCollection;
-+import it.unimi.dsi.fastutil.objects.ObjectLists;
-+import net.gegy1000.justnow.future.Future;
-+import net.gegy1000.justnow.tuple.Unit;
-+import net.gegy1000.tictacs.VoidActor;
-+import net.gegy1000.tictacs.async.worker.ChunkMainThreadExecutor;
-+import net.gegy1000.tictacs.chunk.ChunkAccess;
-+import net.gegy1000.tictacs.chunk.ChunkController;
-+import net.gegy1000.tictacs.chunk.ChunkLevelTracker;
-+import net.gegy1000.tictacs.chunk.ChunkMap;
-+import net.gegy1000.tictacs.chunk.entry.ChunkEntry;
-+import net.gegy1000.tictacs.chunk.entry.ChunkListener;
-+import net.gegy1000.tictacs.chunk.future.AwaitAll;
-+import net.gegy1000.tictacs.chunk.future.ChunkNotLoadedFuture;
-+import net.gegy1000.tictacs.chunk.future.LazyRunnableFuture;
-+import net.gegy1000.tictacs.chunk.future.VanillaChunkFuture;
-+import net.gegy1000.tictacs.chunk.step.ChunkStep;
-+import net.gegy1000.tictacs.chunk.tracker.ChunkTracker;
-+import net.gegy1000.tictacs.chunk.upgrade.ChunkUpgrader;
-+import net.minecraft.entity.Entity;
-+import net.minecraft.entity.boss.dragon.EnderDragonPart;
-+import net.minecraft.network.Packet;
-+import net.minecraft.server.WorldGenerationProgressListener;
-+import net.minecraft.server.network.ServerPlayerEntity;
-+import net.minecraft.server.world.ChunkHolder;
-+import net.minecraft.server.world.ChunkTicketManager;
-+import net.minecraft.server.world.ChunkTicketType;
-+import net.minecraft.server.world.PlayerChunkWatchingManager;
-+import net.minecraft.server.world.ServerLightingProvider;
-+import net.minecraft.server.world.ServerWorld;
-+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
-+import net.minecraft.structure.StructureManager;
-+import net.minecraft.util.math.ChunkPos;
-+import net.minecraft.util.thread.TaskExecutor;
-+import net.minecraft.util.thread.ThreadExecutor;
-+import net.minecraft.world.PersistentStateManager;
-+import net.minecraft.world.chunk.Chunk;
-+import net.minecraft.world.chunk.ChunkProvider;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import net.minecraft.world.chunk.WorldChunk;
-+import net.minecraft.world.gen.chunk.ChunkGenerator;
-+import net.minecraft.world.level.storage.LevelStorage;
-+import org.jetbrains.annotations.Nullable;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.Unique;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Constant;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.ModifyConstant;
-+import org.spongepowered.asm.mixin.injection.Redirect;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+import java.util.concurrent.CompletableFuture;
-+import java.util.concurrent.Executor;
-+import java.util.concurrent.atomic.AtomicInteger;
-+import java.util.function.BooleanSupplier;
-+import java.util.function.Supplier;
-+import java.util.stream.Stream;
-+
-+@Mixin(ThreadedAnvilChunkStorage.class)
-+public abstract class ThreadedAnvilChunkStorageMixin implements ChunkController {
-+    @Shadow
-+    @Final
-+    private ThreadExecutor<Runnable> mainThreadExecutor;
-+    @Shadow
-+    @Final
-+    private ServerLightingProvider serverLightingProvider;
-+    @Shadow
-+    @Final
-+    private ThreadedAnvilChunkStorage.TicketManager ticketManager;
-+    @Shadow
-+    @Final
-+    private WorldGenerationProgressListener worldGenerationProgressListener;
-+    @Shadow
-+    @Final
-+    private AtomicInteger totalChunksLoadedCount;
-+    @Shadow
-+    private int watchDistance;
-+
-+    @Unique
-+    private ChunkMap map;
-+    @Unique
-+    private ChunkUpgrader upgrader;
-+    @Unique
-+    private ChunkTracker tracker;
-+
-+    @Unique
-+    private ChunkLevelTracker levelTracker;
-+
-+    @Unique
-+    private ChunkMainThreadExecutor chunkMainExecutor;
-+
-+    @Inject(method = "<init>", at = @At("RETURN"))
-+    private void init(
-+            ServerWorld world,
-+            LevelStorage.Session levelSession,
-+            DataFixer dataFixer,
-+            StructureManager structures,
-+            Executor threadPool,
-+            ThreadExecutor<Runnable> mainThread,
-+            ChunkProvider chunkProvider,
-+            ChunkGenerator chunkGenerator,
-+            WorldGenerationProgressListener progressListener,
-+            Supplier<PersistentStateManager> persistentStateSupplier,
-+            int watchDistance,
-+            boolean syncWrite,
-+            CallbackInfo ci
-+    ) {
-+        ServerLightingProvider lighting = this.serverLightingProvider;
-+
-+        this.map = new ChunkMap(world, this);
-+        this.upgrader = new ChunkUpgrader(world, this, chunkGenerator, structures, lighting);
-+
-+        this.levelTracker = new ChunkLevelTracker(world, this);
-+
-+        this.tracker = new ChunkTracker(world, this);
-+        this.tracker.setViewDistance(this.watchDistance);
-+
-+        this.map.addListener(this.tracker);
-+
-+        this.chunkMainExecutor = new ChunkMainThreadExecutor(mainThread);
-+    }
-+
-+    @ModifyConstant(method = "<clinit>", constant = @Constant(intValue = 33))
-+    private static int getFullChunkLevel(int level) {
-+        return ChunkLevelTracker.FULL_LEVEL;
-+    }
-+
-+    @Redirect(
-+            method = "<init>",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/util/thread/TaskExecutor;create(Ljava/util/concurrent/Executor;Ljava/lang/String;)Lnet/minecraft/util/thread/TaskExecutor;",
-+                    ordinal = 0
-+            )
-+    )
-+    private TaskExecutor<Runnable> createWorldgenActor(Executor executor, String name) {
-+        return new VoidActor(name);
-+    }
-+
-+    @Override
-+    public ChunkMap getMap() {
-+        return this.map;
-+    }
-+
-+    @Override
-+    public ChunkUpgrader getUpgrader() {
-+        return this.upgrader;
-+    }
-+
-+    @Override
-+    public ChunkTicketManager getTicketManager() {
-+        return this.ticketManager;
-+    }
-+
-+    @Override
-+    public ChunkTracker getTracker() {
-+        return this.tracker;
-+    }
-+
-+    @Override
-+    public ChunkListener getChunkAs(ChunkEntry entry, ChunkStep step) {
-+        this.upgrader.spawnUpgradeTo(entry, step);
-+        return entry.getListenerFor(step);
-+    }
-+
-+    @Override
-+    public Future<Unit> getRadiusAs(ChunkPos pos, int radius, ChunkStep step) {
-+        ChunkAccess chunks = this.map.visible();
-+
-+        ChunkMap.FlushListener flushListener = this.map.awaitFlush();
-+
-+        int size = radius * 2 + 1;
-+        Future<Chunk>[] futures = new Future[size * size];
-+        for (int z = -radius; z <= radius; z++) {
-+            for (int x = -radius; x <= radius; x++) {
-+                int idx = (x + radius) + (z + radius) * size;
-+                ChunkEntry entry = chunks.getEntry(pos.x + x, pos.z + z);
-+                if (entry == null) {
-+                    return flushListener.andThen(unit -> this.getRadiusAs(pos, radius, step));
-+                }
-+
-+                if (entry.isValidAs(step)) {
-+                    this.upgrader.spawnUpgradeTo(entry, step);
-+                    futures[idx] = entry.getListenerFor(step);
-+                } else {
-+                    return ChunkNotLoadedFuture.get();
-+                }
-+            }
-+        }
-+
-+        flushListener.invalidateWaker();
-+
-+        return AwaitAll.of(futures);
-+    }
-+
-+    @Override
-+    public Future<Chunk> spawnLoadChunk(ChunkEntry entry) {
-+        return VanillaChunkFuture.of(this.loadChunk(entry.getPos()));
-+    }
-+
-+    @Override
-+    public void notifyStatus(ChunkPos pos, ChunkStatus status) {
-+        this.worldGenerationProgressListener.setChunkStatus(pos, status);
-+    }
-+
-+    @Override
-+    public <T> void spawnOnMainThread(ChunkEntry entry, Future<T> future) {
-+        this.chunkMainExecutor.spawn(entry, future);
-+    }
-+
-+    @Override
-+    public void spawnOnMainThread(ChunkEntry entry, Runnable runnable) {
-+        this.chunkMainExecutor.spawn(entry, new LazyRunnableFuture(runnable));
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkMap
-+     * @author gegy1000
-+     */
-+    @Nullable
-+    @Overwrite
-+    public ChunkHolder getCurrentChunkHolder(long pos) {
-+        return this.map.primary().getEntry(pos);
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkMap
-+     * @author gegy1000
-+     */
-+    @Nullable
-+    @Overwrite
-+    public ChunkHolder getChunkHolder(long pos) {
-+        return this.map.visible().getEntry(pos);
-+    }
-+
-+    /**
-+     * @reason replace usage of ChunkStatus and delegate to custom upgrader logic
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>> getChunk(ChunkHolder holder, ChunkStatus status) {
-+        ChunkStep step = ChunkStep.byStatus(status);
-+
-+        ChunkEntry entry = (ChunkEntry) holder;
-+        this.upgrader.spawnUpgradeTo(entry, step);
-+
-+        return entry.getListenerFor(step).asVanilla();
-+    }
-+    
-+    @Inject(method = "tick", at = @At("HEAD")) // TODO
-+    public void tick(BooleanSupplier runWhile, CallbackInfo ci) {
-+        this.map.flushToVisible();
-+    }
-+
-+    @Redirect( // Maybe look back at
-+            method = "unloadChunks",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectLinkedOpenHashMap;remove(J)Ljava/lang/Object;",
-+                    remap = false
-+            )
-+    )
-+    private Object removeChunkForUnload(Long2ObjectLinkedOpenHashMap<ChunkHolder> map, long pos) {
-+        return this.map.primary().removeEntry(pos);
-+    }
-+
-+    @Redirect( //TODO
-+            method = "save(Z)V",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectLinkedOpenHashMap;values()Lit/unimi/dsi/fastutil/objects/ObjectCollection;",
-+                    remap = false
-+            )
-+    )
-+    private ObjectCollection<?> getChunks(Long2ObjectLinkedOpenHashMap<?> map) {
-+        return this.map.primary().getEntries();
-+    }
-+
-+    @Inject(method = "close", at = @At("RETURN"))
-+    private void close(CallbackInfo ci) {
-+        this.chunkMainExecutor.close();
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkLevelTracker
-+     * @author gegy1000
-+     */
-+    @Nullable
-+    @Overwrite
-+    private ChunkHolder setLevel(long pos, int toLevel, @Nullable ChunkHolder entry, int fromLevel) {
-+        return this.levelTracker.setLevel(pos, toLevel, (ChunkEntry) entry, fromLevel);
-+    }
-+
-+    /**
-+     * @reason replace the level used for light tickets
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void releaseLightTicket(ChunkPos pos) {
-+        this.mainThreadExecutor.send(() -> {
-+            this.ticketManager.removeTicketWithLevel(ChunkTicketType.LIGHT, pos, ChunkLevelTracker.LIGHT_TICKET_LEVEL, pos);
-+        });
-+    }
-+
-+    /**
-+     * @reason replace usage of async area-loading
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public CompletableFuture<Either<WorldChunk, ChunkHolder.Unloaded>> makeChunkEntitiesTickable(ChunkPos pos) {
-+        CompletableFuture<Either<WorldChunk, ChunkHolder.Unloaded>> future = new CompletableFuture<>();
-+
-+        ChunkEntry entry = this.map.primary().getEntry(pos);
-+
-+        this.spawnOnMainThread(entry, this.getRadiusAs(pos, 2, ChunkStep.FULL).handle((ok, err) -> {
-+            if (err == null && entry.getWorldChunk() != null) {
-+                future.complete(Either.left(entry.getWorldChunk()));
-+            } else {
-+                future.complete(ChunkHolder.UNLOADED_WORLD_CHUNK);
-+            }
-+            return Unit.INSTANCE;
-+        }));
-+
-+        return future;
-+    }
-+    // Stopped here --------------------------------------------
-+    /**
-+     * @reason replace usage of async area-loading
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public CompletableFuture<Either<WorldChunk, ChunkHolder.Unloaded>> makeChunkTickable(ChunkHolder holder) {
-+        CompletableFuture<Either<WorldChunk, ChunkHolder.Unloaded>> future = new CompletableFuture<>();
-+        ChunkEntry entry = (ChunkEntry) holder;
-+
-+        this.spawnOnMainThread(entry, this.getRadiusAs(entry.getPos(), 1, ChunkStep.FULL)
-+                .handle((ok, err) -> {
-+                    if (err != null) {
-+                        future.complete(ChunkHolder.UNLOADED_WORLD_CHUNK);
-+                        return Unit.INSTANCE;
-+                    }
-+
-+                    WorldChunk chunk = entry.getWorldChunk();
-+                    if (chunk != null) {
-+                        chunk.runPostProcessing();
-+
-+                        this.totalChunksLoadedCount.getAndIncrement();
-+                        this.tracker.onChunkFull(entry, chunk);
-+                        this.map.getTickingMaps().addTrackableChunk(entry);
-+
-+                        future.complete(Either.left(chunk));
-+                    } else {
-+                        future.complete(ChunkHolder.UNLOADED_WORLD_CHUNK);
-+                    }
-+
-+                    return Unit.INSTANCE;
-+                })
-+        );
-+
-+        return future;
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkMap
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public boolean updateHolderMap() {
-+        return this.map.flushToVisible();
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkMap
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public int getLoadedChunkCount() {
-+        return this.map.getEntryCount();
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkMap
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public Iterable<ChunkHolder> entryIterator() {
-+        return Iterables.unmodifiableIterable(this.map.visible().getEntries());
-+    }
-+
-+    @ModifyConstant(method = "setViewDistance", constant = @Constant(intValue = 33))
-+    private int getMaxViewDistance(int level) {
-+        return ChunkLevelTracker.FULL_LEVEL;
-+    }
-+
-+    @Redirect(
-+            method = "setViewDistance",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectLinkedOpenHashMap;values()Lit/unimi/dsi/fastutil/objects/ObjectCollection;",
-+                    remap = false
-+            )
-+    )
-+    private ObjectCollection<ChunkHolder> setViewDistance(Long2ObjectLinkedOpenHashMap<ChunkHolder> chunks) {
-+        if (this.tracker != null) {
-+            this.tracker.setViewDistance(this.watchDistance);
-+        }
-+        return ObjectLists.emptyList();
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkTracker
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void loadEntity(Entity entity) {
-+        if (entity instanceof EnderDragonPart) {
-+            return;
-+        }
-+        this.tracker.getEntities().add(entity);
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkTracker
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void unloadEntity(Entity entity) {
-+        this.tracker.getEntities().remove(entity);
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkTracker
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void sendToOtherNearbyPlayers(Entity entity, Packet<?> packet) {
-+        this.tracker.getEntities().sendToTracking(entity, packet);
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkTracker
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void sendToNearbyPlayers(Entity entity, Packet<?> packet) {
-+        this.tracker.getEntities().sendToTrackingAndSelf(entity, packet);
-+    }
-+
-+    /**
-+     * @reason use cached list of tracking players on the chunk entry
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public boolean isTooFarFromPlayersToSpawnMobs(ChunkPos chunkPos) {
-+        long pos = chunkPos.toLong();
-+
-+        ChunkEntry entry = this.map.visible().getEntry(pos);
-+        return entry == null || !entry.isChunkTickable();
-+    }
-+
-+    /**
-+     * @reason use cached list of tracking players on the chunk entry
-+     * @author gegy1000
-+     */
-+    @Redirect(
-+            method = "getPlayersWatchingChunk",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/server/world/PlayerChunkWatchingManager;getPlayersWatchingChunk(J)Ljava/util/stream/Stream;"
-+            )
-+    )
-+    private Stream<ServerPlayerEntity> getPlayersWatchingChunk(PlayerChunkWatchingManager watchManager, long pos) {
-+        return this.getPlayersWatchingChunk(pos);
-+    }
-+
-+    private Stream<ServerPlayerEntity> getPlayersWatchingChunk(long pos) {
-+        ChunkEntry entry = this.map.visible().getEntry(pos);
-+        if (entry != null) {
-+            return entry.getTrackers().getTrackingPlayers().stream();
-+        }
-+        return Stream.empty();
-+    }
-+
-+    /**
-+     * @reason delegate to ChunkTracker
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void tickPlayerMovement() {
-+        this.tracker.tick();
-+    }
-+
-+    /**
-+     * @reason we already detect player movement across chunks through normal entity tracker handling
-+     * @author gegy1000
-+     */
-+    @Inject(method = "updateCameraPosition", at = @At("HEAD"), cancellable = true)
-+    private void updateCameraPosition(ServerPlayerEntity player, CallbackInfo ci) {
-+        ci.cancel();
-+    }
-+
-+    @Shadow
-+    protected abstract CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>> loadChunk(ChunkPos pos);
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/TicTacsMixinPlugin.java b/src/main/java/net/gegy1000/tictacs/mixin/TicTacsMixinPlugin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..8154e0d498a9f3d707580dd8e7ed8658bf13c383
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/TicTacsMixinPlugin.java
-@@ -0,0 +1,54 @@
-+package net.gegy1000.tictacs.mixin;
-+
-+import net.fabricmc.loader.api.FabricLoader;
-+import org.objectweb.asm.tree.ClassNode;
-+import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
-+import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-+
-+import java.util.List;
-+import java.util.Set;
-+
-+public final class TicTacsMixinPlugin implements IMixinConfigPlugin {
-+    private static final String MIXIN_ROOT = "net.gegy1000.tictacs.mixin";
-+    private static final String STARLIGHT_MIXIN_ROOT = MIXIN_ROOT + ".starlight";
-+    private static final String PHOSPHOR_MIXIN_ROOT = MIXIN_ROOT + ".phosphor";
-+
-+    private static final boolean STARLIGHT_LOADED = FabricLoader.getInstance().isModLoaded("starlight");
-+    private static final boolean PHOSPHOR_LOADED = FabricLoader.getInstance().isModLoaded("phosphor");
-+
-+    @Override
-+    public void onLoad(String mixinPackage) {
-+    }
-+
-+    @Override
-+    public String getRefMapperConfig() {
-+        return null;
-+    }
-+
-+    @Override
-+    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-+        if (mixinClassName.startsWith(MIXIN_ROOT)) {
-+            return (STARLIGHT_LOADED || !mixinClassName.startsWith(STARLIGHT_MIXIN_ROOT))
-+                    && (PHOSPHOR_LOADED || !mixinClassName.startsWith(PHOSPHOR_MIXIN_ROOT));
-+        } else {
-+            return false;
-+        }
-+    }
-+
-+    @Override
-+    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
-+    }
-+
-+    @Override
-+    public List<String> getMixins() {
-+        return null;
-+    }
-+
-+    @Override
-+    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-+    }
-+
-+    @Override
-+    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/actor/TaskExecutorMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/actor/TaskExecutorMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..a8db5e6b469344433bd61a319148efeffb38824d
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/actor/TaskExecutorMixin.java
-@@ -0,0 +1,21 @@
-+package net.gegy1000.tictacs.mixin.actor;
-+
-+import net.gegy1000.tictacs.OwnThreadActor;
-+import net.minecraft.util.Util;
-+import net.minecraft.util.thread.TaskExecutor;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-+
-+import java.util.concurrent.Executor;
-+
-+@Mixin(TaskExecutor.class)
-+public class TaskExecutorMixin<T> {
-+    @Inject(method = "create", at = @At("HEAD"), cancellable = true)
-+    private static void create(Executor executor, String name, CallbackInfoReturnable<TaskExecutor<Runnable>> ci) {
-+        if (executor == Util.getMainWorkerExecutor()) {
-+            ci.setReturnValue(OwnThreadActor.create(name));
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/chunk_ticking/ServerChunkManagerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/chunk_ticking/ServerChunkManagerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..003789e0cbca2e9b9c5e8b21b91dcf37dc565212
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/chunk_ticking/ServerChunkManagerMixin.java
-@@ -0,0 +1,189 @@
-+package net.gegy1000.tictacs.mixin.chunk_ticking;
-+
-+import com.mojang.datafixers.DataFixer;
-+import com.mojang.datafixers.util.Either;
-+import net.gegy1000.tictacs.chunk.ChunkAccess;
-+import net.gegy1000.tictacs.chunk.ChunkController;
-+import net.gegy1000.tictacs.chunk.entry.ChunkEntry;
-+import net.minecraft.server.WorldGenerationProgressListener;
-+import net.minecraft.server.world.ChunkHolder;
-+import net.minecraft.server.world.ChunkTicketManager;
-+import net.minecraft.server.world.ServerChunkManager;
-+import net.minecraft.server.world.ServerWorld;
-+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
-+import net.minecraft.structure.StructureManager;
-+import net.minecraft.util.profiler.Profiler;
-+import net.minecraft.world.GameRules;
-+import net.minecraft.world.PersistentStateManager;
-+import net.minecraft.world.SpawnHelper;
-+import net.minecraft.world.chunk.WorldChunk;
-+import net.minecraft.world.gen.chunk.ChunkGenerator;
-+import net.minecraft.world.level.storage.LevelStorage;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.Unique;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+import org.jetbrains.annotations.Nullable;
-+import java.util.ArrayList;
-+import java.util.Collection;
-+import java.util.Collections;
-+import java.util.List;
-+import java.util.concurrent.Executor;
-+import java.util.function.Consumer;
-+import java.util.function.Supplier;
-+
-+@Mixin(value = ServerChunkManager.class, priority = 999)
-+public abstract class ServerChunkManagerMixin {
-+    @Shadow
-+    @Final
-+    public ThreadedAnvilChunkStorage threadedAnvilChunkStorage;
-+    @Shadow
-+    @Final
-+    private ServerWorld world;
-+    @Shadow
-+    private long lastMobSpawningTime;
-+    @Shadow
-+    @Nullable
-+    private SpawnHelper.Info spawnEntry;
-+    @Shadow
-+    @Final
-+    private ChunkTicketManager ticketManager;
-+    @Shadow
-+    private boolean spawnAnimals;
-+    @Shadow
-+    private boolean spawnMonsters;
-+
-+    private ChunkAccess primaryChunks;
-+    private final List<ChunkEntry> tickingChunks = new ArrayList<>();
-+
-+    @Inject(method = "<init>", at = @At("RETURN"))
-+    private void init(ServerWorld world, LevelStorage.Session session, DataFixer dataFixer, StructureManager structureManager, Executor workerExecutor, ChunkGenerator chunkGenerator, int viewDistance, boolean bl, WorldGenerationProgressListener worldGenerationProgressListener, Supplier<PersistentStateManager> supplier, CallbackInfo ci) {
-+        this.primaryChunks = ((ChunkController) this.threadedAnvilChunkStorage).getMap().primary();
-+    }
-+
-+    /**
-+     * @reason optimize chunk ticking and iteration logic
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    private void tickChunks() {
-+        long time = this.world.getTime();
-+
-+        long timeSinceSpawn = time - this.lastMobSpawningTime;
-+        this.lastMobSpawningTime = time;
-+
-+        boolean doMobSpawning = this.world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING);
-+        boolean spawnMobs = doMobSpawning && (this.spawnMonsters || this.spawnAnimals);
-+
-+        if (!this.world.isDebugWorld()) {
-+            Profiler profiler = this.world.getProfiler();
-+            profiler.push("pollingChunks");
-+
-+            this.flushChunkUpgrades();
-+
-+            this.spawnEntry = spawnMobs ? this.setupSpawnInfo(this.ticketManager.getSpawningChunkCount()) : null;
-+            this.tickChunks(timeSinceSpawn, this.spawnEntry);
-+
-+            if (doMobSpawning) {
-+                profiler.push("customSpawners");
-+                this.world.tickSpawners(this.spawnMonsters, this.spawnAnimals);
-+                profiler.pop();
-+            }
-+
-+            profiler.pop();
-+        }
-+
-+        this.threadedAnvilChunkStorage.tickPlayerMovement();
-+    }
-+
-+    private void flushChunkUpgrades() {
-+        ChunkController controller = (ChunkController) this.threadedAnvilChunkStorage;
-+        Collection<ChunkEntry> trackableChunks = controller.getMap().getTickingMaps().getTrackableEntries();
-+
-+        Profiler profiler = this.world.getProfiler();
-+        profiler.push("broadcast");
-+
-+        for (ChunkEntry entry : trackableChunks) {
-+            WorldChunk worldChunk = entry.getWorldChunk();
-+            if (worldChunk != null) {
-+                entry.flushUpdates(worldChunk);
-+            }
-+        }
-+
-+        profiler.pop();
-+    }
-+
-+    private void tickChunks(long timeSinceSpawn, SpawnHelper.Info spawnInfo) {
-+        ChunkController controller = (ChunkController) this.threadedAnvilChunkStorage;
-+
-+        List<ChunkEntry> tickingChunks = this.collectTickingChunks(controller);
-+        if (!tickingChunks.isEmpty()) {
-+            this.tickChunks(timeSinceSpawn, spawnInfo, tickingChunks);
-+        }
-+
-+        this.tickingChunks.clear();
-+    }
-+
-+    private void tickChunks(long timeSinceSpawn, SpawnHelper.Info spawnInfo, List<ChunkEntry> chunks) {
-+        boolean spawnAnimals = this.world.getTime() % 400 == 0L;
-+        int tickSpeed = this.world.getGameRules().getInt(GameRules.RANDOM_TICK_SPEED);
-+
-+        for (ChunkEntry entry : chunks) {
-+            WorldChunk worldChunk = entry.getWorldChunk();
-+
-+            if (worldChunk != null && entry.isChunkTickable()) {
-+                worldChunk.setInhabitedTime(worldChunk.getInhabitedTime() + timeSinceSpawn);
-+
-+                if (spawnInfo != null && this.world.getWorldBorder().contains(entry.getPos())) {
-+                    SpawnHelper.spawn(this.world, worldChunk, spawnInfo, this.spawnAnimals, this.spawnMonsters, spawnAnimals);
-+                }
-+
-+                this.world.tickChunk(worldChunk, tickSpeed);
-+            }
-+        }
-+    }
-+
-+    private SpawnHelper.Info setupSpawnInfo(int spawnChunkCount) {
-+        Profiler profiler = this.world.getProfiler();
-+        profiler.push("naturalSpawnCount");
-+
-+        SpawnHelper.Info spawnInfo = SpawnHelper.setupSpawn(spawnChunkCount, this.world.iterateEntities(), this::ifChunkLoaded);
-+
-+        profiler.pop();
-+
-+        return spawnInfo;
-+    }
-+
-+    private List<ChunkEntry> collectTickingChunks(ChunkController controller) {
-+        Collection<ChunkEntry> entries = controller.getMap().getTickingMaps().getTickableEntries();
-+        if (entries.isEmpty()) {
-+            return Collections.emptyList();
-+        }
-+
-+        List<ChunkEntry> tickingChunks = this.tickingChunks;
-+        tickingChunks.clear();
-+        tickingChunks.addAll(entries);
-+
-+        Collections.shuffle(tickingChunks);
-+
-+        return tickingChunks;
-+    }
-+
-+    @Unique
-+    private void ifChunkLoaded(long pos, Consumer<WorldChunk> consumer) {
-+        ChunkEntry entry = this.primaryChunks.getEntry(pos);
-+        if (entry != null) {
-+            Either<WorldChunk, ChunkHolder.Unloaded> accessible = entry.getAccessibleFuture().getNow(null);
-+            if (accessible == null) {
-+                return;
-+            }
-+
-+            accessible.ifLeft(consumer);
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/client/GameOptionsMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/client/GameOptionsMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..793b157d6ce6648c3cd300df3f97f87605ecd5f1
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/client/GameOptionsMixin.java
-@@ -0,0 +1,15 @@
-+package net.gegy1000.tictacs.mixin.client;
-+
-+import net.gegy1000.tictacs.config.TicTacsConfig;
-+import net.minecraft.client.options.GameOptions;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.Constant;
-+import org.spongepowered.asm.mixin.injection.ModifyConstant;
-+
-+@Mixin(GameOptions.class)
-+public class GameOptionsMixin {
-+    @ModifyConstant(method = "<init>", constant = @Constant(floatValue = 32.0F))
-+    private float modifyMaxViewDistance(float viewDistance) {
-+        return TicTacsConfig.get().maxViewDistance;
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/client/MinecraftClientMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/client/MinecraftClientMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..be075589086c00390857b36820bdbdc388b6901b
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/client/MinecraftClientMixin.java
-@@ -0,0 +1,31 @@
-+package net.gegy1000.tictacs.mixin.client;
-+
-+import net.minecraft.client.MinecraftClient;
-+import net.minecraft.client.gui.WorldGenerationProgressTracker;
-+import net.minecraft.server.WorldGenerationProgressListener;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-+
-+@Mixin(MinecraftClient.class)
-+public class MinecraftClientMixin {
-+    @Inject(
-+            method = "method_17533",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Ljava/util/concurrent/atomic/AtomicReference;set(Ljava/lang/Object;)V",
-+                    shift = At.Shift.AFTER
-+            ),
-+            cancellable = true,
-+            locals = LocalCapture.CAPTURE_FAILHARD,
-+            remap = false
-+    )
-+    private void getWorldProgressListener(
-+            int radius, CallbackInfoReturnable<WorldGenerationProgressListener> ci,
-+            WorldGenerationProgressTracker tracker
-+    ) {
-+        ci.setReturnValue(tracker);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/client/WorldGenerationProgressTrackerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/client/WorldGenerationProgressTrackerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..7b60fd275f816b1dd2cb8347343695f8a387e16d
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/client/WorldGenerationProgressTrackerMixin.java
-@@ -0,0 +1,94 @@
-+package net.gegy1000.tictacs.mixin.client;
-+
-+import net.minecraft.client.gui.WorldGenerationProgressTracker;
-+import net.minecraft.server.WorldGenerationProgressLogger;
-+import net.minecraft.util.math.ChunkPos;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+import org.jetbrains.annotations.Nullable;
-+
-+@Mixin(WorldGenerationProgressTracker.class)
-+public class WorldGenerationProgressTrackerMixin {
-+    @Shadow
-+    private ChunkPos spawnPos;
-+
-+    @Shadow
-+    @Final
-+    private int size;
-+
-+    @Shadow
-+    private boolean running;
-+
-+    @Shadow
-+    @Final
-+    private WorldGenerationProgressLogger progressLogger;
-+
-+    @Shadow
-+    @Final
-+    private int radius;
-+
-+    private ChunkStatus[] array;
-+
-+    private int offsetX;
-+    private int offsetZ;
-+
-+    @Inject(method = "<init>", at = @At("RETURN"))
-+    private void init(CallbackInfo ci) {
-+        this.array = new ChunkStatus[this.size * this.size];
-+    }
-+
-+    @Inject(method = "start(Lnet/minecraft/util/math/ChunkPos;)V", at = @At("RETURN"))
-+    private void start(ChunkPos spawnPos, CallbackInfo ci) {
-+        this.array = new ChunkStatus[this.size * this.size];
-+
-+        this.offsetX = this.radius - this.spawnPos.x;
-+        this.offsetZ = this.radius - this.spawnPos.z;
-+    }
-+
-+    /**
-+     * @reason set into backing array
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void setChunkStatus(ChunkPos pos, @Nullable ChunkStatus status) {
-+        if (this.running) {
-+            this.progressLogger.setChunkStatus(pos, status);
-+
-+            int idx = this.index(pos.x + this.offsetX, pos.z + this.offsetZ);
-+            if (idx != -1) {
-+                this.array[idx] = status;
-+            }
-+        }
-+    }
-+
-+    /**
-+     * @reason get from backing array
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    @Nullable
-+    public ChunkStatus getChunkStatus(int x, int z) {
-+        int idx = this.index(x, z);
-+        if (idx == -1) {
-+            return null;
-+        }
-+
-+        return this.array[idx];
-+    }
-+
-+    private int index(int x, int z) {
-+        int size = this.size;
-+        if (x < 0 || z < 0 || x >= size || z >= size) {
-+            return -1;
-+        }
-+
-+        return x + z * size;
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/client/debug/DebugRendererMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/client/debug/DebugRendererMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..b0a9f7a75b3dae73876d024274a2734deeae0234
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/client/debug/DebugRendererMixin.java
-@@ -0,0 +1,33 @@
-+package net.gegy1000.tictacs.mixin.client.debug;
-+
-+import net.gegy1000.tictacs.client.TicTacsDebugRenderer;
-+import net.gegy1000.tictacs.client.DebugRendererExt;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+import net.minecraft.client.MinecraftClient;
-+import net.minecraft.client.render.VertexConsumerProvider;
-+import net.minecraft.client.render.debug.DebugRenderer;
-+import net.minecraft.client.util.math.MatrixStack;
-+
-+@Mixin(DebugRenderer.class)
-+public class DebugRendererMixin implements DebugRendererExt {
-+	private TicTacsDebugRenderer ticTacsDebugRenderer;
-+
-+	@Inject(method = "<init>", at = @At("RETURN"))
-+	private void handleConstructor(MinecraftClient client, CallbackInfo ci) {
-+		this.ticTacsDebugRenderer = new TicTacsDebugRenderer();
-+	}
-+
-+	@Inject(method = "render", at = @At("HEAD"))
-+	private void handleRender(MatrixStack matrices, VertexConsumerProvider.Immediate vertexConsumers, double cameraX, double cameraY, double cameraZ, CallbackInfo ci) {
-+        this.ticTacsDebugRenderer.render(matrices, vertexConsumers, cameraX, cameraY, cameraZ);
-+	}
-+
-+	@Override
-+	public TicTacsDebugRenderer get() {
-+		return this.ticTacsDebugRenderer;
-+	}
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/client/debug/InGameHudMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/client/debug/InGameHudMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..0d2f10c5c5113bc9f99a50614ceb2fa5e5668c6d
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/client/debug/InGameHudMixin.java
-@@ -0,0 +1,22 @@
-+package net.gegy1000.tictacs.mixin.client.debug;
-+
-+import net.gegy1000.tictacs.client.LevelMapOverlay;
-+import net.gegy1000.tictacs.config.TicTacsConfig;
-+import net.minecraft.client.gui.hud.InGameHud;
-+import net.minecraft.client.util.math.MatrixStack;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+@Mixin(InGameHud.class)
-+public class InGameHudMixin {
-+    private final LevelMapOverlay levelMap = new LevelMapOverlay();
-+
-+    @Inject(method = "render", at = @At("RETURN"))
-+    private void render(MatrixStack transform, float deltaTime, CallbackInfo ci) {
-+        if (TicTacsConfig.get().debug.chunkMap) {
-+            this.levelMap.render(transform);
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/debug/ServerChunkManagerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/debug/ServerChunkManagerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..23c05e1e1229d33ef197492712008aada18b81ee
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/debug/ServerChunkManagerMixin.java
-@@ -0,0 +1,60 @@
-+package net.gegy1000.tictacs.mixin.debug;
-+
-+import com.mojang.datafixers.util.Either;
-+import net.gegy1000.tictacs.TicTacs;
-+import net.minecraft.server.world.ChunkHolder;
-+import net.minecraft.server.world.ServerChunkManager;
-+import net.minecraft.util.profiler.Profiler;
-+import net.minecraft.world.chunk.Chunk;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-+
-+import java.util.concurrent.CompletableFuture;
-+
-+@Mixin(value = ServerChunkManager.class, priority = 2000)
-+public class ServerChunkManagerMixin {
-+    private long startBlockTime;
-+    private Exception blockTrace;
-+
-+    @Inject(
-+            method = "getChunk(IILnet/minecraft/world/chunk/ChunkStatus;Z)Lnet/minecraft/world/chunk/Chunk;",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/server/world/ServerChunkManager$MainThreadExecutor;runTasks(Ljava/util/function/BooleanSupplier;)V",
-+                    shift = At.Shift.BEFORE
-+            ),
-+            locals = LocalCapture.CAPTURE_FAILHARD
-+    )
-+    private void startRecordBlockingChunk(
-+            int x, int z, ChunkStatus leastStatus, boolean create, CallbackInfoReturnable<Chunk> ci,
-+            Profiler profiler, long key, CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>> future
-+    ) {
-+        if (!future.isDone()) {
-+            this.blockTrace = new Exception();
-+            this.startBlockTime = System.nanoTime();
-+        }
-+    }
-+
-+    @Inject(
-+            method = "getChunk(IILnet/minecraft/world/chunk/ChunkStatus;Z)Lnet/minecraft/world/chunk/Chunk;",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/server/world/ServerChunkManager;putInCache(JLnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/chunk/ChunkStatus;)V",
-+                    shift = At.Shift.BEFORE
-+            )
-+    )
-+    private void stopRecordBlockingChunk(int x, int z, ChunkStatus leastStatus, boolean create, CallbackInfoReturnable<Chunk> ci) {
-+        if (this.blockTrace != null) {
-+            long timeNs = System.nanoTime() - this.startBlockTime;
-+            long timeMs = timeNs / 1000000;
-+
-+            TicTacs.LOGGER.warn("Blocked on chunk for {}ms", timeMs, this.blockTrace);
-+
-+            this.blockTrace = null;
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/io/PalettedContainerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/io/PalettedContainerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..2497dfba0989d964eb4dacac2f87cb82ab8dc2c0
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/io/PalettedContainerMixin.java
-@@ -0,0 +1,50 @@
-+package net.gegy1000.tictacs.mixin.io;
-+
-+import net.minecraft.world.chunk.Palette;
-+import net.minecraft.world.chunk.PalettedContainer;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+@Mixin(PalettedContainer.class)
-+public abstract class PalettedContainerMixin<T> {
-+    private static final int SIZE = 16 * 16 * 16;
-+
-+    @Shadow
-+    private int paletteSize;
-+
-+    @Shadow
-+    private Palette<T> palette;
-+
-+    @Inject(method = "count", at = @At("HEAD"), cancellable = true)
-+    private void count(PalettedContainer.CountConsumer<T> consumer, CallbackInfo ci) {
-+        // test for uniformity on small palettes
-+        int paletteSize = this.paletteSize;
-+        if (paletteSize > 4) {
-+            return;
-+        }
-+
-+        Palette<T> palette = this.palette;
-+        T uniformValue = null;
-+
-+        for (int i = 0; i < paletteSize; i++) {
-+            T entry = palette.getByIndex(i);
-+            if (entry == null || entry == uniformValue) {
-+                continue;
-+            }
-+
-+            if (uniformValue == null) {
-+                uniformValue = entry;
-+            } else {
-+                // we have more than one value, delegate to default behavior
-+                return;
-+            }
-+        }
-+
-+        // this section only has 1 palette entry!
-+        consumer.accept(uniformValue, SIZE);
-+        ci.cancel();
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/io/PointOfInterestStorageMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/io/PointOfInterestStorageMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..e36179f128d7470d8e2f38e228c0f2076fb8dedc
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/io/PointOfInterestStorageMixin.java
-@@ -0,0 +1,42 @@
-+package net.gegy1000.tictacs.mixin.io;
-+
-+import com.mojang.datafixers.DataFixer;
-+import com.mojang.serialization.Codec;
-+import net.gegy1000.tictacs.PoiStorageAccess;
-+import net.minecraft.datafixer.DataFixTypes;
-+import net.minecraft.util.Util;
-+import net.minecraft.util.math.BlockPos;
-+import net.minecraft.util.math.ChunkPos;
-+import net.minecraft.util.math.ChunkSectionPos;
-+import net.minecraft.world.chunk.ChunkSection;
-+import net.minecraft.world.poi.PointOfInterestSet;
-+import net.minecraft.world.poi.PointOfInterestStorage;
-+import net.minecraft.world.poi.PointOfInterestType;
-+import net.minecraft.world.storage.SerializingRegionBasedStorage;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import java.io.File;
-+import java.util.function.BiConsumer;
-+import java.util.function.Function;
-+
-+@Mixin(PointOfInterestStorage.class)
-+public abstract class PointOfInterestStorageMixin extends SerializingRegionBasedStorage<PointOfInterestSet> implements PoiStorageAccess {
-+    private PointOfInterestStorageMixin(File directory, Function<Runnable, Codec<PointOfInterestSet>> codecFactory, Function<Runnable, PointOfInterestSet> factory, DataFixer dataFixer, DataFixTypes dataFixTypes, boolean bl) {
-+        super(directory, codecFactory, factory, dataFixer, dataFixTypes, bl);
-+    }
-+
-+    @Shadow
-+    protected abstract void scanAndPopulate(ChunkSection section, ChunkSectionPos sectionPos, BiConsumer<BlockPos, PointOfInterestType> add);
-+
-+    @Override
-+    public void initSectionWithPois(ChunkPos pos, ChunkSection section) {
-+        ChunkSectionPos sectionPos = ChunkSectionPos.from(pos, section.getYOffset() >> 4);
-+        Util.ifPresentOrElse(this.get(sectionPos.asLong()), set -> {
-+            set.updatePointsOfInterest(add -> this.scanAndPopulate(section, sectionPos, add));
-+        }, () -> {
-+            PointOfInterestSet set = this.getOrCreate(sectionPos.asLong());
-+            this.scanAndPopulate(section, sectionPos, set::add);
-+        });
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/io/SerializingRegionBasedStorageMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/io/SerializingRegionBasedStorageMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..dad1eec8efdc767663f44c39fc9b42fe57fbd097
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/io/SerializingRegionBasedStorageMixin.java
-@@ -0,0 +1,50 @@
-+package net.gegy1000.tictacs.mixin.io;
-+
-+import com.mojang.serialization.DynamicOps;
-+import net.gegy1000.tictacs.AsyncChunkIo;
-+import net.gegy1000.tictacs.AsyncRegionStorageIo;
-+import net.minecraft.nbt.CompoundTag;
-+import net.minecraft.nbt.NbtOps;
-+import net.minecraft.util.math.ChunkPos;
-+import net.minecraft.world.storage.SerializingRegionBasedStorage;
-+import net.minecraft.world.storage.StorageIoWorker;
-+import org.apache.logging.log4j.Logger;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import org.jetbrains.annotations.Nullable;
-+import java.util.concurrent.CompletableFuture;
-+import java.util.concurrent.Executor;
-+
-+@Mixin(SerializingRegionBasedStorage.class)
-+public abstract class SerializingRegionBasedStorageMixin implements AsyncRegionStorageIo, AsyncChunkIo {
-+    @Shadow
-+    @Final
-+    private static Logger LOGGER;
-+
-+    @Shadow
-+    @Final
-+    private StorageIoWorker worker;
-+
-+    @Shadow
-+    protected abstract <T> void update(ChunkPos pos, DynamicOps<T> dynamicOps, @Nullable T data);
-+
-+    @Override
-+    public CompletableFuture<Void> loadDataAtAsync(ChunkPos pos, Executor mainThreadExecutor) {
-+        return this.getNbtAsync(pos).thenAcceptAsync(tag -> {
-+            this.update(pos, NbtOps.INSTANCE, tag);
-+        }, mainThreadExecutor);
-+    }
-+
-+    @Override
-+    public CompletableFuture<CompoundTag> getNbtAsync(ChunkPos pos) {
-+        return ((AsyncChunkIo) this.worker).getNbtAsync(pos).handle((tag, throwable) -> {
-+            if (throwable != null) {
-+                LOGGER.error("Error reading chunk {} data from disk", pos, throwable);
-+                return null;
-+            }
-+            return tag;
-+        });
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/io/StorageIoWorkerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/io/StorageIoWorkerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..c9535bc54a845f912c1aa188f7de589c9a11b793
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/io/StorageIoWorkerMixin.java
-@@ -0,0 +1,55 @@
-+package net.gegy1000.tictacs.mixin.io;
-+
-+import com.mojang.datafixers.util.Either;
-+import net.gegy1000.tictacs.AsyncChunkIo;
-+import net.minecraft.nbt.CompoundTag;
-+import net.minecraft.util.math.ChunkPos;
-+import net.minecraft.world.storage.RegionBasedStorage;
-+import net.minecraft.world.storage.StorageIoWorker;
-+import org.apache.logging.log4j.Logger;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import java.util.Map;
-+import java.util.concurrent.CompletableFuture;
-+import java.util.function.Supplier;
-+
-+@Mixin(StorageIoWorker.class)
-+public abstract class StorageIoWorkerMixin implements AsyncChunkIo {
-+    @Shadow
-+    @Final
-+    private static Logger LOGGER;
-+
-+    @Shadow
-+    @Final
-+    private RegionBasedStorage storage;
-+
-+    @Shadow
-+    @Final
-+    private Map<ChunkPos, StorageIoWorker.Result> results;
-+
-+    @Shadow
-+    protected abstract <T> CompletableFuture<T> run(Supplier<Either<T, Exception>> supplier);
-+
-+    @Override
-+    public CompletableFuture<CompoundTag> getNbtAsync(ChunkPos pos) {
-+        return this.run(() -> {
-+            StorageIoWorker.Result result = this.results.get(pos);
-+            if (result == null) {
-+                return this.loadNbtAt(pos);
-+            }
-+            return Either.left(result.nbt);
-+        });
-+    }
-+
-+    public Either<CompoundTag, Exception> loadNbtAt(ChunkPos pos) {
-+        try {
-+            CompoundTag compoundTag = this.storage.getTagAt(pos);
-+            return Either.left(compoundTag);
-+        } catch (Exception e) {
-+            LOGGER.warn("Failed to read chunk {}", pos, e);
-+            return Either.right(e);
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/io/ThreadedAnvilChunkStorageMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/io/ThreadedAnvilChunkStorageMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..c6bca45eddbfd1b40e4c53891bcc2eb83c67a470
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/io/ThreadedAnvilChunkStorageMixin.java
-@@ -0,0 +1,149 @@
-+package net.gegy1000.tictacs.mixin.io;
-+
-+import com.mojang.datafixers.DataFixer;
-+import com.mojang.datafixers.util.Either;
-+import net.fabricmc.fabric.api.util.NbtType;
-+import net.gegy1000.tictacs.AsyncChunkIo;
-+import net.gegy1000.tictacs.AsyncRegionStorageIo;
-+import net.gegy1000.tictacs.chunk.io.ChunkData;
-+import net.minecraft.SharedConstants;
-+import net.minecraft.nbt.CompoundTag;
-+import net.minecraft.server.world.ChunkHolder;
-+import net.minecraft.server.world.ServerWorld;
-+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
-+import net.minecraft.structure.StructureManager;
-+import net.minecraft.util.Util;
-+import net.minecraft.util.crash.CrashException;
-+import net.minecraft.util.math.ChunkPos;
-+import net.minecraft.util.thread.ThreadExecutor;
-+import net.minecraft.world.PersistentStateManager;
-+import net.minecraft.world.chunk.Chunk;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import net.minecraft.world.chunk.ProtoChunk;
-+import net.minecraft.world.chunk.UpgradeData;
-+import net.minecraft.world.poi.PointOfInterestStorage;
-+import net.minecraft.world.storage.VersionedChunkStorage;
-+import org.apache.logging.log4j.Logger;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import org.jetbrains.annotations.Nullable;
-+import java.io.File;
-+import java.io.IOException;
-+import java.util.concurrent.CompletableFuture;
-+import java.util.concurrent.CompletionException;
-+import java.util.function.Supplier;
-+
-+@Mixin(ThreadedAnvilChunkStorage.class)
-+public abstract class ThreadedAnvilChunkStorageMixin extends VersionedChunkStorage implements AsyncChunkIo {
-+    @Shadow
-+    @Final
-+    private static Logger LOGGER;
-+
-+    @Shadow
-+    @Final
-+    private ServerWorld world;
-+    @Shadow
-+    @Final
-+    private PointOfInterestStorage pointOfInterestStorage;
-+    @Shadow
-+    @Final
-+    private StructureManager structureManager;
-+    @Shadow
-+    @Final
-+    private Supplier<PersistentStateManager> persistentStateManagerFactory;
-+    @Shadow
-+    @Final
-+    private ThreadExecutor<Runnable> mainThreadExecutor;
-+
-+    private ThreadedAnvilChunkStorageMixin(File file, DataFixer dataFixer, boolean dsync) {
-+        super(file, dataFixer, dsync);
-+    }
-+
-+    /**
-+     * @reason avoid blocking the main thread to load chunk
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>> loadChunk(ChunkPos pos) {
-+        return this.getUpdatedChunkTagAsync(pos)
-+                .thenApplyAsync(tag -> this.deserializeChunkData(pos, tag), Util.getMainWorkerExecutor())
-+                .handleAsync((data, throwable) -> {
-+                    if (throwable != null) {
-+                        if (throwable instanceof CompletionException) {
-+                            throwable = throwable.getCause();
-+                        }
-+                        LOGGER.error("Couldn't load chunk {}", pos, throwable);
-+                    }
-+
-+                    return this.createChunkFromData(pos, data);
-+                }, this.mainThreadExecutor);
-+    }
-+
-+    private Either<Chunk, ChunkHolder.Unloaded> createChunkFromData(ChunkPos pos, ChunkData data) {
-+        if (data != null) {
-+            this.world.getProfiler().visit("chunkLoad");
-+
-+            try {
-+                Chunk chunk = data.createChunk(this.world, this.structureManager, this.pointOfInterestStorage);
-+                chunk.setLastSaveTime(this.world.getTime());
-+
-+                this.method_27053(pos, chunk.getStatus().getChunkType());
-+                return Either.left(chunk);
-+            } catch (CrashException crash) {
-+                Throwable cause = crash.getCause();
-+                if (!(cause instanceof IOException)) {
-+                    this.method_27054(pos);
-+                    throw crash;
-+                }
-+
-+                LOGGER.error("Couldn't load chunk {}", pos, crash);
-+            } catch (Exception e) {
-+                LOGGER.error("Couldn't load chunk {}", pos, e);
-+            }
-+        }
-+
-+        this.method_27054(pos);
-+        return Either.left(new ProtoChunk(pos, UpgradeData.NO_UPGRADE_DATA));
-+    }
-+
-+    @Nullable
-+    private ChunkData deserializeChunkData(ChunkPos pos, CompoundTag tag) {
-+        if (tag == null) {
-+            return null;
-+        }
-+
-+        if (!tag.contains("Level", NbtType.COMPOUND) || !tag.getCompound("Level").contains("Status", NbtType.STRING)) {
-+            LOGGER.error("Chunk file at {} is missing level data, skipping", pos);
-+            return null;
-+        }
-+
-+        return ChunkData.deserialize(pos, tag);
-+    }
-+
-+    private CompletableFuture<CompoundTag> getUpdatedChunkTagAsync(ChunkPos pos) {
-+        CompletableFuture<CompoundTag> chunkTag = this.getNbtAsync(pos)
-+                .thenCompose(tag -> {
-+                    if (tag != null && getDataVersion(tag) < SharedConstants.getGameVersion().getWorldVersion()) {
-+                        // TODO: ideally we don't need to datafix chunks on the main thread
-+                        return CompletableFuture.supplyAsync(() -> {
-+                            return this.updateChunkTag(this.world.getRegistryKey(), this.persistentStateManagerFactory, tag);
-+                        }, this.mainThreadExecutor);
-+                    }
-+
-+                    return CompletableFuture.completedFuture(tag);
-+                });
-+
-+        CompletableFuture<Void> loadPoi = ((AsyncRegionStorageIo) this.pointOfInterestStorage).loadDataAtAsync(pos, this.mainThreadExecutor);
-+
-+        return chunkTag.thenCombine(loadPoi, (tag, v) -> tag);
-+    }
-+
-+    @Shadow
-+    protected abstract void method_27054(ChunkPos chunkPos);
-+
-+    @Shadow
-+    protected abstract byte method_27053(ChunkPos chunkPos, ChunkStatus.ChunkType chunkType);
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/io/VersionedChunkStorageMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/io/VersionedChunkStorageMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..be9a87b9360ee3133c360e8a9aabe98865fa6c3b
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/io/VersionedChunkStorageMixin.java
-@@ -0,0 +1,24 @@
-+package net.gegy1000.tictacs.mixin.io;
-+
-+import net.gegy1000.tictacs.AsyncChunkIo;
-+import net.minecraft.nbt.CompoundTag;
-+import net.minecraft.util.math.ChunkPos;
-+import net.minecraft.world.storage.StorageIoWorker;
-+import net.minecraft.world.storage.VersionedChunkStorage;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import java.util.concurrent.CompletableFuture;
-+
-+@Mixin(VersionedChunkStorage.class)
-+public class VersionedChunkStorageMixin implements AsyncChunkIo {
-+    @Shadow
-+    @Final
-+    private StorageIoWorker worker;
-+
-+    @Override
-+    public CompletableFuture<CompoundTag> getNbtAsync(ChunkPos pos) {
-+        return ((AsyncChunkIo) this.worker).getNbtAsync(pos);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/lighting/ServerLightingProviderMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/lighting/ServerLightingProviderMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..efc889a7a6608eae8c09ce4ba116b8cdd96c5ab9
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/lighting/ServerLightingProviderMixin.java
-@@ -0,0 +1,63 @@
-+package net.gegy1000.tictacs.mixin.lighting;
-+
-+import net.gegy1000.tictacs.lighting.LightingExecutor;
-+import net.gegy1000.tictacs.lighting.LightingExecutorHolder;
-+import net.minecraft.server.world.ServerLightingProvider;
-+import net.minecraft.world.chunk.ChunkProvider;
-+import net.minecraft.world.chunk.light.LightingProvider;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Unique;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+import java.util.function.IntSupplier;
-+
-+@Mixin(ServerLightingProvider.class)
-+public abstract class ServerLightingProviderMixin extends LightingProvider implements LightingExecutorHolder {
-+    @Unique
-+    private final LightingExecutor lightingExecutor = new LightingExecutor(this);
-+
-+    private ServerLightingProviderMixin(ChunkProvider chunks, boolean blockLight, boolean skyLight) {
-+        super(chunks, blockLight, skyLight);
-+    }
-+
-+    /**
-+     * @reason wake up the executor on each tick for lighting updates that have been indirectly queued
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void tick() {
-+        this.lightingExecutor.wake();
-+    }
-+
-+    /**
-+     * @reason delegate to the lighting executor
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    private void enqueue(int x, int z, IntSupplier levelSupplier, ServerLightingProvider.Stage stage, Runnable task) {
-+        this.lightingExecutor.enqueue(task, stage);
-+    }
-+
-+    /**
-+     * @reason allow doLightUpdates to be called from the executor
-+     * @author gegy1000
-+     */
-+    @Override
-+    @Overwrite
-+    public int doLightUpdates(int maxUpdateCount, boolean doSkylight, boolean skipEdgeLightPropagation) {
-+        return super.doLightUpdates(maxUpdateCount, doSkylight, skipEdgeLightPropagation);
-+    }
-+
-+    @Inject(method = "close", at = @At("HEAD"))
-+    public void close(CallbackInfo ci) {
-+        this.lightingExecutor.close();
-+    }
-+
-+    @Override
-+    public LightingExecutor getLightingExecutor() {
-+        return this.lightingExecutor;
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/lighting/ThreadedAnvilChunkStorageMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/lighting/ThreadedAnvilChunkStorageMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..ddbe3842bde57e94e5b1442e38861fc39d1d4e3c
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/lighting/ThreadedAnvilChunkStorageMixin.java
-@@ -0,0 +1,26 @@
-+package net.gegy1000.tictacs.mixin.lighting;
-+
-+import net.gegy1000.tictacs.VoidActor;
-+import net.gegy1000.tictacs.chunk.ChunkController;
-+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
-+import net.minecraft.util.thread.TaskExecutor;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Redirect;
-+
-+import java.util.concurrent.Executor;
-+
-+@Mixin(ThreadedAnvilChunkStorage.class)
-+public abstract class ThreadedAnvilChunkStorageMixin implements ChunkController {
-+    @Redirect(
-+            method = "<init>",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/util/thread/TaskExecutor;create(Ljava/util/concurrent/Executor;Ljava/lang/String;)Lnet/minecraft/util/thread/TaskExecutor;",
-+                    ordinal = 1
-+            )
-+    )
-+    private TaskExecutor<Runnable> createLightingActor(Executor executor, String name) {
-+        return new VoidActor(name);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ClientConnectionMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ClientConnectionMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..8bcbb31ff4122a544658cb352f6521df097a69cf
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ClientConnectionMixin.java
-@@ -0,0 +1,118 @@
-+package net.gegy1000.tictacs.mixin.packet_queue;
-+
-+import io.netty.channel.Channel;
-+import io.netty.channel.ChannelFuture;
-+import io.netty.channel.ChannelFutureListener;
-+import io.netty.util.concurrent.Future;
-+import io.netty.util.concurrent.GenericFutureListener;
-+import net.gegy1000.tictacs.QueuingConnection;
-+import net.minecraft.network.ClientConnection;
-+import net.minecraft.network.NetworkState;
-+import net.minecraft.network.Packet;
-+import org.apache.logging.log4j.Logger;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import org.jetbrains.annotations.Nullable;
-+import org.spongepowered.asm.mixin.Unique;
-+
-+import java.util.ArrayList;
-+import java.util.Collections;
-+import java.util.List;
-+import java.util.Queue;
-+
-+@Mixin(ClientConnection.class)
-+public abstract class ClientConnectionMixin implements QueuingConnection {
-+    @Shadow
-+    @Final
-+    private Queue<ClientConnection.QueuedPacket> packetQueue;
-+
-+    @Shadow
-+    private Channel channel;
-+
-+    @Shadow
-+    private int packetsSentCounter;
-+
-+    @Shadow
-+    @Final
-+    private static Logger LOGGER;
-+
-+    @Shadow
-+    public abstract void setState(NetworkState state);
-+
-+    @Override
-+    public void enqueueSend(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
-+        this.packetQueue.add(new ClientConnection.QueuedPacket(packet, callback));
-+    }
-+
-+    /**
-+     * @reason send multiple queued packets by only scheduling to the event loop once
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public void sendQueuedPackets() {
-+        if (this.channel == null || !this.channel.isOpen()) {
-+            return;
-+        }
-+
-+        List<ClientConnection.QueuedPacket> queue = this.drainQueue();
-+        if (queue.isEmpty()) {
-+            return;
-+        }
-+
-+        NetworkState currentState = this.channel.attr(ClientConnection.ATTR_KEY_PROTOCOL).get();
-+
-+        ClientConnection.QueuedPacket lastPacket = queue.get(queue.size() - 1);
-+        NetworkState lastState = NetworkState.getPacketHandlerState(lastPacket.packet);
-+
-+        this.packetsSentCounter += queue.size();
-+
-+        if (lastState != currentState) {
-+            LOGGER.debug("Disabled auto read");
-+            this.channel.config().setAutoRead(false);
-+        }
-+
-+        if (this.channel.eventLoop().inEventLoop()) {
-+            this.sendQueue(queue, currentState, lastState);
-+        } else {
-+            this.channel.eventLoop().execute(() -> {
-+                this.sendQueue(queue, currentState, lastState);
-+            });
-+        }
-+    }
-+
-+    @Unique
-+    private List<ClientConnection.QueuedPacket> drainQueue() {
-+        if (this.packetQueue.isEmpty()) {
-+            return Collections.emptyList();
-+        }
-+
-+        List<ClientConnection.QueuedPacket> buffer = new ArrayList<>(this.packetQueue.size());
-+
-+        ClientConnection.QueuedPacket queued;
-+        while ((queued = this.packetQueue.poll()) != null) {
-+            buffer.add(queued);
-+        }
-+
-+        return buffer;
-+    }
-+
-+    @Unique
-+    private void sendQueue(List<ClientConnection.QueuedPacket> queue, NetworkState currentState, NetworkState lastState) {
-+        if (lastState != currentState) {
-+            this.setState(lastState);
-+        }
-+
-+        for (ClientConnection.QueuedPacket packet : queue) {
-+            ChannelFuture future = this.channel.write(packet.packet);
-+            if (packet.callback != null) {
-+                future.addListener(packet.callback);
-+            }
-+            future.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-+        }
-+
-+        this.channel.flush();
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ServerPlayNetworkHandlerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ServerPlayNetworkHandlerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..8f1b9e07f341959e41c4b0c173b3df150ee1f4f8
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ServerPlayNetworkHandlerMixin.java
-@@ -0,0 +1,25 @@
-+package net.gegy1000.tictacs.mixin.packet_queue;
-+
-+import io.netty.util.concurrent.Future;
-+import io.netty.util.concurrent.GenericFutureListener;
-+import net.gegy1000.tictacs.QueuingConnection;
-+import net.minecraft.network.ClientConnection;
-+import net.minecraft.network.Packet;
-+import net.minecraft.server.network.ServerPlayNetworkHandler;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import org.jetbrains.annotations.Nullable;
-+
-+@Mixin(ServerPlayNetworkHandler.class)
-+public class ServerPlayNetworkHandlerMixin implements QueuingConnection {
-+    @Shadow
-+    @Final
-+    public ClientConnection connection;
-+
-+    @Override
-+    public void enqueueSend(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
-+        ((QueuingConnection) this.connection).enqueueSend(packet, callback);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ServerPlayerEntityMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ServerPlayerEntityMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..124e9331a0d2a76ea9faf20cc52483243dd005ca
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/packet_queue/ServerPlayerEntityMixin.java
-@@ -0,0 +1,34 @@
-+package net.gegy1000.tictacs.mixin.packet_queue;
-+
-+import net.gegy1000.tictacs.QueuingConnection;
-+import net.minecraft.network.Packet;
-+import net.minecraft.server.network.ServerPlayNetworkHandler;
-+import net.minecraft.server.network.ServerPlayerEntity;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Redirect;
-+
-+@Mixin(ServerPlayerEntity.class)
-+public class ServerPlayerEntityMixin {
-+    @Redirect(
-+            method = "sendInitialChunkPackets",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"
-+            )
-+    )
-+    private void sendInitialChunkPacket(ServerPlayNetworkHandler network, Packet<?> packet) {
-+        QueuingConnection.enqueueSend(network, packet);
-+    }
-+
-+    @Redirect(
-+            method = "sendUnloadChunkPacket",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"
-+            )
-+    )
-+    private void sendUnloadChunkPacket(ServerPlayNetworkHandler network, Packet<?> packet) {
-+        QueuingConnection.enqueueSend(network, packet);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/phosphor/PhosphorServerLightingProviderMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/phosphor/PhosphorServerLightingProviderMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..20214f2847ec53fce9e9f50515e3e20f95ba62ba
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/phosphor/PhosphorServerLightingProviderMixin.java
-@@ -0,0 +1,17 @@
-+package net.gegy1000.tictacs.mixin.phosphor;
-+
-+import net.gegy1000.tictacs.compatibility.PhosphorServerLightingProviderAccess;
-+import net.minecraft.server.world.ServerLightingProvider;
-+import net.minecraft.world.chunk.Chunk;
-+import org.spongepowered.asm.mixin.Mixin;
-+
-+import java.util.concurrent.CompletableFuture;
-+
-+@Mixin(value = ServerLightingProvider.class, priority = 999)
-+public abstract class PhosphorServerLightingProviderMixin implements PhosphorServerLightingProviderAccess {
-+    // implement with lower priority than phosphor's mixin
-+    @Override
-+    public CompletableFuture<Chunk> setupLightmaps(Chunk chunk) {
-+        return CompletableFuture.completedFuture(chunk);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/starlight/StarlightServerWorldMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/starlight/StarlightServerWorldMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..ace631733e3323dc94d8d03ca9e52511a3d277bd
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/starlight/StarlightServerWorldMixin.java
-@@ -0,0 +1,40 @@
-+package net.gegy1000.tictacs.mixin.starlight;
-+
-+import ca.spottedleaf.starlight.common.world.ExtendedWorld;
-+import net.gegy1000.tictacs.AsyncChunkAccess;
-+import net.minecraft.server.world.ServerChunkManager;
-+import net.minecraft.server.world.ServerWorld;
-+import net.minecraft.util.profiler.Profiler;
-+import net.minecraft.util.registry.RegistryKey;
-+import net.minecraft.world.MutableWorldProperties;
-+import net.minecraft.world.World;
-+import net.minecraft.world.chunk.Chunk;
-+import net.minecraft.world.chunk.WorldChunk;
-+import net.minecraft.world.dimension.DimensionType;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import java.util.function.Supplier;
-+
-+@Mixin(value = ServerWorld.class, priority = 1001)
-+public abstract class StarlightServerWorldMixin extends World implements ExtendedWorld {
-+    @Shadow
-+    @Final
-+    private ServerChunkManager serverChunkManager;
-+
-+    private StarlightServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DimensionType dimensionType, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
-+        super(properties, registryRef, dimensionType, profiler, isClient, debugWorld, seed);
-+    }
-+
-+    // these implementations are not strictly necessary, but they optimize starlight's chunk queries
-+    @Override
-+    public WorldChunk getChunkAtImmediately(int x, int z) {
-+        return this.serverChunkManager.getWorldChunk(x, z);
-+    }
-+
-+    @Override
-+    public Chunk getAnyChunkImmediately(int x, int z) {
-+        return ((AsyncChunkAccess) this.serverChunkManager).getAnyExistingChunk(x, z);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/ChunkRegionMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/ChunkRegionMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..4c9f6ca004a2b045ac85f95bded7fe755f1b99f1
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/ChunkRegionMixin.java
-@@ -0,0 +1,39 @@
-+package net.gegy1000.tictacs.mixin.threading_fix;
-+
-+import net.minecraft.server.world.ServerWorld;
-+import net.minecraft.structure.StructureStart;
-+import net.minecraft.util.math.ChunkSectionPos;
-+import net.minecraft.world.ChunkRegion;
-+import net.minecraft.world.gen.StructureAccessor;
-+import net.minecraft.world.gen.feature.StructureFeature;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.Unique;
-+
-+import java.util.stream.Stream;
-+
-+@Mixin(ChunkRegion.class)
-+public class ChunkRegionMixin {
-+    @Shadow
-+    @Final
-+    private ServerWorld world;
-+
-+    @Unique
-+    private StructureAccessor structureAccess;
-+
-+    /**
-+     * @reason vanilla calls getStructures on the main world object. we don't want to do this! this can cause a race
-+     * condition where both the main thread and the worker threads are blocking on a chunk to load.
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public Stream<? extends StructureStart<?>> getStructures(ChunkSectionPos pos, StructureFeature<?> feature) {
-+        if (this.structureAccess == null) {
-+            this.structureAccess = this.world.getStructureAccessor().forRegion((ChunkRegion) (Object) this);
-+        }
-+
-+        return this.structureAccess.getStructuresWithChildren(pos, feature);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/StructureManagerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/StructureManagerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..05006a22fb604b2bb0ea7a941d23e3f6d381da98
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/StructureManagerMixin.java
-@@ -0,0 +1,32 @@
-+package net.gegy1000.tictacs.mixin.threading_fix;
-+
-+import com.mojang.datafixers.DataFixer;
-+import net.minecraft.resource.ResourceManager;
-+import net.minecraft.structure.Structure;
-+import net.minecraft.structure.StructureManager;
-+import net.minecraft.util.Identifier;
-+import net.minecraft.world.level.storage.LevelStorage;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Mutable;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+import java.util.Map;
-+import java.util.concurrent.ConcurrentHashMap;
-+
-+@Mixin(StructureManager.class)
-+public class StructureManagerMixin {
-+    @Shadow
-+    @Final
-+    @Mutable
-+    private Map<Identifier, Structure> structures;
-+
-+    @Inject(method = "<init>", at = @At("RETURN"))
-+    private void init(ResourceManager resourceManager, LevelStorage.Session session, DataFixer dataFixer, CallbackInfo ci) {
-+        // wrap the structures map so that it can be accessed concurrently
-+        this.structures = new ConcurrentHashMap<>(this.structures);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/WeightedListMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/WeightedListMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..5e5c4dde14b7b80d18f0375db3ee81aa9bcaebde
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/threading_fix/WeightedListMixin.java
-@@ -0,0 +1,41 @@
-+package net.gegy1000.tictacs.mixin.threading_fix;
-+
-+import net.minecraft.util.collection.WeightedList;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import java.util.List;
-+import java.util.Random;
-+
-+@Mixin(WeightedList.class)
-+public class WeightedListMixin<U> {
-+    @Shadow
-+    @Final
-+    protected List<WeightedList.Entry<U>> entries;
-+
-+    /**
-+     * @reason remove use of streams and support concurrent access
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public U pickRandom(Random random) {
-+        WeightedList.Entry<U> selectedEntry = null;
-+        double selectedValue = 0.0;
-+
-+        for (WeightedList.Entry<U> entry : this.entries) {
-+            double value = Math.pow(random.nextFloat(), 1.0F / entry.weight);
-+            if (value > selectedValue) {
-+                selectedEntry = entry;
-+                selectedValue = value;
-+            }
-+        }
-+
-+        if (selectedEntry == null) {
-+            throw new IllegalStateException("no entries in WeightedList");
-+        }
-+
-+        return selectedEntry.getElement();
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/ticket/ChunkTicketManagerMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/ticket/ChunkTicketManagerMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..9f465b60f3ab6d811302ffd2e8e7f27e50625435
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/ticket/ChunkTicketManagerMixin.java
-@@ -0,0 +1,100 @@
-+package net.gegy1000.tictacs.mixin.ticket;
-+
-+import it.unimi.dsi.fastutil.longs.LongList;
-+import net.gegy1000.tictacs.chunk.ChunkController;
-+import net.gegy1000.tictacs.chunk.entry.ChunkEntry;
-+import net.gegy1000.tictacs.chunk.step.ChunkStep;
-+import net.gegy1000.tictacs.chunk.ticket.PlayerTicketManager;
-+import net.gegy1000.tictacs.chunk.ticket.TicketTracker;
-+import net.minecraft.server.world.ChunkHolder;
-+import net.minecraft.server.world.ChunkTicketManager;
-+import net.minecraft.server.world.ChunkTicketType;
-+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
-+import net.minecraft.util.math.ChunkPos;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.Unique;
-+
-+import java.util.Comparator;
-+import java.util.Set;
-+
-+@Mixin(ChunkTicketManager.class)
-+public abstract class ChunkTicketManagerMixin implements TicketTracker {
-+    private static final ChunkTicketType<ChunkPos> GENERATION_TICKET = ChunkTicketType.create("player_generation", Comparator.comparingLong(ChunkPos::toLong));
-+
-+    @Shadow
-+    @Final
-+    public ChunkTicketManager.DistanceFromNearestPlayerTracker distanceFromNearestPlayerTracker;
-+    @Shadow
-+    @Final
-+    public ChunkTicketManager.NearbyChunkTicketUpdater nearbyChunkTicketUpdater;
-+    @Shadow
-+    @Final
-+    public ChunkTicketManager.TicketDistanceLevelPropagator distanceFromTicketTracker;
-+    @Shadow
-+    @Final
-+    public Set<ChunkHolder> chunkHolders;
-+
-+    private PlayerTicketManager fullTickets;
-+    private PlayerTicketManager generationTickets;
-+
-+    /**
-+     * @reason redirect player ticket logic to {@link PlayerTicketManager}
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public boolean tick(ThreadedAnvilChunkStorage tacs) {
-+        this.initialize(tacs);
-+
-+        LongList fullTickets = this.fullTickets.collectTickets();
-+        LongList generationTickets = this.generationTickets.collectTickets();
-+
-+        this.distanceFromNearestPlayerTracker.updateLevels();
-+        this.nearbyChunkTicketUpdater.updateLevels();
-+
-+        int completedTasks = Integer.MAX_VALUE - this.distanceFromTicketTracker.update(Integer.MAX_VALUE);
-+
-+        this.fullTickets.waitForChunks(fullTickets);
-+        this.generationTickets.waitForChunks(generationTickets);
-+
-+        if (!this.chunkHolders.isEmpty()) {
-+            for (ChunkHolder holder : this.chunkHolders) {
-+                ChunkEntry entry = (ChunkEntry) holder;
-+                entry.onUpdateLevel(tacs);
-+            }
-+            this.chunkHolders.clear();
-+            return true;
-+        }
-+
-+        return completedTasks != 0;
-+    }
-+
-+    @Unique
-+    private void initialize(ThreadedAnvilChunkStorage tacs) {
-+        if (this.fullTickets == null || this.generationTickets == null) {
-+            ChunkController controller = (ChunkController) tacs;
-+            this.fullTickets = new PlayerTicketManager(controller, ChunkStep.FULL, 2, ChunkTicketType.PLAYER, 2);
-+            this.generationTickets = new PlayerTicketManager(controller, ChunkStep.GENERATION, 0, GENERATION_TICKET, 5);
-+        }
-+    }
-+
-+    @Override
-+    public void enqueueTicket(long pos, int distance) {
-+        this.fullTickets.enqueueTicket(pos, distance);
-+        this.generationTickets.enqueueTicket(pos, distance);
-+    }
-+
-+    @Override
-+    public void removeTicket(long pos) {
-+        this.fullTickets.removeTicket(pos);
-+        this.generationTickets.removeTicket(pos);
-+    }
-+
-+    @Override
-+    public void moveTicket(long pos, int fromDistance, int toDistance) {
-+        this.fullTickets.moveTicket(pos, fromDistance, toDistance);
-+        this.generationTickets.moveTicket(pos, fromDistance, toDistance);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/ticket/NearbyChunkTicketUpdaterMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/ticket/NearbyChunkTicketUpdaterMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..ab742922f19356847348edf8e940c4fe1343a97a
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/ticket/NearbyChunkTicketUpdaterMixin.java
-@@ -0,0 +1,51 @@
-+package net.gegy1000.tictacs.mixin.ticket;
-+
-+import net.gegy1000.tictacs.chunk.ticket.TicketTracker;
-+import net.minecraft.server.world.ChunkTaskPrioritySystem;
-+import net.minecraft.server.world.ChunkTicketManager;
-+import net.minecraft.util.math.ChunkPos;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Redirect;
-+
-+import java.util.function.IntConsumer;
-+import java.util.function.IntSupplier;
-+
-+@Mixin(ChunkTicketManager.NearbyChunkTicketUpdater.class)
-+public class NearbyChunkTicketUpdaterMixin {
-+    @Shadow(aliases = "field_17463")
-+    private ChunkTicketManager ticketManager;
-+
-+    /**
-+     * @author gegy1000
-+     * @see ChunkTicketManagerMixin
-+     */
-+    @Overwrite
-+    public void updateTicket(long pos, int distance, boolean wasTracked, boolean isTracked) {
-+        if (wasTracked == isTracked) {
-+            return;
-+        }
-+
-+        TicketTracker ticketTracker = (TicketTracker) this.ticketManager;
-+        if (isTracked) {
-+            ticketTracker.enqueueTicket(pos, distance);
-+        } else {
-+            ticketTracker.removeTicket(pos);
-+        }
-+    }
-+
-+    @Redirect(
-+            method = "updateLevels",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/server/world/ChunkTaskPrioritySystem;updateLevel(Lnet/minecraft/util/math/ChunkPos;Ljava/util/function/IntSupplier;ILjava/util/function/IntConsumer;)V"
-+            )
-+    )
-+    private void updateLevel(ChunkTaskPrioritySystem ctps, ChunkPos pos, IntSupplier getLevel, int targetLevel, IntConsumer setLevel) {
-+        TicketTracker ticketTracker = (TicketTracker) this.ticketManager;
-+        ticketTracker.moveTicket(pos.toLong(), getLevel.getAsInt(), targetLevel);
-+        setLevel.accept(targetLevel);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/unblocking/EntityMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/EntityMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..028b31f7b09034aad08b5d59f0ff692eeb2173ac
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/EntityMixin.java
-@@ -0,0 +1,107 @@
-+package net.gegy1000.tictacs.mixin.unblocking;
-+
-+import net.gegy1000.tictacs.NonBlockingWorldAccess;
-+import net.minecraft.block.BlockState;
-+import net.minecraft.entity.Entity;
-+import net.minecraft.entity.MovementType;
-+import net.minecraft.fluid.FluidState;
-+import net.minecraft.util.math.BlockPos;
-+import net.minecraft.util.math.Vec3d;
-+import net.minecraft.world.World;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.Redirect;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-+
-+@Mixin(Entity.class)
-+public abstract class EntityMixin {
-+    @Shadow
-+    public World world;
-+
-+    @Shadow
-+    public boolean updateNeeded;
-+
-+    @Shadow
-+    private boolean chunkPosUpdateRequested;
-+
-+    @Shadow
-+    public abstract BlockPos getBlockPos();
-+
-+    @Inject(method = "move", at = @At("HEAD"), cancellable = true)
-+    private void move(MovementType type, Vec3d movement, CallbackInfo ci) {
-+        // skip entity move logic if the current chunk is not loaded
-+        // this can often otherwise cause the main thread to block while waiting for a chunk to load
-+        // it is not important for this check to be correct, only that it eliminates most normal cases of blocking
-+
-+        BlockPos pos = this.getBlockPos();
-+        if (!this.world.isChunkLoaded(pos) || !this.world.isChunkLoaded(pos.add(movement.x, movement.y, movement.z))) {
-+            ci.cancel();
-+        }
-+    }
-+
-+    @Redirect(
-+            method = "getLandingBlockState",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"
-+            )
-+    )
-+    private BlockState getBlockStateForLandingBlockState(World world, BlockPos pos) {
-+        return ((NonBlockingWorldAccess) world).getBlockStateIfLoaded(pos);
-+    }
-+
-+    @Redirect(
-+            method = "getLandingPos",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"
-+            )
-+    )
-+    private BlockState getBlockStateForLandingPos(World world, BlockPos pos) {
-+        return ((NonBlockingWorldAccess) world).getBlockStateIfLoaded(pos);
-+    }
-+
-+    @Redirect(
-+            method = "isInsideBubbleColumn",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"
-+            )
-+    )
-+    private BlockState getBlockStateForBubbleColumn(World world, BlockPos pos) {
-+        return ((NonBlockingWorldAccess) world).getBlockStateIfLoaded(pos);
-+    }
-+
-+    @Redirect(
-+            method = "updateMovementInFluid",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/World;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;"
-+            )
-+    )
-+    private FluidState getFluidStateForMovement(World world, BlockPos pos) {
-+        return ((NonBlockingWorldAccess) world).getFluidStateIfLoaded(pos);
-+    }
-+
-+    @Redirect(
-+            method = "updateSubmergedInWaterState",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/World;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;"
-+            )
-+    )
-+    private FluidState getFluidStateForSubmergedState(World world, BlockPos pos) {
-+        return ((NonBlockingWorldAccess) world).getFluidStateIfLoaded(pos);
-+    }
-+
-+    @Inject(method = "isChunkPosUpdateRequested", at = @At("HEAD"))
-+    private void isChunkPosUpdateRequested(CallbackInfoReturnable<Boolean> ci) {
-+        // if we're not added to any chunk, try add us to a chunk
-+        if (!this.updateNeeded) {
-+            this.chunkPosUpdateRequested = true;
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/unblocking/LivingEntityMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/LivingEntityMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..db0147e9f6d78521fa022f6fde0daef185820a4d
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/LivingEntityMixin.java
-@@ -0,0 +1,71 @@
-+package net.gegy1000.tictacs.mixin.unblocking;
-+
-+import net.gegy1000.tictacs.NonBlockingWorldAccess;
-+import net.minecraft.block.BlockState;
-+import net.minecraft.entity.Entity;
-+import net.minecraft.entity.EntityType;
-+import net.minecraft.entity.LivingEntity;
-+import net.minecraft.fluid.FluidState;
-+import net.minecraft.util.math.BlockPos;
-+import net.minecraft.util.math.Vec3d;
-+import net.minecraft.world.World;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.Redirect;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+@Mixin(LivingEntity.class)
-+public abstract class LivingEntityMixin extends Entity {
-+    private LivingEntityMixin(EntityType<?> type, World world) {
-+        super(type, world);
-+    }
-+
-+    @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
-+    private void travel(Vec3d movement, CallbackInfo ci) {
-+        // skip entity travel logic if the current chunk is not loaded
-+        if (!this.world.isChunkLoaded(this.getBlockPos())) {
-+            ci.cancel();
-+        }
-+    }
-+
-+    @Redirect(
-+            method = "getBlockState",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"
-+            )
-+    )
-+    private BlockState getBlockStateAtEntity(World world, BlockPos pos) {
-+        return ((NonBlockingWorldAccess) world).getBlockStateIfLoaded(pos);
-+    }
-+
-+    @Redirect(
-+            method = "travel",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"
-+            )
-+    )
-+    private BlockState getBlockStateForMovement(World world, BlockPos pos) {
-+        return ((NonBlockingWorldAccess) world).getBlockStateIfLoaded(pos);
-+    }
-+
-+    @Redirect(
-+            method = "travel",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/World;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;"
-+            )
-+    )
-+    private FluidState getFluidStateForMovement(World world, BlockPos pos) {
-+        return ((NonBlockingWorldAccess) world).getFluidStateIfLoaded(pos);
-+    }
-+
-+    @Inject(method = "applyMovementEffects", at = @At("HEAD"), cancellable = true)
-+    private void applyMovementEffects(BlockPos pos, CallbackInfo ci) {
-+        if (!this.world.isChunkLoaded(pos)) {
-+            ci.cancel();
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/unblocking/ServerPlayerEntityMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/ServerPlayerEntityMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..4a4db831aef09fa24bd668ff67d461e82b627532
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/ServerPlayerEntityMixin.java
-@@ -0,0 +1,25 @@
-+package net.gegy1000.tictacs.mixin.unblocking;
-+
-+import net.minecraft.entity.Entity;
-+import net.minecraft.entity.EntityType;
-+import net.minecraft.server.network.ServerPlayerEntity;
-+import net.minecraft.world.World;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Inject;
-+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-+
-+@Mixin(ServerPlayerEntity.class)
-+public abstract class ServerPlayerEntityMixin extends Entity {
-+    private ServerPlayerEntityMixin(EntityType<?> type, World world) {
-+        super(type, world);
-+    }
-+
-+    @Inject(method = "playerTick", at = @At("HEAD"), cancellable = true)
-+    private void playerTick(CallbackInfo ci) {
-+        // skip player ticking if chunk is not loaded to replicate thread-blocking behavior in vanilla
-+        if (!this.world.isChunkLoaded(this.getBlockPos())) {
-+            ci.cancel();
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/unblocking/ServerWorldMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/ServerWorldMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..f2f62a231d70e5c1e637586c02c28e577c689ca2
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/ServerWorldMixin.java
-@@ -0,0 +1,108 @@
-+package net.gegy1000.tictacs.mixin.unblocking;
-+
-+import net.gegy1000.tictacs.AsyncChunkAccess;
-+import net.gegy1000.tictacs.NonBlockingWorldAccess;
-+import net.gegy1000.tictacs.chunk.step.ChunkStep;
-+import net.minecraft.block.BlockState;
-+import net.minecraft.block.Blocks;
-+import net.minecraft.fluid.FluidState;
-+import net.minecraft.fluid.Fluids;
-+import net.minecraft.server.world.ServerChunkManager;
-+import net.minecraft.server.world.ServerWorld;
-+import net.minecraft.util.math.BlockPos;
-+import net.minecraft.util.profiler.Profiler;
-+import net.minecraft.util.registry.RegistryKey;
-+import net.minecraft.world.Heightmap;
-+import net.minecraft.world.MutableWorldProperties;
-+import net.minecraft.world.World;
-+import net.minecraft.world.chunk.Chunk;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import net.minecraft.world.dimension.DimensionType;
-+import org.jetbrains.annotations.Nullable;
-+import org.spongepowered.asm.mixin.Final;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+import java.util.concurrent.CompletableFuture;
-+import java.util.function.Supplier;
-+
-+@Mixin(ServerWorld.class)
-+public abstract class ServerWorldMixin extends World implements NonBlockingWorldAccess, AsyncChunkAccess {
-+    @Shadow
-+    @Final
-+    private ServerChunkManager serverChunkManager;
-+
-+    private ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, Supplier<Profiler> supplier, boolean client, boolean debugWorld, long biomeSeed) {
-+        super(properties, registryKey, dimensionType, supplier, client, debugWorld, biomeSeed);
-+    }
-+
-+    @Override
-+    public BlockState getBlockStateIfLoaded(BlockPos pos) {
-+        if (isOutOfBuildLimitVertically(pos)) {
-+            return Blocks.VOID_AIR.getDefaultState();
-+        }
-+
-+        Chunk chunk = this.getExistingChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStep.FEATURES);
-+        if (chunk != null) {
-+            return chunk.getBlockState(pos);
-+        } else {
-+            return Blocks.AIR.getDefaultState();
-+        }
-+    }
-+
-+    @Override
-+    public FluidState getFluidStateIfLoaded(BlockPos pos) {
-+        if (isOutOfBuildLimitVertically(pos)) {
-+            return Fluids.EMPTY.getDefaultState();
-+        }
-+
-+        Chunk chunk = this.getExistingChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStep.FEATURES);
-+        if (chunk != null) {
-+            return chunk.getFluidState(pos);
-+        } else {
-+            return Fluids.EMPTY.getDefaultState();
-+        }
-+    }
-+
-+    @Override
-+    public int getTopY(Heightmap.Type heightmap, int x, int z) {
-+        if (x < -30000000 || z < -30000000 || x >= 30000000 || z >= 30000000) {
-+            return this.getSeaLevel() + 1;
-+        }
-+
-+        int chunkX = x >> 4;
-+        int chunkZ = z >> 4;
-+        if (this.shouldChunkExist(chunkX, chunkZ, ChunkStep.FEATURES)) {
-+            Chunk chunk = this.getChunk(chunkX, chunkZ, ChunkStatus.FEATURES);
-+            return chunk.sampleHeightmap(heightmap, x & 15, z & 15) + 1;
-+        } else {
-+            return 0;
-+        }
-+    }
-+
-+    @Override
-+    public boolean isChunkLoaded(int x, int z) {
-+        return this.getExistingChunk(x, z, ChunkStep.FULL) != null;
-+    }
-+
-+    @Override
-+    public Chunk getExistingChunk(int x, int z, ChunkStep step) {
-+        return ((AsyncChunkAccess) this.serverChunkManager).getExistingChunk(x, z, step);
-+    }
-+
-+    @Nullable
-+    @Override
-+    public Chunk getAnyExistingChunk(int chunkX, int chunkZ) {
-+        return ((AsyncChunkAccess) this.serverChunkManager).getAnyExistingChunk(chunkX, chunkZ);
-+    }
-+
-+    @Override
-+    public CompletableFuture<Chunk> getOrCreateChunkAsync(int x, int z, ChunkStep step) {
-+        return ((AsyncChunkAccess) this.serverChunkManager).getOrCreateChunkAsync(x, z, step);
-+    }
-+
-+    @Override
-+    public boolean shouldChunkExist(int x, int z, ChunkStep step) {
-+        return ((AsyncChunkAccess) this.serverChunkManager).shouldChunkExist(x, z, step);
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/unblocking/VoxelShapesMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/VoxelShapesMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..33138a61297904234a9fc471887d53a5ab5b7154
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/VoxelShapesMixin.java
-@@ -0,0 +1,28 @@
-+package net.gegy1000.tictacs.mixin.unblocking;
-+
-+import net.gegy1000.tictacs.NonBlockingWorldAccess;
-+import net.minecraft.block.BlockState;
-+import net.minecraft.util.math.BlockPos;
-+import net.minecraft.util.shape.VoxelShapes;
-+import net.minecraft.world.WorldView;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.injection.At;
-+import org.spongepowered.asm.mixin.injection.Redirect;
-+
-+@Mixin(value = VoxelShapes.class, priority = 1001)
-+public class VoxelShapesMixin {
-+    @Redirect(
-+            method = "calculatePushVelocity(Lnet/minecraft/util/math/Box;Lnet/minecraft/world/WorldView;DLnet/minecraft/block/ShapeContext;Lnet/minecraft/util/math/AxisCycleDirection;Ljava/util/stream/Stream;)D",
-+            at = @At(
-+                    value = "INVOKE",
-+                    target = "Lnet/minecraft/world/WorldView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"
-+            )
-+    )
-+    private static BlockState getBlockState(WorldView world, BlockPos pos) {
-+        if (world instanceof NonBlockingWorldAccess) {
-+            return ((NonBlockingWorldAccess) world).getBlockStateIfLoaded(pos);
-+        } else {
-+            return world.getBlockState(pos);
-+        }
-+    }
-+}
-diff --git a/src/main/java/net/gegy1000/tictacs/mixin/unblocking/WorldMixin.java b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/WorldMixin.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..9631a72c0334e314cbbefa19610746621c6087de
---- /dev/null
-+++ b/src/main/java/net/gegy1000/tictacs/mixin/unblocking/WorldMixin.java
-@@ -0,0 +1,57 @@
-+package net.gegy1000.tictacs.mixin.unblocking;
-+
-+import net.gegy1000.tictacs.NonBlockingWorldAccess;
-+import net.minecraft.block.BlockState;
-+import net.minecraft.block.Blocks;
-+import net.minecraft.fluid.FluidState;
-+import net.minecraft.fluid.Fluids;
-+import net.minecraft.util.math.BlockPos;
-+import net.minecraft.world.World;
-+import net.minecraft.world.chunk.Chunk;
-+import net.minecraft.world.chunk.ChunkStatus;
-+import org.spongepowered.asm.mixin.Mixin;
-+import org.spongepowered.asm.mixin.Overwrite;
-+import org.spongepowered.asm.mixin.Shadow;
-+
-+@Mixin(World.class)
-+public abstract class WorldMixin implements NonBlockingWorldAccess {
-+    @Shadow
-+    public static boolean isOutOfBuildLimitVertically(BlockPos pos) {
-+        throw new UnsupportedOperationException();
-+    }
-+
-+    @Shadow
-+    public abstract Chunk getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create);
-+
-+    /**
-+     * TODO: ideally, we don't want to @Overwrite this
-+     *
-+     * @reason we don't need to require a FULL chunk, because after the FEATURES step, no more blocks should be changed.
-+     * this allows us to not block on lighting to retrieve a block
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public BlockState getBlockState(BlockPos pos) {
-+        if (isOutOfBuildLimitVertically(pos)) {
-+            return Blocks.VOID_AIR.getDefaultState();
-+        }
-+
-+        Chunk chunk = this.getChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStatus.FEATURES, true);
-+        return chunk.getBlockState(pos);
-+    }
-+
-+    /**
-+     * @reason we don't need to require a FULL chunk, because after the FEATURES step, no more blocks should be changed.
-+     * this allows us to not block on lighting to retrieve a block
-+     * @author gegy1000
-+     */
-+    @Overwrite
-+    public FluidState getFluidState(BlockPos pos) {
-+        if (isOutOfBuildLimitVertically(pos)) {
-+            return Fluids.EMPTY.getDefaultState();
-+        }
-+
-+        Chunk chunk = this.getChunk(pos.getX() >> 4, pos.getZ() >> 4, ChunkStatus.FEATURES, true);
-+        return chunk.getFluidState(pos);
-+    }
-+}
 diff --git a/src/main/java/net/gegy1000/tictacs/util/NbtType.java b/src/main/java/net/gegy1000/tictacs/util/NbtType.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..0b5e5e2dad532916c7c2682fcf522a69aa5171c6
@@ -11577,6 +8373,83 @@ index 0000000000000000000000000000000000000000..00fbe5c9970079e90ee04dd4e38c1ecd
 +        return INSTANCE;
 +    }
 +}
+diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+index 7eb7ef891034f3e4ea5110ce9adcea0e7d589646..eea2a066e156793b78a2cf41c13f0fcf0a5cb478 100644
+--- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
++++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+@@ -29,6 +29,9 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+ // Tuinity end
+ 
+ public class ChunkProviderServer extends IChunkProvider {
++    public PlayerChunkMap.a ticketManager;
++    private final LossyChunkCache fastCache = new LossyChunkCache(32);
++
+ 
+     private static final List<ChunkStatus> b = ChunkStatus.a(); static final List<ChunkStatus> getPossibleChunkStatuses() { return ChunkProviderServer.b; } // Paper - OBFHELPER
+     private final ChunkMapDistance chunkMapDistance;
+@@ -406,9 +409,47 @@ public class ChunkProviderServer extends IChunkProvider {
+         return this.lightEngine;
+     }
+ 
++    private Chunk getOrCreateChunkOnThread(int x, int z, ChunkStep step) {
++        // first we test if the chunk already exists in our small cache
++        Chunk cached = this.fastCache.get(x, z, step);
++        if (cached != null) {
++            return cached;
++        }
++
++        // if it does not exist, try load it from the chunk entry
++        ChunkEntry entry = this.getChunkEntry(x, z);
++        Chunk chunk = this.getExistingChunkFor(entry, step);
++
++        // the chunk is not ready, we must interface and join the chunk future
++        if (chunk == null) {
++            Either<Chunk, ChunkHolder.Unloaded> result = this.joinFuture(this.createChunk(x, z, step));
++
++            chunk = result.map(
++                    Function.identity(),
++                    err -> { throw new IllegalStateException("Chunk not there when requested: " + err); }
++            );
++        }
++
++        this.fastCache.put(x, z, step, chunk);
++
++        return chunk;
++    }
++
+     @Nullable
+-    private PlayerChunk getChunk(long i) {
+-        return this.playerChunkMap.getVisibleChunk(i);
++    // private PlayerChunk getChunk(long i) {
++    //     return this.playerChunkMap.getVisibleChunk(i);
++    // }
++    public Chunk getChunk(int x, int z, ChunkStatus status, boolean create) {
++        ChunkStep step = ChunkStep.byStatus(status);
++        if (create) {
++            if (Thread.currentThread() != this.serverThread) {
++                return this.getOrCreateChunkOffThread(x, z, step);
++            } else {
++                return this.getOrCreateChunkOnThread(x, z, step);
++            }
++        } else {
++            return this.getExistingChunk(x, z, step);
++        }
+     }
+ 
+     public int b() {
+@@ -705,9 +746,12 @@ public class ChunkProviderServer extends IChunkProvider {
+     }
+ 
+     private void clearCache() {
++        this.fastCache.clear();
++        /*
+         Arrays.fill(this.cachePos, ChunkCoordIntPair.a);
+         Arrays.fill(this.cacheStatus, (Object) null);
+         Arrays.fill(this.cacheChunk, (Object) null);
++        */
+     }
+ 
+     private long syncLoadCounter; // Tuinity - prevent plugin unloads from removing our ticket
 diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 index ad06bd81eded5d60f16c2d0ad1a4390f4b5a11a5..d8c18b1d364646114891ca405c8d8ffbcc8d31cf 100644
 --- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
@@ -11661,10 +8534,10 @@ index ac82f1791ce07e9a23cf97ca34974ab25e26be46..7b0690b8f98f1121c2816b8c3fdc34a4
              return (IChunkAccess) either.map((ichunkaccess1) -> {
                  return ichunkaccess1;
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6e6cc222e 100644
+index 13948d6225efc4bbac87788d970d00e6a62586a1..b4fe457d986a4f48eab650194ee69aaa59b7b2b6 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -54,8 +54,115 @@ import org.apache.logging.log4j.LogManager;
+@@ -54,8 +54,117 @@ import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  import org.bukkit.entity.Player; // CraftBukkit
  import org.spigotmc.AsyncCatcher;
@@ -11685,15 +8558,16 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
 +import net.gegy1000.tictacs.chunk.step.ChunkStep;
 +import net.gegy1000.tictacs.chunk.tracker.ChunkTracker;
 +import net.gegy1000.tictacs.chunk.upgrade.ChunkUpgrader;
++import it.unimi.dsi.fastutil.objects.ObjectCollection;
++import net.gegy1000.tictacs.justnow.future.Future;
 +// Titanium end - tic-tacs imports
 +
 +
 +public abstract class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d, ChunkController {
 +    // Titanium start - tic-tacs
-+    public ThreadExecutor<Runnable> mainThreadExecutor;
++    public IAsyncTaskHandler<Runnable> mainThreadExecutor;
 +    public LightEngineThreaded lightEngineThreaded;
-+    public ChunkDistanceManager ticketManager;
-+    public WorldLoadListener worldLoadListener;
++    public PlayerChunkMap.a ticketManager;
 +    public AtomicInteger totalChunksLoadedCount;
 +    public int watchDistance;
 +    public ChunkMap map = new ChunkMap(world, this);
@@ -11703,13 +8577,14 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
 +    public ChunkMainThreadExecutor chunkMainExecutor = new ChunkMainThreadExecutor(mainThread);
 +    public LightEngineThreaded lighting = this.lightengineThreaded;
 +
-+    tracker.PlayerChunkMap.a(watchDistance);
++    // tracker.PlayerChunkMap.a(watchDistance);
 +
-+    map.addListener(tracker);
++    // map.addListener(tracker);
 +    
-+    private TaskExecutor<Runnable> createWorldgenActor(Executor executor, String name) {
++    private ThreadedMailbox<Runnable> createWorldgenActor(Executor executor, String name) {
 +        return new VoidActor(name);
 +    }
++
 +    public ChunkMap getMap() {
 +        return this.map;
 +    }
@@ -11727,7 +8602,7 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
 +        return entry.getListenerFor(step);
 +    }
 +
-+    public Future<Unit> getRadiusAs(ChunkPos pos, int radius, ChunkStep step) {
++    public Future<Unit> getRadiusAs(ChunkCoordIntPair pos, int radius, ChunkStep step) {
 +        ChunkAccess chunks = this.map.visible();
 +
 +        ChunkMap.FlushListener flushListener = this.map.awaitFlush();
@@ -11756,11 +8631,11 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
 +        return AwaitAll.of(futures);
 +    }
 +
-+    public Future<Chunk> spawnLoadChunk(ChunkEntry entry) {
-+        return VanillaChunkFuture.of(this.loadChunk(entry.getPos()));
-+    }
++    // public Future<Chunk> spawnLoadChunk(ChunkEntry entry) {
++    //     return VanillaChunkFuture.of(this.loadChunk(entry.getPos()));
++    // }
 +
-+    public void notifyStatus(ChunkPos pos, ChunkStatus status) {
++    public void notifyStatus(ChunkCoordIntPair pos, ChunkStatus status) {
 +        this.worldGenerationProgressListener.setChunkStatus(pos, status);
 +    }
 +
@@ -11781,7 +8656,39 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
  
      private static final Logger LOGGER = LogManager.getLogger();
      public static final int GOLDEN_TICKET = 33 + ChunkStatus.b();
-@@ -823,13 +930,22 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -453,17 +562,17 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+                     return;
+                 }
+ 
+-                ChunkCoordIntPair chunkPos = new ChunkCoordIntPair(rangeX, rangeZ);
+-                PlayerChunkMap.this.world.getChunkProvider().addTicketAtLevel(TicketType.PLAYER, chunkPos, 31, chunkPos); // entity ticking level, TODO check on update
++                ChunkCoordIntPair ChunkCoordIntPair = new ChunkCoordIntPair(rangeX, rangeZ);
++                PlayerChunkMap.this.world.getChunkProvider().addTicketAtLevel(TicketType.PLAYER, ChunkCoordIntPair, 31, ChunkCoordIntPair); // entity ticking level, TODO check on update
+             },
+             (EntityPlayer player, int rangeX, int rangeZ, int currPosX, int currPosZ, int prevPosX, int prevPosZ,
+              com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<EntityPlayer> newState) -> {
+                 if (newState != null) {
+                     return;
+                 }
+-                ChunkCoordIntPair chunkPos = new ChunkCoordIntPair(rangeX, rangeZ);
+-                PlayerChunkMap.this.world.getChunkProvider().removeTicketAtLevel(TicketType.PLAYER, chunkPos, 31, chunkPos); // entity ticking level, TODO check on update
+-                PlayerChunkMap.this.world.getChunkProvider().clearPriorityTickets(chunkPos);
++                ChunkCoordIntPair ChunkCoordIntPair = new ChunkCoordIntPair(rangeX, rangeZ);
++                PlayerChunkMap.this.world.getChunkProvider().removeTicketAtLevel(TicketType.PLAYER, ChunkCoordIntPair, 31, ChunkCoordIntPair); // entity ticking level, TODO check on update
++                PlayerChunkMap.this.world.getChunkProvider().clearPriorityTickets(ChunkCoordIntPair);
+             }, (player, prevPos, newPos) -> {
+             player.lastHighPriorityChecked = -1; // reset and recheck
+             checkHighPriorityChunks(player);
+@@ -631,7 +740,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+         return entityPlayer.mobCounts[enumCreatureType.ordinal()];
+     }
+ 
+-    private static double getDistanceSquaredFromChunk(ChunkCoordIntPair chunkPos, Entity entity) { return a(chunkPos, entity); } // Paper - OBFHELPER
++    private static double getDistanceSquaredFromChunk(ChunkCoordIntPair ChunkCoordIntPair, Entity entity) { return a(ChunkCoordIntPair, entity); } // Paper - OBFHELPER
+     private static double a(ChunkCoordIntPair chunkcoordintpair, Entity entity) {
+         double d0 = (double) (chunkcoordintpair.x * 16 + 8);
+         double d1 = (double) (chunkcoordintpair.z * 16 + 8);
+@@ -823,13 +932,22 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      }
  
      public CompletableFuture<Either<Chunk, PlayerChunk.Failure>> b(ChunkCoordIntPair chunkcoordintpair) {
@@ -11811,7 +8718,7 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
      }
  
      @Nullable
-@@ -875,6 +991,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -875,6 +993,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
      @Override
      public void close() throws IOException {
@@ -11819,7 +8726,7 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
          try {
              this.lightThread.shutdown(); // Paper
              this.p.close();
-@@ -883,7 +1000,8 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -883,7 +1002,8 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          } finally {
              super.close();
          }
@@ -11829,7 +8736,73 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
      }
  
      // Paper start - incremental autosave
-@@ -1186,44 +1304,14 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1048,13 +1168,13 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     // This is also modeled after PlayerChunkMap#saveChunk(IChunkAccess, boolean), with the intentional difference being
+     // serializing the chunk is left to a worker thread.
+     private void asyncSave(IChunkAccess chunk) {
+-        ChunkCoordIntPair chunkPos = chunk.getPos();
++        ChunkCoordIntPair ChunkCoordIntPair = chunk.getPos();
+         NBTTagCompound poiData;
+         try (Timing ignored = this.world.timings.chunkUnloadPOISerialization.startTiming()) {
+             poiData = this.getVillagePlace().getData(chunk.getPos());
+         }
+ 
+-        com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE.scheduleSave(this.world, chunkPos.x, chunkPos.z,
++        com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE.scheduleSave(this.world, ChunkCoordIntPair.x, ChunkCoordIntPair.z,
+             poiData, null, com.destroystokyo.paper.io.PrioritizedTaskQueue.NORMAL_PRIORITY); // Tuinity - use normal priority
+ 
+         if (!chunk.isNeedsSaving()) {
+@@ -1068,7 +1188,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+             try (co.aikar.timings.Timing ignored1 = this.world.timings.chunkSaveOverwriteCheck.startTiming()) { // Paper
+                 // Paper start - Optimize save by using status cache
+                 try {
+-                    ChunkStatus statusOnDisk = this.getChunkStatusOnDisk(chunkPos);
++                    ChunkStatus statusOnDisk = this.getChunkStatusOnDisk(ChunkCoordIntPair);
+                     if (statusOnDisk != null && statusOnDisk.getType() == ChunkStatus.Type.LEVELCHUNK) {
+                         // Paper end
+                         return;
+@@ -1089,7 +1209,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+             asyncSaveData = ChunkRegionLoader.getAsyncSaveData(this.world, chunk);
+         }
+ 
+-        this.world.asyncChunkTaskManager.scheduleChunkSave(chunkPos.x, chunkPos.z, com.destroystokyo.paper.io.PrioritizedTaskQueue.NORMAL_PRIORITY, // Tuinity - use normal priority
++        this.world.asyncChunkTaskManager.scheduleChunkSave(ChunkCoordIntPair.x, ChunkCoordIntPair.z, com.destroystokyo.paper.io.PrioritizedTaskQueue.NORMAL_PRIORITY, // Tuinity - use normal priority
+             asyncSaveData, chunk);
+ 
+         chunk.setLastSaved(this.world.getTime());
+@@ -1156,74 +1276,19 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+         });
+     }
+ 
+-    protected boolean b() {
+-        com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Cannot update visibleChunks off of the main thread"); // Tuinity
+-        if (!this.updatingChunksModified) {
+-            return false;
+-        } else {
+-            // AirplaneL start
+-            /*
+-            // Paper start - stop cloning visibleChunks
+-            synchronized (this.visibleChunks) {
+-                if (isIterating) {
+-                    hasPendingVisibleUpdate = true;
+-                    this.pendingVisibleChunks.copyFrom((com.destroystokyo.paper.util.map.Long2ObjectLinkedOpenHashMapFastCopy<PlayerChunk>)this.updatingChunks);
+-                } else {
+-                    hasPendingVisibleUpdate = false;
+-                    this.pendingVisibleChunks.clear();
+-                    ((ProtectedVisibleChunksMap)this.visibleChunks).copyFrom((com.destroystokyo.paper.util.map.Long2ObjectLinkedOpenHashMapFastCopy<PlayerChunk>)this.updatingChunks);
+-                    this.visibleChunksClone = null;
+-                }
+-            }
+-            // Paper end
+-             */
+-            this.internalMap.transfer();
+-            // AirplaneL end
+-
+-            this.updatingChunksModified = false;
+-            return true;
+-        }
++    private boolean b() {
++        return this.map.flushToVisible();
      }
  
      public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> a(PlayerChunk playerchunk, ChunkStatus chunkstatus) {
@@ -11839,13 +8812,11 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
 -            return this.f(chunkcoordintpair);
 -        } else {
 -            CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> completablefuture = playerchunk.a(chunkstatus.e(), this);
-+        // Titanium start - tic-tacs
-+        ChunkStep step = ChunkStep.byStatus(chunkstatus);
- 
+-
 -            return completablefuture.thenComposeAsync((either) -> {
 -                Optional<IChunkAccess> optional = either.left();
-+        ChunkEntry entry = (ChunkEntry) playerchunk;
-+        this.upgrader.spawnUpgradeTo(entry, step);
++        // Titanium start - tic-tacs
++        ChunkStep step = ChunkStep.byStatus(chunkstatus);
  
 -                if (!optional.isPresent()) {
 -                    return CompletableFuture.completedFuture(either);
@@ -11853,7 +8824,9 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
 -                    if (chunkstatus == ChunkStatus.LIGHT) {
 -                        this.chunkDistanceManager.a(TicketType.LIGHT, chunkcoordintpair, 33 + ChunkStatus.a(ChunkStatus.FEATURES), chunkcoordintpair);
 -                    }
--
++        ChunkEntry entry = (ChunkEntry) playerchunk;
++        this.upgrader.spawnUpgradeTo(entry, step);
+ 
 -                    IChunkAccess ichunkaccess = (IChunkAccess) optional.get();
 -
 -                    if (ichunkaccess.getChunkStatus().b(chunkstatus)) {
@@ -11880,7 +8853,7 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
      }
  
      private CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> f(ChunkCoordIntPair chunkcoordintpair) {
-@@ -1358,11 +1446,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1358,11 +1423,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      }
  
      protected void c(ChunkCoordIntPair chunkcoordintpair) {
@@ -11895,7 +8868,21 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
      }
  
      private ChunkStatus a(ChunkStatus chunkstatus, int i) {
-@@ -1668,7 +1754,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1384,7 +1447,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+             ChunkStatus chunkstatus = PlayerChunk.getChunkStatus(playerchunk.getTicketLevel());
+ 
+             return !chunkstatus.b(ChunkStatus.FULL) ? PlayerChunk.UNLOADED_CHUNK_ACCESS : either.mapLeft((ichunkaccess) -> {
+-            try (Timing ignored = world.timings.chunkPostLoad.startTimingIfSync()) { // Paper
++            try (Timing ignored = world.timings.ChunkCoordIntPairtLoad.startTimingIfSync()) { // Paper
+                 ChunkCoordIntPair chunkcoordintpair = playerchunk.i();
+                 Chunk chunk;
+ 
+@@ -1664,15 +1727,15 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     }
+ 
+     public int d() {
+-        return this.visibleChunks.size();
++        return this.map.getEntryCount();
      }
  
      protected PlayerChunkMap.a e() {
@@ -11904,7 +8891,294 @@ index 13948d6225efc4bbac87788d970d00e6a62586a1..22658a45488e17882d163170e4ab07e6
      }
  
      protected Iterable<PlayerChunk> f() {
-@@ -2598,19 +2684,19 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+-        return Iterables.unmodifiableIterable(this.getVisibleChunks().values()); // Paper
++        return Iterables.unmodifiableIterable(this.map.visible().getEntries());
+     }
+ 
+     void a(Writer writer) throws IOException {
+@@ -1763,37 +1826,37 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     }
+ 
+     // Paper start - chunk status cache "api"
+-    public ChunkStatus getChunkStatusOnDiskIfCached(ChunkCoordIntPair chunkPos) {
++    public ChunkStatus getChunkStatusOnDiskIfCached(ChunkCoordIntPair ChunkCoordIntPair) {
+         synchronized (this) { // Paper
+-        RegionFile regionFile = this.regionFileCache.getRegionFileIfLoaded(chunkPos);
++        RegionFile regionFile = this.regionFileCache.getRegionFileIfLoaded(ChunkCoordIntPair);
+ 
+-        return regionFile == null ? null : regionFile.getStatusIfCached(chunkPos.x, chunkPos.z);
++        return regionFile == null ? null : regionFile.getStatusIfCached(ChunkCoordIntPair.x, ChunkCoordIntPair.z);
+         } // Paper
+     }
+ 
+-    public ChunkStatus getChunkStatusOnDisk(ChunkCoordIntPair chunkPos) throws IOException {
++    public ChunkStatus getChunkStatusOnDisk(ChunkCoordIntPair ChunkCoordIntPair) throws IOException {
+         // Paper start - async chunk save for unload
+-        IChunkAccess unloadingChunk = this.world.asyncChunkTaskManager.getChunkInSaveProgress(chunkPos.x, chunkPos.z);
++        IChunkAccess unloadingChunk = this.world.asyncChunkTaskManager.getChunkInSaveProgress(ChunkCoordIntPair.x, ChunkCoordIntPair.z);
+         if (unloadingChunk != null) {
+             return unloadingChunk.getChunkStatus();
+         }
+         // Paper end
+         // Paper start - async io
+         NBTTagCompound inProgressWrite = com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE
+-                                             .getPendingWrite(this.world, chunkPos.x, chunkPos.z, false);
++                                             .getPendingWrite(this.world, ChunkCoordIntPair.x, ChunkCoordIntPair.z, false);
+ 
+         if (inProgressWrite != null) {
+             return ChunkRegionLoader.getStatus(inProgressWrite);
+         }
+         // Paper end
+         synchronized (this) { // Paper - async io
+-            RegionFile regionFile = this.regionFileCache.getFile(chunkPos, true);
++            RegionFile regionFile = this.regionFileCache.getFile(ChunkCoordIntPair, true);
+ 
+-            if (regionFile == null || !regionFile.chunkExists(chunkPos)) {
++            if (regionFile == null || !regionFile.chunkExists(ChunkCoordIntPair)) {
+                 return null;
+             }
+ 
+-            ChunkStatus status = regionFile.getStatusIfCached(chunkPos.x, chunkPos.z);
++            ChunkStatus status = regionFile.getStatusIfCached(ChunkCoordIntPair.x, ChunkCoordIntPair.z);
+ 
+             if (status != null) {
+                 return status;
+@@ -1801,17 +1864,17 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+             // Paper start - async io
+         }
+ 
+-        NBTTagCompound compound = this.readChunkData(chunkPos);
++        NBTTagCompound compound = this.readChunkData(ChunkCoordIntPair);
+ 
+         return ChunkRegionLoader.getStatus(compound);
+         // Paper end
+     }
+ 
+-    public void updateChunkStatusOnDisk(ChunkCoordIntPair chunkPos, @Nullable NBTTagCompound compound) throws IOException {
++    public void updateChunkStatusOnDisk(ChunkCoordIntPair ChunkCoordIntPair, @Nullable NBTTagCompound compound) throws IOException {
+         synchronized (this) {
+-            RegionFile regionFile = this.regionFileCache.getFile(chunkPos, false);
++            RegionFile regionFile = this.regionFileCache.getFile(ChunkCoordIntPair, false);
+ 
+-            regionFile.setStatus(chunkPos.x, chunkPos.z, ChunkRegionLoader.getStatus(compound));
++            regionFile.setStatus(ChunkCoordIntPair.x, ChunkCoordIntPair.z, ChunkRegionLoader.getStatus(compound));
+         }
+     }
+ 
+@@ -1846,22 +1909,24 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+         }
+         // Paper end
+         // variant of PlayerChunkMap#getChunkStatusOnDisk that does not load data off disk, but loads the region file
+-        ChunkCoordIntPair chunkPos = new ChunkCoordIntPair(x, z);
++        ChunkCoordIntPair ChunkCoordIntPair = new ChunkCoordIntPair(x, z);
+         synchronized (world.getChunkProvider().playerChunkMap) {
+             net.minecraft.server.RegionFile file;
+             try {
+-                file = world.getChunkProvider().playerChunkMap.regionFileCache.getFile(chunkPos, false);
++                file = world.getChunkProvider().playerChunkMap.regionFileCache.getFile(ChunkCoordIntPair, false);
+             } catch (IOException ex) {
+                 throw new RuntimeException(ex);
+             }
+ 
+-            return !file.chunkExists(chunkPos) ? ChunkStatus.EMPTY : file.getStatusIfCached(x, z);
++            return !file.chunkExists(ChunkCoordIntPair) ? ChunkStatus.EMPTY : file.getStatusIfCached(x, z);
+         }
+     }
+ 
+     boolean isOutsideOfRange(ChunkCoordIntPair chunkcoordintpair) {
+-        // Spigot start
+-        return isOutsideOfRange(chunkcoordintpair, false);
++        long pos = chunkcoordintpair.toLong();
++
++        ChunkEntry entry = this.map.visible().getEntry(pos);
++        return entry == null || !entry.isChunkTickable();
+     }
+ 
+     // Paper start - optimise isOutsideOfRange
+@@ -1941,7 +2006,6 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+         }
+ 
+         // Paper - broadcast view distance map handles this (see remove/add calls above)
+-
+     }
+ 
+     private SectionPosition c(EntityPlayer entityplayer) {
+@@ -2038,50 +2102,24 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     }
+ 
+     @Override
+-    public Stream<EntityPlayer> a(ChunkCoordIntPair chunkcoordintpair, boolean flag) {
+-        // Paper start - per player view distance
+-        // there can be potential desync with player's last mapped section and the view distance map, so use the
+-        // view distance map here.
+-        com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<EntityPlayer> inRange = this.playerViewDistanceBroadcastMap.getObjectsInRange(chunkcoordintpair);
++    public Stream<EntityPlayer> a(ChunkCoordIntPair chunkcoordintpair, long pos) {
++        return this.getPlayersWatchingChunk(pos);
++    }
+ 
+-        if (inRange == null) {
+-            return Stream.empty();
++    private Stream<EntityPlayer> getPlayersWatchingChunk(long pos) {
++        ChunkEntry entry = this.map.visible().getEntry(pos);
++        if (entry != null) {
++            return entry.getTrackers().getTrackingPlayers().stream();
+         }
+-        // all current cases are inlined so we wont hit this code, it's just in case plugins or future updates use it
+-        List<EntityPlayer> players = new java.util.ArrayList<>();
+-        Object[] backingSet = inRange.getBackingSet();
+-
+-        if (flag) { // flag -> border only
+-            for (int i = 0, len = backingSet.length; i < len; ++i) {
+-                Object temp = backingSet[i];
+-                if (!(temp instanceof EntityPlayer)) {
+-                    continue;
+-                }
+-                EntityPlayer player = (EntityPlayer)temp;
+-                int viewDistance = this.playerViewDistanceBroadcastMap.getLastViewDistance(player);
+-                long lastPosition = this.playerViewDistanceBroadcastMap.getLastCoordinate(player);
+-
+-                int distX = Math.abs(MCUtil.getCoordinateX(lastPosition) - chunkcoordintpair.x);
+-                int distZ = Math.abs(MCUtil.getCoordinateZ(lastPosition) - chunkcoordintpair.z);
+-                if (Math.max(distX, distZ) == viewDistance) {
+-                    players.add(player);
+-                }
+-            }
+-        } else {
+-            for (int i = 0, len = backingSet.length; i < len; ++i) {
+-                Object temp = backingSet[i];
+-                if (!(temp instanceof EntityPlayer)) {
+-                    continue;
+-                }
+-                EntityPlayer player = (EntityPlayer)temp;
+-                players.add(player);
+-            }
+-        }
+-        return players.stream();
+-        // Paper end - per player view distance
++        return Stream.empty();
+     }
+ 
+     protected void addEntity(Entity entity) {
++        if (entity instanceof EnderDragonPart) {
++            return;
++        }
++        this.tracker.getEntities().add(entity);
++        /*
+         org.spigotmc.AsyncCatcher.catchOp("entity track"); // Spigot
+         // Paper start - ignore and warn about illegal addEntity calls instead of crashing server
+         if (!entity.valid || entity.world != this.world || this.trackedEntities.containsKey(entity.getId())) {
+@@ -2123,9 +2161,12 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+ 
+             }
+         }
++        */
+     }
+ 
+     protected void removeEntity(Entity entity) {
++        this.tracker.getEntities().remove(entity);
++        /*
+         org.spigotmc.AsyncCatcher.catchOp("entity untrack"); // Spigot
+         if (entity instanceof EntityPlayer) {
+             EntityPlayer entityplayer = (EntityPlayer) entity;
+@@ -2138,6 +2179,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+ 
+                 playerchunkmap_entitytracker.clear(entityplayer);
+             }
++            
+         }
+ 
+         PlayerChunkMap.EntityTracker playerchunkmap_entitytracker1 = (PlayerChunkMap.EntityTracker) this.trackedEntities.remove(entity.getId());
+@@ -2146,6 +2188,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+             playerchunkmap_entitytracker1.a();
+         }
+         entity.tracker = null; // Paper - We're no longer tracked
++        */
+     }
+ 
+     // Paper start - optimised tracker
+@@ -2176,6 +2219,8 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     // Paper end - optimised tracker
+ 
+     protected void g() {
++        this.tracker.tick();
++        /*
+         // Paper start - optimized tracker
+         if (true) {
+             this.processTrackQueue();
+@@ -2218,25 +2263,29 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+             world.timings.tracker2.stopTiming(); // Paper
+         }
+ 
+-
++        */
+     }
+ 
+     protected void broadcast(Entity entity, Packet<?> packet) {
++        /*
+         PlayerChunkMap.EntityTracker playerchunkmap_entitytracker = (PlayerChunkMap.EntityTracker) this.trackedEntities.get(entity.getId());
+ 
+         if (playerchunkmap_entitytracker != null) {
+             playerchunkmap_entitytracker.broadcast(packet);
+         }
+-
++        */
++        this.tracker.getEntities().sendToTracking(entity, packet);
+     }
+ 
+     protected void broadcastIncludingSelf(Entity entity, Packet<?> packet) {
++        this.tracker.getEntities().sendToTrackingAndSelf(entity, packet);
++        /*
+         PlayerChunkMap.EntityTracker playerchunkmap_entitytracker = (PlayerChunkMap.EntityTracker) this.trackedEntities.get(entity.getId());
+ 
+         if (playerchunkmap_entitytracker != null) {
+             playerchunkmap_entitytracker.broadcastIncludingSelf(packet);
+         }
+-
++        */
+     }
+ 
+     // Paper start
+@@ -2404,10 +2453,35 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+         return this.m;
+     }
+ 
+-    public CompletableFuture<Void> a(Chunk chunk) {
+-        return this.executor.f(() -> {
+-            chunk.a(this.world);
+-        });
++    public CompletableFuture<Either<Chunk, PlayerChunk.Failure>> a(ChunkHolder holder) {
++        CompletableFuture<Either<Chunk, PlayerChunk.Failure>> future = new CompletableFuture<>();
++        ChunkEntry entry = (ChunkEntry) holder;
++
++        this.spawnOnMainThread(entry, this.getRadiusAs(entry.getPos(), 1, ChunkStep.FULL)
++                .handle((ok, err) -> {
++                    if (err != null) {
++                        future.complete(ChunkHolder.UNLOADED_WORLD_CHUNK);
++                        return Unit.INSTANCE;
++                    }
++
++                    WorldChunk chunk = entry.getWorldChunk();
++                    if (chunk != null) {
++                        chunk.runPostProcessing();
++
++                        this.totalChunksLoadedCount.getAndIncrement();
++                        this.tracker.onChunkFull(entry, chunk);
++                        this.map.getTickingMaps().addTrackableChunk(entry);
++
++                        future.complete(Either.left(chunk));
++                    } else {
++                        future.complete(ChunkHolder.UNLOADED_WORLD_CHUNK);
++                    }
++
++                    return Unit.INSTANCE;
++                })
++        );
++
++        return future;
+     }
+ 
+     public class EntityTracker {
+@@ -2598,19 +2672,19 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
  
          @Override
          protected boolean a(long i) {
