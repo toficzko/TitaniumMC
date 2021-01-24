@@ -8,6 +8,9 @@ This is an overview over all patches that are currently used.
 
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
+| server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
+| server |  (PaperPR) Inline shift direction fields      | Andrew Steinborn |  |
+| server |  (YatopiaPR) New nbt cache      | Hugo Planque |  |
 | server |  AFK API      | William Blake Galbreath |  |
 | api |  AFK API      | William Blake Galbreath |  |
 | server |  Ability to re-add farmland mechanics from Alpha      | Yive |  |
@@ -92,6 +95,7 @@ This is an overview over all patches that are currently used.
 | server |  Breedable Polar Bears      | William Blake Galbreath |  |
 | server |  Bring back server name      | William Blake Galbreath |  |
 | api |  Bring back server name      | William Blake Galbreath |  |
+| server |  Cadmium      | Simon Gardling |  |
 | server |  Cat spawning options      | William Blake Galbreath |  |
 | server |  Change writes to use NORMAL priority rather than LOW      | Spottedleaf |  |
 | server |  Changeable Mob Left Handed Chance      | Ben Kerllenevich |  |
@@ -240,6 +244,7 @@ This is an overview over all patches that are currently used.
 | server |  Movement options for armour stands      | Mariell Hoversholm |  |
 | server |  Multi-Threaded Server Ticking Vanilla      | Spottedleaf |  |
 | server |  Multi-Threaded ticking CraftBukkit      | Spottedleaf |  |
+| server |  Multi-threaded RegionFile IO      | ishland |  |
 | server |  Name craft scheduler threads according to the plugin using      | Spottedleaf |  |
 | server |  New Network System      | Hugo Planque | Ivan Pekov |
 | server |  Nuke streams off BlockPosition      | Ivan Pekov |  |
@@ -341,6 +346,7 @@ This is an overview over all patches that are currently used.
 | server |  Striders give saddle back      | Ben Kerllenevich |  |
 | server |  Strip raytracing for EntityLiving#hasLineOfSight      | Paul Sauve |  |
 | server |  Swap priority of checks in chunk ticking      | Paul Sauve |  |
+| server |  Threaded WorldGen      | ishland |  |
 | server |  Time scoreboard search      | Spottedleaf |  |
 | server |  Timings stuff      | William Blake Galbreath |  |
 | server |  Toggle for Zombified Piglin death always counting as player      | jmp |  |
@@ -376,3 +382,5 @@ This is an overview over all patches that are currently used.
 | server |  lithium VoronoiBiomeAccessTypeMixin      | JellySquid |  |
 | server |  lithium enum_values      | JellySquid |  |
 | server |  lithium reduce allocations      | JellySquid | Mykyta Komarnytskyy |
+| server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
+| server |  remove unnecessary Internal Server checks      | Simon Gardling |  |
