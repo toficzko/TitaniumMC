@@ -1980,7 +1980,7 @@ index c2dc8211b05b4ee2a2b42435f866f8e55295162d..e1ba2d0dec241914bb22f7ddf4868369
      }
  
 diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
-index 81cb94e3a4fd26bba47d96bbd35be110765934c3..b16728d2bf920c9476f9e17fab619a22a759788e 100644
+index aa54fcc5ae3b33587278df2a3fa089af38b5552d..95c8b6f747385c3fc37a6bfedacfaf97554bb8d4 100644
 --- a/src/main/java/net/minecraft/server/EntityHuman.java
 +++ b/src/main/java/net/minecraft/server/EntityHuman.java
 @@ -155,7 +155,8 @@ public abstract class EntityHuman extends EntityLiving {
@@ -3374,7 +3374,7 @@ index 50e42cd8ccd48efe6251a37762953f7f55d18277..2da4138318c8b91c20759fdc25a6676b
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 46813a0a65977233acdabb225552e8cfc5d06ab9..201987d1e38a7432dc5ec43529531f05ee798354 100644
+index 14d8a9f6d9b46c0daa7982d1bb585ebc2067168e..15775f0787efc8537d689488350120fad5eae97a 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -463,7 +463,8 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -3825,10 +3825,10 @@ index 9001ca50b8d9f77b0d997511b70c39b2712df67a..0b40c4b7f4442e1708a1c34b37e89e77
      }
  
 diff --git a/src/main/java/net/minecraft/server/EntitySquid.java b/src/main/java/net/minecraft/server/EntitySquid.java
-index fab7aa5c9f226873504801d7405a7c58043572f7..b46fd03a75f2136745080ad275b2237862a5e890 100644
+index 918cd774bc7e9f84ddbc1e65b4cb4d661eb127a5..b9cd01ab3166555e67663117c6085fae19e09d11 100644
 --- a/src/main/java/net/minecraft/server/EntitySquid.java
 +++ b/src/main/java/net/minecraft/server/EntitySquid.java
-@@ -108,16 +108,18 @@ public class EntitySquid extends EntityWaterAnimal {
+@@ -113,16 +113,18 @@ public class EntitySquid extends EntityWaterAnimal {
          this.bs = this.br;
          this.bp += this.bu;
          if ((double) this.bp > 6.283185307179586D) {
@@ -3848,7 +3848,7 @@ index fab7aa5c9f226873504801d7405a7c58043572f7..b46fd03a75f2136745080ad275b22378
          }
  
          if (this.aH()) {
-@@ -137,9 +139,9 @@ public class EntitySquid extends EntityWaterAnimal {
+@@ -143,9 +145,9 @@ public class EntitySquid extends EntityWaterAnimal {
                  this.bv *= 0.99F;
              }
  
@@ -3860,7 +3860,7 @@ index fab7aa5c9f226873504801d7405a7c58043572f7..b46fd03a75f2136745080ad275b22378
  
              Vec3D vec3d = this.getMot();
              float f1 = MathHelper.sqrt(c(vec3d));
-@@ -150,7 +152,7 @@ public class EntitySquid extends EntityWaterAnimal {
+@@ -156,7 +158,7 @@ public class EntitySquid extends EntityWaterAnimal {
              this.b += (-((float) MathHelper.d((double) f1, vec3d.y)) * 57.295776F - this.b) * 0.1F;
          } else {
              this.br = MathHelper.e(MathHelper.sin(this.bp)) * 3.1415927F * 0.25F;
@@ -3869,7 +3869,7 @@ index fab7aa5c9f226873504801d7405a7c58043572f7..b46fd03a75f2136745080ad275b22378
                  double d0 = this.getMot().y;
  
                  if (this.hasEffect(MobEffects.LEVITATION)) {
-@@ -160,7 +162,7 @@ public class EntitySquid extends EntityWaterAnimal {
+@@ -166,7 +168,7 @@ public class EntitySquid extends EntityWaterAnimal {
                  }
  
                  this.setMot(0.0D, d0 * 0.9800000190734863D, 0.0D);
@@ -4118,7 +4118,7 @@ index dc846e7bda587a47b1cce9054e587a734179e7fe..5881b0b2032a45ca0765be8c6a0e2559
              if (this.br.h() <= 0) {
                  this.bs.a(true);
 diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
-index d77ef303562ca255d51cf527d7dc8be6a4b8facc..36bef8efd708977c7f9ee6079144cb7ded0d1f60 100644
+index d198221508ffbba1c2eddc4ebc06fe0f63941c92..6f39f0da67b24f5e9935259ca4ff367649e91b5c 100644
 --- a/src/main/java/net/minecraft/server/EntityWither.java
 +++ b/src/main/java/net/minecraft/server/EntityWither.java
 @@ -220,7 +220,8 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
