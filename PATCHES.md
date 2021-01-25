@@ -10,7 +10,6 @@ This is an overview over all patches that are currently used.
 | ----- | ------------- |:-------------:| -----:|
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
 | server |  (PaperPR) Inline shift direction fields      | Andrew Steinborn |  |
-| server |  (YatopiaPR) New nbt cache      | Hugo Planque |  |
 | server |  AFK API      | William Blake Galbreath |  |
 | api |  AFK API      | William Blake Galbreath |  |
 | server |  Ability to re-add farmland mechanics from Alpha      | Yive |  |
@@ -203,7 +202,6 @@ This is an overview over all patches that are currently used.
 | server |  Improve abnormal server shutdown process      | Spottedleaf |  |
 | server |  Improve async tp to not load chunks when crossing worlds      | Spottedleaf |  |
 | server |  Improve paper prevent moving into unloaded chunk check      | Spottedleaf |  |
-| server |  Improve task performance      | ishland | Mykyta Komarn |
 | server |  Improved oversized chunk data packet handling      | Spottedleaf |  |
 | server |  Infinite fuel furnace      | William Blake Galbreath |  |
 | server |  Infinity No Arrows      | Zoe |  |
@@ -247,6 +245,7 @@ This is an overview over all patches that are currently used.
 | server |  Multi-threaded RegionFile IO      | ishland |  |
 | server |  Name craft scheduler threads according to the plugin using      | Spottedleaf |  |
 | server |  New Network System      | Hugo Planque | Ivan Pekov |
+| server |  New nbt cache      | Hugo Planque |  |
 | server |  Nuke streams off BlockPosition      | Ivan Pekov |  |
 | server |  Nuke streams off SectionPosition      | Ivan Pekov |  |
 | server |  Optimise EntityInsentient#checkDespawn      | Spottedleaf |  |
