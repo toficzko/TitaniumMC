@@ -5,32 +5,33 @@ Subject: [PATCH] cache SpawnerCreature.countMobs
 
 
 diff --git a/src/main/java/net/minecraft/server/SpawnerCreature.java b/src/main/java/net/minecraft/server/SpawnerCreature.java
-index ee91c33a7a2edca02caf5c71fd6429f97eac7e2d..94a90f5b8a9e56c4f2410a86e39e668f4c4acf7d 100644
+index ee91c33a7a2edca02caf5c71fd6429f97eac7e2d..c626761de542c92e27304fde093aced78f9a518b 100644
 --- a/src/main/java/net/minecraft/server/SpawnerCreature.java
 +++ b/src/main/java/net/minecraft/server/SpawnerCreature.java
-@@ -19,6 +19,10 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+@@ -19,6 +19,11 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
  // CraftBukkit end
  
  public final class SpawnerCreature {
 +    // Yatopia start - cache SpawnerCreature.countMobs
 +    public static int countMobsCacheTick;
 +    public static SpawnerCreature.d countMobsCache;
++    public static boolean countMobsDebug = false;
 +    // Yatopia end
  
      private static final Logger LOGGER = LogManager.getLogger();
      private static final int b = (int) Math.pow(17.0D, 2.0D);
-@@ -34,6 +38,10 @@ public final class SpawnerCreature {
+@@ -34,6 +39,10 @@ public final class SpawnerCreature {
      }
      public static SpawnerCreature.d countMobs(int i, Iterable<Entity> iterable, SpawnerCreature.b spawnercreature_b, boolean countMobs) {
          // Paper end - add countMobs parameter
 +        // Yatopia start - cache SpawnerCreature.countMobs
 +        if (!org.yatopiamc.yatopia.server.YatopiaConfig.shouldCacheCheckMobs || (SpawnerCreature.countMobsCacheTick++ % org.yatopiamc.yatopia.server.YatopiaConfig.cacheCheckMobsInterval == 0)) {
-+        System.out.println("Not using cache");
++        if (SpawnerCreature.countMobsDebug) System.out.println("Not using cache");
 +        
          SpawnerCreatureProbabilities spawnercreatureprobabilities = new SpawnerCreatureProbabilities();
          Object2IntOpenHashMap<EnumCreatureType> object2intopenhashmap = new Object2IntOpenHashMap();
          Iterator iterator = iterable.iterator();
-@@ -79,8 +87,12 @@ public final class SpawnerCreature {
+@@ -79,8 +88,12 @@ public final class SpawnerCreature {
                  });
              }
          }
@@ -38,7 +39,7 @@ index ee91c33a7a2edca02caf5c71fd6429f97eac7e2d..94a90f5b8a9e56c4f2410a86e39e668f
 -        return new SpawnerCreature.d(i, object2intopenhashmap, spawnercreatureprobabilities);
 +        SpawnerCreature.countMobsCache = new SpawnerCreature.d(i, object2intopenhashmap, spawnercreatureprobabilities);
 +        } else {
-+            System.out.println("Using cache");
++            if (SpawnerCreature.countMobsDebug) System.out.println("Using cache");
 +        }
 +        return SpawnerCreature.countMobsCache;
 +        // Yatopia end
