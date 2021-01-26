@@ -226,7 +226,7 @@ index ee906b594b306906c170180a29a8b61997d05168..7e348fcb813707fee830082b826932e0
          if (this.closed) {
              this.pollTasks(true); // this ensures we've emptied the queue
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index c7f1bf9d7fd86a1afbc1e4bb56dc56cef367283e..21a8ef06bb1657377e3c933d7c88d428168aaecc 100644
+index 27cdbcdad0ae7be6a2aa8b9982bcd80205c48c9b..eede5590e33ac923a275405390af27601bd3c761 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -835,7 +835,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -283,10 +283,10 @@ index 8849336437d91022cc33c704059d8b075882bbf3..f5e8bbd257578f87af0b2247d52303db
                  this.world, chunkcoordintpair.x, chunkcoordintpair.z, nbttagcompound, null,
                  com.destroystokyo.paper.io.PrioritizedTaskQueue.NORMAL_PRIORITY); // Tuinity - writes are async, no need for priority
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index ac73a0629347a3d5842f00ee8d28c288acdec375..58a7637fc4a61149fe5ef0861eb30ca516b0cc66 100644
+index a9286dbb9a9d2dd5b0d1331b756a9d66f226be0c..6ecbd29ee22dcfa4442aa3d2ec93d27de9f2b428 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-@@ -288,4 +288,10 @@ public class YatopiaConfig {
+@@ -275,4 +275,10 @@ public class YatopiaConfig {
      private static void sandDupe() {
          allowSandDupe = getBoolean("settings.allow-sand-dupe", allowSandDupe);
      }

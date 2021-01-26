@@ -7,10 +7,10 @@ A massive improvement to world generation.
 This patch actually schedules chunk status upgrade later rather than doing it right away.
 
 diff --git a/pom.xml b/pom.xml
-index 0bbc7badb1f597357d0fce7cd0f5faf5eb1d0eb5..23e508d4a9bc755d357319fbe683de6a7903b857 100644
+index 6109699411c349c4965de6dbdbd9f8454bc18b10..8f42f14b24d8679f4bd6db090db8142935cb7975 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -190,6 +190,12 @@
+@@ -182,6 +182,12 @@
              <artifactId>commons-rng-core</artifactId>
              <version>1.3</version>
          </dependency>
@@ -183,7 +183,7 @@ index 7abf0e4b7e96dd367b9d03cbc62ac7bb03542d0a..76a76c26650bca73828d7893a537a023
          return i == j ? true : GenLayers.a.get(i) == GenLayers.a.get(j);
      }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 21a8ef06bb1657377e3c933d7c88d428168aaecc..e6d2717e7299ea6a212138d54fb5d3116764ca8d 100644
+index eede5590e33ac923a275405390af27601bd3c761..8aa83f50d81a548bc86270898973dcd3549a43b5 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -835,6 +835,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -306,7 +306,7 @@ index 40e87f3043da14b1265fcdadde02bef3b261a9d1..8a28b98d35dcdfbd4bb55a3b7f2d963c
  
      public final VillagePlace getPoiStorage() { return this.y(); } // Paper - OBFHELPER
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index 58a7637fc4a61149fe5ef0861eb30ca516b0cc66..734e9b577d704bb89f962cfa93e62493603f6f3d 100644
+index 6ecbd29ee22dcfa4442aa3d2ec93d27de9f2b428..3cfe9ffd09cf09a5d8fa62598a1a2598c2b0d469 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 @@ -1,5 +1,6 @@
@@ -316,7 +316,7 @@ index 58a7637fc4a61149fe5ef0861eb30ca516b0cc66..734e9b577d704bb89f962cfa93e62493
  import com.google.common.base.Throwables;
  import java.io.File;
  import java.io.IOException;
-@@ -294,4 +295,13 @@ public class YatopiaConfig {
+@@ -281,4 +282,13 @@ public class YatopiaConfig {
          regionFileIOThreadPoolSize = getInt("settings.threads.regionfile", -1);
          Preconditions.checkArgument(regionFileIOThreadPoolSize == -1 || regionFileIOThreadPoolSize > 0, "Invalid settings.threads.regionfile in yatopia.yml");
      }
