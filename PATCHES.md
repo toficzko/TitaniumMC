@@ -8,7 +8,6 @@ This is an overview over all patches that are currently used.
 
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
-| server |  (AirplaneLite) Multithreaded entity tracking      | Paul Sauve |  |
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
 | server |  (PaperPR) Inline shift direction fields      | Andrew Steinborn |  |
 | server |  AFK API      | William Blake Galbreath |  |

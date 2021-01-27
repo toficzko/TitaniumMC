@@ -230,10 +230,10 @@ index ff368dfecd698312263691b70baaa686f4ef752e..e19c11a95dabe33c0d073ac8e68a5408
      public String getVersion() {
          return SharedConstants.getGameVersion().getName();
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index b575d06a98556f8072ce882d31d8701e45bf269a..562ecc6eff27cdf092d55d9865b8578257633443 100644
+index 122bd635a35847d03849f47112e399026a1b8aa6..dff4fab74f019f6bb7d2b0ee099c90b26b755f2d 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -826,7 +826,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -825,7 +825,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      @Nullable
      private PlayerChunk a(long i, int j, @Nullable PlayerChunk playerchunk, int k) {
          com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Chunk holder update"); // Tuinity
