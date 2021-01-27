@@ -5,7 +5,7 @@ Subject: [PATCH] (AirplaneLite) Multithreaded entity tracking
 
 
 diff --git a/src/main/java/gg/airplane/AirplaneConfig.java b/src/main/java/gg/airplane/AirplaneConfig.java
-index f1486b693718689693f6cbeafa830f33f425770d..fb9d48455e889ab4e40f9ba0f0de1610503705b5 100644
+index a5af04f8b549a5d1ff5b6bc2d46ce0e2640e5b48..b8b3f6eae1e95aa41a6b68ab8f7cf58a1fc2eb1d 100644
 --- a/src/main/java/gg/airplane/AirplaneConfig.java
 +++ b/src/main/java/gg/airplane/AirplaneConfig.java
 @@ -66,4 +66,12 @@ public class AirplaneConfig {
@@ -122,7 +122,7 @@ index ad06bd81eded5d60f16c2d0ad1a4390f4b5a11a5..acf86fce19d73fce1b1964b8e3ad843d
  
              if (!cancelled) {
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 292c9570cdde584c53e4c1063958baa35024e7a1..561800d2dd1f0e7e3d21b776773bfa40ef4fc84c 100644
+index 122bd635a35847d03849f47112e399026a1b8aa6..b575d06a98556f8072ce882d31d8701e45bf269a 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Queues;
@@ -133,7 +133,7 @@ index 292c9570cdde584c53e4c1063958baa35024e7a1..561800d2dd1f0e7e3d21b776773bfa40
  import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
  import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
  import it.unimi.dsi.fastutil.longs.Long2ByteMap;
-@@ -2130,11 +2131,34 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -2131,11 +2132,34 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          entity.tracker = null; // Paper - We're no longer tracked
      }
  
@@ -168,7 +168,7 @@ index 292c9570cdde584c53e4c1063958baa35024e7a1..561800d2dd1f0e7e3d21b776773bfa40
              try {
              while (iterator.hasNext()) {
                  Chunk chunk = iterator.next();
-@@ -2151,6 +2175,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -2152,6 +2176,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
              } finally {
                  iterator.finishedIterating();
              }
@@ -176,7 +176,7 @@ index 292c9570cdde584c53e4c1063958baa35024e7a1..561800d2dd1f0e7e3d21b776773bfa40
          } finally {
              this.world.timings.tracker1.stopTiming();
          }
-@@ -2395,7 +2420,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2396,7 +2421,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
      public class EntityTracker {
  
          final EntityTrackerEntry trackerEntry; // Paper - private -> package private
@@ -185,7 +185,7 @@ index 292c9570cdde584c53e4c1063958baa35024e7a1..561800d2dd1f0e7e3d21b776773bfa40
          private final int trackingDistance;
          private SectionPosition e;
          // Paper start
-@@ -2494,7 +2519,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2495,7 +2520,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
          }
  
          public void updatePlayer(EntityPlayer entityplayer) {

@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Paul Sauve <paul@technove.co>
 Date: Fri, 15 Jan 2021 19:05:01 -0600
-Subject: [PATCH] (AirplaneLite) Dynamic activation range
+Subject: [PATCH] Dynamic activation range
 
 This replaces the current method of ticking an inactive entity's
 pathfinder 1/4 times with a new method that's dynamic based off how far
@@ -12,7 +12,7 @@ tick. If it's within 55 blocks, it gets ticked once every three ticks.
 todo use with actual entity ticking, not just inactive.
 
 diff --git a/src/main/java/gg/airplane/AirplaneConfig.java b/src/main/java/gg/airplane/AirplaneConfig.java
-index 4feb9686f45ce4ae9f474447496b8e0f6fcb7e31..f1486b693718689693f6cbeafa830f33f425770d 100644
+index 4feb9686f45ce4ae9f474447496b8e0f6fcb7e31..a5af04f8b549a5d1ff5b6bc2d46ce0e2640e5b48 100644
 --- a/src/main/java/gg/airplane/AirplaneConfig.java
 +++ b/src/main/java/gg/airplane/AirplaneConfig.java
 @@ -43,4 +43,27 @@ public class AirplaneConfig {
@@ -34,8 +34,8 @@ index 4feb9686f45ce4ae9f474447496b8e0f6fcb7e31..f1486b693718689693f6cbeafa830f33
 +        activationDistanceMod = manual.get("activation-range.activation-dist-mod", activationDistanceMod,
 +          "This value defines how much distance modifies an entity's",
 +          "tick frequency. freq = (distanceToPlayer^2) / (2^value)",
-+          "If you want further away entities to tick more often, use 8.",
-+          "If you want further away entities to tick less often, try 10.");
++          "If you want further away entities to tick less often, use 8.",
++          "If you want further away entities to tick more often, try 10.");
 +
 +        manual.setComment("behavior-activation", "A list of entities to use the dynamic activation range", "to modify how often their behaviors are ticked");
 +        dynamicPiglinBehavior = manual.get("behavior-activation.piglin", dynamicPiglinBehavior);
@@ -44,7 +44,7 @@ index 4feb9686f45ce4ae9f474447496b8e0f6fcb7e31..f1486b693718689693f6cbeafa830f33
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index cf18bf7759caa84f5315d59941b66b3b67393011..dd5ffdc4b94458dcd886f482b6db7a8e783c0398 100644
+index 63eb29635957d4e6ce1274ee17a59af62d442d4e..af7651499391a8b4a5b83cb158846647ce3dc5aa 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -197,6 +197,9 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
@@ -58,10 +58,10 @@ index cf18bf7759caa84f5315d59941b66b3b67393011..dd5ffdc4b94458dcd886f482b6db7a8e
      public float getBukkitYaw() {
          return this.yaw;
 diff --git a/src/main/java/net/minecraft/server/EntityHoglin.java b/src/main/java/net/minecraft/server/EntityHoglin.java
-index df9fa0a00585febf782e948899291c4e58421cbc..add3229c09e44b56c6d297e1f24e7131452cf494 100644
+index 4a3469aca9f9e47d2ea3f3bae6ce77f5f11d6b50..5af5b50889961b10e812598dbea657c4e2aeceeb 100644
 --- a/src/main/java/net/minecraft/server/EntityHoglin.java
 +++ b/src/main/java/net/minecraft/server/EntityHoglin.java
-@@ -103,13 +103,18 @@ public class EntityHoglin extends EntityAnimal implements IMonster, IOglin {
+@@ -102,13 +102,18 @@ public class EntityHoglin extends EntityAnimal implements IMonster, IOglin {
          return (BehaviorController<EntityHoglin>) super.getBehaviorController(); // Purpur - decompile error
      }
  
@@ -81,7 +81,7 @@ index df9fa0a00585febf782e948899291c4e58421cbc..add3229c09e44b56c6d297e1f24e7131
              ++this.conversionTicks;
              if (this.conversionTicks > 300) {
 diff --git a/src/main/java/net/minecraft/server/EntityInsentient.java b/src/main/java/net/minecraft/server/EntityInsentient.java
-index 234931df7eb974e0faea780f20e07bad18ed5840..889c46458d87cebcef6dcf57229ef357a943097b 100644
+index b9c537104bfdc0bca0ad387c073650da169b871a..400edac98e03afe9dc6dfeab98fc8cc9e8200ac7 100644
 --- a/src/main/java/net/minecraft/server/EntityInsentient.java
 +++ b/src/main/java/net/minecraft/server/EntityInsentient.java
 @@ -132,10 +132,10 @@ public abstract class EntityInsentient extends EntityLiving {
@@ -97,7 +97,7 @@ index 234931df7eb974e0faea780f20e07bad18ed5840..889c46458d87cebcef6dcf57229ef357
              this.targetSelector.doTick();
          }
      }
-@@ -798,9 +798,11 @@ public abstract class EntityInsentient extends EntityLiving {
+@@ -795,9 +795,11 @@ public abstract class EntityInsentient extends EntityLiving {
          this.bo.a();
          this.world.getMethodProfiler().exit();
          this.world.getMethodProfiler().enter("targetSelector");
@@ -110,10 +110,10 @@ index 234931df7eb974e0faea780f20e07bad18ed5840..889c46458d87cebcef6dcf57229ef357
          this.world.getMethodProfiler().exit();
          this.world.getMethodProfiler().enter("navigation");
 diff --git a/src/main/java/net/minecraft/server/EntityPiglin.java b/src/main/java/net/minecraft/server/EntityPiglin.java
-index 7544f1648a5a1cfe14c285fc07d8119234914ccf..b34a53536d26d6fd63a458bb32c250563dcc2be2 100644
+index 4849829df1041568a9fcac6d16501fc0606d95da..2ac74751ac8cea0b829b3d0ed03f052162a78781 100644
 --- a/src/main/java/net/minecraft/server/EntityPiglin.java
 +++ b/src/main/java/net/minecraft/server/EntityPiglin.java
-@@ -220,13 +220,18 @@ public class EntityPiglin extends EntityPiglinAbstract implements ICrossbow {
+@@ -216,13 +216,18 @@ public class EntityPiglin extends EntityPiglinAbstract implements ICrossbow {
          return !this.cannotHunt;
      }
  
@@ -133,10 +133,10 @@ index 7544f1648a5a1cfe14c285fc07d8119234914ccf..b34a53536d26d6fd63a458bb32c25056
      }
  
 diff --git a/src/main/java/net/minecraft/server/PathfinderGoalSelector.java b/src/main/java/net/minecraft/server/PathfinderGoalSelector.java
-index b63f274ec0afec96b4879f9ebaed72c416d1f9d2..173ccec366b29bc06011bfd6facc06dde9944150 100644
+index 9cad895c7d008487ce885cbcc2c3966645df4c19..b8b2c54e54645a6d710bd145c238b18f13922a62 100644
 --- a/src/main/java/net/minecraft/server/PathfinderGoalSelector.java
 +++ b/src/main/java/net/minecraft/server/PathfinderGoalSelector.java
-@@ -44,10 +44,17 @@ public class PathfinderGoalSelector {
+@@ -43,10 +43,17 @@ public class PathfinderGoalSelector {
      }
  
      // Paper start

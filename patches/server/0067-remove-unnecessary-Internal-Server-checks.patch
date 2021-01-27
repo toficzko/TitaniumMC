@@ -351,10 +351,10 @@ index 8b8ecc2d8925b3c209d99e101f6e478b08d86db9..cf552b890c79a5526d17b4b566e7f805
                  }
  
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b67393011 100644
+index 04afdf4cb616f7634d9d8fbe5c82f22a56671f6d..dd5ffdc4b94458dcd886f482b6db7a8e783c0398 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -448,9 +448,9 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -451,9 +451,9 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
      }
  
      public void tick() {
@@ -366,7 +366,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
  
          this.entityBaseTick();
      }
-@@ -485,9 +485,12 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -488,9 +488,12 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
          this.aK();
          this.m();
          this.aJ();
@@ -379,7 +379,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
              if (this.isFireProof()) {
                  this.setFireTicks(this.fireTicks - 4);
                  if (this.fireTicks < 0) {
-@@ -518,9 +521,9 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -521,9 +524,9 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
          this.performVoidDamage();
          // Paper end
  
@@ -391,7 +391,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
  
          this.justCreated = false;
          this.world.getMethodProfiler().exit();
-@@ -2151,8 +2154,10 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2154,8 +2157,10 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
      public EntityItem a(ItemStack itemstack, float f) {
          if (itemstack.isEmpty()) {
              return null;
@@ -402,7 +402,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
          } else {
              // CraftBukkit start - Capture drops for death event
              if (this instanceof EntityLiving && !((EntityLiving) this).forceDrops) {
-@@ -2331,7 +2336,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2334,7 +2339,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
                  return false;
              }
              // Spigot end
@@ -412,7 +412,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
                  this.passengers.add(0, entity);
              } else {
                  this.passengers.add(entity);
-@@ -2419,7 +2425,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2422,7 +2428,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
              if (!(world.purpurConfig.playerFixStuckPortal && this instanceof EntityPlayer && !blockposition.equals(portalPos))) // Purpur
              this.resetPortalCooldown();
          } else if (world.purpurConfig.entitiesCanUsePortals || this instanceof EntityPlayer) { // Purpur
@@ -422,7 +422,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
                  this.ac = blockposition.immutableCopy();
                  portalPos = BlockPosition.ZERO; // Purpur
              }
-@@ -2486,9 +2493,10 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2489,9 +2496,10 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
      public void setSlot(EnumItemSlot enumitemslot, ItemStack itemstack) {}
  
      public boolean isBurning() {
@@ -435,7 +435,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
      }
  
      public boolean isPassenger() {
-@@ -2560,14 +2568,15 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2563,14 +2571,15 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
  
      public boolean isGlowing() { return bE(); } // Purpur - OBFHELPER
      public boolean bE() {
@@ -454,7 +454,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
  
      }
  
-@@ -3149,7 +3158,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -3152,7 +3161,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
              AxisAlignedBB axisalignedbb = this.getBoundingBox();
  
              this.a(new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + (double) entitysize1.width, axisalignedbb.minY + (double) entitysize1.height, axisalignedbb.minZ + (double) entitysize1.width));
@@ -464,7 +464,7 @@ index e629f10cdbd70a354f9edaa75973b169a8588d08..cf18bf7759caa84f5315d59941b66b3b
                  float f = entitysize.width - entitysize1.width;
  
                  this.move(EnumMoveType.SELF, new Vec3D((double) f, 0.0D, (double) f));
-@@ -3408,7 +3418,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -3411,7 +3421,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
      public boolean cs() {
          Entity entity = this.getRidingPassenger();
  
@@ -1644,7 +1644,7 @@ index 747b0b7e6f7412751e8fa7ab98fe642a78760a87..9e70f27c504a1f7e04fe46b4c82626f2
      @Override
      public void saveData(NBTTagCompound nbttagcompound) {
 diff --git a/src/main/java/net/minecraft/server/EntityHoglin.java b/src/main/java/net/minecraft/server/EntityHoglin.java
-index 4a3469aca9f9e47d2ea3f3bae6ce77f5f11d6b50..df9fa0a00585febf782e948899291c4e58421cbc 100644
+index 5af5b50889961b10e812598dbea657c4e2aeceeb..add3229c09e44b56c6d297e1f24e7131452cf494 100644
 --- a/src/main/java/net/minecraft/server/EntityHoglin.java
 +++ b/src/main/java/net/minecraft/server/EntityHoglin.java
 @@ -75,16 +75,17 @@ public class EntityHoglin extends EntityAnimal implements IMonster, IOglin {
@@ -1667,7 +1667,7 @@ index 4a3469aca9f9e47d2ea3f3bae6ce77f5f11d6b50..df9fa0a00585febf782e948899291c4e
      }
  
      @Override
-@@ -282,7 +283,8 @@ public class EntityHoglin extends EntityAnimal implements IMonster, IOglin {
+@@ -287,7 +288,8 @@ public class EntityHoglin extends EntityAnimal implements IMonster, IOglin {
  
      @Override
      protected SoundEffect getSoundAmbient() {
@@ -2147,7 +2147,7 @@ index b9dd0e358a7359f12ed1234d76363501651db950..5575d9d63762451fa4b66cc9284bcd94
      }
  
 diff --git a/src/main/java/net/minecraft/server/EntityInsentient.java b/src/main/java/net/minecraft/server/EntityInsentient.java
-index b9c537104bfdc0bca0ad387c073650da169b871a..234931df7eb974e0faea780f20e07bad18ed5840 100644
+index 400edac98e03afe9dc6dfeab98fc8cc9e8200ac7..889c46458d87cebcef6dcf57229ef357a943097b 100644
 --- a/src/main/java/net/minecraft/server/EntityInsentient.java
 +++ b/src/main/java/net/minecraft/server/EntityInsentient.java
 @@ -315,6 +315,7 @@ public abstract class EntityInsentient extends EntityLiving {
@@ -2193,7 +2193,7 @@ index b9c537104bfdc0bca0ad387c073650da169b871a..234931df7eb974e0faea780f20e07bad
              List<EntityItem> list = this.world.a(EntityItem.class, this.getBoundingBox().grow(1.0D, 0.0D, 1.0D));
              Iterator iterator = list.iterator();
  
-@@ -1196,7 +1199,7 @@ public abstract class EntityInsentient extends EntityLiving {
+@@ -1198,7 +1201,7 @@ public abstract class EntityInsentient extends EntityLiving {
              }
              // CraftBukkit end
              this.unleash(true, !entityhuman.abilities.canInstantlyBuild);
@@ -2202,7 +2202,7 @@ index b9c537104bfdc0bca0ad387c073650da169b871a..234931df7eb974e0faea780f20e07bad
          } else {
              EnumInteractionResult enuminteractionresult = this.c(entityhuman, enumhand);
  
-@@ -1221,7 +1224,7 @@ public abstract class EntityInsentient extends EntityLiving {
+@@ -1223,7 +1226,7 @@ public abstract class EntityInsentient extends EntityLiving {
              // CraftBukkit end
              this.setLeashHolder(entityhuman, true);
              itemstack.subtract(1);
@@ -2211,7 +2211,7 @@ index b9c537104bfdc0bca0ad387c073650da169b871a..234931df7eb974e0faea780f20e07bad
          } else {
              if (itemstack.getItem() == Items.NAME_TAG) {
                  EnumInteractionResult enuminteractionresult = itemstack.a(entityhuman, (EntityLiving) this, enumhand);
-@@ -1365,7 +1368,8 @@ public abstract class EntityInsentient extends EntityLiving {
+@@ -1367,7 +1370,8 @@ public abstract class EntityInsentient extends EntityLiving {
  
              this.leashHolder = null;
              this.by = null;
@@ -2221,7 +2221,7 @@ index b9c537104bfdc0bca0ad387c073650da169b871a..234931df7eb974e0faea780f20e07bad
                  this.forceDrops = true; // CraftBukkit
                  // Purpur start
                  final ItemStack lead = new ItemStack(Items.LEAD);
-@@ -1377,7 +1381,8 @@ public abstract class EntityInsentient extends EntityLiving {
+@@ -1379,7 +1383,8 @@ public abstract class EntityInsentient extends EntityLiving {
                  this.forceDrops = false; // CraftBukkit
              }
  
@@ -2231,7 +2231,7 @@ index b9c537104bfdc0bca0ad387c073650da169b871a..234931df7eb974e0faea780f20e07bad
                  ((WorldServer) this.world).getChunkProvider().broadcast(this, new PacketPlayOutAttachEntity(this, (Entity) null));
              }
          }
-@@ -1394,10 +1399,11 @@ public abstract class EntityInsentient extends EntityLiving {
+@@ -1396,10 +1401,11 @@ public abstract class EntityInsentient extends EntityLiving {
  
      @Nullable
      public Entity getLeashHolder() {
@@ -2244,7 +2244,7 @@ index b9c537104bfdc0bca0ad387c073650da169b871a..234931df7eb974e0faea780f20e07bad
          return this.leashHolder;
      }
  
-@@ -1409,7 +1415,8 @@ public abstract class EntityInsentient extends EntityLiving {
+@@ -1411,7 +1417,8 @@ public abstract class EntityInsentient extends EntityLiving {
              this.leashHolder.attachedToPlayer = true;
          }
  
@@ -2254,7 +2254,7 @@ index b9c537104bfdc0bca0ad387c073650da169b871a..234931df7eb974e0faea780f20e07bad
              ((WorldServer) this.world).getChunkProvider().broadcast(this, new PacketPlayOutAttachEntity(this, this.leashHolder));
          }
  
-@@ -1608,7 +1615,8 @@ public abstract class EntityInsentient extends EntityLiving {
+@@ -1610,7 +1617,8 @@ public abstract class EntityInsentient extends EntityLiving {
  
      public boolean isInDaylight() { return this.eG(); } // Paper - OBFHELPER
      protected boolean eG() {
@@ -3280,7 +3280,7 @@ index 61ea94586ec60dae8e7b32d91403fe93f81fc246..257fbde0de41640b6e4ff196ec1fe505
              EnumInteractionResult enuminteractionresult = super.b(entityhuman, enumhand);
  
 diff --git a/src/main/java/net/minecraft/server/EntityPiglin.java b/src/main/java/net/minecraft/server/EntityPiglin.java
-index 4849829df1041568a9fcac6d16501fc0606d95da..7544f1648a5a1cfe14c285fc07d8119234914ccf 100644
+index 2ac74751ac8cea0b829b3d0ed03f052162a78781..b34a53536d26d6fd63a458bb32c250563dcc2be2 100644
 --- a/src/main/java/net/minecraft/server/EntityPiglin.java
 +++ b/src/main/java/net/minecraft/server/EntityPiglin.java
 @@ -169,13 +169,17 @@ public class EntityPiglin extends EntityPiglinAbstract implements ICrossbow {
@@ -3319,7 +3319,7 @@ index 4849829df1041568a9fcac6d16501fc0606d95da..7544f1648a5a1cfe14c285fc07d81192
  
      }
  
-@@ -271,16 +275,17 @@ public class EntityPiglin extends EntityPiglinAbstract implements ICrossbow {
+@@ -276,16 +280,17 @@ public class EntityPiglin extends EntityPiglinAbstract implements ICrossbow {
      @Override
      public boolean damageEntity(DamageSource damagesource, float f) {
          boolean flag = super.damageEntity(damagesource, f);
@@ -3339,7 +3339,7 @@ index 4849829df1041568a9fcac6d16501fc0606d95da..7544f1648a5a1cfe14c285fc07d81192
      }
  
      @Override
-@@ -359,7 +364,8 @@ public class EntityPiglin extends EntityPiglinAbstract implements ICrossbow {
+@@ -364,7 +369,8 @@ public class EntityPiglin extends EntityPiglinAbstract implements ICrossbow {
  
      @Override
      protected SoundEffect getSoundAmbient() {

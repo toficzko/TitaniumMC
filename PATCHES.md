@@ -8,7 +8,6 @@ This is an overview over all patches that are currently used.
 
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
-| server |  (AirplaneLite) Dynamic activation range      | Paul Sauve |  |
 | server |  (AirplaneLite) Multithreaded entity tracking      | Paul Sauve |  |
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
 | server |  (PaperPR) Inline shift direction fields      | Andrew Steinborn |  |
@@ -157,6 +156,7 @@ This is an overview over all patches that are currently used.
 | server |  DragonEggPlaceEvent      | William Blake Galbreath |  |
 | api |  DragonEggPlaceEvent      | William Blake Galbreath |  |
 | server |  Duplicate paper&#39;s vanilla scoreboard colors patch to sync      | William Blake Galbreath |  |
+| server |  Dynamic activation range      | Paul Sauve |  |
 | server |  EMC - Configurable disable give dropping      | Aikar |  |
 | server |  EMC - MonsterEggSpawnEvent      | Aikar |  |
 | api |  EMC - MonsterEggSpawnEvent      | Aikar |  |
