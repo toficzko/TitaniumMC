@@ -581,7 +581,7 @@ index 5b0ee830b45a677bf354b02cf4fd311d842e7678..4cf2d526839dc2470190746b2842c67a
      }
  
 diff --git a/src/main/java/net/minecraft/server/EntityArmorStand.java b/src/main/java/net/minecraft/server/EntityArmorStand.java
-index 91df44d2e4f09fb612ae7bcb6c6a3dbb99aaba41..3abe37381e1872934eac3cbf71e9ad2a42d11a84 100644
+index 74fda434ed7beb6612f46ed75fdccad59f394b60..7971d1d726b3f80226cc52a96b69b7da2826e94d 100644
 --- a/src/main/java/net/minecraft/server/EntityArmorStand.java
 +++ b/src/main/java/net/minecraft/server/EntityArmorStand.java
 @@ -467,7 +467,8 @@ public class EntityArmorStand extends EntityLiving {
@@ -2499,7 +2499,7 @@ index 5200b0396ee41edb42ff727c78cf3b5fce091d6b..7afb050fa77844523a567b76c0ea9f4c
              IBlockData iblockdata = BlockFireAbstract.a((IBlockAccess) this.world, blockposition);
  
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e07644167 100644
+index 5727981e59f8ebe5ae2a955313e19080fce6ecd6..c6a1633b6e947cd1527333887a3d02d2e0217ea3 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -225,12 +225,12 @@ public abstract class EntityLiving extends Entity {
@@ -2746,7 +2746,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
  
          if (!dead) this.movementTick(); // Purpur
          double d0 = this.locX() - this.lastX;
-@@ -2877,7 +2889,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2876,7 +2888,7 @@ public abstract class EntityLiving extends Entity {
              }
          }
          // Purpur end
@@ -2755,7 +2755,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
              this.damageEntity(DamageSource.DROWN, 1.0F);
          }
  
-@@ -2895,7 +2907,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2894,7 +2906,7 @@ public abstract class EntityLiving extends Entity {
  
              if (itemstack.getItem() == Items.ELYTRA && ItemElytra.d(itemstack)) {
                  flag = true;
@@ -2764,7 +2764,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
                      // Purpur start
                      int damage = world.purpurConfig.elytraDamagePerSecond;
                      if (world.purpurConfig.elytraDamageMultiplyBySpeed > 0) {
-@@ -2916,10 +2928,10 @@ public abstract class EntityLiving extends Entity {
+@@ -2915,10 +2927,10 @@ public abstract class EntityLiving extends Entity {
              flag = false;
          }
  
@@ -2777,7 +2777,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
  
      }
  
-@@ -2990,7 +3002,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2989,7 +3001,7 @@ public abstract class EntityLiving extends Entity {
              this.bf = 0;
          }
  
@@ -2786,7 +2786,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
              this.c(4, false);
          }
  
-@@ -3004,9 +3016,9 @@ public abstract class EntityLiving extends Entity {
+@@ -3003,9 +3015,9 @@ public abstract class EntityLiving extends Entity {
  
      public void r(int i) {
          this.bf = i;
@@ -2798,7 +2798,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
  
      }
  
-@@ -3021,7 +3033,8 @@ public abstract class EntityLiving extends Entity {
+@@ -3020,7 +3032,8 @@ public abstract class EntityLiving extends Entity {
          Entity entity = this.getVehicle();
  
          super.stopRiding(suppressCancellation); // Paper - suppress
@@ -2808,7 +2808,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
              this.a(entity);
          }
  
-@@ -3049,7 +3062,8 @@ public abstract class EntityLiving extends Entity {
+@@ -3048,7 +3061,8 @@ public abstract class EntityLiving extends Entity {
      }
  
      public void receive(Entity entity, int i) {
@@ -2818,7 +2818,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
              ((WorldServer) this.world).getChunkProvider().broadcast(entity, new PacketPlayOutCollect(entity.getId(), this.getId(), i));
          }
  
-@@ -3069,7 +3083,8 @@ public abstract class EntityLiving extends Entity {
+@@ -3068,7 +3082,8 @@ public abstract class EntityLiving extends Entity {
      }
  
      public boolean doAITick() {
@@ -2828,7 +2828,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
      }
  
      @Override
-@@ -3172,7 +3187,8 @@ public abstract class EntityLiving extends Entity {
+@@ -3171,7 +3186,8 @@ public abstract class EntityLiving extends Entity {
                  // Paper start - lag compensate eating
                  // we add 1 to the expected time to avoid lag compensating when we should not
                  boolean shouldLagCompensate = this.activeItem.getItem().isFood() && this.eatStartTime != -1 && (System.nanoTime() - this.eatStartTime) > ((1 + this.totalEatTimeTicks) * 50 * (1000 * 1000));
@@ -2838,7 +2838,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
                      this.setEatTimeTicks(0);
                      // Paper end
                      this.s();
-@@ -3228,10 +3244,10 @@ public abstract class EntityLiving extends Entity {
+@@ -3227,10 +3243,10 @@ public abstract class EntityLiving extends Entity {
              this.bd = this.totalEatTimeTicks = itemstack.k();
              this.eatStartTime = System.nanoTime();
              // Paper end
@@ -2851,7 +2851,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
  
          }
      }
-@@ -3239,11 +3255,15 @@ public abstract class EntityLiving extends Entity {
+@@ -3238,11 +3254,15 @@ public abstract class EntityLiving extends Entity {
      @Override
      public void a(DataWatcherObject<?> datawatcherobject) {
          super.a(datawatcherobject);
@@ -2867,7 +2867,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
              if (this.isHandRaised() && this.activeItem.isEmpty()) {
                  this.activeItem = this.b(this.getRaisedHand());
                  if (!this.activeItem.isEmpty()) {
-@@ -3257,6 +3277,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3256,6 +3276,7 @@ public abstract class EntityLiving extends Entity {
                  // Paper end
              }
          }
@@ -2875,7 +2875,7 @@ index 62948f586e298d711fbe893ab29d6d61dc6bb62f..d299c3db573643dbc6dc7aa74be7563e
  
      }
  
-@@ -3377,9 +3398,9 @@ public abstract class EntityLiving extends Entity {
+@@ -3376,9 +3397,9 @@ public abstract class EntityLiving extends Entity {
      }
  
      public void clearActiveItem() {

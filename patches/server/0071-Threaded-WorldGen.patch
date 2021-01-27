@@ -183,7 +183,7 @@ index 7abf0e4b7e96dd367b9d03cbc62ac7bb03542d0a..76a76c26650bca73828d7893a537a023
          return i == j ? true : GenLayers.a.get(i) == GenLayers.a.get(j);
      }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index d0c3e20ae86bf8fb3f29bded45d1b7efba25f13a..a6ce829f3e7f366169bcbf9257065d3317304cdf 100644
+index 89db3d0bbb4d683907943b2dc01404d69b0cc842..77d8c85a1305ce17220772ff2e191ea341af5e75 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -835,6 +835,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -306,7 +306,7 @@ index 40e87f3043da14b1265fcdadde02bef3b261a9d1..8a28b98d35dcdfbd4bb55a3b7f2d963c
  
      public final VillagePlace getPoiStorage() { return this.y(); } // Paper - OBFHELPER
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index 6ecbd29ee22dcfa4442aa3d2ec93d27de9f2b428..3cfe9ffd09cf09a5d8fa62598a1a2598c2b0d469 100644
+index 1a2e15c6fd6e6654b0a6d6b0826814f5180a3e17..1362783943fd5956040a4c2035daaefa0e8ea3a5 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 @@ -1,5 +1,6 @@
@@ -316,7 +316,7 @@ index 6ecbd29ee22dcfa4442aa3d2ec93d27de9f2b428..3cfe9ffd09cf09a5d8fa62598a1a2598
  import com.google.common.base.Throwables;
  import java.io.File;
  import java.io.IOException;
-@@ -281,4 +282,13 @@ public class YatopiaConfig {
+@@ -286,4 +287,13 @@ public class YatopiaConfig {
          regionFileIOThreadPoolSize = getInt("settings.threads.regionfile", -1);
          Preconditions.checkArgument(regionFileIOThreadPoolSize == -1 || regionFileIOThreadPoolSize > 0, "Invalid settings.threads.regionfile in yatopia.yml");
      }

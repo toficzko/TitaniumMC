@@ -61,7 +61,7 @@ index 15775f0787efc8537d689488350120fad5eae97a..a91533afaff215bffdcf8eb8d5fc54f5
      private final ServerStatisticManager serverStatisticManager;
      private float lastHealthScored = Float.MIN_VALUE;
 diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
-index ad06bd81eded5d60f16c2d0ad1a4390f4b5a11a5..acf86fce19d73fce1b1964b8e3ad843db1e002c6 100644
+index a9d60e5dc2f3b38a192a68d79bcf78e4873664a2..04aea1f88c406d12f0fbb140fd0b1f1b9b7d5bc4 100644
 --- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 +++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 @@ -74,7 +74,7 @@ public class EntityTrackerEntry {
