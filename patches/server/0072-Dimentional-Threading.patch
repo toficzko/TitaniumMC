@@ -1,0 +1,726 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Mon, 4 Jan 2021 21:06:13 -0500
+Subject: [PATCH] Dimentional Threading
+
+
+diff --git a/src/main/java/com/tuinity/tuinity/util/TickThread.java b/src/main/java/com/tuinity/tuinity/util/TickThread.java
+index 08ed243259f052165c6f75aed1d1d65a14219715..3afa6bb8c6de725dba9c65ca8c6fec9cb44934fc 100644
+--- a/src/main/java/com/tuinity/tuinity/util/TickThread.java
++++ b/src/main/java/com/tuinity/tuinity/util/TickThread.java
+@@ -22,7 +22,8 @@ public final class TickThread extends Thread {
+ 
+ 
+     public static void ensureTickThread(final String reason) {
+-        if (!Bukkit.isPrimaryThread()) {
++        // if (!Bukkit.isPrimaryThread()) {
++        if (!Bukkit.isPrimaryThread() && !org.yatopiamc.yatopia.server.dimthread.DimThread.owns(Thread.currentThread())) {
+             MinecraftServer.LOGGER.fatal("Thread " + Thread.currentThread().getName() + " failed main thread check: " + reason, new Throwable());
+             throw new IllegalStateException(reason);
+         }
+diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+index 23cea240ed7d8937df49a9c3e24191cb785ad730..0571e85c4b568e68cdd7e872d4bdcc30d45f89d5 100644
+--- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
++++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+@@ -27,14 +27,29 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanLinkedOpenHashMap;
+ import it.unimi.dsi.fastutil.objects.ObjectBidirectionalIterator;
+ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+ // Tuinity end
++import org.yatopiamc.yatopia.server.dimthread.thread.IMutableMainThread;
+ 
+-public class ChunkProviderServer extends IChunkProvider {
++
++public class ChunkProviderServer extends IChunkProvider implements IMutableMainThread {
++    // Yatopia start - DIM-threading work
++    public Thread serverThread;
++
++    @Override
++	public Thread getMainThread() {
++		return this.serverThread;
++	}
++
++    @Override
++	public void setMainThread(Thread thread) {
++		this.serverThread = thread;
++	}
++    // Yatopia end - DIM-threading work
+ 
+     private static final List<ChunkStatus> b = ChunkStatus.a(); static final List<ChunkStatus> getPossibleChunkStatuses() { return ChunkProviderServer.b; } // Paper - OBFHELPER
+     private final ChunkMapDistance chunkMapDistance;
+     public final ChunkGenerator chunkGenerator;
+     private final WorldServer world;
+-    public final Thread serverThread; // Paper - private -> public
++    // public final Thread serverThread; // Paper - private -> public
+     private final LightEngineThreaded lightEngine;
+     public final ChunkProviderServer.a serverThreadQueue; // Paper private -> public
+     public final PlayerChunkMap playerChunkMap;
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index dd5ffdc4b94458dcd886f482b6db7a8e783c0398..2e4a15dbdcd81eb1a07e970bd3d303a6bbf8d055 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -2834,8 +2834,17 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+         this.ac = entity.ac;
+     }
+ 
++	public void moveToWorld(WorldServer destination) {
++		if(!org.yatopiamc.yatopia.server.dimthread.DimThread.MANAGER.isActive(destination.getMinecraftServer()))return;
++
++		if(org.yatopiamc.yatopia.server.dimthread.DimThread.owns(Thread.currentThread())) {
++			destination.getMinecraftServer().execute(() -> teleportTo(destination, null));
++		}
++	}
++
+     @Nullable
+     public Entity b(WorldServer worldserver) {
++        // moveToWorld(worldserver);
+         // CraftBukkit start
+         return teleportTo(worldserver, null);
+     }
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index ff368dfecd698312263691b70baaa686f4ef752e..e19c11a95dabe33c0d073ac8e68a5408ba917f3a 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -67,7 +67,22 @@ import io.papermc.paper.util.PaperJvmChecker; // Paper
+ import io.papermc.paper.event.server.ServerResourcesReloadedEvent; // Paper
+ import org.spigotmc.SlackActivityAccountant; // Spigot
+ 
++// Yatopia start - imports for DIM-threading
++import org.yatopiamc.yatopia.server.dimthread.DimThread;
++import org.yatopiamc.yatopia.server.threading.ThreadPool;
++import org.yatopiamc.yatopia.server.dimthread.util.CrashInfo;
++import java.util.concurrent.atomic.AtomicInteger;
++import io.netty.util.internal.ConcurrentSet;
++// Yatopia end
++
+ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTask> implements IMojangStatistics, ICommandListener, AutoCloseable {
++    // Yatopia start - variables needed for DIM-threading
++    // private ThreadPool pool = new ThreadPool(Runtime.getRuntime().availableProcessors());
++    public Iterable<WorldServer> getWorlds() {
++        return this.worldServer.values();
++    }
++    private static boolean DEBUG = org.yatopiamc.yatopia.server.YatopiaConfig.dimThreadingDEBUG;
++    // Yatopia end - variables needed for DIM-threading
+ 
+     private static MinecraftServer SERVER; // Paper
+     public static final Logger LOGGER = LogManager.getLogger();
+@@ -1378,6 +1393,76 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+     }
+ 
+     protected void b(BooleanSupplier booleansupplier) {
++        if (org.yatopiamc.yatopia.server.YatopiaConfig.dimThreading) {
++            this.server.getScheduler().mainThreadHeartbeat(this.ticks);
++            while (!processQueue.isEmpty()) {
++                processQueue.remove().run();
++            }
++            ThreadPool pool = DimThread.getThreadPool((MinecraftServer)(Object)this);
++            AtomicReference<CrashInfo> crash = new AtomicReference<>();
++
++            for (final WorldServer world : this.getWorlds()) {
++                final boolean doDaylight = world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE);
++                final long dayTime = world.getDayTime();
++                long worldTime = world.getTime();
++                final PacketPlayOutUpdateTime worldPacket = new PacketPlayOutUpdateTime(worldTime, dayTime, doDaylight);
++                for (EntityHuman entityhuman : world.getPlayers()) {
++                    if (!(entityhuman instanceof EntityPlayer) || (ticks + entityhuman.getId()) % 20 != 0) {
++                        continue;
++                    }
++                    EntityPlayer entityplayer = (EntityPlayer) entityhuman;
++                    long playerTime = entityplayer.getPlayerTime();
++                    PacketPlayOutUpdateTime packet = (playerTime == dayTime) ? worldPacket :
++                        new PacketPlayOutUpdateTime(worldTime, playerTime, doDaylight);
++                    entityplayer.playerConnection.sendPacket(packet); // Add support for per player time
++                }
++            }
++
++            pool.execute(this.getWorlds().iterator(), world -> {
++                DimThread.attach(Thread.currentThread(), world);
++
++                /*
++                if (this.ticks % 20 == 0) {
++                    this.playerList.a((Packet) (new PacketPlayOutUpdateTime(world.getTime(), world.getDayTime(), world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE))), world.getDimensionKey());
++                }
++                */
++
++
++                // this.methodProfiler.enter("tick");
++                DimThread.swapThreadsAndRun(() -> {
++                    try {
++                        world.doTick(booleansupplier);
++
++                        world.getChunkProvider().playerChunkMap.dataRegionManager.recalculateRegions(); // Tuinity
++                    } catch(Throwable throwable) {
++                        crash.set(new CrashInfo(world, throwable));
++                    }
++                }, world, world.getChunkProvider());
++
++
++                world.explosionDensityCache.clear(); // Paper - Optimize explosions
++            });
++            pool.awaitCompletion();
++
++            if(crash.get() != null) {
++                crash.get().crash("Exception ticking world");
++            }
++
++            this.getServerConnection().c();
++            this.playerList.tick();
++
++            if (SharedConstants.d) {
++                GameTestHarnessTicker.a.b();
++            }
++
++            // for (int i = 0; i < this.tickables.size(); ++i) {
++                // ((Runnable) this.tickables.get(i)).run();
++            // }
++            // Yatopia end - Real DIM-threading work
++
++
++
++        } else {
+         // Tuinity - replace logic
+         MinecraftTimings.bukkitSchedulerTimer.startTiming(); // Spigot // Paper
+         this.server.getScheduler().mainThreadHeartbeat(this.ticks); // CraftBukkit
+@@ -1399,7 +1484,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         }
+         MinecraftTimings.processQueueTimer.stopTiming(); // Spigot
+         // Tuinity - replace logic
+-        MinecraftTimings.timeUpdateTimer.startTiming(); // Spigot // Paper
++        // MinecraftTimings.timeUpdateTimer.startTiming(); // Spigot // Paper
+         // Send time updates to everyone, it will get the right time from the world the player is in.
+         // Paper start - optimize time updates
+         for (final WorldServer world : this.getWorlds()) {
+@@ -1419,7 +1504,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             }
+         }
+         // Paper end
+-        MinecraftTimings.timeUpdateTimer.stopTiming(); // Spigot // Paper
++        // MinecraftTimings.timeUpdateTimer.stopTiming(); // Spigot // Paper
+ 
+         while (iterator.hasNext()) {
+             WorldServer worldserver = (WorldServer) iterator.next();
+@@ -1467,7 +1552,6 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             this.methodProfiler.exit();
+             worldserver.explosionDensityCache.clear(); // Paper - Optimize explosions
+         }
+-
+         this.methodProfiler.exitEnter("connection");
+         MinecraftTimings.connectionTimer.startTiming(); // Spigot
+         this.getServerConnection().c();
+@@ -1489,6 +1573,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         MinecraftTimings.tickablesTimer.stopTiming(); // Spigot // Paper
+ 
+         this.methodProfiler.exit();
++        }
+     }
+ 
+     public boolean getAllowNether() {
+@@ -1520,9 +1605,11 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         return this.worldServer.keySet();
+     }
+ 
+-    public Iterable<WorldServer> getWorlds() {
+-        return this.worldServer.values();
+-    }
++    // Yatopia start - Move up
++    // public Iterable<WorldServer> getWorlds() {
++    //     return this.worldServer.values();
++    // }
++    // Yatopia end - Move up
+ 
+     public String getVersion() {
+         return SharedConstants.getGameVersion().getName();
+diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+index b575d06a98556f8072ce882d31d8701e45bf269a..562ecc6eff27cdf092d55d9865b8578257633443 100644
+--- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
++++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+@@ -826,7 +826,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     @Nullable
+     private PlayerChunk a(long i, int j, @Nullable PlayerChunk playerchunk, int k) {
+         com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Chunk holder update"); // Tuinity
+-        if (this.unloadingPlayerChunk) { MinecraftServer.LOGGER.fatal("Cannot tick distance manager while unloading playerchunks", new Throwable()); throw new IllegalStateException("Cannot tick distance manager while unloading playerchunks"); } // Tuinity
++        // if (this.unloadingPlayerChunk) { MinecraftServer.LOGGER.fatal("Cannot tick distance manager while unloading playerchunks", new Throwable()); throw new IllegalStateException("Cannot tick distance manager while unloading playerchunks"); } // Tuinity
+         if (k > PlayerChunkMap.GOLDEN_TICKET && j > PlayerChunkMap.GOLDEN_TICKET) {
+             return playerchunk;
+         } else {
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index 626fab23a727073f502d934fc8f8616326ee8b52..73f14dae7fa0efeabb1734e5c43bce8e4da2846d 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -33,7 +33,22 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
+ import org.bukkit.event.block.BlockPhysicsEvent;
+ // CraftBukkit end
+ 
+-public abstract class World implements GeneratorAccess, AutoCloseable {
++import org.yatopiamc.yatopia.server.dimthread.thread.IMutableMainThread;
++
++public abstract class World implements GeneratorAccess, AutoCloseable, IMutableMainThread { // Yatopia
++    // Yatopia start - DIM-threading work
++    private Thread thread;
++
++    @Override
++	public Thread getMainThread() {
++		return this.thread;
++	}
++
++    @Override
++	public void setMainThread(Thread thread) {
++		this.thread = thread;
++	}
++    // Yatopia end - DIM-threading work
+ 
+     protected static final Logger LOGGER = LogManager.getLogger();
+     public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
+diff --git a/src/main/java/org/spigotmc/AsyncCatcher.java b/src/main/java/org/spigotmc/AsyncCatcher.java
+index 51e9c54cddf4b28ba3d3d892322c487774bdab70..f57d892c263c15385339c205dceaa7c7c8bd9832 100644
+--- a/src/main/java/org/spigotmc/AsyncCatcher.java
++++ b/src/main/java/org/spigotmc/AsyncCatcher.java
+@@ -5,12 +5,12 @@ import net.minecraft.server.MinecraftServer;
+ public class AsyncCatcher
+ {
+ 
+-    public static boolean enabled = true;
++    public static boolean enabled = false; // Yatopia - async world ticking TODO
+     public static boolean shuttingDown = false; // Paper
+ 
+     public static void catchOp(String reason)
+     {
+-        if ( ( enabled || com.tuinity.tuinity.util.TickThread.STRICT_THREAD_CHECKS ) && !org.bukkit.Bukkit.isPrimaryThread() ) // Tuinity
++        if ( ( enabled || com.tuinity.tuinity.util.TickThread.STRICT_THREAD_CHECKS ) && !org.bukkit.Bukkit.isPrimaryThread()) // Tuinity
+         {
+             MinecraftServer.LOGGER.fatal("Thread " + Thread.currentThread().getName() + " failed thread check for reason: Asynchronous " + reason, new Throwable()); // Tuinity - not all exceptions are printed
+             throw new IllegalStateException( "Asynchronous " + reason + "!" );
+diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
+index dd44c1f3721fb9c7233417150a073b79465c0480..2a6db83bd6d4c7be380d764478168e909f1bf36e 100644
+--- a/src/main/java/org/spigotmc/TicksPerSecondCommand.java
++++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
+@@ -38,6 +38,14 @@ public class TicksPerSecondCommand extends Command
+         java.time.Duration lastTickTime = org.bukkit.Bukkit.getLastTickTime();
+         sender.sendMessage(ChatColor.GOLD + "Last tick: " + formatTo( lastTickTime, java.util.concurrent.TimeUnit.MILLISECONDS ) + " (" + formatTo( lastTickTime, java.util.concurrent.TimeUnit.NANOSECONDS ) + ")");
+         // Yatopia end
++
++        // Yatopia start - add dimensional threading /tps messages
++        sender.sendMessage( ChatColor.GOLD + "Async world ticking: " + org.yatopiamc.yatopia.server.YatopiaConfig.dimThreading);
++        if (org.yatopiamc.yatopia.server.YatopiaConfig.dimThreading) {
++            sender.sendMessage( ChatColor.GOLD + "Threads being used for async world ticking " + org.yatopiamc.yatopia.server.YatopiaConfig.dimThreadingThreads);
++            // sender.sendMessage( ChatColor.GOLD + "The worlds where ticking for " + net.minecraft.server.MinecraftServer.worldTick + "ms"); // TODO
++        }
++        // Yatopia end
+         if (args.length > 0 && args[0].equals("mem") && sender.hasPermission("bukkit.command.tpsmemory")) {
+             sender.sendMessage(ChatColor.GOLD + "Current Memory Usage: " + ChatColor.GREEN + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)) + "/" + (Runtime.getRuntime().totalMemory() / (1024 * 1024)) + " mb (Max: " + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " mb)");
+             if (!hasShownMemoryWarning) {
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/DimThread/DimThread.java b/src/main/java/org/yatopiamc/yatopia/server/DimThread/DimThread.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..9a2673d410eb88d41f22c504b9f6d1bd3f3bb878
+--- /dev/null
++++ b/src/main/java/org/yatopiamc/yatopia/server/DimThread/DimThread.java
+@@ -0,0 +1,52 @@
++package org.yatopiamc.yatopia.server.dimthread;
++
++import org.yatopiamc.yatopia.server.dimthread.thread.IMutableMainThread;
++import org.yatopiamc.yatopia.server.dimthread.util.ServerManager;
++import org.yatopiamc.yatopia.server.threading.ThreadPool;
++import net.minecraft.server.WorldServer;
++import net.minecraft.server.MinecraftServer;
++
++public class DimThread {
++    public static final String MOD_ID = "dimthread";
++    public static final ServerManager MANAGER = new ServerManager();
++
++    public static ThreadPool getThreadPool(MinecraftServer server) {
++        return MANAGER.getThreadPool(server);
++    }
++
++    public static void swapThreadsAndRun(Runnable task, Object... threadedObjects) {
++        Thread currentThread = Thread.currentThread();
++        Thread[] oldThreads = new Thread[threadedObjects.length];
++
++        for(int i = 0; i < oldThreads.length; i++) {
++            oldThreads[i] = ((IMutableMainThread)threadedObjects[i]).getMainThread();
++            ((IMutableMainThread)threadedObjects[i]).setMainThread(currentThread);
++        }
++
++        task.run();
++
++        for(int i = 0; i < oldThreads.length; i++) {
++            ((IMutableMainThread)threadedObjects[i]).setMainThread(oldThreads[i]);
++        }
++    }
++
++    /**
++        * Makes it easy to understand what is happening in crash reports and helps identify dimthread workers.
++        * */
++    public static void attach(Thread thread, String name) {
++        thread.setName(MOD_ID + "_" + name);
++    }
++
++    public static void attach(Thread thread, WorldServer world) {
++        attach(thread, world.worldDataServer.getName());
++    }
++
++    /**
++        * Checks if the given thread is a dimthread worker by checking the name. Probably quite fragile...
++        * */
++    // `Thread.currentThread() == this.serverThread` is the same as `org.yatopiamc.yatopia.server.dimthread.DimThread.owns(Thread.currentThread())`
++    // `Thread.currentThread() != this.serverThread` is the same as `!org.yatopiamc.yatopia.server.dimthread.DimThread.owns(Thread.currentThread())`
++    public static boolean owns(Thread thread) {
++        return thread.getName().startsWith(MOD_ID);
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/DimThread/thread/IMutableMainThread.java b/src/main/java/org/yatopiamc/yatopia/server/DimThread/thread/IMutableMainThread.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..6f48ab7723b9bfa6d315db2cd4457024880f7cbf
+--- /dev/null
++++ b/src/main/java/org/yatopiamc/yatopia/server/DimThread/thread/IMutableMainThread.java
+@@ -0,0 +1,6 @@
++package org.yatopiamc.yatopia.server.dimthread.thread;
++
++public interface IMutableMainThread {
++	Thread getMainThread();
++	void setMainThread(Thread thread);
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/DimThread/thread/IntLatch.java b/src/main/java/org/yatopiamc/yatopia/server/DimThread/thread/IntLatch.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..811ba7c04ca8e80af02664bec1df6c73d34f28e9
+--- /dev/null
++++ b/src/main/java/org/yatopiamc/yatopia/server/DimThread/thread/IntLatch.java
+@@ -0,0 +1,47 @@
++package org.yatopiamc.yatopia.server.dimthread.thread;
++
++import java.util.concurrent.CountDownLatch;
++import java.util.function.IntPredicate;
++
++public class IntLatch {
++
++	private CountDownLatch latch;
++	private final Object lock = new Object();
++
++	public IntLatch() {
++		this(0);
++	}
++
++	public IntLatch(int count) {
++		this.latch = new CountDownLatch(count);
++	}
++
++	public int getCount() {
++		synchronized(this.lock) {
++			return (int)this.latch.getCount();
++		}
++	}
++
++	public void decrement() {
++		synchronized(this.lock) {
++			this.latch.countDown();
++			this.lock.notifyAll();
++		}
++	}
++
++	public void increment() {
++		synchronized(this.lock) {
++			this.latch = new CountDownLatch((int)this.latch.getCount() + 1);
++			this.lock.notifyAll();
++		}
++	}
++
++	public void waitUntil(IntPredicate predicate) throws InterruptedException {
++		synchronized(this.lock) {
++			while(!predicate.test(this.getCount())) {
++				this.lock.wait();
++			}
++		}
++	}
++
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/DimThread/util/CrashInfo.java b/src/main/java/org/yatopiamc/yatopia/server/DimThread/util/CrashInfo.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..a5ae60d7edf1766c7241f472c594836c6631f1ad
+--- /dev/null
++++ b/src/main/java/org/yatopiamc/yatopia/server/DimThread/util/CrashInfo.java
+@@ -0,0 +1,31 @@
++package org.yatopiamc.yatopia.server.dimthread.util;
++
++import net.minecraft.server.WorldServer;
++import net.minecraft.server.CrashReport;
++import net.minecraft.server.ReportedException;
++
++public class CrashInfo {
++
++	private final WorldServer world;
++	private final Throwable throwable;
++
++	public CrashInfo(WorldServer world, Throwable throwable) {
++		this.world = world;
++		this.throwable = throwable;
++	}
++
++	public WorldServer getWorld() {
++		return this.world;
++	}
++
++	public Throwable getThrowable() {
++		return this.throwable;
++	}
++
++	public void crash(String title) {
++		CrashReport report = CrashReport.a(this.getThrowable(), title);
++		this.getWorld().a(report);
++		throw new ReportedException(report);
++	}
++
++}
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/DimThread/util/ServerManager.java b/src/main/java/org/yatopiamc/yatopia/server/DimThread/util/ServerManager.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..4b6e7668a53f3be23a46925e26a9526eff6ca17a
+--- /dev/null
++++ b/src/main/java/org/yatopiamc/yatopia/server/DimThread/util/ServerManager.java
+@@ -0,0 +1,39 @@
++package org.yatopiamc.yatopia.server.dimthread.util;
++
++import net.minecraft.server.MinecraftServer;
++import org.yatopiamc.yatopia.server.threading.ThreadPool;
++
++import java.util.Collections;
++import java.util.ConcurrentModificationException;
++import java.util.Map;
++import java.util.WeakHashMap;
++
++public class ServerManager {
++
++	private final Map<MinecraftServer, Boolean> actives = Collections.synchronizedMap(new WeakHashMap<>());
++	private final Map<MinecraftServer, ThreadPool> threadPools = Collections.synchronizedMap(new WeakHashMap<>());
++
++	public boolean isActive(MinecraftServer server) {
++		return org.yatopiamc.yatopia.server.YatopiaConfig.dimThreading;
++	}
++
++	public void setActive(MinecraftServer server) {
++		this.actives.put(server, org.yatopiamc.yatopia.server.YatopiaConfig.dimThreading);
++	}
++
++	public ThreadPool getThreadPool(MinecraftServer server) {
++		return this.threadPools.computeIfAbsent(server, s -> new ThreadPool(org.yatopiamc.yatopia.server.YatopiaConfig.dimThreadingThreads));
++	}
++
++	public void setThreadCount(MinecraftServer server) {
++		ThreadPool current = this.threadPools.get(server);
++
++		// if(current.getActiveCount() != 0) {
++		// 	throw new ConcurrentModificationException("Setting the thread count in wrong phase");
++		// }
++
++		this.threadPools.put(server, new ThreadPool(org.yatopiamc.yatopia.server.YatopiaConfig.dimThreadingThreads));
++		current.shutdown();
++	}
++
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
+index 1362783943fd5956040a4c2035daaefa0e8ea3a5..378e53498bce3eca432f50e5be4b46c4dfcad6b3 100644
+--- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
++++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
+@@ -296,4 +296,13 @@ public class YatopiaConfig {
+         worldGenExecutorSize = getInt("settings.threads.worldgen", -1);
+         Preconditions.checkArgument(worldGenExecutorSize == -1 || worldGenExecutorSize > 0, "Invalid settings.threads.worldgen in yatopia.yml");
+     }
++
++    public static int dimThreadingThreads = 3;
++    public static boolean dimThreading = false;
++    public static boolean dimThreadingDEBUG = false;
++    private static void dimThreading() {
++        dimThreading = getBoolean("settings.dim-threading.dimentional-threading", dimThreading);
++        dimThreadingThreads = getInt("settings.dim-threading.threads", dimThreadingThreads);
++        dimThreadingDEBUG = getBoolean("settings.dim-threading.DEBUG", dimThreadingDEBUG);
++    }
+ }
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/threading/ThreadPool.java b/src/main/java/org/yatopiamc/yatopia/server/threading/ThreadPool.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..80d81d897941b9b24801a7d3b7b25e3cdbb0c74d
+--- /dev/null
++++ b/src/main/java/org/yatopiamc/yatopia/server/threading/ThreadPool.java
+@@ -0,0 +1,182 @@
++package org.yatopiamc.yatopia.server.threading;
++
++import org.yatopiamc.yatopia.server.dimthread.thread.IntLatch;
++
++import java.util.Iterator;
++import java.util.concurrent.CountDownLatch;
++import java.util.concurrent.Executors;
++import java.util.concurrent.ThreadPoolExecutor;
++import java.util.function.*;
++import java.util.stream.DoubleStream;
++import java.util.stream.IntStream;
++import java.util.stream.LongStream;
++import java.util.stream.Stream;
++
++public class ThreadPool {
++
++    private ThreadPoolExecutor executor;
++    private final int threadCount;
++    private final IntLatch activeCount = new IntLatch();
++
++    public ThreadPool() {
++        this(Runtime.getRuntime().availableProcessors());
++    }
++
++    public ThreadPool(int threadCount) {
++        this.threadCount = threadCount;
++        this.restart();
++    }
++
++    public int getThreadCount() {
++        return this.threadCount;
++    }
++
++    public int getActiveCount() {
++        return this.activeCount.getCount();
++    }
++
++    public ThreadPoolExecutor getExecutor() {
++        return this.executor;
++    }
++
++    public void execute(Runnable action) {
++        this.activeCount.increment();
++
++        this.executor.execute(() -> {
++            action.run();
++            this.activeCount.decrement();
++        });
++    }
++
++    public <T> void execute(Iterator<T> iterator, Consumer<T> action) {
++        iterator.forEachRemaining(t -> this.execute(() -> action.accept(t)));
++    }
++
++    public <T> void execute(Iterable<T> iterable, Consumer<T> action) {
++        iterable.forEach(t -> this.execute(() -> action.accept(t)));
++    }
++
++    public <T> void execute(Stream<T> stream, Consumer<T> action) {
++        stream.forEach(t -> this.execute(() -> action.accept(t)));
++    }
++
++    public void execute(IntStream stream, IntConsumer action) {
++        stream.forEach(t -> this.execute(() -> action.accept(t)));
++    }
++
++    public void execute(LongStream stream, LongConsumer action) {
++        stream.forEach(t -> this.execute(() -> action.accept(t)));
++    }
++
++    public void execute(DoubleStream stream, DoubleConsumer action) {
++        stream.forEach(t -> this.execute(() -> action.accept(t)));
++    }
++
++    public <T> void execute(T[] array, Consumer<T> action) {
++        for(T t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void execute(boolean[] array, Consumer<Boolean> action) {
++        for(boolean t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void execute(byte[] array, Consumer<Byte> action) {
++        for(byte t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void execute(short[] array, Consumer<Short> action) {
++        for(short t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void execute(int[] array, IntConsumer action) {
++        for(int t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void execute(float[] array, Consumer<Float> action) {
++        for(float t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void execute(long[] array, LongConsumer action) {
++        for(long t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void execute(double[] array, DoubleConsumer action) {
++        for(double t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void execute(char[] array, Consumer<Character> action) {
++        for(char t: array)this.execute(() -> action.accept(t));
++    }
++
++    public void awaitFreeThread() {
++        this.waitFor(value -> value < this.getThreadCount());
++    }
++
++    public void awaitCompletion() {
++        this.waitFor(value -> value == 0);
++    }
++
++    public void waitFor(IntPredicate condition) {
++        try {
++            this.activeCount.waitUntil(condition);
++        } catch(InterruptedException e) {
++            e.printStackTrace();
++        }
++    }
++
++    public void restart() {
++        if(this.executor == null || this.executor.isShutdown()) {
++            this.executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(this.threadCount);
++        }
++    }
++
++    public void shutdown() {
++        this.executor.shutdown();
++    }
++
++    public boolean isShutdown() {
++        return this.executor.isShutdown();
++    }
++
++    private static class IntLatch {
++
++        private CountDownLatch latch;
++        private final Object lock = new Object();
++
++        public IntLatch() {
++            this(0);
++        }
++
++        public IntLatch(int count) {
++            this.latch = new CountDownLatch(count);
++        }
++
++        public int getCount() {
++            synchronized(this.lock) {
++                return (int)this.latch.getCount();
++            }
++        }
++
++        public void decrement() {
++            synchronized(this.lock) {
++                this.latch.countDown();
++                this.lock.notifyAll();
++            }
++        }
++
++        public void increment() {
++            synchronized(this.lock) {
++                this.latch = new CountDownLatch((int)this.latch.getCount() + 1);
++                this.lock.notifyAll();
++            }
++        }
++
++        public void waitUntil(IntPredicate predicate) throws InterruptedException {
++            synchronized(this.lock) {
++                while(!predicate.test(this.getCount())) {
++                    this.lock.wait();
++                }
++            }
++        }
++    }
++}
+\ No newline at end of file

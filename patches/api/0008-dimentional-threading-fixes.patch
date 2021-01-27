@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Wed, 13 Jan 2021 17:27:24 -0500
+Subject: [PATCH] dimentional threading fixes
+
+
+diff --git a/src/main/java/org/bukkit/plugin/SimplePluginManager.java b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
+index 26685f59b235ea5b4c4fb7ae21acb5149edaa2b3..b0dcd685cf3fa240f01e2fee94460e4b465d42ba 100644
+--- a/src/main/java/org/bukkit/plugin/SimplePluginManager.java
++++ b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
+@@ -591,9 +591,12 @@ public final class SimplePluginManager implements PluginManager {
+         // Paper - replace callEvent by merging to below method
+         if (event.isAsynchronous() && server.isPrimaryThread()) {
+             throw new IllegalStateException(event.getEventName() + " may only be triggered asynchronously.");
++        }
++        /*
+         } else if (!event.isAsynchronous() && !server.isPrimaryThread() && !server.isStopping() ) {
+             throw new IllegalStateException(event.getEventName() + " may only be triggered synchronously.");
+         }
++        */
+ 
+         HandlerList handlers = event.getHandlers();
+         RegisteredListener[] listeners = handlers.getRegisteredListeners();
