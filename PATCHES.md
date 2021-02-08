@@ -8,6 +8,7 @@ This is an overview over all patches that are currently used.
 
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
+| server |  (PaperPR) optimized dirt and snow spreading      | lukas81298 |  |
 | server |  AFK API      | William Blake Galbreath |  |
 | api |  AFK API      | William Blake Galbreath |  |
 | server |  Ability to re-add farmland mechanics from Alpha      | Yive |  |
@@ -128,6 +129,7 @@ This is an overview over all patches that are currently used.
 | server |  Crying obsidian valid for portal frames      | William Blake Galbreath |  |
 | server |  Custom Locale Support      | Zoe |  |
 | server |  Customizable wither health and healing      | jmp |  |
+| server |  Decompile fixes for WorldChunkManagerMultiNoise      | ishland |  |
 | api |  Default permissions      | William Blake Galbreath |  |
 | server |  Delay chunk unloads      | Spottedleaf |  |
 | server |  Despawn rate config options per projectile type      | jmp |  |
@@ -238,6 +240,8 @@ This is an overview over all patches that are currently used.
 | server |  Movement options for armour stands      | Mariell Hoversholm |  |
 | server |  Multi-Threaded Server Ticking Vanilla      | Spottedleaf |  |
 | server |  Multi-Threaded ticking CraftBukkit      | Spottedleaf |  |
+| server |  Multi-threaded RegionFile IO      | ishland |  |
+| server |  Multi-threaded World Upgrade      | ishland |  |
 | server |  Name craft scheduler threads according to the plugin using      | Spottedleaf |  |
 | server |  New nbt cache      | Hugo Planque | ishland |
 | server |  Nuke streams off BlockPosition      | Ivan Pekov |  |
@@ -260,6 +264,7 @@ This is an overview over all patches that are currently used.
 | server |  Optimize random calls in chunk ticking      | Paul Sauve |  |
 | server |  Optimize some stuff in WorldServer ticking      | MrIvanPlays |  |
 | server |  Optimize whitelist command for multiple additions / removals      | Ivan Pekov |  |
+| server |  Optimized tan for ControllerLook      | Simon Gardling |  |
 | server |  Option for Villager Clerics to farm Nether Wart      | jmp |  |
 | server |  Option for chests to open even with a solid block on top      | jmp |  |
 | server |  Option for simpler Villagers      | tr7zw |  |
@@ -301,6 +306,7 @@ This is an overview over all patches that are currently used.
 | api |  Rabid Wolf API      | Encode42 |  |
 | server |  Raid cooldown setting      | jmp |  |
 | server |  Range check flag dirty calls in PlayerChunk      | Spottedleaf |  |
+| server |  Re-implement some vanilla bugs      | Simon Gardling |  |
 | server |  Rebrand      | William Blake Galbreath |  |
 | server |  Redirect Configs      | tr7zw |  |
 | server |  Redstone deactivates spawners      | draycia |  |
@@ -342,6 +348,7 @@ This is an overview over all patches that are currently used.
 | server |  Suspected plugins report      | ishland |  |
 | api |  Suspected plugins report      | ishland |  |
 | server |  Swap priority of checks in chunk ticking      | Paul Sauve |  |
+| server |  Threaded WorldGen      | ishland |  |
 | server |  Time scoreboard search      | Spottedleaf |  |
 | server |  Timings stuff      | William Blake Galbreath |  |
 | server |  Toggle for Zombified Piglin death always counting as player      | jmp |  |
@@ -367,14 +374,19 @@ This is an overview over all patches that are currently used.
 | server |  Zombie horse naturally spawn      | William Blake Galbreath |  |
 | server |  add config for logging login location      | Simon Gardling |  |
 | server |  dont load chunks for physics      | Aikar |  |
+| server |  fixup! Threaded WorldGen      | ishland |  |
+| server |  lazydfu      | Simon Gardling |  |
 | server |  lithium DataTrackerMixin      | JellySquid | tr7zw |
 | server |  lithium HashedList      | JellySquid |  |
 | server |  lithium MixinBox      | JellySquid |  |
 | server |  lithium MixinDirection      | JellySquid |  |
 | server |  lithium MixinGoalSelector      | JellySquid |  |
+| server |  lithium MultiNoiseBiomeSourceMixin      | SuperCoder7979 |  |
 | server |  lithium NoiseChunkGeneratorMixin      | JellySquid |  |
 | server |  lithium PerlinNoiseSamplerMixin      | JellySquid | Bud Gidiere |
 | server |  lithium VoronoiBiomeAccessTypeMixin      | JellySquid |  |
 | server |  lithium enum_values      | JellySquid |  |
 | server |  lithium reduce allocations      | JellySquid | Mykyta Komarnytskyy |
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
+| server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
+| server |  remove world size checks      | Simon Gardling |  |
