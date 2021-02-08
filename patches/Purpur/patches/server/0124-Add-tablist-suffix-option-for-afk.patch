@@ -5,7 +5,7 @@ Subject: [PATCH] Add tablist suffix option for afk
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index cdc0145f569f58b8f8b9da0e9ce5e1b5b4489fe7..871119dc506ff3bcd96f57fb5f5923227e0c7f1f 100644
+index dfc6c115f4a4d0f4b0789bbb3a7af59a0b8475c5..df8df2ef387a01a31c180063fe55bf0758ceb60d 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -1995,7 +1995,11 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

@@ -932,10 +932,10 @@ index a6a7429ed2e1eefb2b12b7480ed74fcc3963a864..e8027e1d505dda6effbb1698550016e8
  
          NORMAL(false),
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index a79703115da811397ee6b7c6c079846af537fd12..5ad9de1f34b1cca3e31b8a142e3831739a3e824a 100644
+index 5d3ef9e0b7c54964b2caba6c45608eda418d3cf7..904afeff1241b8e0fdb74ee371129e444d946932 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -1776,6 +1776,8 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -1816,6 +1816,8 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      void resetCooldown();
  
      /**
@@ -944,7 +944,7 @@ index a79703115da811397ee6b7c6c079846af537fd12..5ad9de1f34b1cca3e31b8a142e383173
       * @return the client option value of the player
       */
      @NotNull
-@@ -1807,6 +1809,9 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -1847,6 +1849,9 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      // Paper end
  
      // Spigot start

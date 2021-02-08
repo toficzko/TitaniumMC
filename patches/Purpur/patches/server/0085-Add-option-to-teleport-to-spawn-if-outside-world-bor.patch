@@ -17,7 +17,7 @@ index ba678ad67d1a48724738a71e1ff3b4e85b672f2c..67f33647cd66c32fcc6d91edd7f66684
                      }
                  }
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 6bc2ef56fb36fa86c4318ffe3cecd3e28c28d2c4..d4d1d03990a3ad25eebaba4f0beec8578e3e0624 100644
+index a206a1f68d4a8da9a44aa00781533ea17e3dfa4b..5a698c44e704760143e2b6fa71f1c4596e9347a1 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -2412,4 +2412,26 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

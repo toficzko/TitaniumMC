@@ -5,7 +5,7 @@ Subject: [PATCH] Players should not cram to death
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index bc17e1867531f6d0021390cb1a10abac52479e5b..6bc2ef56fb36fa86c4318ffe3cecd3e28c28d2c4 100644
+index 15543aa202c04e94dcb7d505bc297f19c60d22f0..a206a1f68d4a8da9a44aa00781533ea17e3dfa4b 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -1429,7 +1429,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

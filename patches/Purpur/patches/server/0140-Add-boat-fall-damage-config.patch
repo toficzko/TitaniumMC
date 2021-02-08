@@ -5,7 +5,7 @@ Subject: [PATCH] Add boat fall damage config
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 871119dc506ff3bcd96f57fb5f5923227e0c7f1f..63b919bef1a4420e02b4822097cadc1af9cd97a2 100644
+index df8df2ef387a01a31c180063fe55bf0758ceb60d..b2926b538a37664ec2284b97334fdd225781c8b7 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -1031,7 +1031,16 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

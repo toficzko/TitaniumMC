@@ -322,7 +322,7 @@ index b0d52d7405ca24938ca753897f89e6fad575d04d..fce2933914caad0ecde3bd6407a33269
                      } else {
                          if (iblockdata.b(BlockProperties.C) && (Boolean) iblockdata.get(BlockProperties.C)) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 43e20a8e04b8cf54f9277e1cf71ccffe435531bd..82dd4272946caa5c8147cd769bff84aebd3b188c 100644
+index b8649ef9f99af15954cb7411da8993c344c4a1c9..b171ab650ea410db9135de9a889476f3838ea691 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -537,10 +537,12 @@ public abstract class World implements GeneratorAccess, AutoCloseable {

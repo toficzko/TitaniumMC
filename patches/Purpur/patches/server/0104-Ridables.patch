@@ -1184,7 +1184,7 @@ index 1a102816921fa3b40f6d364bb826db4459f68eb2..125eab60f2b4657e52a71eddf7586c57
  
          @Override
 diff --git a/src/main/java/net/minecraft/server/EntityEnderDragon.java b/src/main/java/net/minecraft/server/EntityEnderDragon.java
-index a5a2182455542bb8fd62941bd0da2f38ba698f35..17a9217ed2d1677371d12b4ab0552378cd71652f 100644
+index 99af71f1c0c63c9196d8b92c427b5124936474e7..f964b5a669700bf35faaf0ea2b6463da903c8022 100644
 --- a/src/main/java/net/minecraft/server/EntityEnderDragon.java
 +++ b/src/main/java/net/minecraft/server/EntityEnderDragon.java
 @@ -46,6 +46,7 @@ public class EntityEnderDragon extends EntityInsentient implements IMonster {
@@ -3211,7 +3211,7 @@ index a3a428da99574c485fcf2b8c7944e0d8354146ee..cf7de0127166f6175a6246062c8664e6
          this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
          this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false));
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 14a3e6f1f60770eea0477f863eed7abe48880a84..cdc0145f569f58b8f8b9da0e9ce5e1b5b4489fe7 100644
+index e91ce9eccb29b721077d5aab6b6a5cb915696557..dfc6c115f4a4d0f4b0789bbb3a7af59a0b8475c5 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -509,6 +509,15 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -4486,7 +4486,7 @@ index ca3c5150bcfe2a92b49ad5a27c23dd37a7054fbb..323d79a99402b0f6952b4fb873170069
          this.targetSelector.a(2, this.br);
          this.targetSelector.a(3, this.bs);
 diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
-index 2e623ef9be036ea467e9e41817c2eced018f8f93..59382230aec623f7de889c30a0ed6a2a3fa35a05 100644
+index 51abf34d4b8e5e7832a55fb4bf4fdf8982c2de1c..df764dc3a6d2190073df9ca9acb473cc976e3faf 100644
 --- a/src/main/java/net/minecraft/server/EntityWither.java
 +++ b/src/main/java/net/minecraft/server/EntityWither.java
 @@ -32,6 +32,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
@@ -4998,10 +4998,10 @@ index b2c64b31440389db5abe2322f7e31b328f590f6c..515ba50aec81497d27297e4b6c642e86
          Vec3D vec3d = entity.getMot();
          World world = entity.world;
 diff --git a/src/main/java/net/minecraft/server/Vec3D.java b/src/main/java/net/minecraft/server/Vec3D.java
-index 5af554870bcf36e47aef43b966b141b9eda6c4d5..c59305ef7dd7847e204d4c4ed79758bf9d66e91e 100644
+index 7190316a38e6b4edf5501bfedbb12be79e990797..4469fdc932d725b8e6fa4f8e3ec15c22a88ca5e7 100644
 --- a/src/main/java/net/minecraft/server/Vec3D.java
 +++ b/src/main/java/net/minecraft/server/Vec3D.java
-@@ -39,6 +39,7 @@ public class Vec3D implements IPosition {
+@@ -45,6 +45,7 @@ public class Vec3D implements IPosition {
          return new Vec3D(vec3d.x - this.x, vec3d.y - this.y, vec3d.z - this.z);
      }
  
@@ -5009,7 +5009,7 @@ index 5af554870bcf36e47aef43b966b141b9eda6c4d5..c59305ef7dd7847e204d4c4ed79758bf
      public Vec3D d() {
          double d0 = (double) MathHelper.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
  
-@@ -98,6 +99,7 @@ public class Vec3D implements IPosition {
+@@ -104,6 +105,7 @@ public class Vec3D implements IPosition {
          return d3 * d3 + d4 * d4 + d5 * d5;
      }
  
@@ -5017,7 +5017,7 @@ index 5af554870bcf36e47aef43b966b141b9eda6c4d5..c59305ef7dd7847e204d4c4ed79758bf
      public Vec3D a(double d0) {
          return this.d(d0, d0, d0);
      }
-@@ -106,6 +108,7 @@ public class Vec3D implements IPosition {
+@@ -112,6 +114,7 @@ public class Vec3D implements IPosition {
          return this.d(vec3d.x, vec3d.y, vec3d.z);
      }
  
@@ -5026,7 +5026,7 @@ index 5af554870bcf36e47aef43b966b141b9eda6c4d5..c59305ef7dd7847e204d4c4ed79758bf
          return new Vec3D(this.x * d0, this.y * d1, this.z * d2);
      }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 1ac2e9f373ae5b4250ff9faf726a962a739d6faf..97cc98af100edfad82668200759a5eed8fc67558 100644
+index 7b2b20f8b6883e9dcccffc26b2127242193306e8..a1a18d91ef44ac54bf75fae84fd34f60b37f828c 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -1650,5 +1650,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {

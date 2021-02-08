@@ -239,10 +239,10 @@ index 39bbca811bfceee45c14aaa375d80d1cb0e95807..35e437945335399bf5f59bcaa17b8dcd
          SystemUtils.shutdownServerThreadPool(); // Paper
          LOGGER.info("Closing Server");
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index cbb1aecc3d5d030da2bfb223bb230093e434adc6..122bd635a35847d03849f47112e399026a1b8aa6 100644
+index 57b7466f0525a33f162edc08ef1eaa65bc853629..a21c6245ae57beab1894aa65bcfc89b08b191c72 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1701,7 +1701,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1611,7 +1611,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      @Nullable
      @Override
      public NBTTagCompound read(ChunkCoordIntPair chunkcoordintpair) throws IOException {
@@ -251,7 +251,7 @@ index cbb1aecc3d5d030da2bfb223bb230093e434adc6..122bd635a35847d03849f47112e39902
              NBTTagCompound ret = com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE
                  .loadChunkDataAsyncFuture(this.world, chunkcoordintpair.x, chunkcoordintpair.z, com.destroystokyo.paper.io.IOUtil.getPriorityForCurrentThread(),
                      false, true, true).join().chunkData;
-@@ -1716,7 +1716,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1626,7 +1626,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
      @Override
      public void write(ChunkCoordIntPair chunkcoordintpair, NBTTagCompound nbttagcompound) throws IOException {
@@ -261,10 +261,10 @@ index cbb1aecc3d5d030da2bfb223bb230093e434adc6..122bd635a35847d03849f47112e39902
                  this.world, chunkcoordintpair.x, chunkcoordintpair.z, null, nbttagcompound,
                  com.destroystokyo.paper.io.PrioritizedTaskQueue.NORMAL_PRIORITY); // Tuinity - writes are async, no need for priority
 diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
-index 8849336437d91022cc33c704059d8b075882bbf3..f5e8bbd257578f87af0b2247d52303db2f237d74 100644
+index 17db6fb6c8f2be2ae37be92891603a889cb7dbfd..d7345657f2c78f64cb737e070f35586f369b5dde 100644
 --- a/src/main/java/net/minecraft/server/VillagePlace.java
 +++ b/src/main/java/net/minecraft/server/VillagePlace.java
-@@ -536,7 +536,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -512,7 +512,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
      @javax.annotation.Nullable
      @Override
      public NBTTagCompound read(ChunkCoordIntPair chunkcoordintpair) throws java.io.IOException {
@@ -273,7 +273,7 @@ index 8849336437d91022cc33c704059d8b075882bbf3..f5e8bbd257578f87af0b2247d52303db
              NBTTagCompound ret = com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE
                  .loadChunkDataAsyncFuture(this.world, chunkcoordintpair.x, chunkcoordintpair.z, com.destroystokyo.paper.io.IOUtil.getPriorityForCurrentThread(),
                      true, false, true).join().poiData;
-@@ -551,7 +551,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -527,7 +527,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
  
      @Override
      public void write(ChunkCoordIntPair chunkcoordintpair, NBTTagCompound nbttagcompound) throws java.io.IOException {

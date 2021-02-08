@@ -24,7 +24,7 @@ index d987483255195c0bde713a92676baced1eaff2b3..e081905af0abbad0cf9011075a6380ef
      // Paper end
      // Spigot start
 diff --git a/src/main/java/net/minecraft/server/MCUtil.java b/src/main/java/net/minecraft/server/MCUtil.java
-index e79e773f2219f9a9ae076fcbc8108b792201b11a..5100314050dbbc633e6379eb1a523242623cfa8f 100644
+index 7438ed7671acb181fe88abd2db415cb09873db4f..e77e8b228195cfb6375804d2bbcb8438e6fbcf5c 100644
 --- a/src/main/java/net/minecraft/server/MCUtil.java
 +++ b/src/main/java/net/minecraft/server/MCUtil.java
 @@ -42,12 +42,12 @@ public final class MCUtil {

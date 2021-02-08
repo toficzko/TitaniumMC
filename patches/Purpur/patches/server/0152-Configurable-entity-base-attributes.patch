@@ -188,7 +188,7 @@ index 638efc67d66001ee085957d4698f51a7daac77fc..a766910663e47b05d1e38908b5db7471
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/EntityEnderDragon.java b/src/main/java/net/minecraft/server/EntityEnderDragon.java
-index 17a9217ed2d1677371d12b4ab0552378cd71652f..8e16ae4be41a0f20b057b70e9ef255c548a36f08 100644
+index f964b5a669700bf35faaf0ea2b6463da903c8022..eef018e2970de7f0191ecc9f0224ba30dc16b213 100644
 --- a/src/main/java/net/minecraft/server/EntityEnderDragon.java
 +++ b/src/main/java/net/minecraft/server/EntityEnderDragon.java
 @@ -97,6 +97,11 @@ public class EntityEnderDragon extends EntityInsentient implements IMonster {

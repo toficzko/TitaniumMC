@@ -44,7 +44,7 @@ index c39c9929a251b41ab60e1509b4e6c90d0825dc0c..0495cd90cde288c31bdbb00b1bb64683
 +
  }
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 6bc5fedc4d8effa530799eac814f626dfeed2105..7f3a466b88aa148ed82b08cbe491e8c9d2fdabab 100644
+index 0571250944c53b1950abaa48ca59689e8cd55f06..73553ad4a7ec9b1ec454569b709836032cd1569f 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -64,6 +64,21 @@ public class Chunk implements IChunkAccess {
@@ -70,7 +70,7 @@ index 6bc5fedc4d8effa530799eac814f626dfeed2105..7f3a466b88aa148ed82b08cbe491e8c9
          this(world, chunkcoordintpair, biomestorage, ChunkConverter.a, TickListEmpty.b(), TickListEmpty.b(), 0L, (ChunkSection[]) null, (Consumer) null);
      }
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 53f72db8abbfdd60d4491169f53a4c84c9763983..8611dc525ff35f47218e037d81808a29366c295b 100644
+index 3893fd2dd63302ee0fc8267c1683589be787d5e1..7da4aafad8a07af7b70d2bf66a5a1606d44372b0 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -51,7 +51,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -154,7 +154,7 @@ index a9d60e5dc2f3b38a192a68d79bcf78e4873664a2..63e9500d9fc739605ea7a4fed51971f2
  
          // CraftBukkit start - Fix for nonsensical head yaw
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index a6cdbeaf3f5db871f32747f7dc920b62c0b8a927..cbc2fdccaced59561e0db51bc7e2c0ceae96e67b 100644
+index eaa506657755be52481b2a1392a64c3c39ba192f..42fb2cfed8148c57809425d03fe4633ddb709c56 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Queues;
@@ -165,7 +165,7 @@ index a6cdbeaf3f5db871f32747f7dc920b62c0b8a927..cbc2fdccaced59561e0db51bc7e2c0ce
  import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
  import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
  import it.unimi.dsi.fastutil.longs.Long2ByteMap;
-@@ -2131,11 +2132,37 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -2043,11 +2044,37 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          entity.tracker = null; // Paper - We're no longer tracked
      }
  
@@ -203,7 +203,7 @@ index a6cdbeaf3f5db871f32747f7dc920b62c0b8a927..cbc2fdccaced59561e0db51bc7e2c0ce
              try {
              while (iterator.hasNext()) {
                  Chunk chunk = iterator.next();
-@@ -2152,6 +2179,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -2064,6 +2091,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
              } finally {
                  iterator.finishedIterating();
              }
@@ -211,7 +211,7 @@ index a6cdbeaf3f5db871f32747f7dc920b62c0b8a927..cbc2fdccaced59561e0db51bc7e2c0ce
          } finally {
              this.world.timings.tracker1.stopTiming();
          }
-@@ -2396,7 +2424,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2312,7 +2340,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
      public class EntityTracker {
  
          final EntityTrackerEntry trackerEntry; // Paper - private -> package private
@@ -220,7 +220,7 @@ index a6cdbeaf3f5db871f32747f7dc920b62c0b8a927..cbc2fdccaced59561e0db51bc7e2c0ce
          private final int trackingDistance;
          private SectionPosition e;
          // Paper start
-@@ -2495,7 +2523,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2411,7 +2439,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
          }
  
          public void updatePlayer(EntityPlayer entityplayer) {

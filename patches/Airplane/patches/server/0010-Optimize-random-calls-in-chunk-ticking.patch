@@ -34,7 +34,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index ae07ea2a34f5cd82ce2eae523359cb7540065335..7b8036840dcca16904b3063c209d5ff10ab8a6af 100644
+index de6a57577e7317de2a48b26d9e619b355a6f5e32..e33d9548b0c8a43503b09c565c653f3d68748112 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -53,6 +53,17 @@ public class Chunk implements IChunkAccess {
@@ -56,10 +56,10 @@ index ae07ea2a34f5cd82ce2eae523359cb7540065335..7b8036840dcca16904b3063c209d5ff1
          this(world, chunkcoordintpair, biomestorage, ChunkConverter.a, TickListEmpty.b(), TickListEmpty.b(), 0L, (ChunkSection[]) null, (Consumer) null);
      }
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index 1da5c7def8b476cf638548b05d3e2015bc372f51..03bcd704e3c08f5b54b124df1583e3ccdb4cb485 100644
+index d4d634e77d24222c5a997cc1bd83832ce89b3010..401e8058792a26ad71588ccc5311167a42b46cda 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-@@ -965,6 +965,7 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -966,6 +966,7 @@ public class ChunkProviderServer extends IChunkProvider {
              }
              // Paper end - optimize isOutisdeRange
              this.world.getMethodProfiler().enter("pollingChunks");

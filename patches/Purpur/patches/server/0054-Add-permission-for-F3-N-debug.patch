@@ -5,10 +5,10 @@ Subject: [PATCH] Add permission for F3+N debug
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 5b0fdcf5190e4ab2af249a5a0952b66d52f08751..3c19e931ad7d5330f1c77ef65aaa5858a001e4df 100644
+index 172dd19bedbeca43286c901bc0e70bf144241219..a41a48b150cbea3d9922383a84bc47ca2b2cae19 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
-@@ -1073,6 +1073,7 @@ public abstract class PlayerList {
+@@ -1074,6 +1074,7 @@ public abstract class PlayerList {
              } else {
                  b0 = (byte) (24 + i);
              }

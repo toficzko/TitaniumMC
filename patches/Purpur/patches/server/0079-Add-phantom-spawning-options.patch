@@ -233,7 +233,7 @@ index 661ad8f8e67046211e001ea40d97660d7c88f8e5..ee91c33a7a2edca02caf5c71fd6429f9
          return iblockdata.r(iblockaccess, blockposition) ? false : (iblockdata.isPowerSource() ? false : (!fluid.isEmpty() ? false : (iblockdata.a((Tag) TagsBlock.PREVENT_MOB_SPAWNING_INSIDE) ? false : !entitytypes.a(iblockdata))));
      }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 226b5cd399449ca3587964221765e4d241dfc739..0f259913ddcf151bc0128f2591e1223a56a9e115 100644
+index bdb6ee0409bf76ed8a2fc1644ddf55a2aef8390b..4ab399dc16e25c0009b2689b05066d35877a0cc7 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -1566,6 +1566,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {

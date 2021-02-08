@@ -215,7 +215,7 @@ index 06bd1dd8faa025b4353ff8e68df5f3e7c4db760a..8d87bd4fd0f414427a7f01311c4e8258
  
      private static boolean b(PacketPlayInVehicleMove packetplayinvehiclemove) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index ab1f7992a3a61179cb9862915c14ea7f6dc76cc6..43e20a8e04b8cf54f9277e1cf71ccffe435531bd 100644
+index d367f6a808a91e133c93022740ee9d720670d215..b8649ef9f99af15954cb7411da8993c344c4a1c9 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -429,7 +429,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {

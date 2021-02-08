@@ -29,7 +29,7 @@ index 8d89f51182444852062d549d23c00a93e601eb38..072ec40f751b19c2a78dfcc6e439c643
              if (SpawnerCreature.a(EntityPositionTypes.Surface.ON_GROUND, iworldreader, blockposition2, EntityTypes.WANDERING_TRADER)) {
                  blockposition1 = blockposition2;
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 97cc98af100edfad82668200759a5eed8fc67558..ded92fe7c7871bae6e9741747a67636d570cdeef 100644
+index a1a18d91ef44ac54bf75fae84fd34f60b37f828c..935cab32a2fc047e4b80547fd1b63de07888e034 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -156,7 +156,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {

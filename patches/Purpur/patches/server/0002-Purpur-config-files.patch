@@ -78,7 +78,7 @@ index de9ea6770b8afc5e1020bef04ac6cca93b6b420c..21d0570a59240e955ff148bac0226b22
          if (this.bF) {
              this.bF = false;
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 93c0c3376c3cb2fe416c8ae3e740ffda5f985b78..226b5cd399449ca3587964221765e4d241dfc739 100644
+index 1c396a85e88e0c37c3c0ca8ac8f2437e77892f62..bdb6ee0409bf76ed8a2fc1644ddf55a2aef8390b 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -95,6 +95,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {

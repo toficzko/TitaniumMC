@@ -5,7 +5,7 @@ Subject: [PATCH] Signs allow color codes
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 9b09d68435290add2781a72e5bc62ce50a79e39f..1d69c07eb3890e61383928433db727bdb3de0202 100644
+index f4a6315102828958a0b6ad6bd31edb940d8df8ee..e7ae0f43bb9865657c66b1e77a651f3ed1c1333d 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -1452,6 +1452,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

@@ -5,7 +5,7 @@ Subject: [PATCH] Ender dragon always drop full exp
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityEnderDragon.java b/src/main/java/net/minecraft/server/EntityEnderDragon.java
-index de53af8c01f8fa9636386737b6bc071b32f87cd1..a5a2182455542bb8fd62941bd0da2f38ba698f35 100644
+index 4585fecd27258345dbc34f0281b46886575907f8..99af71f1c0c63c9196d8b92c427b5124936474e7 100644
 --- a/src/main/java/net/minecraft/server/EntityEnderDragon.java
 +++ b/src/main/java/net/minecraft/server/EntityEnderDragon.java
 @@ -564,7 +564,7 @@ public class EntityEnderDragon extends EntityInsentient implements IMonster {

@@ -106,7 +106,7 @@ index 022dfdc5b6af4b243e7e4da8660e8e41d04e1a30..298af30b1a7f12d42216fc1b7ee801fd
          this.move(EnumMoveType.SELF, this.getMot());
          if (!this.onGround) {
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 1d69c07eb3890e61383928433db727bdb3de0202..bc17e1867531f6d0021390cb1a10abac52479e5b 100644
+index e7ae0f43bb9865657c66b1e77a651f3ed1c1333d..15543aa202c04e94dcb7d505bc297f19c60d22f0 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -1005,6 +1005,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

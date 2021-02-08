@@ -172,9 +172,11 @@ This is an overview over all patches that are currently used.
 | server |  Fix LightEngineThreaded memory leak      | Ivan Pekov |  |
 | server |  Fix NPE in ControllerLookWASD and ControllerMoveWASD      | ishland |  |
 | server |  Fix PlayerEditBookEvent not saving new book      | BillyGalbreath |  |
+| server |  Fix chunks refusing to unload at low TPS      | Spottedleaf |  |
 | server |  Fix cow rotation when shearing mooshroom      | William Blake Galbreath |  |
 | server |  Fix death message colors      | William Blake Galbreath |  |
 | server |  Fix exp drop of zombie pigmen (MC-56653)      | Phoenix616 |  |
+| server |  Fix incorrect isRealPlayer init      | Spottedleaf |  |
 | api |  Fix javadoc warnings (missing @param and @return)      | BillyGalbreath |  |
 | server |  Fix lead fall dmg config      | tr7zw |  |
 | server |  Fix rotating UP/DOWN CW and CCW      | BillyGalbreath |  |
@@ -254,8 +256,8 @@ This is an overview over all patches that are currently used.
 | server |  Optimise closest entity lookup used by AI goals      | Spottedleaf |  |
 | server |  Optimise collision checking in player move packet handling      | Spottedleaf |  |
 | server |  Optimise entity hard collision checking      | Spottedleaf |  |
+| server |  Optimise general POI access      | Spottedleaf |  |
 | server |  Optimise non-flush packet sending      | Spottedleaf |  |
-| server |  Optimise portals      | Ivan Pekov |  |
 | server |  Optimise tab complete      | Spottedleaf |  |
 | server |  Optimised hallowen checker      | Ivan Pekov |  |
 | server |  Optimize BehaviorController      | MrIvanPlays |  |
@@ -279,6 +281,7 @@ This is an overview over all patches that are currently used.
 | api |  PaperPR - PlayerItemCooldownEvent      | KennyTV |  |
 | server |  Per World Spawn Limits      | Chase Whipple |  |
 | server |  Per entity (type) collision settings      | MrIvanPlays | tr7zw |
+| api |  Per player viewdistances      | Spottedleaf |  |
 | server |  Persistent TileEntity Lore and DisplayName      | jmp |  |
 | server |  Phantom flames on swoop      | BillyGalbreath |  |
 | server |  Phantoms attracted to crystals and crystals shoot phantoms      | William Blake Galbreath |  |
@@ -321,6 +324,7 @@ This is an overview over all patches that are currently used.
 | server |  Remove some streams and object allocations      | Phoenix616 |  |
 | server |  Remove streams      | Paul Sauve |  |
 | server |  Remove streams for villager AI      | Spottedleaf |  |
+| server |  Replace player chunk loader system      | Spottedleaf |  |
 | server |  Respect PlayerKickEvent leaveMessage      | Ivan Pekov |  |
 | server |  Revert MC-4 fix      | Spottedleaf |  |
 | server |  Revert getChunkAt(Async) retaining chunks for long periods of      | Spottedleaf |  |

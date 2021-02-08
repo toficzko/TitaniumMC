@@ -20,10 +20,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index 9e6381a60b804a957eda5b72582d5545faebcb3e..1da5c7def8b476cf638548b05d3e2015bc372f51 100644
+index 723a858da4444df2452e4f4b3cec1ef813177aa4..d4d634e77d24222c5a997cc1bd83832ce89b3010 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-@@ -996,6 +996,7 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -997,6 +997,7 @@ public class ChunkProviderServer extends IChunkProvider {
              // Paper - moved up
              // Tuinity start - optimise chunk tick iteration
              com.tuinity.tuinity.util.maplist.IteratorSafeOrderedReferenceSet.Iterator<Chunk> iterator = this.entityTickingChunks.iterator();
@@ -31,7 +31,7 @@ index 9e6381a60b804a957eda5b72582d5545faebcb3e..1da5c7def8b476cf638548b05d3e2015
              try {
              while (iterator.hasNext()) {
                  Chunk chunk = iterator.next();
-@@ -1020,7 +1021,7 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -1021,7 +1022,7 @@ public class ChunkProviderServer extends IChunkProvider {
                              }
  
                              this.world.timings.chunkTicks.startTiming(); // Spigot // Paper
@@ -40,7 +40,7 @@ index 9e6381a60b804a957eda5b72582d5545faebcb3e..1da5c7def8b476cf638548b05d3e2015
                              this.world.timings.chunkTicks.stopTiming(); // Spigot // Paper
                              MinecraftServer.getServer().executeMidTickTasks(); // Tuinity - exec chunk tasks during world tick
                          }
-@@ -1030,6 +1031,7 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -1031,6 +1032,7 @@ public class ChunkProviderServer extends IChunkProvider {
              } finally {
                  iterator.finishedIterating();
              }

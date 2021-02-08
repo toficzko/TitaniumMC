@@ -5,7 +5,7 @@
 [submodule "upstream/Tuinity"]
 	path = upstream/Tuinity
 	url = https://github.com/Spottedleaf/Tuinity
-	branch = master
+	branch = dev/playerchunkloading
 	
 [submodule "upstream/Purpur"]
 	path = upstream/Purpur

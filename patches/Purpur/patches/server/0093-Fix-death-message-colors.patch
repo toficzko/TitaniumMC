@@ -5,7 +5,7 @@ Subject: [PATCH] Fix death message colors
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index d4d1d03990a3ad25eebaba4f0beec8578e3e0624..14a3e6f1f60770eea0477f863eed7abe48880a84 100644
+index 5a698c44e704760143e2b6fa71f1c4596e9347a1..e91ce9eccb29b721077d5aab6b6a5cb915696557 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -853,7 +853,24 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
