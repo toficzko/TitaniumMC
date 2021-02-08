@@ -524,7 +524,7 @@ index e33d9548b0c8a43503b09c565c653f3d68748112..0571250944c53b1950abaa48ca59689e
  
      public org.bukkit.Chunk bukkitChunk;
 diff --git a/src/main/java/net/minecraft/server/ChunkRegionLoader.java b/src/main/java/net/minecraft/server/ChunkRegionLoader.java
-index 5f04591193d58ba7897194142da5efcbec3763dd..bf4f34b5f4f7473921589b2f001570a38e96c5ce 100644
+index e77da341b765725771726283d3a8249b514b40da..c44333ec5b0c1914f7cb9f4b3b39626069136c22 100644
 --- a/src/main/java/net/minecraft/server/ChunkRegionLoader.java
 +++ b/src/main/java/net/minecraft/server/ChunkRegionLoader.java
 @@ -70,8 +70,10 @@ public class ChunkRegionLoader {
