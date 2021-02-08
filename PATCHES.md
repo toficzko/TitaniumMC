@@ -94,7 +94,6 @@ This is an overview over all patches that are currently used.
 | server |  Breedable Polar Bears      | William Blake Galbreath |  |
 | server |  Bring back server name      | William Blake Galbreath |  |
 | api |  Bring back server name      | William Blake Galbreath |  |
-| server |  Cadmium      | Simon Gardling |  |
 | server |  Cat spawning options      | William Blake Galbreath |  |
 | server |  Change writes to use NORMAL priority rather than LOW      | Spottedleaf |  |
 | server |  Changeable Mob Left Handed Chance      | Ben Kerllenevich |  |
@@ -295,6 +294,8 @@ This is an overview over all patches that are currently used.
 | api |  PlayerSetSpawnerTypeWithEggEvent      | William Blake Galbreath |  |
 | server |  Players should not cram to death      | William Blake Galbreath |  |
 | server |  Populator seed controls      | Spottedleaf |  |
+| server |  Port Cadmium      | Lucy-t |  |
+| server |  Port LazyDFU      | Andrew Steinborn |  |
 | server |  Port hydrogen      | JellySquid |  |
 | server |  Preload ProtocolLib EnumWrappers      | ishland |  |
 | server |  Prevent light queue overfill when no players are online      | Spottedleaf |  |
@@ -377,7 +378,6 @@ This is an overview over all patches that are currently used.
 | server |  add config for logging login location      | Simon Gardling |  |
 | server |  dont load chunks for physics      | Aikar |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
-| server |  lazydfu      | Simon Gardling |  |
 | server |  lithium DataTrackerMixin      | JellySquid | tr7zw |
 | server |  lithium HashedList      | JellySquid |  |
 | server |  lithium MixinBox      | JellySquid |  |
