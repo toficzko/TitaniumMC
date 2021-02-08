@@ -1,0 +1,76 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Mon, 8 Feb 2021 16:11:47 -0500
+Subject: [PATCH] fully remove snooper
+
+
+diff --git a/src/main/java/net/minecraft/server/DedicatedServerProperties.java b/src/main/java/net/minecraft/server/DedicatedServerProperties.java
+index 1962c14af5cc4ec4c66fa7c354aff98c5e6a4b2e..0703b3c289208637ef48c6f0e6cd9cdc91e3f306 100644
+--- a/src/main/java/net/minecraft/server/DedicatedServerProperties.java
++++ b/src/main/java/net/minecraft/server/DedicatedServerProperties.java
+@@ -35,7 +35,7 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
+     public final boolean hardcore;
+     public final boolean allowNether;
+     public final boolean spawnMonsters;
+-    public final boolean snooperEnabled;
++    // public final boolean snooperEnabled;
+     public final boolean useNativeTransport;
+     public final boolean enableCommandBlock;
+     public final int spawnProtection;
+@@ -82,11 +82,13 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
+         this.hardcore = this.getBoolean("hardcore", false);
+         this.allowNether = this.getBoolean("allow-nether", true);
+         this.spawnMonsters = this.getBoolean("spawn-monsters", true);
++        /*
+         if (this.getBoolean("snooper-enabled", true)) {
+             ;
+         }
+ 
+         this.snooperEnabled = false;
++        */
+         this.useNativeTransport = this.getBoolean("use-native-transport", true);
+         this.enableCommandBlock = this.getBoolean("enable-command-block", false);
+         this.spawnProtection = this.getInt("spawn-protection", 16);
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 35e437945335399bf5f59bcaa17b8dcd74f82c77..1a706c1307876d9ede761a63af7013db711c7681 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -76,7 +76,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+     public static final WorldSettings c = new WorldSettings("Demo World", EnumGamemode.SURVIVAL, false, EnumDifficulty.NORMAL, false, new GameRules(), DataPackConfiguration.a);
+     public Convertable.ConversionSession convertable;
+     public final WorldNBTStorage worldNBTStorage;
+-    private final MojangStatisticsGenerator snooper = new MojangStatisticsGenerator("server", this, SystemUtils.getMonotonicMillis());
++    // private final MojangStatisticsGenerator snooper = new MojangStatisticsGenerator("server", this, SystemUtils.getMonotonicMillis());
+     private final List<Runnable> tickables = Lists.newArrayList();
+     private final GameProfilerSwitcher m;
+     private GameProfilerFiller methodProfiler;
+@@ -812,9 +812,11 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             }
+         }
+ 
++        /*
+         if (this.snooper.d()) {
+             this.snooper.e();
+         }
++        */
+ 
+         this.dataPackResources.close();
+ 
+@@ -1334,7 +1336,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             //MinecraftServer.LOGGER.debug("Autosave finished"); // Paper
+         //} // Paper
+ 
+-        this.methodProfiler.enter("snooper");
++        // this.methodProfiler.enter("snooper");
+         // Akarin - Disable Snooper
+         /*
+         if (((DedicatedServer) this).getDedicatedServerProperties().snooperEnabled && !this.snooper.d() && this.ticks > 100) { // Spigot
+@@ -1346,7 +1348,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         }
+         */
+ 
+-        this.methodProfiler.exit();
++        // this.methodProfiler.exit();
+ 
+         // Paper start - move executeAll() into full server tick timing
+         try (co.aikar.timings.Timing ignored = MinecraftTimings.processTasksTimer.startTiming()) {
