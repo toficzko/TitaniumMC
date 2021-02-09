@@ -1002,7 +1002,7 @@ index 0000000000000000000000000000000000000000..6665b0d715f4173da466049ad9105925
 +    }
 +}
 diff --git a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
-index ceeb515f4528551659598d9999917f8596e3eded..334416e7805f7b43ea2eddac9c7109a301c7e0a4 100644
+index ceeb515f4528551659598d9999917f8596e3eded..2ed1c3417e81dd53544c22a0458dd00b7987f6f4 100644
 --- a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 +++ b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 @@ -229,6 +229,25 @@ public final class TuinityConfig {
@@ -1018,13 +1018,13 @@ index ceeb515f4528551659598d9999917f8596e3eded..334416e7805f7b43ea2eddac9c7109a3
 +    public static boolean playerFrustumPrioritisation;
 +
 +    private static void newPlayerChunkManagement() {
-+        playerMinChunkLoadRadius = TuinityConfig.getInt("player-chunks.min-load-radius", 3);
-+        playerMaxConcurrentChunkSends = TuinityConfig.getDouble("player-chunks.max-concurrent-sends", 3.0);
-+        playerMaxConcurrentChunkLoads = TuinityConfig.getDouble("player-chunks.max-concurrent-loads", 5.0);
++        playerMinChunkLoadRadius = TuinityConfig.getInt("player-chunks.min-load-radius", 2);
++        playerMaxConcurrentChunkSends = TuinityConfig.getDouble("player-chunks.max-concurrent-sends", 1.0);
++        playerMaxConcurrentChunkLoads = TuinityConfig.getDouble("player-chunks.max-concurrent-loads", 2.0);
 +        playerAutoConfigureSendViewDistance = TuinityConfig.getBoolean("player-chunks.autoconfig-send-distance", true);
 +        // this costs server bandwidth. latest phosphor or starlight on the client fixes mc162253 anyways.
 +        enableMC162253Workaround = TuinityConfig.getBoolean("player-chunks.enable-mc162253-workaround", false);
-+        playerTargetChunkSendRate = TuinityConfig.getDouble("player-chunks.target-chunk-send-rate", -40.0);
++        playerTargetChunkSendRate = TuinityConfig.getDouble("player-chunks.target-chunk-send-rate", -25.0);
 +        playerFrustumPrioritisation = TuinityConfig.getBoolean("player-chunks.enable-frustum-priority", false);
 +    }
 +

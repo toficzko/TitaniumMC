@@ -18,7 +18,7 @@ index 5e672a0660d0aceffcdb26d185590ca18aa4f023..4b171a2a60e24947e884f8988920f335
              }
              final Object val = config.get(key);
 diff --git a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
-index 334416e7805f7b43ea2eddac9c7109a301c7e0a4..82db244f1235a8157ae2d1841943e383a82eb750 100644
+index 2ed1c3417e81dd53544c22a0458dd00b7987f6f4..e83aa8c9a5f122dfd7743518426c05c1c62efa57 100644
 --- a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 +++ b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 @@ -1,5 +1,6 @@
