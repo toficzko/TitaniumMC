@@ -209,7 +209,7 @@ index 3f165b5280f33e3f79ef9a8fd26484a44ac5c3ce..0a9bf531a99a433d0e5592234fbfc5e1
                          if (fluid.a(tag)) {
                              double d2 = (double) ((float) i2 + fluid.getHeight(this.world, blockposition_mutableblockposition));
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index d165d1ec9c2d81f26df0a1a4d5d5f79a6358552b..821634b6dcc7254c0514f4e1edfa467064f0763d 100644
+index d165d1ec9c2d81f26df0a1a4d5d5f79a6358552b..150443e9da0ac6b787d24d8dc63ebebc9fd422ef 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -44,6 +44,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;
@@ -309,6 +309,15 @@ index d165d1ec9c2d81f26df0a1a4d5d5f79a6358552b..821634b6dcc7254c0514f4e1edfa4670
  
                  f = this.onGround ? f5 * 0.91F : 0.91F;
                  Vec3D vec3d6 = this.a(vec3d, f5);
+@@ -3433,7 +3438,7 @@ public abstract class EntityLiving extends Entity {
+ 
+             while (!flag2 && blockposition.getY() > 0) {
+                 BlockPosition blockposition1 = blockposition.down();
+-                IBlockData iblockdata = world.getType(blockposition1);
++                IBlockData iblockdata = ((NonBlockingWorldAccess) world).getBlockStateIfLoaded(blockposition1);
+ 
+                 if (iblockdata.getMaterial().isSolid()) {
+                     flag2 = true;
 @@ -3528,7 +3533,7 @@ public abstract class EntityLiving extends Entity {
              this.stopRiding();
          }
