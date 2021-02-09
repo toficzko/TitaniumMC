@@ -24,7 +24,7 @@ index df6874c1cf5fc5764dc575866aab87883b6cf035..d84dbecff591ea5acd35c9141e6ad4c9
      private static class dProxy extends BiomeBase.d {
          private dProxy(Precipitation biomebase_precipitation, float f, TemperatureModifier biomebase_temperaturemodifier, float f1) {
 diff --git a/src/main/java/net/minecraft/server/WorldChunkManagerMultiNoise.java b/src/main/java/net/minecraft/server/WorldChunkManagerMultiNoise.java
-index a47a92afece7084bf52952df8d03e70599bf0eb4..70608b3e4fd9b0230fbd253685c90721b27c45ce 100644
+index a47a92afece7084bf52952df8d03e70599bf0eb4..f9e8523639e674afe0a3658fff7ef05de5e06677 100644
 --- a/src/main/java/net/minecraft/server/WorldChunkManagerMultiNoise.java
 +++ b/src/main/java/net/minecraft/server/WorldChunkManagerMultiNoise.java
 @@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
@@ -132,7 +132,7 @@ index a47a92afece7084bf52952df8d03e70599bf0eb4..70608b3e4fd9b0230fbd253685c90721
 -                return DataResult.success(worldchunkmanagermultinoise_b.c);
 -            }).fieldOf("preset").stable().forGetter(WorldChunkManagerMultiNoise.c::a), RegistryLookupCodec.a(IRegistry.ay).forGetter(WorldChunkManagerMultiNoise.c::b), Codec.LONG.fieldOf("seed").stable().forGetter(WorldChunkManagerMultiNoise.c::c)).apply(instance, instance.stable(WorldChunkManagerMultiNoise.c::new));
 +                return DataResult.success(((WorldChunkManagerMultiNoise.b) worldchunkmanagermultinoise_b).c); // Yatopia - decompile fix
-+            }).fieldOf("preset").stable().forGetter((Function<WorldChunkManagerMultiNoise.c, WorldChunkManagerMultiNoise.b>) o -> o.a()), (RecordCodecBuilder) RegistryLookupCodec.a(IRegistry.ay).forGetter((Function<WorldChunkManagerMultiNoise.c, IRegistry<BiomeBase>>) c -> c.b()), (RecordCodecBuilder) Codec.LONG.fieldOf("seed").stable().forGetter((Function<WorldChunkManagerMultiNoise.c, Long>) c -> c.c())).apply(instance, instance.stable((Function3<WorldChunkManagerMultiNoise.b, IRegistry<BiomeBase>, Long, WorldChunkManagerMultiNoise.c>) WorldChunkManagerMultiNoise.c::new)); // Yatopia - decompile fix
++            }).fieldOf("preset").stable().forGetter(o -> ((WorldChunkManagerMultiNoise.c) o).a()), (RecordCodecBuilder) RegistryLookupCodec.a(IRegistry.ay).forGetter((Function<WorldChunkManagerMultiNoise.c, IRegistry<BiomeBase>>) c -> c.b()), (RecordCodecBuilder) Codec.LONG.fieldOf("seed").stable().forGetter((Function<WorldChunkManagerMultiNoise.c, Long>) c -> c.c())).apply(instance, instance.stable((Function3<WorldChunkManagerMultiNoise.b, IRegistry<BiomeBase>, Long, WorldChunkManagerMultiNoise.c>) WorldChunkManagerMultiNoise.c::new)); // Yatopia - decompile fix
          });
          private final WorldChunkManagerMultiNoise.b b;
          private final IRegistry<BiomeBase> c;

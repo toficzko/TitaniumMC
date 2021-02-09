@@ -5,7 +5,7 @@ Subject: [PATCH] lithium MultiNoiseBiomeSourceMixin
 
 
 diff --git a/src/main/java/net/minecraft/server/WorldChunkManagerMultiNoise.java b/src/main/java/net/minecraft/server/WorldChunkManagerMultiNoise.java
-index 70608b3e4fd9b0230fbd253685c90721b27c45ce..dfb15c6cc025fba1ad6bb8fdc40861ffcf72254b 100644
+index f9e8523639e674afe0a3658fff7ef05de5e06677..fd60e0ceab1f0dcf3d35fbdb1bbed29dcb8aebcd 100644
 --- a/src/main/java/net/minecraft/server/WorldChunkManagerMultiNoise.java
 +++ b/src/main/java/net/minecraft/server/WorldChunkManagerMultiNoise.java
 @@ -112,8 +112,44 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
