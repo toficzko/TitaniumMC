@@ -407,3 +407,4 @@ This is an overview over all patches that are currently used.
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
 | server |  remove world size checks      | Simon Gardling |  |
+| server |  tic-tacs: unblocking      | Gegy |  |
