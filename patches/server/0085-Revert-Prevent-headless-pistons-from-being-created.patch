@@ -1,0 +1,57 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Tue, 9 Feb 2021 11:18:45 -0500
+Subject: [PATCH] Revert "Prevent headless pistons from being created"
+
+This reverts commit 824ec0c492b39f046eb0c8780af77acbb3d118a7.
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+index 38eb15ebe74a55181f5c68dedec97c9577d80442..6bd81a0388c590e2a3881ffb85244f4bdae7254b 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+@@ -441,12 +441,6 @@ public class PaperConfig {
+         consoleHasAllPermissions = getBoolean("settings.console-has-all-permissions", consoleHasAllPermissions);
+     }
+ 
+-    public static boolean allowHeadlessPistons;
+-    private static void allowHeadlessPistons() {
+-        config.set("settings.unsupported-settings.allow-headless-pistons-readme", "This setting controls if players should be able to create headless pistons.");
+-        allowHeadlessPistons = getBoolean("settings.unsupported-settings.allow-headless-pistons", false);
+-    }
+-
+     public static int playerAutoSaveRate = -1;
+     public static int maxPlayerAutoSavePerTick = 10;
+     private static void playerAutoSaveRate() {
+diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
+index bef7db87779a41dfa42794df1e51bba649ea8c72..88ed9d32df0ae9be3f8fe5b6c84c4929579ce3c1 100644
+--- a/src/main/java/net/minecraft/server/Explosion.java
++++ b/src/main/java/net/minecraft/server/Explosion.java
+@@ -135,15 +135,6 @@ public class Explosion {
+ 
+                             if (f > 0.0F && this.l.a(this, this.world, blockposition, iblockdata, f) && blockposition.getY() < 256 && blockposition.getY() >= 0) { // CraftBukkit - don't wrap explosions
+                                 set.add(blockposition);
+-                                // Paper start - prevent headless pistons from forming
+-                                if (!com.destroystokyo.paper.PaperConfig.allowHeadlessPistons && iblockdata.getBlock() == Blocks.MOVING_PISTON) {
+-                                    TileEntity extension = this.world.getTileEntity(blockposition);
+-                                    if (extension instanceof TileEntityPiston && ((TileEntityPiston) extension).isHead()) {
+-                                       EnumDirection direction = iblockdata.get(BlockPistonExtension.FACING);
+-                                       set.add(blockposition.shift(direction.opposite()));
+-                                    }
+-                                }
+-                                // Paper end
+                             }
+ 
+                             d4 += d0 * 0.30000001192092896D;
+diff --git a/src/main/java/net/minecraft/server/TileEntityPiston.java b/src/main/java/net/minecraft/server/TileEntityPiston.java
+index 81c9b5b479f2e62e5f4a6a0212a8f9e9a74725c1..8b2758377b70aaf7a9d21a28d4bbe16389f22403 100644
+--- a/src/main/java/net/minecraft/server/TileEntityPiston.java
++++ b/src/main/java/net/minecraft/server/TileEntityPiston.java
+@@ -42,8 +42,6 @@ public class TileEntityPiston extends TileEntity implements ITickable {
+         return this.b;
+     }
+ 
+-    public final boolean isHead() { return this.h(); } // Paper - OBFHELPER
+-
+     public boolean h() {
+         return this.g;
+     }

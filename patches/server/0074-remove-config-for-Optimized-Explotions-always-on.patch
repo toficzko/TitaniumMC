@@ -22,10 +22,10 @@ index c46ef87f02450340e8be6ac3936f72598a7c9088..8b2e003dc5f5539fc8f6057c383a3dc8
      private void disableExplosionKnockback(){
          disableExplosionKnockback = getBoolean("disable-explosion-knockback", false);
 diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
-index 7735bec16a6b518a081324d28c85377d60cb5f91..07a0fb7a027c8e931a9f9fc88dd3b777a96a6bbb 100644
+index 5ca4d03215c979a4d122a32178a1859b4d9c3334..bef7db87779a41dfa42794df1e51bba649ea8c72 100644
 --- a/src/main/java/net/minecraft/server/Explosion.java
 +++ b/src/main/java/net/minecraft/server/Explosion.java
-@@ -407,9 +407,6 @@ public class Explosion {
+@@ -404,9 +404,6 @@ public class Explosion {
      }
      // Paper start - Optimize explosions
      private float getBlockDensity(Vec3D vec3d, Entity entity) {

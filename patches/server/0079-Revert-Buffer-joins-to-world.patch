@@ -5,10 +5,10 @@ Subject: [PATCH] Revert "Buffer joins to world"
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index a902caa09d1029735dd4a26845d7302435ca9feb..5d5daf428db13d139b0fc6a8668c0156ce222a40 100644
+index 4a21a83c448355d61fb946bd0eb5d752767d536a..fc1cd9e41e4461c626ffbef68aa0d321202c6907 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-@@ -468,11 +468,6 @@ public class PaperConfig {
+@@ -465,11 +465,6 @@ public class PaperConfig {
          }
      }
  

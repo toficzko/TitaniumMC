@@ -1,0 +1,91 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Sun, 17 Jan 2021 01:11:36 +0100
+Subject: [PATCH] (PaperPR) Optimize DataPaletteHash
+
+DataPaletteHash uses an instance of RegistryID internally. A DataPalette has
+a predefined maximum size = 1 << bitsPerObject. RegistryID has an initial
+size but is automatically resized. The RegistryID is created with the
+maximum size in the constructor of DataPaletteHash, with the aim that it
+doesn't need to be resized anymore. However, there are two things that I
+think Mojang hasn't considered here:
+1) The RegistryID is resized, when its initial size is reached and not the
+next time, when an object is added.
+2) DataPaletteHash adds objects (unnecessarily) before checking if the
+initial size of RegistryID is reached.
+This means to actually avoid resize operations in RegistryID, one has to add
+2 to the initial size or add 1 and check the size before adding objects.
+This commit implements the second approach. Note that this isn't only an
+optimization but also makes async reads of DataPalettes fail-safe. An async
+read while the RegistryID is resized is fatal and can even lead to corrupted
+data. This is also something that Anti-Xray is currently relying on.
+
+diff --git a/src/main/java/net/minecraft/server/DataPaletteHash.java b/src/main/java/net/minecraft/server/DataPaletteHash.java
+index f9bfa8237e69bcd587afdbfc297f7bc3d5027689..caf334c7b8ec6329b2632985ceb6f846c278c75d 100644
+--- a/src/main/java/net/minecraft/server/DataPaletteHash.java
++++ b/src/main/java/net/minecraft/server/DataPaletteHash.java
+@@ -7,11 +7,11 @@ import javax.annotation.Nullable;
+ public class DataPaletteHash<T> implements DataPalette<T> {
+ 
+     private final RegistryBlockID<T> a;
+-    private final RegistryID<T> b;
+-    private final DataPaletteExpandable<T> c;
++    private final RegistryID<T> b; private final RegistryID<T> getRegistryID() { return this.b; } // Paper - OBFHELPER
++    private final DataPaletteExpandable<T> c; private final DataPaletteExpandable<T> getDataPaletteExpandable() { return this.c; } // Paper - OBFHELPER
+     private final Function<NBTTagCompound, T> d;
+     private final Function<T, NBTTagCompound> e;
+-    private final int f;
++    private final int f; private final int getBitsPerObject() { return this.f; } // Paper - OBFHELPER
+ 
+     public DataPaletteHash(RegistryBlockID<T> registryblockid, int i, DataPaletteExpandable<T> datapaletteexpandable, Function<NBTTagCompound, T> function, Function<T, NBTTagCompound> function1) {
+         this.a = registryblockid;
+@@ -19,18 +19,25 @@ public class DataPaletteHash<T> implements DataPalette<T> {
+         this.c = datapaletteexpandable;
+         this.d = function;
+         this.e = function1;
+-        this.b = new RegistryID<>(1 << i);
++        this.b = new RegistryID<>((1 << i) + 1); // Paper - Avoid unnecessary resize operation in RegistryID
+     }
+ 
++    @Override public final int getOrCreateIdFor(T object) { return this.a(object); } // Paper - OBFHELPER
+     @Override
+     public int a(T t0) {
+         int i = this.b.getId(t0);
+ 
+         if (i == -1) {
+-            i = this.b.c(t0);
+-            if (i >= 1 << this.f) {
+-                i = this.c.onResize(this.f + 1, t0);
++            // Paper start - Avoid unnecessary resize operation in RegistryID and optimize
++            // We use getSize instead of the result from createId
++            // This avoids adding one further unnecessary object
++            // Without this change, + 2 would be required in the constructor
++            if (this.getRegistryID().getSize() >= 1 << this.getBitsPerObject()) {
++                i = this.getDataPaletteExpandable().onResize(this.getBitsPerObject() + 1, t0);
++            } else {
++                i = this.getRegistryID().createId(t0);
+             }
++            // Paper end
+         }
+ 
+         return i;
+diff --git a/src/main/java/net/minecraft/server/RegistryID.java b/src/main/java/net/minecraft/server/RegistryID.java
+index c35764009faeb3d2bb505b135dc542c7a580f254..ae4ee8bc5ce53bab401e5d75e609e98e77161dbe 100644
+--- a/src/main/java/net/minecraft/server/RegistryID.java
++++ b/src/main/java/net/minecraft/server/RegistryID.java
+@@ -45,6 +45,7 @@ public class RegistryID<K> implements Registry<K> {
+         return i == -1 ? -1 : this.c[i];
+     }
+ 
++    public final int createId(K object) { return this.c(object); } // Paper - OBFHELPER
+     public int c(K k0) {
+         int i = this.c();
+ 
+@@ -168,6 +169,7 @@ public class RegistryID<K> implements Registry<K> {
+         this.usedIds.clear(); // Paper
+     }
+ 
++    public final int getSize() { return this.b(); } // Paper - OBFHELPER
+     public int b() {
+         return this.f;
+     }
