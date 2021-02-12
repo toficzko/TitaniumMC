@@ -1,0 +1,406 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Fri, 12 Feb 2021 15:18:15 -0500
+Subject: [PATCH] jafama fast math
+
+
+diff --git a/pom.xml b/pom.xml
+index 27c351ea6a2c40de41976351d6a9d3ef49389fc1..e57b3020eeb75579e6daca369a6ffab97ab4187f 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -188,6 +188,12 @@
+             <artifactId>asyncutil</artifactId>
+             <version>0.1.0</version>
+         </dependency>
++        <!-- Fast Math -->
++        <dependency>
++            <groupId>net.jafama</groupId>
++            <artifactId>jafama</artifactId>
++            <version>2.3.2</version>
++        </dependency>
+     </dependencies>
+ 
+     <repositories>
+diff --git a/src/main/java/net/minecraft/server/ChunkGeneratorAbstract.java b/src/main/java/net/minecraft/server/ChunkGeneratorAbstract.java
+index de469f9b4f0fecc05dca7a5aacd1308db6f80a18..516fe324478a6cd4f99e9908e5c8bfce887cecb5 100644
+--- a/src/main/java/net/minecraft/server/ChunkGeneratorAbstract.java
++++ b/src/main/java/net/minecraft/server/ChunkGeneratorAbstract.java
+@@ -40,7 +40,7 @@ public final class ChunkGeneratorAbstract extends ChunkGenerator {
+     private static final float[] j = (float[]) SystemUtils.a((new float[25]), (afloat) -> { // CraftBukkit - decompile error
+         for (int i = -2; i <= 2; ++i) {
+             for (int j = -2; j <= 2; ++j) {
+-                float f = 10.0F / MathHelper.c((float) (i * i + j * j) + 0.2F);
++                float f = 10.0F / MathHelper.sqrtVanilla((float) (i * i + j * j) + 0.2F);
+ 
+                 afloat[i + 2 + (j + 2) * 5] = f;
+             }
+diff --git a/src/main/java/net/minecraft/server/CommandSpreadPlayers.java b/src/main/java/net/minecraft/server/CommandSpreadPlayers.java
+index c9f4b69874e693c8e5c3346f09db7b5014dcfb63..272a126a77867efdf495caf1c8ba087b7dbc9dc5 100644
+--- a/src/main/java/net/minecraft/server/CommandSpreadPlayers.java
++++ b/src/main/java/net/minecraft/server/CommandSpreadPlayers.java
+@@ -219,7 +219,7 @@ public class CommandSpreadPlayers {
+             double d0 = this.a - commandspreadplayers_a.a;
+             double d1 = this.b - commandspreadplayers_a.b;
+ 
+-            return Math.sqrt(d0 * d0 + d1 * d1);
++            return net.jafama.FastMath.sqrt(d0 * d0 + d1 * d1);
+         }
+ 
+         void a() {
+diff --git a/src/main/java/net/minecraft/server/EntityEnderDragon.java b/src/main/java/net/minecraft/server/EntityEnderDragon.java
+index d8da655432af6cf64693174449ba0757dd445b9f..b46d693663d79476901410767194f4ba611add7e 100644
+--- a/src/main/java/net/minecraft/server/EntityEnderDragon.java
++++ b/src/main/java/net/minecraft/server/EntityEnderDragon.java
+@@ -659,7 +659,7 @@ public class EntityEnderDragon extends EntityInsentient implements IMonster {
+                     double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
+                     if ( world.spigotConfig.dragonDeathSoundRadius > 0 && distanceSquared > world.spigotConfig.dragonDeathSoundRadius * world.spigotConfig.dragonDeathSoundRadius ) continue; // Spigot
+                     if (distanceSquared > viewDistance * viewDistance) {
+-                        double deltaLength = Math.sqrt(distanceSquared);
++                        double deltaLength = net.jafama.FastMath.sqrt(distanceSquared);
+                         double relativeX = player.locX() + (deltaX / deltaLength) * viewDistance;
+                         double relativeZ = player.locZ() + (deltaZ / deltaLength) * viewDistance;
+                         player.playerConnection.sendPacket(new PacketPlayOutWorldEvent(1028, new BlockPosition((int) relativeX, (int) this.locY(), (int) relativeZ), 0, true));
+diff --git a/src/main/java/net/minecraft/server/EntityEnderSignal.java b/src/main/java/net/minecraft/server/EntityEnderSignal.java
+index 1d0ec1c5a934dea6ed1e23d75b0c31f1020d88da..89b57470eb85f151a113b705cc017a63167e29b6 100644
+--- a/src/main/java/net/minecraft/server/EntityEnderSignal.java
++++ b/src/main/java/net/minecraft/server/EntityEnderSignal.java
+@@ -79,7 +79,7 @@ public class EntityEnderSignal extends Entity {
+         if (!this.world.isClientSide) {
+             double d3 = this.targetX - d0;
+             double d4 = this.targetZ - d2;
+-            float f1 = (float) Math.sqrt(d3 * d3 + d4 * d4);
++            float f1 = (float) net.jafama.FastMath.sqrt(d3 * d3 + d4 * d4);
+             float f2 = (float) MathHelper.d(d4, d3);
+             double d5 = MathHelper.d(0.0025D, (double) f, (double) f1);
+             double d6 = vec3d.y;
+diff --git a/src/main/java/net/minecraft/server/EntityExperienceOrb.java b/src/main/java/net/minecraft/server/EntityExperienceOrb.java
+index 358d6d660581686a2e8d49e13e8c2ade9ec2fec2..34c14b7cff17b7e66f75e80a821648288b221288 100644
+--- a/src/main/java/net/minecraft/server/EntityExperienceOrb.java
++++ b/src/main/java/net/minecraft/server/EntityExperienceOrb.java
+@@ -148,7 +148,7 @@ public class EntityExperienceOrb extends Entity {
+             double d1 = vec3d.g();
+ 
+             if (d1 < 64.0D) {
+-                double d2 = 1.0D - Math.sqrt(d1) / 8.0D;
++                double d2 = 1.0D - net.jafama.FastMath.sqrt(d1) / 8.0D;
+ 
+                 this.setMot(this.getMot().e(vec3d.d().a(d2 * d2 * 0.1D)));
+             }
+diff --git a/src/main/java/net/minecraft/server/EntityFireworks.java b/src/main/java/net/minecraft/server/EntityFireworks.java
+index 601f639275f4df983f19aa9cb0dc5f2611387853..84efbf71bbf5fdcff4cee2d515d313672d35a04b 100644
+--- a/src/main/java/net/minecraft/server/EntityFireworks.java
++++ b/src/main/java/net/minecraft/server/EntityFireworks.java
+@@ -231,7 +231,7 @@ public class EntityFireworks extends IProjectile {
+                     }
+ 
+                     if (flag) {
+-                        float f1 = f * (float) Math.sqrt((5.0D - (double) this.g((Entity) entityliving)) / 5.0D);
++                        float f1 = f * (float) net.jafama.FastMath.sqrt((5.0D - (double) this.g((Entity) entityliving)) / 5.0D);
+ 
+                         CraftEventFactory.entityDamage = this; // CraftBukkit
+                         entityliving.damageEntity(DamageSource.a(this, this.getShooter()), f1);
+diff --git a/src/main/java/net/minecraft/server/EntityFishingHook.java b/src/main/java/net/minecraft/server/EntityFishingHook.java
+index 2bad182d9d6248c1e8ac9138e46d192dccc2a973..3216591ef605ae01cf0b0334a9dbc83395d83bbf 100644
+--- a/src/main/java/net/minecraft/server/EntityFishingHook.java
++++ b/src/main/java/net/minecraft/server/EntityFishingHook.java
+@@ -470,7 +470,7 @@ public class EntityFishingHook extends IProjectile {
+ 
+                     // Paper start, entity item can be null, so we need to check against this
+                     if (entityitem != null) {
+-                        entityitem.setMot(d0 * 0.1D, d1 * 0.1D + Math.sqrt(Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)) * 0.08D, d2 * 0.1D);
++                        entityitem.setMot(d0 * 0.1D, d1 * 0.1D + net.jafama.FastMath.sqrt(net.jafama.FastMath.sqrt(d0 * d0 + d1 * d1 + d2 * d2)) * 0.08D, d2 * 0.1D);
+                         this.world.addEntity(entityitem);
+                     }
+                     // Paper end
+diff --git a/src/main/java/net/minecraft/server/EntityFox.java b/src/main/java/net/minecraft/server/EntityFox.java
+index 7a1148096d0d4a8fd60f4d6e815c44a7db02899c..0100167a510ca521ad21c259c8b8137004becb3b 100644
+--- a/src/main/java/net/minecraft/server/EntityFox.java
++++ b/src/main/java/net/minecraft/server/EntityFox.java
+@@ -842,7 +842,7 @@ public class EntityFox extends EntityAnimal {
+                 if (vec3d.y * vec3d.y < 0.029999999329447746D && EntityFox.this.pitch != 0.0F) {
+                     EntityFox.this.pitch = MathHelper.j(EntityFox.this.pitch, 0.0F, 0.2F);
+                 } else {
+-                    double d0 = Math.sqrt(Entity.c(vec3d));
++                    double d0 = net.jafama.FastMath.sqrt(Entity.c(vec3d));
+                     double d1 = Math.signum(-vec3d.y) * Math.acos(d0 / vec3d.f()) * 57.2957763671875D;
+ 
+                     EntityFox.this.pitch = (float) d1;
+diff --git a/src/main/java/net/minecraft/server/EntityGuardian.java b/src/main/java/net/minecraft/server/EntityGuardian.java
+index 3e291f11a016638d17e979d74b40fd1733722158..c447c9be73830257900d9bb172291e074feab5f9 100644
+--- a/src/main/java/net/minecraft/server/EntityGuardian.java
++++ b/src/main/java/net/minecraft/server/EntityGuardian.java
+@@ -242,7 +242,7 @@ public class EntityGuardian extends EntityMonster {
+                         double d1 = entityliving.locX() - this.locX();
+                         double d2 = entityliving.e(0.5D) - this.getHeadY();
+                         double d3 = entityliving.locZ() - this.locZ();
+-                        double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
++                        double d4 = net.jafama.FastMath.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
+ 
+                         d1 /= d4;
+                         d2 /= d4;
+diff --git a/src/main/java/net/minecraft/server/EntityLightning.java b/src/main/java/net/minecraft/server/EntityLightning.java
+index 239f504430b6c59923fd677d1be0121be5022604..43e8d267d412856610c7c7fa774235d7494cfa0d 100644
+--- a/src/main/java/net/minecraft/server/EntityLightning.java
++++ b/src/main/java/net/minecraft/server/EntityLightning.java
+@@ -79,7 +79,7 @@ public class EntityLightning extends Entity {
+ 
+                 // Paper end
+                 if (distanceSquared > viewDistance * viewDistance) {
+-                    double deltaLength = Math.sqrt(distanceSquared);
++                    double deltaLength = net.jafama.FastMath.sqrt(distanceSquared);
+                     double relativeX = player.locX() + (deltaX / deltaLength) * viewDistance;
+                     double relativeZ = player.locZ() + (deltaZ / deltaLength) * viewDistance;
+                     player.playerConnection.sendPacket(new PacketPlayOutNamedSoundEffect(SoundEffects.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, relativeX, this.locY(), relativeZ, 10000.0F, pitch));
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index 44a91ed875c50f96c4da1c4e2195beadc66ca4e8..0a1c8397abdf567b8b50d7a49418b77ea45ccb29 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -2335,8 +2335,8 @@ public abstract class EntityLiving extends Entity {
+                 Vec3D vec3d5 = this.getLookDirection();
+ 
+                 f = this.pitch * 0.017453292F;
+-                double d2 = Math.sqrt(vec3d5.x * vec3d5.x + vec3d5.z * vec3d5.z);
+-                double d3 = Math.sqrt(c(vec3d4));
++                double d2 = net.jafama.FastMath.sqrt(vec3d5.x * vec3d5.x + vec3d5.z * vec3d5.z);
++                double d3 = net.jafama.FastMath.sqrt(c(vec3d4));
+                 double d4 = vec3d5.f();
+                 float f3 = MathHelper.cos(f);
+ 
+@@ -2361,7 +2361,7 @@ public abstract class EntityLiving extends Entity {
+                 this.setMot(vec3d4.d(0.9900000095367432D, 0.9800000190734863D, 0.9900000095367432D));
+                 this.move(EnumMoveType.SELF, this.getMot());
+                 if (this.positionChanged && !this.world.isClientSide) {
+-                    d5 = Math.sqrt(c(this.getMot()));
++                    d5 = net.jafama.FastMath.sqrt(c(this.getMot()));
+                     double d6 = d3 - d5;
+                     float f4 = (float) (d6 * 10.0D - 3.0D);
+ 
+@@ -2546,7 +2546,7 @@ public abstract class EntityLiving extends Entity {
+ 
+         if (f > 0.0025000002F) {
+             f3 = 1.0F;
+-            f2 = (float) Math.sqrt((double) f) * 3.0F;
++            f2 = (float) net.jafama.FastMath.sqrt((double) f) * 3.0F;
+             float f4 = (float) MathHelper.d(d1, d0) * 57.295776F - 90.0F;
+             float f5 = MathHelper.e(MathHelper.g(this.yaw) - f4);
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityMinecartAbstract.java b/src/main/java/net/minecraft/server/EntityMinecartAbstract.java
+index 298af30b1a7f12d42216fc1b7ee801fd7be93d3c..144aa1cb2485afad070fda5771402b08872e64db 100644
+--- a/src/main/java/net/minecraft/server/EntityMinecartAbstract.java
++++ b/src/main/java/net/minecraft/server/EntityMinecartAbstract.java
+@@ -556,7 +556,7 @@ public abstract class EntityMinecartAbstract extends Entity {
+         BaseBlockPosition baseblockposition1 = (BaseBlockPosition) pair.getSecond();
+         double d4 = (double) (baseblockposition1.getX() - baseblockposition.getX());
+         double d5 = (double) (baseblockposition1.getZ() - baseblockposition.getZ());
+-        double d6 = Math.sqrt(d4 * d4 + d5 * d5);
++        double d6 = net.jafama.FastMath.sqrt(d4 * d4 + d5 * d5);
+         double d7 = vec3d1.x * d4 + vec3d1.z * d5;
+ 
+         if (d7 < 0.0D) {
+@@ -564,7 +564,7 @@ public abstract class EntityMinecartAbstract extends Entity {
+             d5 = -d5;
+         }
+ 
+-        double d8 = Math.min(2.0D, Math.sqrt(c(vec3d1)));
++        double d8 = Math.min(2.0D, net.jafama.FastMath.sqrt(c(vec3d1)));
+ 
+         vec3d1 = new Vec3D(d8 * d4 / d6, vec3d1.y, d8 * d5 / d6);
+         this.setMot(vec3d1);
+@@ -584,7 +584,7 @@ public abstract class EntityMinecartAbstract extends Entity {
+         double d11;
+ 
+         if (flag1) {
+-            d11 = Math.sqrt(c(this.getMot()));
++            d11 = net.jafama.FastMath.sqrt(c(this.getMot()));
+             if (d11 < 0.03D) {
+                 this.setMot(Vec3D.ORIGIN);
+             } else {
+@@ -635,7 +635,7 @@ public abstract class EntityMinecartAbstract extends Entity {
+             double d19 = (vec3d.y - vec3d3.y) * 0.05D;
+ 
+             vec3d4 = this.getMot();
+-            d18 = Math.sqrt(c(vec3d4));
++            d18 = net.jafama.FastMath.sqrt(c(vec3d4));
+             if (d18 > 0.0D) {
+                 this.setMot(vec3d4.d((d18 + d19) / d18, 1.0D, (d18 + d19) / d18));
+             }
+@@ -648,13 +648,13 @@ public abstract class EntityMinecartAbstract extends Entity {
+ 
+         if (i != blockposition.getX() || j != blockposition.getZ()) {
+             vec3d4 = this.getMot();
+-            d18 = Math.sqrt(c(vec3d4));
++            d18 = net.jafama.FastMath.sqrt(c(vec3d4));
+             this.setMot(d18 * (double) (i - blockposition.getX()), vec3d4.y, d18 * (double) (j - blockposition.getZ()));
+         }
+ 
+         if (flag) {
+             vec3d4 = this.getMot();
+-            d18 = Math.sqrt(c(vec3d4));
++            d18 = net.jafama.FastMath.sqrt(c(vec3d4));
+             if (d18 > 0.01D) {
+                 double d20 = 0.06D;
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityPotion.java b/src/main/java/net/minecraft/server/EntityPotion.java
+index bd84a3ac6146cfe6952a9334820696b4583b45b5..1f65672b963df9750425aa9ce6b7e01366ec41a5 100644
+--- a/src/main/java/net/minecraft/server/EntityPotion.java
++++ b/src/main/java/net/minecraft/server/EntityPotion.java
+@@ -125,7 +125,7 @@ public class EntityPotion extends EntityProjectileThrowable {
+                     double d0 = this.h(entityliving);
+ 
+                     if (d0 < 16.0D) {
+-                        double d1 = 1.0D - Math.sqrt(d0) / 4.0D;
++                        double d1 = 1.0D - net.jafama.FastMath.sqrt(d0) / 4.0D;
+ 
+                         if (entityliving == entity) {
+                             d1 = 1.0D;
+diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
+index 5c4e28220fcac318daae9cb36ad6e1dcff2fbc47..afef459cd498a1162100ca9bb50af08247678f5f 100644
+--- a/src/main/java/net/minecraft/server/EntityWither.java
++++ b/src/main/java/net/minecraft/server/EntityWither.java
+@@ -344,7 +344,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
+                         double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
+                         if ( world.spigotConfig.witherSpawnSoundRadius > 0 && distanceSquared > world.spigotConfig.witherSpawnSoundRadius * world.spigotConfig.witherSpawnSoundRadius ) continue; // Spigot
+                         if (distanceSquared > viewDistance * viewDistance) {
+-                            double deltaLength = Math.sqrt(distanceSquared);
++                            double deltaLength = net.jafama.FastMath.sqrt(distanceSquared);
+                             double relativeX = player.locX() + (deltaX / deltaLength) * viewDistance;
+                             double relativeZ = player.locZ() + (deltaZ / deltaLength) * viewDistance;
+                             player.playerConnection.sendPacket(new PacketPlayOutWorldEvent(1023, new BlockPosition((int) relativeX, (int) this.locY(), (int) relativeZ), 0, true));
+diff --git a/src/main/java/net/minecraft/server/Explosion.java b/src/main/java/net/minecraft/server/Explosion.java
+index bef7db87779a41dfa42794df1e51bba649ea8c72..d2af13c7b25bc5ca3675e9d75238940f16470eef 100644
+--- a/src/main/java/net/minecraft/server/Explosion.java
++++ b/src/main/java/net/minecraft/server/Explosion.java
+@@ -112,7 +112,7 @@ public class Explosion {
+                         double d0 = (double) ((float) k / 15.0F * 2.0F - 1.0F);
+                         double d1 = (double) ((float) i / 15.0F * 2.0F - 1.0F);
+                         double d2 = (double) ((float) j / 15.0F * 2.0F - 1.0F);
+-                        double d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
++                        double d3 = net.jafama.FastMath.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+ 
+                         d0 /= d3;
+                         d1 /= d3;
+diff --git a/src/main/java/net/minecraft/server/ItemEnderEye.java b/src/main/java/net/minecraft/server/ItemEnderEye.java
+index bc6e2d7dda6c85e89967d06649558aafd8f2624b..803100df930635b741b0af56b9e8d7aed6b4ec29 100644
+--- a/src/main/java/net/minecraft/server/ItemEnderEye.java
++++ b/src/main/java/net/minecraft/server/ItemEnderEye.java
+@@ -45,7 +45,7 @@ public class ItemEnderEye extends Item {
+                         double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
+                         if (world.spigotConfig.endPortalSoundRadius > 0 && distanceSquared > world.spigotConfig.endPortalSoundRadius * world.spigotConfig.endPortalSoundRadius) continue; // Spigot
+                         if (distanceSquared > viewDistance * viewDistance) {
+-                            double deltaLength = Math.sqrt(distanceSquared);
++                            double deltaLength = net.jafama.FastMath.sqrt(distanceSquared);
+                             double relativeX = player.locX() + (deltaX / deltaLength) * viewDistance;
+                             double relativeZ = player.locZ() + (deltaZ / deltaLength) * viewDistance;
+                             player.playerConnection.sendPacket(new PacketPlayOutWorldEvent(1038, new BlockPosition((int) relativeX, (int) soundPos.getY(), (int) relativeZ), 0, true));
+diff --git a/src/main/java/net/minecraft/server/MCUtil.java b/src/main/java/net/minecraft/server/MCUtil.java
+index e77e8b228195cfb6375804d2bbcb8438e6fbcf5c..05e20e6cf13c724cb5caa24f2278eabfcfff39b3 100644
+--- a/src/main/java/net/minecraft/server/MCUtil.java
++++ b/src/main/java/net/minecraft/server/MCUtil.java
+@@ -419,7 +419,7 @@ public final class MCUtil {
+      * @return
+      */
+     public static double distance(Entity e1, Entity e2) {
+-        return Math.sqrt(distanceSq(e1, e2));
++        return net.jafama.FastMath.sqrt(distanceSq(e1, e2));
+     }
+ 
+ 
+@@ -430,7 +430,7 @@ public final class MCUtil {
+      * @return
+      */
+     public static double distance(BlockPosition e1, BlockPosition e2) {
+-        return Math.sqrt(distanceSq(e1, e2));
++        return net.jafama.FastMath.sqrt(distanceSq(e1, e2));
+     }
+ 
+     /**
+@@ -444,7 +444,7 @@ public final class MCUtil {
+      * @return
+      */
+     public static double distance(double x1, double y1, double z1, double x2, double y2, double z2) {
+-        return Math.sqrt(distanceSq(x1, y1, z1, x2, y2, z2));
++        return net.jafama.FastMath.sqrt(distanceSq(x1, y1, z1, x2, y2, z2));
+     }
+ 
+     /**
+diff --git a/src/main/java/net/minecraft/server/MathHelper.java b/src/main/java/net/minecraft/server/MathHelper.java
+index cd8204778ec74e5748021b367d8aa7ceec85c6e6..af8730632c31d744dc0f4bdb7db9c6b31cf7ec74 100644
+--- a/src/main/java/net/minecraft/server/MathHelper.java
++++ b/src/main/java/net/minecraft/server/MathHelper.java
+@@ -29,14 +29,23 @@ public class MathHelper {
+         return CompactSineLUT.cos(f); // Dionysus - CompactSineLUT
+     }
+ 
++    public static float sqrt(float f) { return MathHelper.c(f); } // Yatopia - OBFHELPER
+     public static float c(float f) {
+-        return (float) Math.sqrt((double) f);
++        return (float) net.jafama.FastMath.sqrt((double) f);
+     }
+ 
+     public static float sqrt(double d0) {
++        return (float) net.jafama.FastMath.sqrt(d0);
++    }
++
++    public static float sqrtVanilla(double d0) {
+         return (float) Math.sqrt(d0);
+     }
+ 
++    public static float sqrtVanilla(float f) {
++        return (float) Math.sqrt((double) f);
++    }
++
+     public static int d(float f) {
+         int i = (int) f;
+ 
+diff --git a/src/main/java/net/minecraft/server/Navigation.java b/src/main/java/net/minecraft/server/Navigation.java
+index da15615a19474d5db9bd46c3d772f467ec58b133..573705c9277f4eed02c171fa707f156fd4c169c2 100644
+--- a/src/main/java/net/minecraft/server/Navigation.java
++++ b/src/main/java/net/minecraft/server/Navigation.java
+@@ -116,7 +116,7 @@ public class Navigation extends NavigationAbstract {
+         if (d2 < 1.0E-8D) {
+             return false;
+         } else {
+-            double d3 = 1.0D / Math.sqrt(d2);
++            double d3 = 1.0D / net.jafama.FastMath.sqrt(d2);
+ 
+             d0 *= d3;
+             d1 *= d3;
+diff --git a/src/main/java/net/minecraft/server/NavigationFlying.java b/src/main/java/net/minecraft/server/NavigationFlying.java
+index 013bdfe5540ae594a7f9cbe3ef8dc54dfb25afd4..3ef45859fe8a4d0d4bf9cf730ae197e06d8a6ad6 100644
+--- a/src/main/java/net/minecraft/server/NavigationFlying.java
++++ b/src/main/java/net/minecraft/server/NavigationFlying.java
+@@ -68,7 +68,7 @@ public class NavigationFlying extends NavigationAbstract {
+         if (d3 < 1.0E-8D) {
+             return false;
+         } else {
+-            double d4 = 1.0D / Math.sqrt(d3);
++            double d4 = 1.0D / net.jafama.FastMath.sqrt(d3);
+ 
+             d0 *= d4;
+             d1 *= d4;
+diff --git a/src/main/java/net/minecraft/server/RandomPositionGenerator.java b/src/main/java/net/minecraft/server/RandomPositionGenerator.java
+index 7c041c4e75796557e69d11396ca13fafbb146f9a..688e0037bc0b8e907a92ff0b5b8910608962d806 100644
+--- a/src/main/java/net/minecraft/server/RandomPositionGenerator.java
++++ b/src/main/java/net/minecraft/server/RandomPositionGenerator.java
+@@ -154,7 +154,7 @@ public class RandomPositionGenerator {
+         if (vec3d != null && d0 < 3.141592653589793D) {
+             double d1 = MathHelper.d(vec3d.z, vec3d.x) - 1.5707963705062866D;
+             double d2 = d1 + (double) (2.0F * random.nextFloat() - 1.0F) * d0;
+-            double d3 = Math.sqrt(random.nextDouble()) * (double) MathHelper.a * (double) i;
++            double d3 = net.jafama.FastMath.sqrt(random.nextDouble()) * (double) MathHelper.a * (double) i;
+             double d4 = -d3 * MathHelper.sin(d2);
+             double d5 = d3 * MathHelper.cos(d2);
+ 
+diff --git a/src/main/java/net/minecraft/server/WorldChunkManagerTheEnd.java b/src/main/java/net/minecraft/server/WorldChunkManagerTheEnd.java
+index 70924c2942f6cc668eb4d11afdb42a966bd5edc8..d1aee6d09f5879d063a482ffa67cc0e62178f04d 100644
+--- a/src/main/java/net/minecraft/server/WorldChunkManagerTheEnd.java
++++ b/src/main/java/net/minecraft/server/WorldChunkManagerTheEnd.java
+@@ -82,7 +82,7 @@ public class WorldChunkManagerTheEnd extends WorldChunkManager {
+         int i1 = i % 2;
+         int j1 = j % 2;
+         // Paper start - cast ints to long to avoid integer overflow
+-        float f = 100.0F - MathHelper.sqrt((long) i * (long) i + (long) j * (long) j) * 8.0F;
++        float f = 100.0F - MathHelper.sqrtVanilla((long) i * (long) i + (long) j * (long) j) * 8.0F;
+         // Paper end
+ 
+         f = MathHelper.a(f, -100.0F, 80.0F);

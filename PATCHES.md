@@ -388,6 +388,7 @@ This is an overview over all patches that are currently used.
 | server |  dont load chunks for physics      | Aikar |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fully remove snooper      | Simon Gardling |  |
+| server |  jafama fast math      | Simon Gardling |  |
 | server |  lithium DataTrackerMixin      | JellySquid | tr7zw |
 | server |  lithium HashedList      | JellySquid |  |
 | server |  lithium MixinBox      | JellySquid |  |
@@ -402,4 +403,5 @@ This is an overview over all patches that are currently used.
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
 | server |  remove world size checks      | Simon Gardling |  |
+| server |  replace Math.sin and Math.cos with MathHelper      | Simon Gardling |  |
 | server |  tic-tacs: unblocking      | Gegy |  |
