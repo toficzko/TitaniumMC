@@ -160,6 +160,25 @@ index b108874d977a4fb1a7c0d52f66bc08390decb4d0..9e89cf0747bdc3d17051bbb3df8f44b5
          this.setFuseTicks(80);
          this.lastX = d0;
          this.lastY = d1;
+diff --git a/src/main/java/net/minecraft/server/MathHelper.java b/src/main/java/net/minecraft/server/MathHelper.java
+index cd8204778ec74e5748021b367d8aa7ceec85c6e6..08884693b022f979d110f4a9c4ffcae5dea91b2b 100644
+--- a/src/main/java/net/minecraft/server/MathHelper.java
++++ b/src/main/java/net/minecraft/server/MathHelper.java
+@@ -29,6 +29,14 @@ public class MathHelper {
+         return CompactSineLUT.cos(f); // Dionysus - CompactSineLUT
+     }
+ 
++    public static float sin(double f) {
++        return CompactSineLUT.sin((float)f); // Dionysus - CompactSineLUT
++    }
++
++    public static float cos(double f) {
++        return CompactSineLUT.cos((float)f); // Dionysus - CompactSineLUT
++    }
++
+     public static float c(float f) {
+         return (float) Math.sqrt((double) f);
+     }
 diff --git a/src/main/java/net/minecraft/server/RandomPositionGenerator.java b/src/main/java/net/minecraft/server/RandomPositionGenerator.java
 index aaa89a39bf697bd0f3354005b428d858f065f66b..7c041c4e75796557e69d11396ca13fafbb146f9a 100644
 --- a/src/main/java/net/minecraft/server/RandomPositionGenerator.java
@@ -175,18 +194,3 @@ index aaa89a39bf697bd0f3354005b428d858f065f66b..7c041c4e75796557e69d11396ca13faf
  
              if (Math.abs(d4) <= (double) i && Math.abs(d5) <= (double) i) {
                  int l = random.nextInt(2 * j + 1) - j + k;
-diff --git a/src/main/java/net/minecraft/server/WorldGenEnder.java b/src/main/java/net/minecraft/server/WorldGenEnder.java
-index 5eb9b3d35e12c2d3dc5f158cbed0b0a0853ee116..c0986119fa2e753ba3b0da6c96f794ef6846b4f9 100644
---- a/src/main/java/net/minecraft/server/WorldGenEnder.java
-+++ b/src/main/java/net/minecraft/server/WorldGenEnder.java
-@@ -110,8 +110,8 @@ public class WorldGenEnder extends WorldGenerator<WorldGenFeatureEndSpikeConfigu
-             List<WorldGenEnder.Spike> list1 = Lists.newArrayList();
- 
-             for (int i = 0; i < 10; ++i) {
--                int j = MathHelper.floor(42.0D * Math.cos(2.0D * (-3.141592653589793D + 0.3141592653589793D * (double) i)));
--                int k = MathHelper.floor(42.0D * Math.sin(2.0D * (-3.141592653589793D + 0.3141592653589793D * (double) i)));
-+                int j = MathHelper.floor(42.0D * MathHelper.cos(2.0D * (-3.141592653589793D + 0.3141592653589793D * (double) i)));
-+                int k = MathHelper.floor(42.0D * MathHelper.sin(2.0D * (-3.141592653589793D + 0.3141592653589793D * (double) i)));
-                 int l = (Integer) list.get(i);
-                 int i1 = 2 + l / 3;
-                 int j1 = 76 + l * 3;

@@ -324,11 +324,11 @@ index e77e8b228195cfb6375804d2bbcb8438e6fbcf5c..05e20e6cf13c724cb5caa24f2278eabf
  
      /**
 diff --git a/src/main/java/net/minecraft/server/MathHelper.java b/src/main/java/net/minecraft/server/MathHelper.java
-index cd8204778ec74e5748021b367d8aa7ceec85c6e6..af8730632c31d744dc0f4bdb7db9c6b31cf7ec74 100644
+index 08884693b022f979d110f4a9c4ffcae5dea91b2b..dadff994ffdfe9a71bd948fa88480d8fa108749d 100644
 --- a/src/main/java/net/minecraft/server/MathHelper.java
 +++ b/src/main/java/net/minecraft/server/MathHelper.java
-@@ -29,14 +29,23 @@ public class MathHelper {
-         return CompactSineLUT.cos(f); // Dionysus - CompactSineLUT
+@@ -37,14 +37,23 @@ public class MathHelper {
+         return CompactSineLUT.cos((float)f); // Dionysus - CompactSineLUT
      }
  
 +    public static float sqrt(float f) { return MathHelper.c(f); } // Yatopia - OBFHELPER
