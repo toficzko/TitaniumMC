@@ -507,10 +507,10 @@ index b7f5c932197529c0ea045cfe696fd5da1ccc7202..af6245ba0c6b1389703722596ab7aa50
 +    } // Yatopia end
  }
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index e33d9548b0c8a43503b09c565c653f3d68748112..0571250944c53b1950abaa48ca59689e8cd55f06 100644
+index 43db7e9037577e33c5126a4013ba4b1fb912f774..9dcae7bce1c68556fab396b09ba908dde7b28afd 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
-@@ -336,6 +336,14 @@ public class Chunk implements IChunkAccess {
+@@ -337,6 +337,15 @@ public class Chunk implements IChunkAccess {
  
          // CraftBukkit start
          this.bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);
@@ -522,9 +522,10 @@ index e33d9548b0c8a43503b09c565c653f3d68748112..0571250944c53b1950abaa48ca59689e
 +                this.sections[i2] = null;
 +            }
 +        } // Yatopia end
++
+         this.lightningTick = this.world.random.nextInt(100000) << 1; // Airplane - initialize lightning tick
      }
  
-     public org.bukkit.Chunk bukkitChunk;
 diff --git a/src/main/java/net/minecraft/server/ChunkRegionLoader.java b/src/main/java/net/minecraft/server/ChunkRegionLoader.java
 index e77da341b765725771726283d3a8249b514b40da..c44333ec5b0c1914f7cb9f4b3b39626069136c22 100644
 --- a/src/main/java/net/minecraft/server/ChunkRegionLoader.java
