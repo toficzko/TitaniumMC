@@ -9,7 +9,6 @@ This is an overview over all patches that are currently used.
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
 | server |  (Dionysus) CompactSineLUT      | nopjmp |  |
-| server |  (PaperPR) Optimize DataPaletteHash      | stonar96 |  |
 | server |  (PaperPR) optimized dirt and snow spreading      | lukas81298 |  |
 | server |  AFK API      | William Blake Galbreath |  |
 | api |  AFK API      | William Blake Galbreath |  |
@@ -329,11 +328,7 @@ This is an overview over all patches that are currently used.
 | server |  Remove streams for villager AI      | Spottedleaf |  |
 | server |  Replace player chunk loader system      | Spottedleaf |  |
 | server |  Respect PlayerKickEvent leaveMessage      | Ivan Pekov |  |
-| server |  Revert &quot;Buffer joins to world&quot;      | Simon Gardling |  |
-| server |  Revert &quot;Fix curing zombie villager discount exploit&quot;      | Simon Gardling |  |
-| server |  Revert &quot;Fix piston physics inconsistency - MC-188840&quot;      | Simon Gardling |  |
 | server |  Revert &quot;Fix sand duping&quot;      | Simon Gardling |  |
-| server |  Revert &quot;Prevent headless pistons from being created&quot;      | Simon Gardling |  |
 | server |  Revert MC-4 fix      | Spottedleaf |  |
 | server |  Revert getChunkAt(Async) retaining chunks for long periods of      | Spottedleaf |  |
 | server |  Rework PlayerChunk main thread checks      | Spottedleaf |  |
