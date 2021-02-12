@@ -329,6 +329,7 @@ This is an overview over all patches that are currently used.
 | server |  Replace player chunk loader system      | Spottedleaf |  |
 | server |  Respect PlayerKickEvent leaveMessage      | Ivan Pekov |  |
 | server |  Revert &quot;Fix sand duping&quot;      | Simon Gardling |  |
+| server |  Revert &quot;Optimise general POI access&quot;      | ishland |  |
 | server |  Revert MC-4 fix      | Spottedleaf |  |
 | server |  Revert getChunkAt(Async) retaining chunks for long periods of      | Spottedleaf |  |
 | server |  Rework PlayerChunk main thread checks      | Spottedleaf |  |
