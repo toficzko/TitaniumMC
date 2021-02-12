@@ -5,10 +5,10 @@ Subject: [PATCH] Fix exp drop of zombie pigmen (MC-56653)
 
 
 diff --git a/src/main/java/de/minebench/origami/OrigamiConfig.java b/src/main/java/de/minebench/origami/OrigamiConfig.java
-index bf6b9f4dbd8c3f649b4e059f41c0e72e0d0f70c6..f452cc575adf9137f3b9f1eef1904f8116c7a7ec 100644
+index bd7210d6f3b72c628638d4e1312e55e5bfd2338e..740bf89d566097308fcd24f77ba3149217d0feea 100644
 --- a/src/main/java/de/minebench/origami/OrigamiConfig.java
 +++ b/src/main/java/de/minebench/origami/OrigamiConfig.java
-@@ -132,6 +132,10 @@ public final class OrigamiConfig {
+@@ -125,6 +125,10 @@ public final class OrigamiConfig {
          private void observerClock() {
              disableObserverClocks = getBoolean("disable-observer-clocks", disableObserverClocks);
          }

@@ -5,7 +5,7 @@ Subject: [PATCH] Item stuck sleep config
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
-index 954d37ca9e1079616836d3f441845b37c5a541f3..c456e3d6377f5b59c2383da9d52bdb43d3685064 100644
+index ec37d2c3b0393c43097bdfc6064ebe3ab8bc28ce..9f0674196c709f121f2baea5ca95138303a8c48d 100644
 --- a/src/main/java/net/minecraft/server/EntityItem.java
 +++ b/src/main/java/net/minecraft/server/EntityItem.java
 @@ -85,7 +85,7 @@ public class EntityItem extends Entity {

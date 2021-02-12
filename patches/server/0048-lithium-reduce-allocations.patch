@@ -11,10 +11,10 @@ Portions of this patch that were sourced from Lithium were remapped from Yarn ma
 Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 
 diff --git a/src/main/java/net/minecraft/server/BlockComposter.java b/src/main/java/net/minecraft/server/BlockComposter.java
-index 55a5999080b831217b88ed3657e95218fe982c18..8025b5d258fc761f1287a395889e352beb105ad7 100644
+index ccb61d656b57f02efaeb60df4a70169aef302eed..bd51fb811864009242b460552ecaae35387a335a 100644
 --- a/src/main/java/net/minecraft/server/BlockComposter.java
 +++ b/src/main/java/net/minecraft/server/BlockComposter.java
-@@ -305,7 +305,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
+@@ -304,7 +304,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
  
          @Override
          public int[] getSlotsForFace(EnumDirection enumdirection) {
@@ -23,7 +23,7 @@ index 55a5999080b831217b88ed3657e95218fe982c18..8025b5d258fc761f1287a395889e352b
          }
  
          @Override
-@@ -355,7 +355,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
+@@ -354,7 +354,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
  
          @Override
          public int[] getSlotsForFace(EnumDirection enumdirection) {
@@ -32,7 +32,7 @@ index 55a5999080b831217b88ed3657e95218fe982c18..8025b5d258fc761f1287a395889e352b
          }
  
          @Override
-@@ -391,7 +391,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
+@@ -390,7 +390,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
  
          @Override
          public int[] getSlotsForFace(EnumDirection enumdirection) {

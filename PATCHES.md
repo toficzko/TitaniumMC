@@ -9,6 +9,7 @@ This is an overview over all patches that are currently used.
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
 | server |  (Dionysus) CompactSineLUT      | nopjmp |  |
+| server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
 | server |  (PaperPR) optimized dirt and snow spreading      | lukas81298 |  |
 | server |  AFK API      | William Blake Galbreath |  |
 | api |  AFK API      | William Blake Galbreath |  |
@@ -194,7 +195,6 @@ This is an overview over all patches that are currently used.
 | server |  Heavily optimize recipe lookups in CraftingManager      | Mykyta Komarn | Ivan Pekov, ishland |
 | server |  Highly optimise single and multi-AABB VoxelShapes and      | Spottedleaf |  |
 | server |  Highly optimize VillagePlace filtering      | Ivan Pekov |  |
-| server |  Hopper Optimizations      | Phoenix616 |  |
 | server |  Illusioners AI settings      | William Blake Galbreath |  |
 | server |  Implement TPSBar      | BillyGalbreath |  |
 | server |  Implement bed explosion options      | William Blake Galbreath |  |
