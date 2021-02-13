@@ -1032,7 +1032,7 @@ index ceeb515f4528551659598d9999917f8596e3eded..2ed1c3417e81dd53544c22a0458dd00b
  
          public final String worldName;
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index ae07ea2a34f5cd82ce2eae523359cb7540065335..de6a57577e7317de2a48b26d9e619b355a6f5e32 100644
+index 8bbfa9cd7117e51f2507bfebbfbe3dd44c5150aa..3a29c0b595252247f1f672c37c108ae52c088793 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -398,12 +398,12 @@ public class Chunk implements IChunkAccess {
@@ -1084,7 +1084,7 @@ index ae07ea2a34f5cd82ce2eae523359cb7540065335..de6a57577e7317de2a48b26d9e619b35
          }
          // Paper end - no-tick view distance
      }
-@@ -1009,6 +985,7 @@ public class Chunk implements IChunkAccess {
+@@ -1007,6 +983,7 @@ public class Chunk implements IChunkAccess {
          // Paper end - neighbour cache
          org.bukkit.Server server = this.world.getServer();
          ((WorldServer)this.world).getChunkProvider().addLoadedChunk(this); // Paper

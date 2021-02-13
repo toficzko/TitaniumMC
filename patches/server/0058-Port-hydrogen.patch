@@ -507,7 +507,7 @@ index b7f5c932197529c0ea045cfe696fd5da1ccc7202..af6245ba0c6b1389703722596ab7aa50
 +    } // Yatopia end
  }
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 43db7e9037577e33c5126a4013ba4b1fb912f774..7efc8ca03d611a78ee5a55d9113e588c2e69e8ca 100644
+index d8ff5ab5be0264f790d0760c590b17291ec6f75f..7805bce16bcb17751ca2b02f7991d20af40cee48 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -337,6 +337,14 @@ public class Chunk implements IChunkAccess {

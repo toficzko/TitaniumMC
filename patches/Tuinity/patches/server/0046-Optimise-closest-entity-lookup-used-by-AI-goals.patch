@@ -240,7 +240,7 @@ index 387eeb5d770ba9fe564c61df8cc92ac8b1569f61..21e50c75e0bffaa5cc5faf6aa81ae742
      }
  }
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 2e25102b6d7e71b0a536e77c2116981aed8623e2..8c6c653b3454f59cf823fd92f7b464a8f998b675 100644
+index d0b017d89050a8c915d22ea00e469e11461db168..ddc93cbf80d995ccbf796c886842d70576fd2ff5 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -141,6 +141,22 @@ public class Chunk implements IChunkAccess {
@@ -266,7 +266,7 @@ index 2e25102b6d7e71b0a536e77c2116981aed8623e2..8c6c653b3454f59cf823fd92f7b464a8
      public Chunk(World world, ChunkCoordIntPair chunkcoordintpair, BiomeStorage biomestorage, ChunkConverter chunkconverter, TickList<Block> ticklist, TickList<FluidType> ticklist1, long i, @Nullable ChunkSection[] achunksection, @Nullable Consumer<Chunk> consumer) {
          this.sections = new ChunkSection[16];
          this.e = Maps.newHashMap();
-@@ -644,7 +660,7 @@ public class Chunk implements IChunkAccess {
+@@ -643,7 +659,7 @@ public class Chunk implements IChunkAccess {
          entity.chunkX = this.loc.x;
          entity.chunkY = k;
          entity.chunkZ = this.loc.z;
@@ -275,7 +275,7 @@ index 2e25102b6d7e71b0a536e77c2116981aed8623e2..8c6c653b3454f59cf823fd92f7b464a8
          this.entitySlices[k].add(entity); if (entity.hardCollides()) this.hardCollidingEntities[k].add(entity); // Tuinity - optimise hard colliding entities
          // Paper start
          if (entity instanceof EntityItem) {
-@@ -683,7 +699,7 @@ public class Chunk implements IChunkAccess {
+@@ -681,7 +697,7 @@ public class Chunk implements IChunkAccess {
              entity.entitySlice = null;
              entity.inChunk = false;
          }
@@ -284,7 +284,7 @@ index 2e25102b6d7e71b0a536e77c2116981aed8623e2..8c6c653b3454f59cf823fd92f7b464a8
              return;
          }
          if (entity instanceof EntityItem) {
-@@ -996,6 +1012,7 @@ public class Chunk implements IChunkAccess {
+@@ -994,6 +1010,7 @@ public class Chunk implements IChunkAccess {
  
      }
  
