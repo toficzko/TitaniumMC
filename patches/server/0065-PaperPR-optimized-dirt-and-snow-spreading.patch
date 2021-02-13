@@ -5,7 +5,7 @@ Subject: [PATCH] (PaperPR) optimized dirt and snow spreading
 
 
 diff --git a/src/main/java/net/minecraft/server/BlockDirtSnowSpreadable.java b/src/main/java/net/minecraft/server/BlockDirtSnowSpreadable.java
-index 7b29d47dfdef7611db58068af285f76d92a9f12a..0054e9651b242553a9c2df0d1c876470c48c9ed5 100644
+index 7009586430649a87722f6c73cd5a311d7c977196..cc0e7a1910acf48d57be42b9df4fafba8a311338 100644
 --- a/src/main/java/net/minecraft/server/BlockDirtSnowSpreadable.java
 +++ b/src/main/java/net/minecraft/server/BlockDirtSnowSpreadable.java
 @@ -8,9 +8,10 @@ public abstract class BlockDirtSnowSpreadable extends BlockDirtSnow {
@@ -47,9 +47,9 @@ index 7b29d47dfdef7611db58068af285f76d92a9f12a..0054e9651b242553a9c2df0d1c876470
              // CraftBukkit start
              if (org.bukkit.craftbukkit.event.CraftEventFactory.callBlockFadeEvent(worldserver, blockposition, Blocks.DIRT.getBlockData()).isCancelled()) {
                  return;
-@@ -46,9 +53,20 @@ public abstract class BlockDirtSnowSpreadable extends BlockDirtSnow {
-                 for (int i = 0; i < 4; ++i) {
-                     BlockPosition blockposition1 = blockposition.b(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
+@@ -52,9 +59,20 @@ public abstract class BlockDirtSnowSpreadable extends BlockDirtSnow {
+                      */
+                     // Airplane end
  
 -                    if (worldserver.getType(blockposition1).a(Blocks.DIRT) && c(iblockdata1, (IWorldReader) worldserver, blockposition1)) {
 -                        org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockSpreadEvent(worldserver, blockposition, blockposition1, (IBlockData) iblockdata1.set(BlockDirtSnowSpreadable.a, worldserver.getType(blockposition1.up()).a(Blocks.SNOW))); // CraftBukkit

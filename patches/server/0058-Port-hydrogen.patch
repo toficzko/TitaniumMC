@@ -507,10 +507,10 @@ index b7f5c932197529c0ea045cfe696fd5da1ccc7202..af6245ba0c6b1389703722596ab7aa50
 +    } // Yatopia end
  }
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 43db7e9037577e33c5126a4013ba4b1fb912f774..9dcae7bce1c68556fab396b09ba908dde7b28afd 100644
+index 43db7e9037577e33c5126a4013ba4b1fb912f774..7efc8ca03d611a78ee5a55d9113e588c2e69e8ca 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
-@@ -337,6 +337,15 @@ public class Chunk implements IChunkAccess {
+@@ -337,6 +337,14 @@ public class Chunk implements IChunkAccess {
  
          // CraftBukkit start
          this.bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);
@@ -522,7 +522,6 @@ index 43db7e9037577e33c5126a4013ba4b1fb912f774..9dcae7bce1c68556fab396b09ba908dd
 +                this.sections[i2] = null;
 +            }
 +        } // Yatopia end
-+
          this.lightningTick = this.world.random.nextInt(100000) << 1; // Airplane - initialize lightning tick
      }
  

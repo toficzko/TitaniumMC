@@ -373,7 +373,7 @@ index a3d6ab9f76d40d1d4998bc942084cae503e3dfd5..6026160bbacfc8f06d0b882a6c867426
          return this.a;
      }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index b8649ef9f99af15954cb7411da8993c344c4a1c9..1abd74139ebf8968f144f3ceb3c3c39fe5678780 100644
+index 33723937986e2bb843451479cf580abfd3b1702d..68efdd9ca2dc554698c722c62d98de2e481aea7f 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -33,7 +33,9 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
@@ -388,7 +388,7 @@ index b8649ef9f99af15954cb7411da8993c344c4a1c9..1abd74139ebf8968f144f3ceb3c3c39f
      protected static final Logger LOGGER = LogManager.getLogger();
      public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 946464c0e902fd58cb20f3c13e2e567dfd3a3d50..4e968815c2df7df3230f382cbdfffe36bfea23c7 100644
+index 104fe3ff3052d743572a09e5bb36f9702cfde106..43f0cb969cf082c6464e2d39b82c603292c6d72a 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -56,8 +56,9 @@ import org.bukkit.event.weather.LightningStrikeEvent;
