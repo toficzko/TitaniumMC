@@ -1,7 +1,8 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: 2No2Name <50278648+2No2Name@users.noreply.github.com>
 Date: Mon, 15 Feb 2021 14:58:55 -0500
-Subject: [PATCH] lithium: optimize `BlockPos.iterateOutwards` by caching offsets
+Subject: [PATCH] lithium: optimize `BlockPos.iterateOutwards` by caching
+ offsets
 
 Code taken from: https://github.com/CaffeineMC/lithium-fabric/pull/123 by 2No2Name licenced under the LGPLv3 License
 
@@ -139,7 +140,7 @@ index 0000000000000000000000000000000000000000..07714e6b61a9860cbf035804f98973cb
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BlockPosition.java b/src/main/java/net/minecraft/server/BlockPosition.java
-index c4dd89d9bae1960d25b64e2a715a83adde65719a..fb1d259944a9542d92e580e64796af64b57a0240 100644
+index c4dd89d9bae1960d25b64e2a715a83adde65719a..7b320ea0b5d0067eebb84c623a67bbd9f56b3f7e 100644
 --- a/src/main/java/net/minecraft/server/BlockPosition.java
 +++ b/src/main/java/net/minecraft/server/BlockPosition.java
 @@ -12,10 +12,16 @@ import javax.annotation.concurrent.Immutable;
@@ -177,17 +178,18 @@ index c4dd89d9bae1960d25b64e2a715a83adde65719a..fb1d259944a9542d92e580e64796af64
      public static int d(long i) {
          return (int) ((i << 26) >> 38);  // Paper - simplify/inline
      }
-@@ -259,7 +268,14 @@ public class BlockPosition extends BaseBlockPosition {
+@@ -259,7 +268,15 @@ public class BlockPosition extends BaseBlockPosition {
          };
      }
  
-+    public static Iterable<BlockPosition> iterateOutwards (BlockPosition blockposition, int p_i, int p_j, int p_k) { return BlockPosition.a(blockposition, p_i, p_j, p_k); } // Yatopia - OBFHELPER
++    public static Iterable<BlockPosition> iterateOutwards(BlockPosition blockposition, int p_i, int p_j, int p_k) { return BlockPosition.a(blockposition, p_i, p_j, p_k); } // Yatopia - OBFHELPER
      public static Iterable<BlockPosition> a(BlockPosition blockposition, int p_i, int p_j, int p_k) { // Paper - decompile issues - variable name conflicts to inner class field refs
++        // Yatopia start - lithium: optimize `BlockPos.iterateOutwards` by caching offsets
 +        if (blockposition != me.jellysquid.mods.lithium.common.cached_blockpos_iteration.IterateOutwardsCache.POS_ZERO) {
 +            final LongList positions = p_i == 8 && p_j == 4 && p_k == 8 ? HOGLIN_PIGLIN_CACHE : ITERATE_OUTWARDS_CACHE.getOrCompute(p_i, p_j, p_j);
 +            return new LongList2BlockPosMutableIterable(blockposition, positions);
 +        }
-+        
++        // Yatopia end
 +
          int l_decompiled = p_i + p_j + p_k; // Paper - decompile issues
          int i1 = blockposition.getX();
