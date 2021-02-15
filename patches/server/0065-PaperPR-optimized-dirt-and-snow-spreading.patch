@@ -5,7 +5,7 @@ Subject: [PATCH] (PaperPR) optimized dirt and snow spreading
 
 
 diff --git a/src/main/java/net/minecraft/server/BlockDirtSnowSpreadable.java b/src/main/java/net/minecraft/server/BlockDirtSnowSpreadable.java
-index 7009586430649a87722f6c73cd5a311d7c977196..cc0e7a1910acf48d57be42b9df4fafba8a311338 100644
+index 6c5d96853d47850b81ce85e56a516c554819ef25..6dc260d2d95fdfc55d1fa05d75817bf04bd0b17c 100644
 --- a/src/main/java/net/minecraft/server/BlockDirtSnowSpreadable.java
 +++ b/src/main/java/net/minecraft/server/BlockDirtSnowSpreadable.java
 @@ -8,9 +8,10 @@ public abstract class BlockDirtSnowSpreadable extends BlockDirtSnow {
