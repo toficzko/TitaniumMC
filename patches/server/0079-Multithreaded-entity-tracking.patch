@@ -138,7 +138,7 @@ index 0000000000000000000000000000000000000000..01a6f0d0207a40648e27603e80f4dcd1
 +
 +}
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 7805bce16bcb17751ca2b02f7991d20af40cee48..c2df175601974800ae2aa184152703ddfb947c5f 100644
+index faae524029cd58f0b6c0234e09f6ffff4e533d7f..31a0ea67545342ed0ed189e34fc20e7829303430 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -65,6 +65,26 @@ public class Chunk implements IChunkAccess {

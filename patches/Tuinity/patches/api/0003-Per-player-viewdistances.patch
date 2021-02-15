@@ -8,10 +8,10 @@ Add per player no-tick, tick, and send view distances.
 Also add send view distance to World.
 
 diff --git a/src/main/java/org/bukkit/World.java b/src/main/java/org/bukkit/World.java
-index 4df6482da0cc498cad50eabdac183bea3634c74b..2e56630db414d122850190414f9f79dbd2d4c555 100644
+index 042baabf18f86a9c915db7e9d515f26f840a12d7..03be42da52fe1bd5daf33d18d4e55c9062f72439 100644
 --- a/src/main/java/org/bukkit/World.java
 +++ b/src/main/java/org/bukkit/World.java
-@@ -3458,6 +3458,26 @@ public interface World extends PluginMessageRecipient, Metadatable {
+@@ -3467,6 +3467,26 @@ public interface World extends PluginMessageRecipient, Metadatable {
       * @param viewDistance view distance in [2, 32]
       */
      void setNoTickViewDistance(int viewDistance);

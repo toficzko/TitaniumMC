@@ -1032,7 +1032,7 @@ index ceeb515f4528551659598d9999917f8596e3eded..2ed1c3417e81dd53544c22a0458dd00b
  
          public final String worldName;
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 8bbfa9cd7117e51f2507bfebbfbe3dd44c5150aa..3a29c0b595252247f1f672c37c108ae52c088793 100644
+index 68d6fb69a0c1b98b3c11b6d80783faaa58272526..b03ff6bbf82da7bfa1e2b739a43e5cef31b36f4a 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -398,12 +398,12 @@ public class Chunk implements IChunkAccess {
@@ -1084,7 +1084,7 @@ index 8bbfa9cd7117e51f2507bfebbfbe3dd44c5150aa..3a29c0b595252247f1f672c37c108ae5
          }
          // Paper end - no-tick view distance
      }
-@@ -1007,6 +983,7 @@ public class Chunk implements IChunkAccess {
+@@ -1009,6 +985,7 @@ public class Chunk implements IChunkAccess {
          // Paper end - neighbour cache
          org.bukkit.Server server = this.world.getServer();
          ((WorldServer)this.world).getChunkProvider().addLoadedChunk(this); // Paper
@@ -1676,10 +1676,10 @@ index 93c0c3376c3cb2fe416c8ae3e740ffda5f985b78..1c396a85e88e0c37c3c0ca8ac8f2437e
                  // Paper end - per player view distance
              }
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index f34e1570052eac83fb3e03b3e361d8d4f451abac..24d174cd346f101957fef087ff2dbe575434215e 100644
+index 15ce459aa15a8bb936740a8c055f4304e21312d2..4886621c3cba05c2d0184835a8ec9d5b0d7af980 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-@@ -2615,7 +2615,7 @@ public class CraftWorld implements World {
+@@ -2620,7 +2620,7 @@ public class CraftWorld implements World {
  
      @Override
      public int getNoTickViewDistance() {
@@ -1688,7 +1688,7 @@ index f34e1570052eac83fb3e03b3e361d8d4f451abac..24d174cd346f101957fef087ff2dbe57
      }
  
      @Override
-@@ -2624,11 +2624,22 @@ public class CraftWorld implements World {
+@@ -2629,11 +2629,22 @@ public class CraftWorld implements World {
              throw new IllegalArgumentException("View distance " + viewDistance + " is out of range of [2, 32]");
          }
          net.minecraft.server.PlayerChunkMap chunkMap = getHandle().getChunkProvider().playerChunkMap;
