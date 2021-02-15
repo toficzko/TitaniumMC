@@ -42,35 +42,24 @@ index 1c6dbd29c8414b3e33aedcc50bee5b5d9ce134d1..5c0d59ce08e6fcb7f2158f4fe0b88310
              if (!booleansupplier.getAsBoolean()) {
                  worldupgrader.a();
 diff --git a/src/main/java/net/minecraft/server/WorldUpgrader.java b/src/main/java/net/minecraft/server/WorldUpgrader.java
-index 888dae2d5ee8a71e83dd24e5f3c6bc8513016f9d..85c142bbdc0e9b93cad73ab44acb5790e52834af 100644
+index 888dae2d5ee8a71e83dd24e5f3c6bc8513016f9d..7a0a04eec37a30f74aff15a73f31b085724eff10 100644
 --- a/src/main/java/net/minecraft/server/WorldUpgrader.java
 +++ b/src/main/java/net/minecraft/server/WorldUpgrader.java
-@@ -20,11 +20,24 @@ import java.util.regex.Matcher;
+@@ -20,6 +20,13 @@ import java.util.regex.Matcher;
  import java.util.regex.Pattern;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
 +// Yatopia start
 +import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-+import com.destroystokyo.paper.io.PaperFileIOThread;
-+import com.ibm.asyncutil.locks.AsyncNamedLock;
-+import java.util.Arrays;
 +import java.util.Set;
 +import java.util.concurrent.CompletableFuture;
 +import java.util.concurrent.ExecutorService;
 +import java.util.concurrent.Executors;
-+import java.util.concurrent.Semaphore;
-+import java.util.concurrent.TimeUnit;
 +// Yatopia end
  
  public class WorldUpgrader {
  
-     private static final Logger LOGGER = LogManager.getLogger();
-     private static final ThreadFactory b = (new ThreadFactoryBuilder()).setDaemon(true).build();
-+    private static final int MAX_CONCURRENT_UPGRADE = Integer.getInteger("Yatopia.maxConcurrentWorldUpgrade", 2048); // Yatopia
-     private final ImmutableSet<ResourceKey<DimensionManager>> c; // CraftBukkit
-     private final boolean d;
-     private final Convertable.ConversionSession e;
-@@ -33,9 +46,9 @@ public class WorldUpgrader {
+@@ -33,9 +40,9 @@ public class WorldUpgrader {
      private volatile boolean h = true;
      private volatile boolean i;
      private volatile float j;
@@ -83,152 +72,54 @@ index 888dae2d5ee8a71e83dd24e5f3c6bc8513016f9d..85c142bbdc0e9b93cad73ab44acb5790
      private final Object2FloatMap<ResourceKey<DimensionManager>> n = Object2FloatMaps.synchronize(new Object2FloatOpenCustomHashMap(SystemUtils.k())); // CraftBukkit
      private volatile IChatBaseComponent o = new ChatMessage("optimizeWorld.stage.counting");
      private static final Pattern p = Pattern.compile("^r\\.(-?[0-9]+)\\.(-?[0-9]+)\\.mca$");
-@@ -100,6 +113,14 @@ public class WorldUpgrader {
+@@ -100,6 +107,11 @@ public class WorldUpgrader {
  
              this.o = new ChatMessage("optimizeWorld.stage.upgrading");
  
 +            // Yatopia start
-+            Set<CompletableFuture<Void>> futures = new ObjectOpenHashSet<>();
-+            ExecutorService IOExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactoryBuilder().setNameFormat("WorldUpgrade IO #%d").setDaemon(true).setPriority(Thread.NORM_PRIORITY - 1).build());
-+            ExecutorService mainExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactoryBuilder().setNameFormat("WorldUpgrade Worker #%d").setDaemon(true).setPriority(Thread.NORM_PRIORITY - 1).build());
-+            ExecutorService countingExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("WorldUpgrade Counter").setDaemon(true).setPriority(Thread.MIN_PRIORITY).build());
-+            AsyncNamedLock<PaperFileIOThread.RegionFileCoord> regionFileLock = AsyncNamedLock.createFair();
-+            final Semaphore working = new Semaphore(MAX_CONCURRENT_UPGRADE);
++            final ExecutorService upgradeExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactoryBuilder().setDaemon(true).setPriority(Thread.NORM_PRIORITY - 1).setNameFormat("WorldUpgrader Worker #%d").build());
++            final Set<CompletableFuture<Void>> futures = new ObjectOpenHashSet<>();
++            final com.ibm.asyncutil.locks.AsyncNamedLock<Integer> regionFileLocks = com.ibm.asyncutil.locks.AsyncNamedLock.createFair();
 +            // Yatopia end
              while (this.h) {
                  boolean flag = false;
                  float f1 = 0.0F;
-@@ -112,17 +133,33 @@ public class WorldUpgrader {
-                     IChunkLoader ichunkloader = (IChunkLoader) immutablemap1.get(resourcekey2);
+@@ -113,6 +125,11 @@ public class WorldUpgrader {
  
                      if (listiterator.hasNext()) {
-+                        // Yatopia start
-+                        working.acquireUninterruptibly();
-+                        Thread.interrupted();
                          ChunkCoordIntPair chunkcoordintpair = (ChunkCoordIntPair) listiterator.next();
--                        boolean flag1 = false;
--
--                        try {
-+                        final CompletableFuture<Void> future = regionFileLock.acquireLock(new PaperFileIOThread.RegionFileCoord(chunkcoordintpair.getRegionX(), chunkcoordintpair.getRegionZ())).toCompletableFuture().thenApplyAsync(lockToken -> {
-+                            try {
-                             NBTTagCompound nbttagcompound = ichunkloader.read(chunkcoordintpair);
++                        // Yatopia start
++                        flag = true;
++                        futures.add(regionFileLocks.acquireLock(String.format("%d %d", chunkcoordintpair.getRegionX(), chunkcoordintpair.getRegionZ()).hashCode()).toCompletableFuture().thenAcceptAsync(lockToken -> {
++                        try {
++                        // Yatopia end
+                         boolean flag1 = false;
  
-+                            NBTTagCompound nbttagcompound1 = nbttagcompound != null ? ichunkloader.getChunkData(resourcekey2, () -> {
-+                                return this.q;
-+                            }, nbttagcompound, chunkcoordintpair, null) : null; // CraftBukkit
-+                            return Arrays.asList(nbttagcompound, nbttagcompound1);
-+                            } catch (IOException ioException) {
-+                                throw new RuntimeException(ioException);
-+                            } finally {
-+                                lockToken.releaseLock();
-+                            }
-+                        }, IOExecutor).thenApplyAsync(nbtTagCompoundList -> {
-+                            NBTTagCompound nbttagcompound = nbtTagCompoundList.get(0);
-+                            NBTTagCompound nbttagcompound1 = nbtTagCompoundList.get(1);
-                             if (nbttagcompound != null) {
-                                 int j = IChunkLoader.a(nbttagcompound);
--                                NBTTagCompound nbttagcompound1 = ichunkloader.getChunkData(resourcekey2, () -> {
--                                    return this.q;
--                                }, nbttagcompound, chunkcoordintpair, null); // CraftBukkit
-+                                // Yatopia - moved up
-+                                // NBTTagCompound nbttagcompound1 = ichunkloader.getChunkData(resourcekey2, () -> {
-+                                //     return this.q;
-+                                // }, nbttagcompound, chunkcoordintpair, null); // CraftBukkit
-+                                // Yatopia end
-                                 NBTTagCompound nbttagcompound2 = nbttagcompound1.getCompound("Level");
-                                 ChunkCoordIntPair chunkcoordintpair1 = new ChunkCoordIntPair(nbttagcompound2.getInt("xPos"), nbttagcompound2.getInt("zPos"));
- 
-@@ -140,28 +177,43 @@ public class WorldUpgrader {
-                                 }
- 
-                                 if (flag2) {
--                                    ichunkloader.a(chunkcoordintpair, nbttagcompound1);
--                                    flag1 = true;
-+                                    return nbttagcompound1; // Yatopia - moved down
-                                 }
-+                                // Yatopia start
-                             }
--                        } catch (ReportedException reportedexception) {
--                            Throwable throwable = reportedexception.getCause();
--
--                            if (!(throwable instanceof IOException)) {
--                                throw reportedexception;
--                            }
--
--                            WorldUpgrader.LOGGER.error("Error upgrading chunk {}", chunkcoordintpair, throwable);
--                        } catch (IOException ioexception) {
--                            WorldUpgrader.LOGGER.error("Error upgrading chunk {}", chunkcoordintpair, ioexception);
--                        }
--
--                        if (flag1) {
-+                            return null;
-+                        }, mainExecutor).thenCompose(nbttagcompound1 -> {
-+                            countingExecutor.execute(() -> {
-+                        if (nbttagcompound1 != null) {
-                             ++this.l;
-                         } else {
+                         try {
+@@ -162,7 +179,12 @@ public class WorldUpgrader {
                              ++this.m;
                          }
  
-+                            });
-+                            if (nbttagcompound1 != null)
-+                                return regionFileLock.acquireLock(new PaperFileIOThread.RegionFileCoord(chunkcoordintpair.getRegionX(), chunkcoordintpair.getRegionZ())).thenAcceptAsync(lockToken -> {
-+                                    try {
-+                                        ichunkloader.a(chunkcoordintpair, nbttagcompound1);
-+                                    } catch (IOException ioException) {
-+                                        throw new RuntimeException(ioException);
-+                                    } finally {
-+                                        lockToken.releaseLock();
-+                                    }
-+                                }, IOExecutor);
-+                            return CompletableFuture.completedFuture(null);
-+                        }).handle((unused, throwable) -> {
-+                            working.release();
-+                            if (throwable != null) {
-+                                if (throwable instanceof ReportedException && throwable.getCause() instanceof IOException) {
-+                                    throw ((ReportedException) throwable);
-+                                }
-+                                WorldUpgrader.LOGGER.error("Error upgrading chunk {}", chunkcoordintpair, throwable);
-+                            }
-+                            return unused;
-+                        });
-+                        futures.add(future);
+-                        flag = true;
++                        // Yatopia start
++                        } finally {
++                            lockToken.releaseLock();
++                        }
++                        }, upgradeExecutor));
 +                        // Yatopia end
-                         flag = true;
                      }
  
-@@ -175,7 +227,22 @@ public class WorldUpgrader {
+                     f2 = (float) listiterator.nextIndex() / f;
+@@ -175,6 +197,8 @@ public class WorldUpgrader {
                  }
              }
  
-+            // Yatopia start
-+            try {
-+                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-+            } finally {
++            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join(); // Yatopia
++            upgradeExecutor.shutdown(); // Yatopia
              this.o = new ChatMessage("optimizeWorld.stage.finished");
-+            countingExecutor.shutdown();
-+            mainExecutor.shutdown();
-+            IOExecutor.shutdown();
-+            while (!countingExecutor.isTerminated() || !mainExecutor.isTerminated() || !IOExecutor.isTerminated())
-+                try {
-+                    countingExecutor.awaitTermination(30, TimeUnit.SECONDS);
-+                    mainExecutor.awaitTermination(30, TimeUnit.SECONDS);
-+                    IOExecutor.awaitTermination(30, TimeUnit.SECONDS);
-+                } catch (InterruptedException e) {
-+                }
-+                // Yatopia end
              UnmodifiableIterator unmodifiableiterator3 = immutablemap1.values().iterator();
  
-             while (unmodifiableiterator3.hasNext()) {
-@@ -192,6 +259,7 @@ public class WorldUpgrader {
-             i = SystemUtils.getMonotonicMillis() - i;
-             WorldUpgrader.LOGGER.info("World optimizaton finished after {} ms", i);
-             this.i = true;
-+            } // Yatopia
-         }
-     }
- 
-@@ -263,16 +331,19 @@ public class WorldUpgrader {
+@@ -263,16 +287,19 @@ public class WorldUpgrader {
      }
  
      public int e() {
