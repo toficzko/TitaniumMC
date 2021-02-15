@@ -253,6 +253,7 @@ This is an overview over all patches that are currently used.
 | server |  Multi-threaded World Upgrade      | ishland |  |
 | server |  Multithreaded entity tracking      | Paul Sauve |  |
 | server |  Name craft scheduler threads according to the plugin using      | Spottedleaf |  |
+| server |  New Network System      | Hugo Planque | Ivan Pekov |
 | server |  New nbt cache      | Hugo Planque | ishland |
 | server |  Nuke streams off BlockPosition      | Ivan Pekov |  |
 | server |  Nuke streams off SectionPosition      | Ivan Pekov |  |
@@ -307,6 +308,7 @@ This is an overview over all patches that are currently used.
 | server |  Port Cadmium      | Lucy-t |  |
 | server |  Port LazyDFU      | Andrew Steinborn |  |
 | server |  Port hydrogen      | JellySquid |  |
+| server |  Port krypton      | Andrew Steinborn | Hugo Planque |
 | server |  Preload ProtocolLib EnumWrappers      | ishland |  |
 | server |  Prevent light queue overfill when no players are online      | Spottedleaf |  |
 | server |  Prevent long map entry creation in light engine      | Spottedleaf |  |
