@@ -409,6 +409,7 @@ This is an overview over all patches that are currently used.
 | server |  lithium enum_values      | JellySquid |  |
 | server |  lithium reduce allocations      | JellySquid | Mykyta Komarnytskyy |
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
+| server |  lithium: optimize &#96;BlockPos.iterateOutwards&#96; by caching      | Simon Gardling |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
 | server |  remove world size checks      | Simon Gardling |  |
 | server |  replace Math.sin and Math.cos with MathHelper      | Simon Gardling |  |
