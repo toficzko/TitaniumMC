@@ -10,6 +10,7 @@ This is an overview over all patches that are currently used.
 | ----- | ------------- |:-------------:| -----:|
 | server |  (Dionysus) CompactSineLUT      | nopjmp |  |
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
+| server |  (PaperPR) Use ConcurrentHashMap for AreaLazy      | Techcable |  |
 | server |  (PaperPR) optimized dirt and snow spreading      | lukas81298 |  |
 | server |  AFK API      | William Blake Galbreath |  |
 | api |  AFK API      | William Blake Galbreath |  |
