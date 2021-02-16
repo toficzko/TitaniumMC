@@ -67,10 +67,10 @@ index 7225be9f7f741035bdc6d3f367a74d6ca3af9e01..f4a6315102828958a0b6ad6bd31edb94
      public Scoreboard getScoreboard() {
          return getBukkitEntity().getScoreboard().getHandle();
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index caf9ce94a7cb6154981d42953c81b588b19e3814..e833447073585ff97f8ab3a95caea8866fcc24e2 100644
+index 1d810a9b23d236493db121dde92c7ebce25a25fe..218ebc7befca683607b0b9863384a5b5d6bd3a2f 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -1708,6 +1708,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -1733,6 +1733,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
          PlayerConnectionUtils.ensureMainThread(packetplayinresourcepackstatus, this, this.player.getWorldServer());
          // Paper start
          PlayerResourcePackStatusEvent.Status packStatus = PlayerResourcePackStatusEvent.Status.values()[packetplayinresourcepackstatus.status.ordinal()];

@@ -18,7 +18,7 @@ index 5e672a0660d0aceffcdb26d185590ca18aa4f023..4b171a2a60e24947e884f8988920f335
              }
              final Object val = config.get(key);
 diff --git a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
-index 2ed1c3417e81dd53544c22a0458dd00b7987f6f4..e83aa8c9a5f122dfd7743518426c05c1c62efa57 100644
+index c40335607275771bd7b3c5f1282af71d7f71754d..f65e59c9ee85e0a42d8a12cf66ac3d99f776f5c9 100644
 --- a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 +++ b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 @@ -1,5 +1,6 @@
@@ -28,7 +28,7 @@ index 2ed1c3417e81dd53544c22a0458dd00b7987f6f4..e83aa8c9a5f122dfd7743518426c05c1
  import com.destroystokyo.paper.util.SneakyThrow;
  import net.minecraft.server.MinecraftServer;
  import net.minecraft.server.TicketType;
-@@ -395,6 +396,19 @@ public final class TuinityConfig {
+@@ -401,6 +402,19 @@ public final class TuinityConfig {
              this.spawnLimitAmbient = this.getInt(path + ".ambient", -1);
          }
  

@@ -10,10 +10,10 @@ chunk future to complete. We can simply schedule to the immediate
 executor to get this effect, rather than the main mailbox.
 
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index b5af1cccb7efc574fda08fa88fd570d85b478b8b..19aa268b45e0b9a5f02cd13e19a321d9cc46a4c1 100644
+index a42571cfd2c9c80df27e59db832cb64c2a64e141..2c2becef8b56d7e5e998976222df85d2c8516c43 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1420,9 +1420,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1494,9 +1494,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                  chunk.B();
                  return chunk;
              });

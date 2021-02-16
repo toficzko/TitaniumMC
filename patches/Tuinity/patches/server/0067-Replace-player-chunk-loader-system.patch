@@ -1002,11 +1002,11 @@ index 0000000000000000000000000000000000000000..6665b0d715f4173da466049ad9105925
 +    }
 +}
 diff --git a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
-index ceeb515f4528551659598d9999917f8596e3eded..2ed1c3417e81dd53544c22a0458dd00b7987f6f4 100644
+index 0959aa6855a150b121b9b75885216c46b151179e..c40335607275771bd7b3c5f1282af71d7f71754d 100644
 --- a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 +++ b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
-@@ -229,6 +229,25 @@ public final class TuinityConfig {
-         useNewLightEngine = TuinityConfig.getBoolean("use-new-light-engine", true);
+@@ -235,6 +235,25 @@ public final class TuinityConfig {
+         sendFullPosForHardCollidingEntities = TuinityConfig.getBoolean("send-full-pos-for-hard-colliding-entities", true);
      }
  
 +    public static int playerMinChunkLoadRadius;
@@ -1024,7 +1024,7 @@ index ceeb515f4528551659598d9999917f8596e3eded..2ed1c3417e81dd53544c22a0458dd00b
 +        playerAutoConfigureSendViewDistance = TuinityConfig.getBoolean("player-chunks.autoconfig-send-distance", true);
 +        // this costs server bandwidth. latest phosphor or starlight on the client fixes mc162253 anyways.
 +        enableMC162253Workaround = TuinityConfig.getBoolean("player-chunks.enable-mc162253-workaround", false);
-+        playerTargetChunkSendRate = TuinityConfig.getDouble("player-chunks.target-chunk-send-rate", -25.0);
++        playerTargetChunkSendRate = TuinityConfig.getDouble("player-chunks.target-chunk-send-rate", 81.0 * 20.0);
 +        playerFrustumPrioritisation = TuinityConfig.getBoolean("player-chunks.enable-frustum-priority", false);
 +    }
 +
@@ -1359,7 +1359,7 @@ index ac82f1791ce07e9a23cf97ca34974ab25e26be46..22ec19fa5b1624bdc8e1066e206ba4cc
              }
          }
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d85b478b8b 100644
+index 2c2becef8b56d7e5e998976222df85d2c8516c43..19aa268b45e0b9a5f02cd13e19a321d9cc46a4c1 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -180,20 +180,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
@@ -1508,7 +1508,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
          PlayerChunk chunk = getUpdatingChunk(coord.pair());
          return chunk != null && (chunk.isFullChunkReady());
      }
-@@ -1584,7 +1510,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1582,7 +1508,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
              int k = this.viewDistance;
  
              this.viewDistance = j;
@@ -1517,7 +1517,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
          }
  
      }
-@@ -1593,25 +1519,11 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1591,25 +1517,11 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      public final void setNoTickViewDistance(int viewDistance) {
          com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Cannot update view distance off of the main thread"); // Tuinity
          viewDistance = viewDistance == -1 ? -1 : MathHelper.clamp(viewDistance, 2, 32);
@@ -1545,7 +1545,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
          if (entityplayer.world == this.world) {
              if (flag1 && !flag) {
                  PlayerChunk playerchunk = this.getVisibleChunk(chunkcoordintpair.pair());
-@@ -2013,7 +1925,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -2011,7 +1923,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          // Paper start - per player view distance
          // there can be potential desync with player's last mapped section and the view distance map, so use the
          // view distance map here.
@@ -1554,7 +1554,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
  
          if (inRange == null) {
              return Stream.empty();
-@@ -2029,8 +1941,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -2027,8 +1939,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                      continue;
                  }
                  EntityPlayer player = (EntityPlayer)temp;
@@ -1566,7 +1566,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
  
                  int distX = Math.abs(MCUtil.getCoordinateX(lastPosition) - chunkcoordintpair.x);
                  int distZ = Math.abs(MCUtil.getCoordinateZ(lastPosition) - chunkcoordintpair.z);
-@@ -2045,6 +1958,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -2043,6 +1956,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                      continue;
                  }
                  EntityPlayer player = (EntityPlayer)temp;
@@ -1574,7 +1574,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
                  players.add(player);
              }
          }
-@@ -2263,6 +2177,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2261,6 +2175,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
              apacket[1] = new PacketPlayOutLightUpdate(chunk.getPos(), this.lightEngine, true);
  
              // Paper start - Fix MC-162253
@@ -1582,7 +1582,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
              final int lightMask = getLightMask(chunk);
              int i = 1;
              for (int x = -1; x <= 1; x++) {
-@@ -2287,10 +2202,12 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2285,10 +2200,12 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
                      apacket[i] = new PacketPlayOutLightUpdate(new ChunkCoordIntPair(chunk.getPos().x + x, chunk.getPos().z + z), lightEngine, updateLightMask, 0, true);
                  }
              }
@@ -1597,7 +1597,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
  
          int j = 1;
          for (int x = -1; x <= 1; x++) {
-@@ -2315,6 +2232,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2313,6 +2230,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
                  entityplayer.playerConnection.sendPacket(packet);
              }
          }
@@ -1605,7 +1605,7 @@ index a42571cfd2c9c80df27e59db832cb64c2a64e141..b5af1cccb7efc574fda08fa88fd570d8
          // Paper end - Fix MC-162253
  
          entityplayer.a(chunk.getPos(), apacket[0], apacket[1]);
-@@ -2501,7 +2419,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2499,7 +2417,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
                          ChunkCoordIntPair chunkcoordintpair = new ChunkCoordIntPair(this.tracker.chunkX, this.tracker.chunkZ);
                          PlayerChunk playerchunk = PlayerChunkMap.this.getVisibleChunk(chunkcoordintpair.pair());
  

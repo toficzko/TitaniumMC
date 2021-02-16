@@ -8,15 +8,15 @@ its diff here
 
 diff --git a/src/main/java/com/tuinity/tuinity/util/PoiAccess.java b/src/main/java/com/tuinity/tuinity/util/PoiAccess.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f0ff0de912687004afe8c4c009c7aeeea5f358ac
+index 0000000000000000000000000000000000000000..778137537c55e1151223a79f26b9a1c655e501de
 --- /dev/null
 +++ b/src/main/java/com/tuinity/tuinity/util/PoiAccess.java
-@@ -0,0 +1,792 @@
+@@ -0,0 +1,811 @@
 +package com.tuinity.tuinity.util;
 +
 +import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
 +import it.unimi.dsi.fastutil.doubles.Double2ObjectRBTreeMap;
-+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
++import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 +import net.minecraft.server.BlockPosition;
 +import net.minecraft.server.MathHelper;
 +import net.minecraft.server.SectionPosition;
@@ -41,14 +41,14 @@ index 0000000000000000000000000000000000000000..f0ff0de912687004afe8c4c009c7aeee
 +    public static final class SortedChunkSectionPos {
 +
 +        public final int relativeX;
-+        public final int relativeY;
++        public final int absoluteY;
 +        public final int relativeZ;
 +
 +        public final double smallestDistanceToSection;
 +
-+        public SortedChunkSectionPos(int relativeX, int relativeY, int relativeZ, double smallestDistanceToSection) {
++        public SortedChunkSectionPos(int relativeX, int absoluteY, int relativeZ, double smallestDistanceToSection) {
 +            this.relativeX = relativeX;
-+            this.relativeY = relativeY;
++            this.absoluteY = absoluteY;
 +            this.relativeZ = relativeZ;
 +            this.smallestDistanceToSection = smallestDistanceToSection;
 +        }
@@ -89,46 +89,72 @@ index 0000000000000000000000000000000000000000..f0ff0de912687004afe8c4c009c7aeee
 +        return (centerDiffX * centerDiffX) + (centerDiffY * centerDiffY) + (centerDiffZ * centerDiffZ);
 +    }
 +
-+    protected static final Int2ObjectOpenHashMap<List<SortedChunkSectionPos>> cachedSortedPositionsAddHalf =
-+            new Int2ObjectOpenHashMap<>();
-+    protected static final Int2ObjectOpenHashMap<List<SortedChunkSectionPos>> cachedSortedPositionsNoHalf =
-+            new Int2ObjectOpenHashMap<>();
++
++    // key is:
++    //  upper 32 bits:
++    //   upper 16 bits: max y section
++    //   lower 16 bits: min y section
++    //  lower 32 bits:
++    //   upper 16 bits: section
++    //   lower 16 bits: radius
++    protected static long getKey(final int minSection, final int maxSection, final int section, final int radius) {
++        return (
++                (maxSection & 0xFFFFL) << (64 - 16)
++                | (minSection & 0xFFFFL) << (64 - 32)
++                | (section & 0xFFFFL) << (64 - 48)
++                | (radius & 0xFFFFL) << (64 - 64)
++                );
++    }
++
++    protected static final Long2ObjectOpenHashMap<List<SortedChunkSectionPos>> cachedSortedPositionsAddHalf =
++            new Long2ObjectOpenHashMap<>();
++    protected static final Long2ObjectOpenHashMap<List<SortedChunkSectionPos>> cachedSortedPositionsNoHalf =
++            new Long2ObjectOpenHashMap<>();
 +
 +    public static List<SortedChunkSectionPos> getSortedPositions(final BlockPosition center, final int radius, final boolean addHalfToSection) {
-+        final Int2ObjectOpenHashMap<List<SortedChunkSectionPos>> map = addHalfToSection ? cachedSortedPositionsAddHalf : cachedSortedPositionsNoHalf;
++        final Long2ObjectOpenHashMap<List<SortedChunkSectionPos>> map = addHalfToSection ? cachedSortedPositionsAddHalf : cachedSortedPositionsNoHalf;
++
++        final int section = center.getY() >> 4;
++        if (section < -16) {
++            return calculateSortedPositions(0, 15, section, radius, addHalfToSection);
++        } else if (section > (16 + 16)) {
++            return calculateSortedPositions(0, 15, section, radius, addHalfToSection);
++        }
++
++        final long key = getKey(0, 15, center.getY() >> 4, radius);
 +        synchronized (map) {
-+            List<SortedChunkSectionPos> existing = map.get(radius);
++            List<SortedChunkSectionPos> existing = map.get(key);
 +            if (existing != null) {
 +                return existing;
 +            }
 +        }
 +
-+        final List<SortedChunkSectionPos> calculated = calculateSortedPositions(radius, addHalfToSection);
++        final List<SortedChunkSectionPos> calculated = calculateSortedPositions(0, 15, section, radius, addHalfToSection);
 +
 +        synchronized (map) {
-+            map.putIfAbsent(radius, calculated);
++            map.putIfAbsent(key, calculated);
 +        }
 +
 +        return calculated;
 +    }
 +
-+    protected static List<SortedChunkSectionPos> calculateSortedPositions(final int radius, final boolean addHalfToSection) {
++    protected static List<SortedChunkSectionPos> calculateSortedPositions(final int minSection, final int maxSection, final int section, final int radius, final boolean addHalfToSection) {
 +        final List<SortedChunkSectionPos> ret = new ArrayList<>();
 +
 +        final double sourceX = 8.0;
-+        final double sourceY = 8.0;
++        final double sourceY = section * 16.0 + 8.0;
 +        final double sourceZ = 8.0;
 +        final double minSectionAdd = addHalfToSection ? 0.5 : 0.0;
 +        final double maxSectionAdd = addHalfToSection ? 15.5 : 16.0;
-+        for (int dy = -radius; dy <= radius; ++dy) {
++        for (int y = minSection; y <= maxSection; ++y) {
 +            for (int dz = -radius; dz <= radius; ++dz) {
 +                for (int dx = -radius; dx <= radius; ++dx) {
 +                    double distanceSquared = getSmallestDistanceSquared(
 +                            (double)(dx << 4) + minSectionAdd,
-+                            (double)(dy << 4) + minSectionAdd,
++                            (double)(y << 4) + minSectionAdd,
 +                            (double)(dz << 4) + minSectionAdd,
 +                            (double)(dx << 4) + maxSectionAdd,
-+                            (double)(dy << 4) + maxSectionAdd,
++                            (double)(y << 4) + maxSectionAdd,
 +                            (double)(dz << 4) + maxSectionAdd,
 +
 +                            sourceX, sourceY, sourceZ
@@ -138,15 +164,15 @@ index 0000000000000000000000000000000000000000..f0ff0de912687004afe8c4c009c7aeee
 +                    distanceSquared = Math.sqrt(distanceSquared) - a;
 +                    distanceSquared *= distanceSquared;
 +
-+                    ret.add(new SortedChunkSectionPos(dx, dy, dz, distanceSquared - 1.0e-3)); // account for floating point errors
++                    ret.add(new SortedChunkSectionPos(dx, y, dz, distanceSquared - 1.0e-3)); // account for floating point errors
 +                }
 +            }
 +        }
 +
-+        final BlockPosition relativeCenter = new BlockPosition(8, 8, 8);
++        final BlockPosition relativeCenter = new BlockPosition(8, (section << 4) | 8, 8);
 +        ret.sort((s1, s2) -> {
-+            return Double.compare(relativeCenter.distanceSquared((s1.relativeX << 4) + 8, (s1.relativeY << 4) + 8, (s1.relativeZ << 4) + 8, false),
-+                    relativeCenter.distanceSquared((s2.relativeX << 4) + 8, (s2.relativeY << 4) + 8, (s2.relativeZ << 4) + 8, false));
++            return Double.compare(relativeCenter.distanceSquared((s1.relativeX << 4) + 8, (s1.absoluteY << 4) + 8, (s1.relativeZ << 4) + 8, false),
++                    relativeCenter.distanceSquared((s2.relativeX << 4) + 8, (s2.absoluteY << 4) + 8, (s2.relativeZ << 4) + 8, false));
 +        });
 +
 +        double smallest = Double.MAX_VALUE;
@@ -268,10 +294,10 @@ index 0000000000000000000000000000000000000000..f0ff0de912687004afe8c4c009c7aeee
 +                continue;
 +            }
 +            final int sectionX = relativeSection.relativeX + centerX;
-+            final int sectionY = relativeSection.relativeY + centerY;
++            final int sectionY = relativeSection.absoluteY;
 +            final int sectionZ = relativeSection.relativeZ + centerZ;
 +
-+            if (sectionY < 0 || sectionY > 15 || sectionX < lowerX || sectionX > upperX || sectionZ < lowerZ || sectionZ > upperZ) {
++            if (sectionX < lowerX || sectionX > upperX || sectionZ < lowerZ || sectionZ > upperZ) {
 +                // out of bound chunk
 +                continue;
 +            }
@@ -490,10 +516,10 @@ index 0000000000000000000000000000000000000000..f0ff0de912687004afe8c4c009c7aeee
 +                continue;
 +            }
 +            final int sectionX = relativeSection.relativeX + centerX;
-+            final int sectionY = relativeSection.relativeY + centerY;
++            final int sectionY = relativeSection.absoluteY;
 +            final int sectionZ = relativeSection.relativeZ + centerZ;
 +
-+            if (sectionY < 0 || sectionY > 15 || sectionX < lowerX || sectionX > upperX || sectionZ < lowerZ || sectionZ > upperZ) {
++            if (sectionX < lowerX || sectionX > upperX || sectionZ < lowerZ || sectionZ > upperZ) {
 +                // out of bound chunk
 +                continue;
 +            }
@@ -762,13 +788,6 @@ index 0000000000000000000000000000000000000000..f0ff0de912687004afe8c4c009c7aeee
 +                                // filter by occupancy
 +                                continue;
 +                            }
-+
-+                            // vanilla code is pretty dumb about filtering by distance: first they filter out
-+                            // so that only values in the square radius of range are returned but then they
-+                            // filter out so that the distance is in range
-+                            // but there's a catch! distanceSquared, by default, will ADD 0.5 to ONLY ONE OF the
-+                            // block position parameters (itself, in this case the poi position)! So if we want to
-+                            // maintain exact vanilla behaviour, well shit we need to play dumb as well.
 +
 +                            final BlockPosition poiPosition = poiData.getPosition();
 +

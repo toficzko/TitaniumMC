@@ -379,10 +379,10 @@ index d98ac030e205dbb1512ef6b837e2f3fdd208e231..451ea5b703d01664942899ca62cf789e
      }
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 789e885eded90f1827332e0b4000c35b78ec2661..104fe3ff3052d743572a09e5bb36f9702cfde106 100644
+index be5bf0d2ebf4723a5a892f9f51aa18ea74f82fd1..a94dfb57028e33c60690d8655cbcca9563537e88 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -2576,28 +2576,26 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -2584,28 +2584,26 @@ public class WorldServer extends World implements GeneratorAccessSeed {
  
          // Paper start
          BlockPosition blockposition1 = blockposition.immutableCopy();
