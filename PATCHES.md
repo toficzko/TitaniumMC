@@ -8,6 +8,7 @@ This is an overview over all patches that are currently used.
 
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
+| server |  (AI-Improvements) Optimized tan for ControllerLook      | bl4ckscor3 |  |
 | server |  (Dionysus) CompactSineLUT      | nopjmp |  |
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
 | server |  (PaperPR) Use ConcurrentHashMap for AreaLazy      | Techcable |  |
@@ -276,7 +277,6 @@ This is an overview over all patches that are currently used.
 | server |  Optimize random calls in chunk ticking      | Paul Sauve |  |
 | server |  Optimize some stuff in WorldServer ticking      | MrIvanPlays |  |
 | server |  Optimize whitelist command for multiple additions / removals      | Ivan Pekov |  |
-| server |  Optimized tan for ControllerLook      | Simon Gardling |  |
 | server |  Option for Villager Clerics to farm Nether Wart      | jmp |  |
 | server |  Option for chests to open even with a solid block on top      | jmp |  |
 | server |  Option for simpler Villagers      | tr7zw |  |

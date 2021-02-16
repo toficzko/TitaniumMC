@@ -324,7 +324,7 @@ index e77e8b228195cfb6375804d2bbcb8438e6fbcf5c..05e20e6cf13c724cb5caa24f2278eabf
  
      /**
 diff --git a/src/main/java/net/minecraft/server/MathHelper.java b/src/main/java/net/minecraft/server/MathHelper.java
-index 08884693b022f979d110f4a9c4ffcae5dea91b2b..dadff994ffdfe9a71bd948fa88480d8fa108749d 100644
+index c9a3be7fd3e8a66f066028dda153740a8f3b7b96..879c7bff4bafc5e604ec818ee2920cbf793bce13 100644
 --- a/src/main/java/net/minecraft/server/MathHelper.java
 +++ b/src/main/java/net/minecraft/server/MathHelper.java
 @@ -37,14 +37,23 @@ public class MathHelper {

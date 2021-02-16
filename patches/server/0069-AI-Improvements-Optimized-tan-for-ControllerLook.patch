@@ -1,9 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Simon Gardling <titaniumtown@gmail.com>
+From: bl4ckscor3 <bl4ckscor33@gmail.com>
 Date: Tue, 2 Feb 2021 21:38:12 -0500
-Subject: [PATCH] Optimized tan for ControllerLook
+Subject: [PATCH] (AI-Improvements) Optimized tan for ControllerLook
 
-Code ported from: https://github.com/BuiltBrokenModding/AI-Improvements/tree/1.16
+Code originally licenced under MIT from: https://github.com/BuiltBrokenModding/AI-Improvements/tree/1.16
 
 diff --git a/src/main/java/com/builtbroken/ai/improvements/FastTrig.java b/src/main/java/com/builtbroken/ai/improvements/FastTrig.java
 new file mode 100644
