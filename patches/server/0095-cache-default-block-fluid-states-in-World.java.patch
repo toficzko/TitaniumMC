@@ -1,0 +1,40 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Tue, 16 Feb 2021 15:28:16 -0500
+Subject: [PATCH] cache default block/fluid states in World.java
+
+
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index f0d75acdb196d46e76c3f2635a911ad35a7a1d35..b03845cb7410dbb9c5f874921304184334ed585a 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -39,6 +39,11 @@ import net.gegy1000.tictacs.NonBlockingWorldAccess;
+ 
+ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlockingWorldAccess {
+ 
++    // Yatopia start - Cache default block/fluid states
++    private static final IBlockData DEFAULT_BLOCK_STATE = Blocks.VOID_AIR.getBlockData();
++    private static final Fluid DEFAULT_FLUID_STATE = FluidTypes.EMPTY.getFluidData();
++    // Yatopia end
++
+     protected static final Logger LOGGER = LogManager.getLogger();
+     public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
+     public static final ResourceKey<World> OVERWORLD = ResourceKey.a(IRegistry.L, new MinecraftKey("overworld"));
+@@ -862,7 +867,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+         }
+         // CraftBukkit end
+         if (isOutsideWorld(blockposition)) {
+-            return Blocks.VOID_AIR.getBlockData();
++            return DEFAULT_BLOCK_STATE; // Yatopia - Cache default block state
+         } else {
+             Chunk chunk = (Chunk) this.getChunkProvider().getChunkAt(blockposition.getX() >> 4, blockposition.getZ() >> 4, ChunkStatus.FULL, true); // Paper - manually inline to reduce hops and avoid unnecessary null check to reduce total byte code size, this should never return null and if it does we will see it the next line but the real stack trace will matter in the chunk engine
+ 
+@@ -873,7 +878,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+     @Override
+     public Fluid getFluid(BlockPosition blockposition) {
+         if (isOutsideWorld(blockposition)) {
+-            return FluidTypes.EMPTY.h();
++            return DEFAULT_FLUID_STATE; // Yatopia - Cache default fluid state
+         } else {
+             Chunk chunk = this.getChunkAtWorldCoords(blockposition);
+ 

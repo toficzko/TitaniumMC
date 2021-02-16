@@ -7,10 +7,10 @@ Code originally licenced under LGPLv3 for the tic-tacs project: https://github.c
 
 diff --git a/src/main/java/net/gegy1000/tictacs/NonBlockingWorldAccess.java b/src/main/java/net/gegy1000/tictacs/NonBlockingWorldAccess.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..0effcece9a760343be769fea24f26ef60e966c26
+index 0000000000000000000000000000000000000000..9bf6f73e2a7fc4f3cd07e10fde287c4097d95339
 --- /dev/null
 +++ b/src/main/java/net/gegy1000/tictacs/NonBlockingWorldAccess.java
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,29 @@
 +package net.gegy1000.tictacs;
 +
 +import net.minecraft.server.IBlockData;
@@ -22,18 +22,22 @@ index 0000000000000000000000000000000000000000..0effcece9a760343be769fea24f26ef6
 +import net.minecraft.server.FluidTypes;
 +
 +public interface NonBlockingWorldAccess extends IWorldReader {
++
++    public static final IBlockData DEFAULT_BLOCK_STATE = Blocks.AIR.getBlockData();
++    public static final Fluid DEFAULT_FLUID_STATE = FluidTypes.EMPTY.getFluidData();
++
 +    default IBlockData getBlockStateIfLoaded(BlockPosition pos) {
 +        if (this.isLoaded(pos)) {
 +            return this.getType(pos);
 +        }
-+        return Blocks.AIR.getBlockData();
++        return DEFAULT_BLOCK_STATE;
 +    }
 +
 +    default Fluid getFluidStateIfLoaded(BlockPosition pos) {
 +        if (this.isLoaded(pos)) {
 +            return this.getFluid(pos);
 +        }
-+        return FluidTypes.EMPTY.getDefaultState();
++        return DEFAULT_FLUID_STATE;
 +    }
 +}
 \ No newline at end of file
@@ -361,14 +365,14 @@ index 7da4aafad8a07af7b70d2bf66a5a1606d44372b0..7a420953b251b746d8c3d28ce08f9e19
              if (valid && !this.isSpectator() || this.world.isLoaded(this.getChunkCoordinates())) { // Paper - don't tick dead players that are not in the world currently (pending respawn)
                  super.tick();
 diff --git a/src/main/java/net/minecraft/server/FluidType.java b/src/main/java/net/minecraft/server/FluidType.java
-index a3d6ab9f76d40d1d4998bc942084cae503e3dfd5..6026160bbacfc8f06d0b882a6c867426fef61d6e 100644
+index a3d6ab9f76d40d1d4998bc942084cae503e3dfd5..6eeb60ed8deb2d01ea2be835f1dce7bd2434f1cc 100644
 --- a/src/main/java/net/minecraft/server/FluidType.java
 +++ b/src/main/java/net/minecraft/server/FluidType.java
 @@ -26,6 +26,7 @@ public abstract class FluidType {
          this.a = fluid;
      }
  
-+    public final Fluid getDefaultState() { return this.h(); } // Yatopia - OBFHELPER
++    public final Fluid getFluidData() { return this.h(); } // Yatopia - OBFHELPER
      public final Fluid h() {
          return this.a;
      }
