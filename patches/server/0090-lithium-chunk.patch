@@ -398,7 +398,7 @@ index a550b21a9756ff1dcb4a21d8116f0a393ee88282..09f8716031c6e7530e507f83c527ac23
 +    int onResize(int i, T t);
  }
 diff --git a/src/main/java/net/minecraft/server/PlayerChunk.java b/src/main/java/net/minecraft/server/PlayerChunk.java
-index 7a37bc0800bfd9e402b9eb983875f3e9c92e179b..915df4a469e14300aab4cca02a05665b2cc334cc 100644
+index f9e5378a564437642fdbcb3a1199f2e90892ec49..79854605012663e152cfad96e2fa78591b500868 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunk.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunk.java
 @@ -3,6 +3,7 @@ package net.minecraft.server;
@@ -409,7 +409,7 @@ index 7a37bc0800bfd9e402b9eb983875f3e9c92e179b..915df4a469e14300aab4cca02a05665b
  import it.unimi.dsi.fastutil.shorts.ShortSet;
  import java.util.List;
  import java.util.Optional;
-@@ -374,7 +375,7 @@ public class PlayerChunk {
+@@ -378,7 +379,7 @@ public class PlayerChunk {
              if (b0 < 0 || b0 >= this.dirtyBlocks.length) return; // CraftBukkit - SPIGOT-6086, SPIGOT-6296
              if (this.dirtyBlocks[b0] == null) {
                  this.p = true;

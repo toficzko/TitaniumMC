@@ -65,7 +65,7 @@ index 9be1581868627b99709bcd446de6dc89c34b42d3..5fe928e4511f320aef1f3b94a092d2a7
  
          @Override
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index c448f75b22ead5a178b031d625338f92752617ec..9a8a1e05a60bca77adc904017ae70ef5f629df0b 100644
+index b5997b5abbddcc36671dd0207087f505195388e2..43740b9b2d2c4a5b6bfe6061841ec4e4e437acf3 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -873,6 +873,15 @@ public class WorldServer extends World implements GeneratorAccessSeed {
@@ -261,7 +261,7 @@ index c448f75b22ead5a178b031d625338f92752617ec..9a8a1e05a60bca77adc904017ae70ef5
              try { // Tuinity end
  
              while (iterator.hasNext()) {
-@@ -1982,10 +2118,21 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1993,10 +2129,21 @@ public class WorldServer extends World implements GeneratorAccessSeed {
                  if (!navigationabstract.i()) {
                      navigationabstract.b(blockposition);
                  }

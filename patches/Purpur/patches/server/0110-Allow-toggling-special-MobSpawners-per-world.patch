@@ -6,7 +6,7 @@ Subject: [PATCH] Allow toggling special MobSpawners per world
 In vanilla, these are all hardcoded on for world type 0 (overworld) and hardcoded off for every other world type. Default config behaviour matches this.
 
 diff --git a/src/main/java/net/minecraft/server/MobSpawnerTrader.java b/src/main/java/net/minecraft/server/MobSpawnerTrader.java
-index 8d89f51182444852062d549d23c00a93e601eb38..072ec40f751b19c2a78dfcc6e439c64358d864d3 100644
+index 341af7474690b929cfa3e35cd464bbbbacb6685e..ad00ff2bd525768e4f06631d16b912c61c8eee28 100644
 --- a/src/main/java/net/minecraft/server/MobSpawnerTrader.java
 +++ b/src/main/java/net/minecraft/server/MobSpawnerTrader.java
 @@ -132,7 +132,17 @@ public class MobSpawnerTrader implements MobSpawner {
@@ -42,7 +42,7 @@ index a1a18d91ef44ac54bf75fae84fd34f60b37f828c..935cab32a2fc047e4b80547fd1b63de0
          this.generator = gen;
          this.world = new CraftWorld((WorldServer) this, gen, env);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index c451e71601fc48294f9161ca5ef8442d31ad96f7..02cbbf11a2b71573f50aac6fdfaa6643c18832bf 100644
+index 6d8983b851b877e6a5ac378e11097a6ef23794f4..154f49b96e3622f803e9599116fd60c77dea90d1 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -339,7 +339,24 @@ public class WorldServer extends World implements GeneratorAccessSeed {

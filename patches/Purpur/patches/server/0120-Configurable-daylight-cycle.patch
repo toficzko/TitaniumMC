@@ -18,7 +18,7 @@ index 1b9b43ee696575d986c25cafec07d863acb951a7..e837db171545ceacbc84a2b360cf0d95
      public PacketPlayOutUpdateTime() {}
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 02cbbf11a2b71573f50aac6fdfaa6643c18832bf..307794aebb4ccd4d409013ed485e6defda2149ca 100644
+index 154f49b96e3622f803e9599116fd60c77dea90d1..a873d60875b2c08c8813cb365566e46ee99cb625 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -94,6 +94,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {

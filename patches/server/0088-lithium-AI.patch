@@ -2080,7 +2080,7 @@ index 68efdd9ca2dc554698c722c62d98de2e481aea7f..f0d75acdb196d46e76c3f2635a911ad3
          return i < 0 || i >= 256;
      }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 70ff1e53845aab1034446e76899a1afd1d439db4..29be4a8ecaa2335b7a4106d5b9a2bbe11a11831d 100644
+index 8ce29cff72157e40c8612466b24504e7f552edda..e0f3759d89ca2f1fcaedbd9276bb33da544cff72 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -41,6 +41,8 @@ import java.util.stream.Collectors;

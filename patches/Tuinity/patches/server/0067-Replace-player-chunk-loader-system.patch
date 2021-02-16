@@ -1167,10 +1167,10 @@ index 7f3887b0894aca0f972922f434382646a6ad6174..5973c3a89ca5d57629376247a7636e69
      class b extends ChunkMap {
  
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index 9e6381a60b804a957eda5b72582d5545faebcb3e..723a858da4444df2452e4f4b3cec1ef813177aa4 100644
+index fdbf984e64f135abfdee465d76eb1112bccfa8c3..75dff4c60ac42b4bca3254e225c2d6b455f91c12 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-@@ -912,6 +912,7 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -920,6 +920,7 @@ public class ChunkProviderServer extends IChunkProvider {
          this.world.timings.doChunkMap.stopTiming(); // Spigot
          this.world.getMethodProfiler().exitEnter("chunks");
          this.world.timings.chunks.startTiming(); // Paper - timings
@@ -1178,7 +1178,7 @@ index 9e6381a60b804a957eda5b72582d5545faebcb3e..723a858da4444df2452e4f4b3cec1ef8
          this.tickChunks();
          this.world.timings.chunks.stopTiming(); // Paper - timings
          this.world.timings.doChunkUnload.startTiming(); // Spigot
-@@ -1205,6 +1206,7 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -1213,6 +1214,7 @@ public class ChunkProviderServer extends IChunkProvider {
          @Override
          protected boolean executeNext() {
              com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Cannot execute chunk tasks off-main thread");// Tuinity
@@ -1330,10 +1330,10 @@ index 6a0ec0105399066dede622b45c9471b32c162cf6..12df0d8bd73e803d63985673a3a6c7a5
      // Paper end
  
 diff --git a/src/main/java/net/minecraft/server/PlayerChunk.java b/src/main/java/net/minecraft/server/PlayerChunk.java
-index ac82f1791ce07e9a23cf97ca34974ab25e26be46..22ec19fa5b1624bdc8e1066e206ba4ccf05dd6e3 100644
+index 3127fc9dd87e82243e167862cae83ac87b7f4fa0..13e8bfa62cd8dc1f65b07d7f617e02aec4b83d82 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunk.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunk.java
-@@ -470,7 +470,7 @@ public class PlayerChunk {
+@@ -474,7 +474,7 @@ public class PlayerChunk {
          // Paper start - per player view distance
          // there can be potential desync with player's last mapped section and the view distance map, so use the
          // view distance map here.
@@ -1342,7 +1342,7 @@ index ac82f1791ce07e9a23cf97ca34974ab25e26be46..22ec19fa5b1624bdc8e1066e206ba4cc
          com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<EntityPlayer> players = viewDistanceMap.getObjectsInRange(this.location);
          if (players == null) {
              return;
-@@ -484,6 +484,7 @@ public class PlayerChunk {
+@@ -488,6 +488,7 @@ public class PlayerChunk {
                      continue;
                  }
                  EntityPlayer player = (EntityPlayer)temp;
@@ -1350,7 +1350,7 @@ index ac82f1791ce07e9a23cf97ca34974ab25e26be46..22ec19fa5b1624bdc8e1066e206ba4cc
  
                  int viewDistance = viewDistanceMap.getLastViewDistance(player);
                  long lastPosition = viewDistanceMap.getLastCoordinate(player);
-@@ -503,6 +504,7 @@ public class PlayerChunk {
+@@ -507,6 +508,7 @@ public class PlayerChunk {
                      continue;
                  }
                  EntityPlayer player = (EntityPlayer)temp;

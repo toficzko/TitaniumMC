@@ -284,7 +284,6 @@ This is an overview over all patches that are currently used.
 | server |  PaperPR - Add hex color code support for console logging      | Esophose |  |
 | server |  PaperPR - Config option for Piglins guarding chests      | jmp |  |
 | server |  PaperPR - Fix username connecting with no texture being      | Camotoy |  |
-| api |  PaperPR - PlayerItemCooldownEvent      | KennyTV |  |
 | server |  Per World Spawn Limits      | Chase Whipple |  |
 | server |  Per entity (type) collision settings      | MrIvanPlays | tr7zw |
 | api |  Per player viewdistances      | Spottedleaf |  |

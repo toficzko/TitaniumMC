@@ -6,7 +6,7 @@ Subject: [PATCH] Optimize some stuff in WorldServer ticking
 Replaced some streams and some array lists with glue lists
 
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 2289c92c8933bfa0f382167fa5790a4ea17b7c75..1196b482d33e655eb4aa5ea6b66326f12c4363a4 100644
+index 005dc35367319aa51b8bbb7d06b444422480623b..66cc33136a1a3b4728568a9afe0932c3d24f1c6e 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -788,12 +788,21 @@ public class WorldServer extends World implements GeneratorAccessSeed {

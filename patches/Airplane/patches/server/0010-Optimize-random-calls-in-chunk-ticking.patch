@@ -65,10 +65,10 @@ index b03ff6bbf82da7bfa1e2b739a43e5cef31b36f4a..f3f7e9a09ae13a0b032f9f831e138bc3
  
      public org.bukkit.Chunk bukkitChunk;
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index d4d634e77d24222c5a997cc1bd83832ce89b3010..401e8058792a26ad71588ccc5311167a42b46cda 100644
+index 826f2de4fb17c0e366846573dad985166d6ceb30..a6ee1bb10a24a41d2d1734fd69aef2524f067a41 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-@@ -966,6 +966,7 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -974,6 +974,7 @@ public class ChunkProviderServer extends IChunkProvider {
              }
              // Paper end - optimize isOutisdeRange
              this.world.getMethodProfiler().enter("pollingChunks");
@@ -77,7 +77,7 @@ index d4d634e77d24222c5a997cc1bd83832ce89b3010..401e8058792a26ad71588ccc5311167a
              boolean flag2 = world.ticksPerAnimalSpawns != 0L && worlddata.getTime() % world.ticksPerAnimalSpawns == 0L; // CraftBukkit
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index fdab9a50bc5d433c76fda1501110524792a749c8..6dc1f6d7f734b8c769c86109701155ebe9c2f6bd 100644
+index c947e2c6124d3a729777c285a0884e24a4c17c04..83f0e0df73f2202b55be5b9f3f5849d78e5a4f94 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -1027,6 +1027,8 @@ public class WorldServer extends World implements GeneratorAccessSeed {

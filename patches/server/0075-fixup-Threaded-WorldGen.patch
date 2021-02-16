@@ -147,10 +147,10 @@ index 9db252b1ae864e00673bbb154539f244260f07ce..e0048b0bdf9b0c78c812dc111f451faf
      }
  }
 diff --git a/src/main/java/net/minecraft/server/PlayerChunk.java b/src/main/java/net/minecraft/server/PlayerChunk.java
-index 22ec19fa5b1624bdc8e1066e206ba4ccf05dd6e3..7a37bc0800bfd9e402b9eb983875f3e9c92e179b 100644
+index 13e8bfa62cd8dc1f65b07d7f617e02aec4b83d82..f9e5378a564437642fdbcb3a1199f2e90892ec49 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunk.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunk.java
-@@ -555,6 +555,7 @@ public class PlayerChunk {
+@@ -559,6 +559,7 @@ public class PlayerChunk {
          return this.ticketLevel;
      }
  

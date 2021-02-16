@@ -193,7 +193,7 @@ index 4185ec46435ddf48d9e25c4d71ac4e14eb6301cf..1d810a9b23d236493db121dde92c7ebc
                                      if (from.getX() != Double.MAX_VALUE) {
                                          Location oldTo = to.clone();
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 9a8a1e05a60bca77adc904017ae70ef5f629df0b..cc1182be1f9b01ab5d8e2499f7f15ad8798de3d3 100644
+index 43740b9b2d2c4a5b6bfe6061841ec4e4e437acf3..4464ac1b4cd240af03102a6f4dc47870e3fe0f30 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -790,7 +790,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {

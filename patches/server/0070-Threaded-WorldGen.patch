@@ -76,7 +76,7 @@ index 6223d1d9048e31fb10cec7f485d1556aec2c7d5e..01caa55482aa963dfe7726e652a1157a
      public ChunkGenerator(WorldChunkManager worldchunkmanager, StructureSettings structuresettings) {
          this(worldchunkmanager, worldchunkmanager, structuresettings, 0L);
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index 401e8058792a26ad71588ccc5311167a42b46cda..ba6db7a6f94c694c4ee055af00d11e11427f31df 100644
+index a6ee1bb10a24a41d2d1734fd69aef2524f067a41..8388272f7b02a7af1f5b0a6a5bbfd2f407d603c0 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
 @@ -11,6 +11,7 @@ import java.util.Collections;
@@ -97,7 +97,7 @@ index 401e8058792a26ad71588ccc5311167a42b46cda..ba6db7a6f94c694c4ee055af00d11e11
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -801,10 +805,27 @@ public class ChunkProviderServer extends IChunkProvider {
+@@ -809,10 +813,27 @@ public class ChunkProviderServer extends IChunkProvider {
          return this.world;
      }
  
@@ -379,10 +379,10 @@ index d98ac030e205dbb1512ef6b837e2f3fdd208e231..451ea5b703d01664942899ca62cf789e
      }
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index be5bf0d2ebf4723a5a892f9f51aa18ea74f82fd1..a94dfb57028e33c60690d8655cbcca9563537e88 100644
+index 1decd9c1e200f709fd17eff4f36da3e471b651af..28b944dc65581739539b8cb9cd05d42d8fc24cd1 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -2584,28 +2584,26 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -2595,28 +2595,26 @@ public class WorldServer extends World implements GeneratorAccessSeed {
  
          // Paper start
          BlockPosition blockposition1 = blockposition.immutableCopy();

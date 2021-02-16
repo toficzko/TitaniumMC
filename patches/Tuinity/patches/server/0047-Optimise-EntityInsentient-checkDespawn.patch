@@ -118,7 +118,7 @@ index a88521745f9f9b6935a61db52db915ea483af227..8a5e2806e68e5f4431fd9563fae78086
              if (entityhuman != null) {
                  double d0 = entityhuman.h((Entity) this); // CraftBukkit - decompile error
 diff --git a/src/main/java/net/minecraft/server/PlayerChunk.java b/src/main/java/net/minecraft/server/PlayerChunk.java
-index a072208bcd92ffa9ed47757de291b82be2e71e8e..8b4ab23563a9a0c047267143dc3c6c5545d6c125 100644
+index 48976b1f07aeb0d588d0856f18b6fd07b2d18e05..a22021766b3bffa4f96d1d4ee546b12e96b5ca58 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunk.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunk.java
 @@ -56,6 +56,12 @@ public class PlayerChunk {
@@ -242,7 +242,7 @@ index 1d87e7461d28d8a639fafcfdfa5496014e9180f6..93c0c3376c3cb2fe416c8ae3e740ffda
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((WorldDataServer) worlddatamutable).getName()); // Spigot
          this.paperConfig = new com.destroystokyo.paper.PaperWorldConfig(((WorldDataServer) worlddatamutable).getName(), this.spigotConfig); // Paper
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 6e5a3467f92c29181d26c03ecf49d598d75a4633..b1b63a11a6585971685b9ace1b6d91643a36aa95 100644
+index 1f7cb91cc4f8d77b2ed0ffbf3a6063fc127f3871..baa361651e3217e6dac381dabb43e1c1addc0329 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -301,6 +301,10 @@ public class WorldServer extends World implements GeneratorAccessSeed {

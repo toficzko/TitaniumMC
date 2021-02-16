@@ -392,7 +392,7 @@ index 33723937986e2bb843451479cf580abfd3b1702d..68efdd9ca2dc554698c722c62d98de2e
      protected static final Logger LOGGER = LogManager.getLogger();
      public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index a94dfb57028e33c60690d8655cbcca9563537e88..70ff1e53845aab1034446e76899a1afd1d439db4 100644
+index 28b944dc65581739539b8cb9cd05d42d8fc24cd1..8ce29cff72157e40c8612466b24504e7f552edda 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -56,8 +56,9 @@ import org.bukkit.event.weather.LightningStrikeEvent;
