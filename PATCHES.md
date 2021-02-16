@@ -391,7 +391,6 @@ This is an overview over all patches that are currently used.
 | server |  Zombie break door minimum difficulty option      | BillyGalbreath |  |
 | server |  Zombie horse naturally spawn      | William Blake Galbreath |  |
 | server |  add config for logging login location      | Simon Gardling |  |
-| server |  add config to uncap playerchunkloading      | Simon Gardling |  |
 | server |  cache default block/fluid states in World.java      | Simon Gardling |  |
 | server |  dont load chunks for physics      | Aikar |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
@@ -417,6 +416,7 @@ This is an overview over all patches that are currently used.
 | server |  lithium shape      | JellySquid |  |
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
 | server |  lithium: optimize &#96;BlockPos.iterateOutwards&#96; by caching      | 2No2Name |  |
+| server |  playerchunkloading modifications      | Simon Gardling |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
 | server |  remove world size checks      | Simon Gardling |  |
 | server |  replace Math.sin and Math.cos with MathHelper      | Simon Gardling |  |
