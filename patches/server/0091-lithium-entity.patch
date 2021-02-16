@@ -5,7 +5,7 @@ Subject: [PATCH] lithium entity
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index e0ede25d6f9dfe13b283efd6a507f91721adde86..b3afb02f0441de52e4c2f1f72b6a669a6035f0a4 100644
+index e0ede25d6f9dfe13b283efd6a507f91721adde86..664d4596cccc18ce5569d9152247c5b08777b7c7 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -191,6 +191,10 @@ public abstract class EntityLiving extends Entity {
@@ -30,14 +30,12 @@ index e0ede25d6f9dfe13b283efd6a507f91721adde86..b3afb02f0441de52e4c2f1f72b6a669a
          this.ar = this.as;
          if (this.justCreated) {
              this.getBedPosition().ifPresent(this::a);
-@@ -1690,7 +1698,27 @@ public abstract class EntityLiving extends Entity {
+@@ -1690,7 +1698,25 @@ public abstract class EntityLiving extends Entity {
      }
  
      public IBlockData ds() {
 -        return this.world.getBlockStateIfLoaded(this.getChunkCoordinates());
-+        /*
-+        return this.world.getType(this.getChunkCoordinates());
-+        */
++        // return this.world.getBlockStateIfLoaded(this.getChunkCoordinates());
 +        // Yatopia start - port lithium
 +        int x = MathHelper.floor(this.locX());
 +        int y = MathHelper.floor(this.locY());
