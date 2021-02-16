@@ -5,7 +5,7 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..e790d779d24c2c8d4a74d458839c11bc494eeef1 100644
+index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..4979d17ef40c78bbe2db3e2d3f1945db77d5874c 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,11 +1,11 @@
@@ -112,7 +112,7 @@ index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..e790d779d24c2c8d4a74d458839c11bc
              <scope>test</scope>
          </dependency>
          <!-- for optimized protocol handling -->
-@@ -161,6 +170,12 @@
+@@ -161,6 +170,18 @@
              <version>1.1.0-SNAPSHOT</version>
              <scope>compile</scope>
          </dependency>
@@ -122,10 +122,16 @@ index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..e790d779d24c2c8d4a74d458839c11bc
 +            <artifactId>commons-math3</artifactId>
 +            <version>3.6.1</version>
 +        </dependency>
++        <!-- Fast Math -->
++        <dependency>
++            <groupId>net.jafama</groupId>
++            <artifactId>jafama</artifactId>
++            <version>2.3.2</version>
++        </dependency>
      </dependencies>
  
      <repositories>
-@@ -174,6 +189,20 @@
+@@ -174,6 +195,20 @@
              <id>spigotmc-public</id>
              <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
          </repository>
@@ -146,7 +152,7 @@ index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..e790d779d24c2c8d4a74d458839c11bc
      </repositories>
  
      <pluginRepositories>
-@@ -185,15 +214,15 @@
+@@ -185,15 +220,15 @@
  
      <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
      <build>

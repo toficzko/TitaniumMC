@@ -9,12 +9,12 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index e790d779d24c2c8d4a74d458839c11bc494eeef1..04ec0b474a234c04450f04ecf7336d3bb0947420 100644
+index 4979d17ef40c78bbe2db3e2d3f1945db77d5874c..6084d3f71fc981159102b1da1c90c6b265312d17 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -176,6 +176,12 @@
-             <artifactId>commons-math3</artifactId>
-             <version>3.6.1</version>
+@@ -182,6 +182,12 @@
+             <artifactId>jafama</artifactId>
+             <version>2.3.2</version>
          </dependency>
 +        <!-- Fast Random -->
 +        <dependency>
