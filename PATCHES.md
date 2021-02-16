@@ -391,6 +391,7 @@ This is an overview over all patches that are currently used.
 | server |  Zombie break door minimum difficulty option      | BillyGalbreath |  |
 | server |  Zombie horse naturally spawn      | William Blake Galbreath |  |
 | server |  add config for logging login location      | Simon Gardling |  |
+| server |  add config to uncap playerchunkloading      | Simon Gardling |  |
 | server |  cache default block/fluid states in World.java      | Simon Gardling |  |
 | server |  dont load chunks for physics      | Aikar |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
