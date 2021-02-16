@@ -9,7 +9,6 @@ This is an overview over all patches that are currently used.
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
 | server |  (AI-Improvements) Optimized tan for ControllerLook      | bl4ckscor3 |  |
-| server |  (Dionysus) CompactSineLUT      | nopjmp |  |
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
 | server |  (PaperPR) Use ConcurrentHashMap for AreaLazy      | Techcable |  |
 | server |  (PaperPR) optimized dirt and snow spreading      | lukas81298 |  |
@@ -101,7 +100,6 @@ This is an overview over all patches that are currently used.
 | server |  Breedable Polar Bears      | William Blake Galbreath |  |
 | server |  Bring back server name      | William Blake Galbreath |  |
 | api |  Bring back server name      | William Blake Galbreath |  |
-| server |  Cache palette array      | Paul Sauve |  |
 | server |  Cat spawning options      | William Blake Galbreath |  |
 | server |  Change writes to use NORMAL priority rather than LOW      | Spottedleaf |  |
 | server |  Changeable Mob Left Handed Chance      | Ben Kerllenevich |  |
@@ -398,6 +396,7 @@ This is an overview over all patches that are currently used.
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fully remove snooper      | Simon Gardling |  |
 | server |  jafama fast math      | Simon Gardling |  |
+| server |  lithium AI      | JellySquid |  |
 | server |  lithium DataTrackerMixin      | JellySquid | tr7zw |
 | server |  lithium HashedList      | JellySquid |  |
 | server |  lithium MixinBox      | JellySquid |  |
@@ -407,8 +406,14 @@ This is an overview over all patches that are currently used.
 | server |  lithium NoiseChunkGeneratorMixin      | JellySquid |  |
 | server |  lithium PerlinNoiseSamplerMixin      | JellySquid | Bud Gidiere |
 | server |  lithium VoronoiBiomeAccessTypeMixin      | JellySquid |  |
+| server |  lithium block      | JellySquid |  |
+| server |  lithium chunk      | JellySquid |  |
+| server |  lithium entity      | JellySquid |  |
 | server |  lithium enum_values      | JellySquid |  |
+| server |  lithium gen      | Hugo Planque |  |
+| server |  lithium math      | JellySquid |  |
 | server |  lithium reduce allocations      | JellySquid | Mykyta Komarnytskyy |
+| server |  lithium shape      | JellySquid |  |
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
 | server |  lithium: optimize &#96;BlockPos.iterateOutwards&#96; by caching      | 2No2Name |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |

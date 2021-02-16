@@ -1,0 +1,420 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: JellySquid <jellysquid+atwork@protonmail.com>
+Date: Sun, 24 Jan 2021 17:20:37 +0100
+Subject: [PATCH] lithium chunk
+
+
+diff --git a/src/main/java/me/jellysquid/mods/lithium/common/world/chunk/LithiumHashPalette.java b/src/main/java/me/jellysquid/mods/lithium/common/world/chunk/LithiumHashPalette.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..8e2e4e4e700cc92a75e2558071f467eb7e64daad
+--- /dev/null
++++ b/src/main/java/me/jellysquid/mods/lithium/common/world/chunk/LithiumHashPalette.java
+@@ -0,0 +1,162 @@
++package me.jellysquid.mods.lithium.common.world.chunk;
++
++import it.unimi.dsi.fastutil.HashCommon;
++import it.unimi.dsi.fastutil.objects.Reference2IntMap;
++import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
++import net.minecraft.server.DataPalette;
++import net.minecraft.server.DataPaletteExpandable;
++import net.minecraft.server.NBTTagCompound;
++import net.minecraft.server.NBTTagList;
++import net.minecraft.server.PacketDataSerializer;
++import net.minecraft.server.RegistryBlockID;
++
++import java.util.Arrays;
++import java.util.function.Function;
++import java.util.function.Predicate;
++
++import static it.unimi.dsi.fastutil.Hash.FAST_LOAD_FACTOR;
++
++/**
++ * {@link LithiumHashPalette#a(Object)} through using a faster backing map and reducing pointer chasing.
++ */
++public class LithiumHashPalette<T> implements DataPalette<T> {
++    private static final int ABSENT_VALUE = -1;
++
++    private final RegistryBlockID<T> idList;
++    private final DataPaletteExpandable<T> resizeHandler;
++    private final Function<NBTTagCompound, T> elementDeserializer;
++    private final Function<T, NBTTagCompound> elementSerializer;
++    private final int indexBits;
++
++    private final Reference2IntMap<T> table;
++    private T[] entries;
++    private int size = 0;
++
++    @SuppressWarnings("unchecked")
++    public LithiumHashPalette(RegistryBlockID<T> ids, int bits, DataPaletteExpandable<T> resizeHandler, Function<NBTTagCompound, T> deserializer, Function<T, NBTTagCompound> serializer) {
++        this.idList = ids;
++        this.indexBits = bits;
++        this.resizeHandler = resizeHandler;
++        this.elementDeserializer = deserializer;
++        this.elementSerializer = serializer;
++
++        int capacity = 1 << bits;
++
++        this.entries = (T[]) new Object[capacity];
++        this.table = new Reference2IntOpenHashMap<>(capacity, FAST_LOAD_FACTOR);
++        this.table.defaultReturnValue(ABSENT_VALUE);
++    }
++
++    @Override
++    public int a(T obj) {
++        int id = this.table.getInt(obj);
++
++        if (id == ABSENT_VALUE) {
++            id = this.computeEntry(obj);
++        }
++
++        return id;
++    }
++
++    private int computeEntry(T obj) {
++        int id = this.addEntry(obj);
++
++        if (id >= 1 << this.indexBits) {
++            if (this.resizeHandler == null) {
++                throw new IllegalStateException("Cannot grow");
++            } else {
++                id = this.resizeHandler.onResize(this.indexBits + 1, obj);
++            }
++        }
++
++        return id;
++    }
++
++    private int addEntry(T obj) {
++        int nextId = this.size;
++
++        if (nextId >= this.entries.length) {
++            this.resize(this.size);
++        }
++
++        this.table.put(obj, nextId);
++        this.entries[nextId] = obj;
++
++        this.size++;
++
++        return nextId;
++    }
++
++    private void resize(int neededCapacity) {
++        this.entries = Arrays.copyOf(this.entries, HashCommon.nextPowerOfTwo(neededCapacity + 1));
++    }
++
++    @Override
++    public boolean a(Predicate<T> predicate) {
++        for (int i = 0; i < this.size; ++i) {
++            if (predicate.test(this.entries[i])) {
++                return true;
++            }
++        }
++
++        return false;
++    }
++
++    @Override
++    public T a(int id) {
++        T[] entries = this.entries;
++
++        if (id >= 0 && id < entries.length) {
++            return entries[id];
++        }
++
++        return null;
++    }
++
++
++    @Override
++    public void b(PacketDataSerializer buf) {
++        int size = this.size;
++        buf.d(size);
++
++        for (int i = 0; i < size; ++i) {
++            buf.d(this.idList.a(this.a(i)));
++        }
++    }
++
++    @Override
++    public int a() {
++        int size = PacketDataSerializer.a(this.size);
++
++        for (int i = 0; i < this.size; ++i) {
++            size += PacketDataSerializer.a(this.idList.a(this.a(i)));
++        }
++
++        return size;
++    }
++
++    @Override
++    public void a(NBTTagList list) {
++        this.clear();
++
++        for (int i = 0; i < list.size(); ++i) {
++            this.addEntry(this.elementDeserializer.apply(list.getCompound(i)));
++        }
++    }
++
++    public void toTag(NBTTagList list) {
++        for (int i = 0; i < this.size; ++i) {
++            list.add(this.elementSerializer.apply(this.a(i)));
++        }
++    }
++
++    public int getSize() {
++        return this.size;
++    }
++
++    private void clear() {
++        Arrays.fill(this.entries, null);
++        this.table.clear();
++        this.size = 0;
++    }
++}
+diff --git a/src/main/java/net/minecraft/server/DataBits.java b/src/main/java/net/minecraft/server/DataBits.java
+index 40e3001bc1742231dcd02cee4423c57d0fd9a991..24375231ef2d0cc463bd99dae0029696f9d0b544 100644
+--- a/src/main/java/net/minecraft/server/DataBits.java
++++ b/src/main/java/net/minecraft/server/DataBits.java
+@@ -45,6 +45,45 @@ public class DataBits {
+ 
+     }
+ 
++    // Yatopia start - Port lithium
++    public <T> void compact(DataPalette<T> srcPalette, DataPalette<T> dstPalette, short[] out) {
++        if (this.e >= Short.MAX_VALUE) {
++            throw new IllegalStateException("Array too large");
++        }
++
++        if (this.e != out.length) {
++            throw new IllegalStateException("Array size mismatch");
++        }
++
++        short[] mappings = new short[(int) (this.d + 1)];
++
++        int idx = 0;
++
++        for (long word : this.b) {
++            long bits = word;
++
++            for (int elementIdx = 0; elementIdx < this.f; ++elementIdx) {
++                int value = (int) (bits & this.d);
++                int remappedId = mappings[value];
++
++                if (remappedId == 0) {
++                    remappedId = dstPalette.a(srcPalette.a(value)) + 1;
++                    mappings[value] = (short) remappedId;
++                }
++
++                out[idx] = (short) (remappedId - 1);
++                bits >>= this.c;
++
++                ++idx;
++
++                if (idx >= this.e) {
++                    return;
++                }
++            }
++        }
++    }
++    // Yatopia end
++
+     private int b(int i) {
+         //long j = Integer.toUnsignedLong(this.g); // Paper
+         //long k = Integer.toUnsignedLong(this.h); // Paper
+diff --git a/src/main/java/net/minecraft/server/DataPaletteBlock.java b/src/main/java/net/minecraft/server/DataPaletteBlock.java
+index 73163b417af7e522a4509bf9c1ab56d6499be622..f35f3c5c276097a387bb2bf8a656ce72a91cb4c0 100644
+--- a/src/main/java/net/minecraft/server/DataPaletteBlock.java
++++ b/src/main/java/net/minecraft/server/DataPaletteBlock.java
+@@ -2,6 +2,8 @@ package net.minecraft.server;
+ 
+ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+ import com.destroystokyo.paper.antixray.ChunkPacketInfo; // Paper - Anti-Xray - Add chunk packet info
++import me.jellysquid.mods.lithium.common.world.chunk.LithiumHashPalette;
++
+ import java.util.Arrays;
+ import java.util.Objects;
+ import java.util.concurrent.locks.ReentrantLock;
+@@ -11,6 +13,9 @@ import java.util.stream.Collectors;
+ 
+ public class DataPaletteBlock<T> implements DataPaletteExpandable<T> {
+ 
++    private static final ThreadLocal<short[]> cachedCompactionArrays = ThreadLocal.withInitial(() -> new short[4096]); // Yatopia - Port lithium
++    private static final long[] EMPTY_PALETTE_DATA = new long[(4 * 4096) / 64]; // Yatopia - Port lithium
++
+     private final DataPalette<T> b; private final DataPalette<T> getDataPaletteGlobal() { return this.b; } // Paper - OBFHELPER
+     private final DataPaletteExpandable<T> c = (i, object) -> {
+         return 0;
+@@ -91,14 +96,14 @@ public class DataPaletteBlock<T> implements DataPaletteExpandable<T> {
+     }
+ 
+     private void initialize(int bitsPerObject) { this.b(bitsPerObject); } // Paper - OBFHELPER
+-    private void b(int i) {
++    private void b(int i) { // Yatopia start - port lithium
+         if (i != this.i) {
+             this.i = i;
+-            if (this.i <= 4) {
+-                this.i = 4;
++            if (this.i <= 2) {
++                this.i = 2;
+                 this.h = new DataPaletteLinear<>(this.d, this.i, this, this.e);
+-            } else if (this.i < 9) {
+-                this.h = new DataPaletteHash<>(this.d, this.i, this, this.e, this.f);
++            } else if (this.i <= 8) {
++                this.h = new LithiumHashPalette<>(this.d, this.i, this, this.e, this.f);
+             } else {
+                 this.h = this.b;
+                 this.i = MathHelper.e(this.d.a());
+@@ -107,7 +112,7 @@ public class DataPaletteBlock<T> implements DataPaletteExpandable<T> {
+             this.h.a(this.g);
+             this.a = new DataBits(this.i, 4096);
+         }
+-    }
++    } // Yatopia End
+ 
+     @Override
+     public synchronized int onResize(int i, T t0) { // Paper - synchronize
+@@ -226,38 +231,53 @@ public class DataPaletteBlock<T> implements DataPaletteExpandable<T> {
+         this.b();
+     }
+ 
+-    public synchronized void a(NBTTagCompound nbttagcompound, String s, String s1) { // Paper - synchronize
++    public synchronized void a(NBTTagCompound nbttagcompound, String s, String s1) { // Paper - synchronize // Yatopia - Port Lithium
+         this.a();
+-        DataPaletteHash<T> datapalettehash = new DataPaletteHash<>(this.d, this.i, this.c, this.e, this.f);
+-        T t0 = this.g;
+-        int i = datapalettehash.a(this.g);
+-        int[] aint = new int[4096];
+ 
+-        for (int j = 0; j < 4096; ++j) {
+-            T t1 = this.a(j);
++        // The palette that will be serialized
++        LithiumHashPalette<T> palette = null;
++        long[] dataArray = null;
+ 
+-            if (t1 != t0) {
+-                t0 = t1;
+-                i = datapalettehash.a(t1);
+-            }
++        if (this.h instanceof LithiumHashPalette) {
++            palette = ((LithiumHashPalette<T>) this.h);
+ 
+-            aint[j] = i;
++            // The palette only contains the default block, so don't re-pack
++            if (palette.getSize() == 1 && palette.a(0) == this.g) {
++                dataArray = EMPTY_PALETTE_DATA;
++            }
+         }
+ 
+-        NBTTagList nbttaglist = new NBTTagList();
++        // If we aren't going to use an empty data array, start a compaction
++        if (dataArray == null) {
++            LithiumHashPalette<T> compactedPalette = new LithiumHashPalette<>(this.d, this.i, null, this.e, this.f);
+ 
+-        datapalettehash.b(nbttaglist);
+-        nbttagcompound.set(s, nbttaglist);
+-        int k = Math.max(4, MathHelper.e(nbttaglist.size()));
+-        DataBits databits = new DataBits(k, 4096);
++            short[] array = cachedCompactionArrays.get();
++            this.a.compact(this.h, compactedPalette, array);
+ 
+-        for (int l = 0; l < aint.length; ++l) {
+-            databits.b(l, aint[l]);
++            // If the palette didn't change during compaction, do a simple copy of the data array
++            if (palette != null && palette.getSize() == compactedPalette.getSize()) {
++                dataArray = this.a.a().clone();
++            } else {
++                // Re-pack the integer array as the palette has changed size
++                int size = Math.max(4, MathHelper.e(compactedPalette.getSize()));
++                DataBits copy = new DataBits(size, 4096);
++
++                for (int i = 0; i < array.length; ++i) {
++                    copy.set(i, array[i]);
++                }
++
++                // We don't need to clone the data array as we are the sole owner of it
++                dataArray = copy.a();
++                palette = compactedPalette;
++            }
+         }
+ 
+-        nbttagcompound.a(s1, databits.a());
+-        this.b();
+-    }
++        NBTTagList paletteTag = new NBTTagList();
++        palette.toTag(paletteTag);
++
++        nbttagcompound.set(s, paletteTag);
++        nbttagcompound.a(s1, dataArray);
++    } // Yatopia End
+ 
+     public int c() {
+         return 1 + this.h.a() + PacketDataSerializer.a(this.a.b()) + this.a.a().length * 8;
+@@ -267,15 +287,25 @@ public class DataPaletteBlock<T> implements DataPaletteExpandable<T> {
+         return this.h.a(predicate);
+     }
+ 
+-    public void a(DataPaletteBlock.a<T> datapaletteblock_a) {
+-        Int2IntOpenHashMap int2intopenhashmap = new Int2IntOpenHashMap();
++    public void a(DataPaletteBlock.a<T> datapaletteblock_a) { // Yatopia start - Port lithium
++        int len = (1 << this.i);
+ 
+-        this.a.a((i) -> {
+-            int2intopenhashmap.put(i, int2intopenhashmap.get(i) + 1);
+-        });
+-        int2intopenhashmap.int2IntEntrySet().forEach((entry) -> {
+-            datapaletteblock_a.accept(this.h.a(entry.getIntKey()), entry.getIntValue());
+-        });
++        // Do not allocate huge arrays if we're using a large palette
++        if (len > 4096) {
++            return;
++        }
++
++        short[] counts = new short[len];
++
++        this.a.a(i -> counts[i]++);
++
++        for (int i = 0; i < counts.length; i++) {
++            T obj = this.h.a(i);
++
++            if (obj != null) {
++                datapaletteblock_a.accept(obj, counts[i]);
++            }
++        } // Yatopia end
+     }
+ 
+     // Paper start
+diff --git a/src/main/java/net/minecraft/server/DataPaletteExpandable.java b/src/main/java/net/minecraft/server/DataPaletteExpandable.java
+index a550b21a9756ff1dcb4a21d8116f0a393ee88282..09f8716031c6e7530e507f83c527ac23b346ff54 100644
+--- a/src/main/java/net/minecraft/server/DataPaletteExpandable.java
++++ b/src/main/java/net/minecraft/server/DataPaletteExpandable.java
+@@ -1,6 +1,5 @@
+ package net.minecraft.server;
+ 
+-interface DataPaletteExpandable<T> {
+-
+-    int onResize(int i, T t0);
++public interface DataPaletteExpandable <T> { // Yatopia Public
++    int onResize(int i, T t);
+ }
+diff --git a/src/main/java/net/minecraft/server/PlayerChunk.java b/src/main/java/net/minecraft/server/PlayerChunk.java
+index 7a37bc0800bfd9e402b9eb983875f3e9c92e179b..915df4a469e14300aab4cca02a05665b2cc334cc 100644
+--- a/src/main/java/net/minecraft/server/PlayerChunk.java
++++ b/src/main/java/net/minecraft/server/PlayerChunk.java
+@@ -3,6 +3,7 @@ package net.minecraft.server;
+ import com.mojang.datafixers.util.Either;
+ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap; // Paper
+ import it.unimi.dsi.fastutil.shorts.ShortArraySet;
++import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
+ import it.unimi.dsi.fastutil.shorts.ShortSet;
+ import java.util.List;
+ import java.util.Optional;
+@@ -374,7 +375,7 @@ public class PlayerChunk {
+             if (b0 < 0 || b0 >= this.dirtyBlocks.length) return; // CraftBukkit - SPIGOT-6086, SPIGOT-6296
+             if (this.dirtyBlocks[b0] == null) {
+                 this.p = true;
+-                this.dirtyBlocks[b0] = new ShortArraySet();
++                this.dirtyBlocks[b0] = new ShortOpenHashSet(); // Yatopia - Port Lithium
+             }
+ 
+             this.dirtyBlocks[b0].add(SectionPosition.b(blockposition));

@@ -161,11 +161,11 @@ index b108874d977a4fb1a7c0d52f66bc08390decb4d0..6f7a247b123dcc1817b1ea092e627222
          this.lastX = d0;
          this.lastY = d1;
 diff --git a/src/main/java/net/minecraft/server/MathHelper.java b/src/main/java/net/minecraft/server/MathHelper.java
-index a33485a97ada6a1632565b875d97964cf5161a04..2459727f6e2ec55f92f4e6197b9bde013b4cb342 100644
+index b3c2b461b2a654a9e37a57f2f62b3ba8b5bb1634..b38799f6d9cb8524d9f27800379cfb56c840db03 100644
 --- a/src/main/java/net/minecraft/server/MathHelper.java
 +++ b/src/main/java/net/minecraft/server/MathHelper.java
-@@ -29,6 +29,14 @@ public class MathHelper {
-         return CompactSineLUT.cos(f); // Yatopia - CompactSineLUT
+@@ -27,6 +27,14 @@ public class MathHelper {
+         return MathHelper.b[(int) (f * 10430.378F + 16384.0F) & '\uffff'];
      }
  
 +    public static float sin(double f) {
