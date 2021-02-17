@@ -5,7 +5,7 @@ Subject: [PATCH] cache default block/fluid states in World.java
 
 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index f0d75acdb196d46e76c3f2635a911ad35a7a1d35..b03845cb7410dbb9c5f874921304184334ed585a 100644
+index 730bdc2589b1df6100420ef48561801d1085a05b..2c081fbf7b1eb0fc0081721a4e9750fcae46e211 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -39,6 +39,11 @@ import net.gegy1000.tictacs.NonBlockingWorldAccess;
@@ -20,7 +20,7 @@ index f0d75acdb196d46e76c3f2635a911ad35a7a1d35..b03845cb7410dbb9c5f8749213041843
      protected static final Logger LOGGER = LogManager.getLogger();
      public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
      public static final ResourceKey<World> OVERWORLD = ResourceKey.a(IRegistry.L, new MinecraftKey("overworld"));
-@@ -862,7 +867,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -893,7 +898,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
          }
          // CraftBukkit end
          if (isOutsideWorld(blockposition)) {
@@ -29,7 +29,7 @@ index f0d75acdb196d46e76c3f2635a911ad35a7a1d35..b03845cb7410dbb9c5f8749213041843
          } else {
              Chunk chunk = (Chunk) this.getChunkProvider().getChunkAt(blockposition.getX() >> 4, blockposition.getZ() >> 4, ChunkStatus.FULL, true); // Paper - manually inline to reduce hops and avoid unnecessary null check to reduce total byte code size, this should never return null and if it does we will see it the next line but the real stack trace will matter in the chunk engine
  
-@@ -873,7 +878,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -904,7 +909,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
      @Override
      public Fluid getFluid(BlockPosition blockposition) {
          if (isOutsideWorld(blockposition)) {

@@ -215,10 +215,10 @@ index 47ce63e1ea8ae2d6700330934598daa56450ce1c..a12b7cf7fa802480e5fcffc54b3334d2
  
      private static boolean b(PacketPlayInVehicleMove packetplayinvehiclemove) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index cc6dcdcad1b6df41cf19a72e2f30f44e122b4f90..33723937986e2bb843451479cf580abfd3b1702d 100644
+index b321f2b9104263fd4ad770b359337fd6a59e1e63..80689896972bd0dcdb2537c30d8f28279a111b84 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -429,7 +429,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -460,7 +460,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      }
  
      private static boolean D(BlockPosition blockposition) {
@@ -228,7 +228,7 @@ index cc6dcdcad1b6df41cf19a72e2f30f44e122b4f90..33723937986e2bb843451479cf580abf
      }
  
      private static boolean d(int i) {
-@@ -818,15 +819,17 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -849,15 +850,17 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      @Override public int a(HeightMap.Type heightmap_type, int i, int j) { // Paper - OBFHELPER
          int k;
  

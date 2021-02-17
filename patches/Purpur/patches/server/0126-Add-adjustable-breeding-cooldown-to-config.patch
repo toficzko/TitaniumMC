@@ -33,7 +33,7 @@ index bba343542e7e6fa83ec802d97b4c139bb210ab28..d9f9e2235d091e14e5d34bb9a3273e7f
              int experience = this.getRandom().nextInt(7) + 1;
              org.bukkit.event.entity.EntityBreedEvent entityBreedEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callEntityBreedEvent(entityageable, this, entityanimal, entityplayer, this.breedItem, experience);
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 935cab32a2fc047e4b80547fd1b63de07888e034..19b15f937a1ed9f846241e72b298ec0c35b55686 100644
+index 452dbbf572ad38716c81ae90873884076c1abc6f..abd415f02d8b4c28602b6c4aefc0914b5a83165b 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -104,6 +104,48 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
@@ -85,7 +85,7 @@ index 935cab32a2fc047e4b80547fd1b63de07888e034..19b15f937a1ed9f846241e72b298ec0c
  
      public CraftWorld getWorld() {
          return this.world;
-@@ -157,6 +199,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -188,6 +230,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
          this.paperConfig = new com.destroystokyo.paper.PaperWorldConfig(((WorldDataServer) worlddatamutable).getName(), this.spigotConfig); // Paper
          this.tuinityConfig = new com.tuinity.tuinity.config.TuinityConfig.WorldConfig(((WorldDataServer)worlddatamutable).getName()); // Tuinity - Server Config
          this.purpurConfig = new net.pl3x.purpur.PurpurWorldConfig(((WorldDataServer) worlddatamutable).getName(), env); // Purpur

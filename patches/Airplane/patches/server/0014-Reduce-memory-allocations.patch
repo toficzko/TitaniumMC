@@ -56,10 +56,10 @@ index 631eb682e81e30d2a937fd1eafccd8a9ab82d21e..dc07376845f84ea949a2153cb75d2cd9
          return (EntityTypes) IRegistry.a((IRegistry) IRegistry.ENTITY_TYPE, s, (Object) entitytypes_builder.a(s));
      }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index f7aab27a6cb1199d74bf140caebfe396910aadea..fe67e91135d501ef3ad355a3e10a2ad4ca7fb9a2 100644
+index 9d6ddfec93f49f80fdc88248fc5aaf5ad6ee48da..4b62e27eb6d5e2dfd035d096acab294fb4f11f55 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -1055,19 +1055,19 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -1086,19 +1086,19 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
  
      public void a(Consumer<Entity> consumer, Entity entity) {
          try {
@@ -83,10 +83,10 @@ index f7aab27a6cb1199d74bf140caebfe396910aadea..fe67e91135d501ef3ad355a3e10a2ad4
      // Paper start - Prevent armor stands from doing entity lookups
      @Override
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 83f0e0df73f2202b55be5b9f3f5849d78e5a4f94..005dc35367319aa51b8bbb7d06b444422480623b 100644
+index dd9ae27a208b5e55a1c473eda6e068a0fc3eb64f..d4672e7fa899a39bae2d9179472b22db28a58f19 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -915,7 +915,28 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1012,7 +1012,28 @@ public class WorldServer extends World implements GeneratorAccessSeed {
  
                  gameprofilerfiller.enter("tick");
                  if (!entity.dead && !(entity instanceof EntityComplexPart)) {
@@ -115,7 +115,7 @@ index 83f0e0df73f2202b55be5b9f3f5849d78e5a4f94..005dc35367319aa51b8bbb7d06b44442
                  }
  
                  gameprofilerfiller.exit();
-@@ -1286,9 +1307,14 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1376,9 +1397,14 @@ public class WorldServer extends World implements GeneratorAccessSeed {
                  ++entity.ticksLived;
                  GameProfilerFiller gameprofilerfiller = this.getMethodProfiler();
  

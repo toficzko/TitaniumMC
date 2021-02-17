@@ -29,10 +29,10 @@ index 341af7474690b929cfa3e35cd464bbbbacb6685e..ad00ff2bd525768e4f06631d16b912c6
              if (SpawnerCreature.a(EntityPositionTypes.Surface.ON_GROUND, iworldreader, blockposition2, EntityTypes.WANDERING_TRADER)) {
                  blockposition1 = blockposition2;
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index a1a18d91ef44ac54bf75fae84fd34f60b37f828c..935cab32a2fc047e4b80547fd1b63de07888e034 100644
+index af46e9ccfcc24e8222fdd49d66c3ba2057633021..452dbbf572ad38716c81ae90873884076c1abc6f 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -156,7 +156,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -187,7 +187,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((WorldDataServer) worlddatamutable).getName()); // Spigot
          this.paperConfig = new com.destroystokyo.paper.PaperWorldConfig(((WorldDataServer) worlddatamutable).getName(), this.spigotConfig); // Paper
          this.tuinityConfig = new com.tuinity.tuinity.config.TuinityConfig.WorldConfig(((WorldDataServer)worlddatamutable).getName()); // Tuinity - Server Config
@@ -42,10 +42,10 @@ index a1a18d91ef44ac54bf75fae84fd34f60b37f828c..935cab32a2fc047e4b80547fd1b63de0
          this.generator = gen;
          this.world = new CraftWorld((WorldServer) this, gen, env);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 6d8983b851b877e6a5ac378e11097a6ef23794f4..154f49b96e3622f803e9599116fd60c77dea90d1 100644
+index 9163ee821cc91f6ceb317fb4914e0394564a821b..ae3ec2eca3130943536b80bd1296eba67aa08e3c 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -339,7 +339,24 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -436,7 +436,24 @@ public class WorldServer extends World implements GeneratorAccessSeed {
          this.L = new ObjectLinkedOpenHashSet();
          this.Q = flag1;
          this.server = minecraftserver;

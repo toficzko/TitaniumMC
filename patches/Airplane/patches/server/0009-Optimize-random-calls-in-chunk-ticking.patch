@@ -34,7 +34,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index b03ff6bbf82da7bfa1e2b739a43e5cef31b36f4a..f3f7e9a09ae13a0b032f9f831e138bc3143fc2aa 100644
+index 8e59a794f6190930cb7bb81a2fe1a1d374dacce7..045b4af6721817b3dbfb05b9aec0bf382de9fcf5 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -53,6 +53,18 @@ public class Chunk implements IChunkAccess {
@@ -56,16 +56,16 @@ index b03ff6bbf82da7bfa1e2b739a43e5cef31b36f4a..f3f7e9a09ae13a0b032f9f831e138bc3
      public Chunk(World world, ChunkCoordIntPair chunkcoordintpair, BiomeStorage biomestorage) {
          this(world, chunkcoordintpair, biomestorage, ChunkConverter.a, TickListEmpty.b(), TickListEmpty.b(), 0L, (ChunkSection[]) null, (Consumer) null);
      }
-@@ -325,6 +337,7 @@ public class Chunk implements IChunkAccess {
- 
+@@ -287,6 +299,7 @@ public class Chunk implements IChunkAccess {
          // CraftBukkit start
          this.bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);
+         this.entitySlicesManager = new com.tuinity.tuinity.world.ChunkEntitySlices(this.world, this.loc.x, this.loc.z, 0, 15); // TODO update for 1.17 // Tuinity
 +        this.lightningTick = this.world.random.nextInt(100000) << 1; // Airplane - initialize lightning tick
      }
  
      public org.bukkit.Chunk bukkitChunk;
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index 826f2de4fb17c0e366846573dad985166d6ceb30..a6ee1bb10a24a41d2d1734fd69aef2524f067a41 100644
+index 347e17b4cde6c5d062e2369a6e425ce9b85627fb..f99e4399b5f47ca09708ff8696c01879541650c6 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
 @@ -974,6 +974,7 @@ public class ChunkProviderServer extends IChunkProvider {
@@ -77,19 +77,19 @@ index 826f2de4fb17c0e366846573dad985166d6ceb30..a6ee1bb10a24a41d2d1734fd69aef252
              boolean flag2 = world.ticksPerAnimalSpawns != 0L && worlddata.getTime() % world.ticksPerAnimalSpawns == 0L; // CraftBukkit
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index c947e2c6124d3a729777c285a0884e24a4c17c04..83f0e0df73f2202b55be5b9f3f5849d78e5a4f94 100644
+index 6694a669f9fbae0dce857e97651ed527f5481427..dd9ae27a208b5e55a1c473eda6e068a0fc3eb64f 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -1027,6 +1027,8 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1124,6 +1124,8 @@ public class WorldServer extends World implements GeneratorAccessSeed {
      private final com.destroystokyo.paper.util.math.ThreadUnsafeRandom randomTickRandom = new com.destroystokyo.paper.util.math.ThreadUnsafeRandom();
      // Paper end
  
 +    private int currentIceAndSnowTick = 0; protected void resetIceAndSnowTick() { this.currentIceAndSnowTick = this.randomTickRandom.nextInt(16); } // Airplane
 +
-     // Airplane start - create version of chunk tick that returns a bool for updating lighting
-     public void a(Chunk chunk, int i) { this.abool(chunk, i); }
-     public boolean abool(Chunk chunk, int i) { final int randomTickSpeed = i; // Paper
-@@ -1040,7 +1042,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+     public void a(Chunk chunk, int i) { final int randomTickSpeed = i; // Paper
+         ChunkCoordIntPair chunkcoordintpair = chunk.getPos();
+         boolean flag = this.isRaining();
+@@ -1134,7 +1136,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
          gameprofilerfiller.enter("thunder");
          final BlockPosition.MutableBlockPosition blockposition = this.chunkTickMutablePosition; // Paper - use mutable to reduce allocation rate, final to force compile fail on change
  
@@ -98,7 +98,7 @@ index c947e2c6124d3a729777c285a0884e24a4c17c04..83f0e0df73f2202b55be5b9f3f5849d7
              blockposition.setValues(this.a(this.a(j, 0, k, 15))); // Paper
              if (this.isRainingAt(blockposition)) {
                  DifficultyDamageScaler difficultydamagescaler = this.getDamageScaler(blockposition);
-@@ -1070,7 +1072,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1164,7 +1166,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
          }
  
          gameprofilerfiller.exitEnter("iceandsnow");

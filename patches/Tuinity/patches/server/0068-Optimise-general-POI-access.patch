@@ -8,7 +8,7 @@ its diff here
 
 diff --git a/src/main/java/com/tuinity/tuinity/util/PoiAccess.java b/src/main/java/com/tuinity/tuinity/util/PoiAccess.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..778137537c55e1151223a79f26b9a1c655e501de
+index 0000000000000000000000000000000000000000..f521c36c1355b76c82bbf80f505c181384553275
 --- /dev/null
 +++ b/src/main/java/com/tuinity/tuinity/util/PoiAccess.java
 @@ -0,0 +1,811 @@
@@ -160,7 +160,7 @@ index 0000000000000000000000000000000000000000..778137537c55e1151223a79f26b9a1c6
 +                            sourceX, sourceY, sourceZ
 +                    );
 +                    // max additional distance (due to varying center point)
-+                    final double a = 2*(addHalfToSection ? 7.5 : 8.0);
++                    final double a = (Math.sqrt(2*2*2))*(addHalfToSection ? 7.5 : 8.0);
 +                    distanceSquared = Math.sqrt(distanceSquared) - a;
 +                    distanceSquared *= distanceSquared;
 +

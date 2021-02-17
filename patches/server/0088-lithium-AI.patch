@@ -1099,22 +1099,22 @@ index 9907047028b754fe0e314a7d5c5238ce4286c373..83008998a701c19f95bfc0199490cf59
              // Tuinity start - optimise culling shape cache for light
              if (this.a != null && this.a.getCullingShapeCache() != null) {
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 31a0ea67545342ed0ed189e34fc20e7829303430..5ebaf90f3023190d3d43f857e6a6f57d03211069 100644
+index 779a726b564dbc85e3f548ee15cdc0c505605c61..fbaf79132c4dc3a5610fcf7944ce932407344d16 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
-@@ -810,6 +810,11 @@ public class Chunk implements IChunkAccess {
-         entity.chunkZ = this.loc.z;
-         this.entities.add(entity); this.entitiesByClass.addEntity(entity, entity.chunkY); // Paper - per chunk entity list // Tuinity - entities by class
-         this.entitySlices[k].add(entity); if (entity.hardCollides()) this.hardCollidingEntities[k].add(entity); // Tuinity - optimise hard colliding entities
+@@ -814,6 +814,11 @@ public class Chunk implements IChunkAccess {
+         if (!this.entitySlices[i].remove(entity)) { // Tuinity - optimise hard colliding entities // Tuinity - entities by class // Tuinity
+             return;
+         }
 +        // Yatopia start - Port lithium
 +        if (entity instanceof EntityLiving) {
 +            this.world.getEntityTracker().onEntityAdded(entity.chunkX, entity.chunkY, entity.chunkZ, (EntityLiving) entity);
 +        }
 +        // Yatopia end
-         // Paper start
          if (entity instanceof EntityItem) {
-             itemCounts[k]++;
-@@ -859,6 +864,11 @@ public class Chunk implements IChunkAccess {
+             itemCounts[i]--;
+         } else if (entity instanceof IInventory) {
+@@ -823,6 +828,11 @@ public class Chunk implements IChunkAccess {
          this.markDirty(); // Paper
          // Paper end
          this.entities.remove(entity); // Paper
@@ -2036,7 +2036,7 @@ index f0fdfd6891e59891e7370a2d682b65c647b28e9e..c205175f2e8825aa0900972f5400ad9f
 +    }
 +} // Yatopia End
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 68efdd9ca2dc554698c722c62d98de2e481aea7f..f0d75acdb196d46e76c3f2635a911ad35a7a1d35 100644
+index f8b117cbb7d97cff54f5f96a6ac0eac14f05fe3f..730bdc2589b1df6100420ef48561801d1085a05b 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -18,6 +18,8 @@ import java.util.function.Consumer;
@@ -2048,15 +2048,15 @@ index 68efdd9ca2dc554698c722c62d98de2e481aea7f..f0d75acdb196d46e76c3f2635a911ad3
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -197,6 +199,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
-         return ret;
+@@ -228,6 +230,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
      }
+ 
      // Tuinity end - optimise checkDespawn
 +    private EntityTrackerEngine tracker; // Yatopia - Port lithium
  
      protected World(WorldDataMutable worlddatamutable, ResourceKey<World> resourcekey, final DimensionManager dimensionmanager, Supplier<GameProfilerFiller> supplier, boolean flag, boolean flag1, long i, org.bukkit.generator.ChunkGenerator gen, org.bukkit.World.Environment env, java.util.concurrent.Executor executor) { // Paper
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((WorldDataServer) worlddatamutable).getName()); // Spigot
-@@ -274,8 +277,14 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -305,8 +308,14 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
          this.keepSpawnInMemory = this.paperConfig.keepSpawnInMemory; // Paper
          this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
          this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
@@ -2071,7 +2071,7 @@ index 68efdd9ca2dc554698c722c62d98de2e481aea7f..f0d75acdb196d46e76c3f2635a911ad3
      // Paper start
      // ret true if no collision
      public final boolean checkEntityCollision(IBlockData data, Entity source, VoxelShapeCollision voxelshapedcollision,
-@@ -443,6 +452,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -474,6 +483,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
          return b(blockposition.getY());
      }
  
@@ -2080,7 +2080,7 @@ index 68efdd9ca2dc554698c722c62d98de2e481aea7f..f0d75acdb196d46e76c3f2635a911ad3
          return i < 0 || i >= 256;
      }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 8ce29cff72157e40c8612466b24504e7f552edda..e0f3759d89ca2f1fcaedbd9276bb33da544cff72 100644
+index 26cc07b729cec83ea3a3299cfe99fe22d024ed5b..e00445c7ac452f42e2c5e50efd3044c4f2e90ff1 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -41,6 +41,8 @@ import java.util.stream.Collectors;
@@ -2092,7 +2092,7 @@ index 8ce29cff72157e40c8612466b24504e7f552edda..e0f3759d89ca2f1fcaedbd9276bb33da
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -1802,6 +1804,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1892,6 +1894,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              while (iterator.hasNext()) {
                  Entity entity = (Entity) iterator.next();
  

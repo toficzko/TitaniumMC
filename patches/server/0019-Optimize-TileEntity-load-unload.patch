@@ -5,7 +5,7 @@ Subject: [PATCH] Optimize TileEntity load/unload
 
 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 24346554fa8bb48ce7786c3423b4afd2b781f39a..9298ac155a0c2e6902e7ea06f5ffe2ce99187ec0 100644
+index 6f47a85ddc68e441374a798b255c9fcef63a9dc5..502efb68ba6f62fd577b19e37687d60e7d4ecf18 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -42,8 +42,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {

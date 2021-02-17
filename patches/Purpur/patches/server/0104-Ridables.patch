@@ -2201,7 +2201,7 @@ index c57bf5091430709778dc21d70c8a32819c9d6639..b0a5c36d1132e2558a1fefbd9f8dd264
          this.targetSelector.a(2, (new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true)).a(300));
          this.targetSelector.a(3, (new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false)).a(300));
 diff --git a/src/main/java/net/minecraft/server/EntityInsentient.java b/src/main/java/net/minecraft/server/EntityInsentient.java
-index fcc247e86992d1e1a94438ee4f0a70182390cc62..d9b00a24b378b74e126518da9142249d2ad62c55 100644
+index ee005e482396f8ff7e46a7ca981c843a76bdda71..b64278a8e349467305b75b2180a4a423ed49d7e4 100644
 --- a/src/main/java/net/minecraft/server/EntityInsentient.java
 +++ b/src/main/java/net/minecraft/server/EntityInsentient.java
 @@ -30,7 +30,7 @@ public abstract class EntityInsentient extends EntityLiving {
@@ -5028,10 +5028,10 @@ index 7190316a38e6b4edf5501bfedbb12be79e990797..4469fdc932d725b8e6fa4f8e3ec15c22
          return new Vec3D(this.x * d0, this.y * d1, this.z * d2);
      }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 7b2b20f8b6883e9dcccffc26b2127242193306e8..a1a18d91ef44ac54bf75fae84fd34f60b37f828c 100644
+index d86a23c6febc638080c0d26857839918db22ce93..af46e9ccfcc24e8222fdd49d66c3ba2057633021 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -1650,5 +1650,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -1681,5 +1681,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      public boolean isTheEnd() {
          return getWorld().getEnvironment() == org.bukkit.World.Environment.THE_END;
      }
@@ -5043,7 +5043,7 @@ index 7b2b20f8b6883e9dcccffc26b2127242193306e8..a1a18d91ef44ac54bf75fae84fd34f60
      // Purpur end
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 536d43593308e4a3202d5d5d82bfab3d3b81e092..6d8983b851b877e6a5ac378e11097a6ef23794f4 100644
+index dc15d19fb75cd0988235ce193ac7f03c35d713c7..9163ee821cc91f6ceb317fb4914e0394564a821b 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -102,6 +102,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {

@@ -78,7 +78,7 @@ index de9ea6770b8afc5e1020bef04ac6cca93b6b420c..21d0570a59240e955ff148bac0226b22
          if (this.bF) {
              this.bF = false;
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 1c396a85e88e0c37c3c0ca8ac8f2437e77892f62..bdb6ee0409bf76ed8a2fc1644ddf55a2aef8390b 100644
+index bf06ef09cfd4d7618365249d1332d264d8ff1377..ed2192ad7b27eb8fc34be5d7817e1ca4bee5c9d1 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -95,6 +95,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
@@ -89,7 +89,7 @@ index 1c396a85e88e0c37c3c0ca8ac8f2437e77892f62..bdb6ee0409bf76ed8a2fc1644ddf55a2
  
      public final co.aikar.timings.WorldTimingsHandler timings; // Paper
      public static BlockPosition lastPhysicsProblem; // Spigot
-@@ -154,8 +155,9 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -185,8 +186,9 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      protected World(WorldDataMutable worlddatamutable, ResourceKey<World> resourcekey, final DimensionManager dimensionmanager, Supplier<GameProfilerFiller> supplier, boolean flag, boolean flag1, long i, org.bukkit.generator.ChunkGenerator gen, org.bukkit.World.Environment env, java.util.concurrent.Executor executor) { // Paper
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((WorldDataServer) worlddatamutable).getName()); // Spigot
          this.paperConfig = new com.destroystokyo.paper.PaperWorldConfig(((WorldDataServer) worlddatamutable).getName(), this.spigotConfig); // Paper
