@@ -350,6 +350,7 @@ This is an overview over all patches that are currently used.
 | server |  Signs editable on right click      | William Blake Galbreath |  |
 | server |  Silk touch spawners      | William Blake Galbreath |  |
 | server |  Simpler ShapelessRecipes comparison for Vanilla      | Paul Sauve |  |
+| server |  Skip POI finding if stuck in vehicle      | Paul Sauve |  |
 | server |  Skip events if there&#39;s no listeners      | William Blake Galbreath |  |
 | server |  Smarter statistics ticking      | Mykyta Komarnytskyy |  |
 | server |  Smol entity optimisations      | Ivan Pekov |  |
