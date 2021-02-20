@@ -192,6 +192,7 @@ This is an overview over all patches that are currently used.
 | server |  Fix the dead lagging the server      | William Blake Galbreath |  |
 | server |  Fix vanilla command permission handler      | William Blake Galbreath |  |
 | server |  Flying squids! Oh my!      | William Blake Galbreath |  |
+| server |  Force world save      | ishland |  |
 | server |  Full netherite armor grants fire resistance      | BillyGalbreath |  |
 | api |  Full netherite armor grants fire resistance      | BillyGalbreath |  |
 | server |  Giants AI settings      | William Blake Galbreath |  |
@@ -394,6 +395,7 @@ This is an overview over all patches that are currently used.
 | server |  add config for logging login location      | Simon Gardling |  |
 | server |  cache default block/fluid states in World.java      | Simon Gardling |  |
 | server |  dont load chunks for physics      | Aikar |  |
+| server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fully remove snooper      | Simon Gardling |  |
 | server |  jafama fast math      | Simon Gardling |  |

@@ -6,7 +6,7 @@ Subject: [PATCH] New Network System
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index 2349ea4a8602691acf5afd548c0deaaef3423d08..835a61576cd9172fd121d9922a0fcae22e2d8624 100644
+index 9a7f6d8da4dd3e55382479d2f9b559c4bba5e3da..47ccba15729c9d2d932806cb1766ff3d5ca1a1e2 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -56,6 +56,14 @@
@@ -25,10 +25,10 @@ index 2349ea4a8602691acf5afd548c0deaaef3423d08..835a61576cd9172fd121d9922a0fcae2
              <groupId>io.papermc</groupId>
              <artifactId>minecraft-server</artifactId>
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 1a706c1307876d9ede761a63af7013db711c7681..bfb5efb8999d0310dd1674289a387080144b2a7a 100644
+index a6ef921402d4f132d72c5d85365a20b14981f558..377d4c851597bfbd99f5f867c932de64f4cf0bbb 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1752,6 +1752,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1750,6 +1750,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          return true;
      }
  
@@ -124,14 +124,13 @@ index 7b9f83e63d0f9cd83a246be33af4ab91da6b2151..5312eeadce5cfc973d2370ed920ea3ba
      }
  
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index fa16608b24cd68e4195e72143d39db38702dba40..2b213633d3177e974039abc7dabd9269d9482662 100644
+index 15e2fa125bc293b954cceb5b1fbcec7fade3e4db..c57a6b54e262aedd7855ff190b7fa123c48b4e02 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-@@ -291,4 +291,17 @@ public class YatopiaConfig {
-         regionFileIOThreadPoolSize = getInt("settings.threads.regionfile", -1);
-         Preconditions.checkArgument(regionFileIOThreadPoolSize == -1 || regionFileIOThreadPoolSize > 0, "Invalid settings.threads.regionfile in yatopia.yml");
+@@ -276,4 +276,16 @@ public class YatopiaConfig {
+         fixProtocolLib = getBoolean("settings.fix-protocollib", fixProtocolLib);
      }
-+
+ 
 +    public static boolean ioUringBeta = false;
 +    public static boolean tcpFastOpen = false;
 +    public static boolean debugNetwork = false;

@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: ishland <ishlandmc@yeah.net>
+Date: Tue, 9 Feb 2021 21:42:09 +0800
+Subject: [PATCH] Force world save
+
+
+diff --git a/src/main/java/net/minecraft/server/RegionFileSection.java b/src/main/java/net/minecraft/server/RegionFileSection.java
+index 07c24a62c56f8bd20490560953d64bbeff265cca..a1b5752ab6b1471b28345abbe38f155a6dfcfa43 100644
+--- a/src/main/java/net/minecraft/server/RegionFileSection.java
++++ b/src/main/java/net/minecraft/server/RegionFileSection.java
+@@ -135,8 +135,9 @@ public class RegionFileSection<R> extends RegionFileCache implements AutoCloseab
+         return set;
+     }
+     // Yatopia end
++    private final java.util.concurrent.atomic.AtomicBoolean hasWorked = new java.util.concurrent.atomic.AtomicBoolean(false); // Yatopia - enforce one chunk unload per tick
+     protected void a(BooleanSupplier booleansupplier) {
+-        while (!this.d.isEmpty() && booleansupplier.getAsBoolean()) {
++        hasWorked.set(false); while (!this.d.isEmpty() && (hasWorked.compareAndSet(false, true) || booleansupplier.getAsBoolean())) { // Yatopia - enforce one chunk unload per tick
+             ChunkCoordIntPair chunkcoordintpair = SectionPosition.a(this.d.firstLong()).r(); // Paper - conflict here to avoid obfhelpers
+ 
+             this.d(chunkcoordintpair);
+diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
+index f034e6e5123a7a222f59d1092097b00ae5ccb5fa..829d6c7ca3e270ec8c103df7f9646ce10f6eb659 100644
+--- a/src/main/java/net/minecraft/server/VillagePlace.java
++++ b/src/main/java/net/minecraft/server/VillagePlace.java
+@@ -412,6 +412,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+         }).orElse(false);
+     }
+ 
++    private final java.util.concurrent.atomic.AtomicBoolean hasWorked = new java.util.concurrent.atomic.AtomicBoolean(false); // Yatopia - enforce one chunk unload per tick
+     @Override
+     public void a(BooleanSupplier booleansupplier) {
+         // Paper start - async chunk io
+@@ -419,7 +420,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+             super.a(booleansupplier);
+         } else {
+             //super.a(booleansupplier); // re-implement below
+-            while (!((RegionFileSection)this).d.isEmpty() && booleansupplier.getAsBoolean() && !this.world.isSavingDisabled()) { // Tuinity - unload POI data - don't write to disk if saving is disabled
++            hasWorked.set(false); while (!((RegionFileSection)this).d.isEmpty() && (hasWorked.compareAndSet(false, true) || booleansupplier.getAsBoolean()) && !this.world.isSavingDisabled()) { // Tuinity - unload POI data - don't write to disk if saving is disabled // Yatopia - enforce one chunk unload per tick
+                 ChunkCoordIntPair chunkcoordintpair = SectionPosition.a(((RegionFileSection)this).d.firstLong()).r();
+ 
+                 NBTTagCompound data;

@@ -1727,7 +1727,7 @@ index 8e90fabb0681457ec140f8553799463023a7a03b..c1e8a2cf070fd06c4b70a8f78ca7672d
          return (int) (i << 22 >> 42);
      }
 diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
-index d7345657f2c78f64cb737e070f35586f369b5dde..f034e6e5123a7a222f59d1092097b00ae5ccb5fa 100644
+index 17db6fb6c8f2be2ae37be92891603a889cb7dbfd..59b8e29da8155873096d347bdd771571229a69ef 100644
 --- a/src/main/java/net/minecraft/server/VillagePlace.java
 +++ b/src/main/java/net/minecraft/server/VillagePlace.java
 @@ -7,7 +7,12 @@ import it.unimi.dsi.fastutil.longs.Long2ByteOpenHashMap;
@@ -2080,7 +2080,7 @@ index f8b117cbb7d97cff54f5f96a6ac0eac14f05fe3f..730bdc2589b1df6100420ef48561801d
          return i < 0 || i >= 256;
      }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 26cc07b729cec83ea3a3299cfe99fe22d024ed5b..e00445c7ac452f42e2c5e50efd3044c4f2e90ff1 100644
+index 8c167d1829b75d8fef1fedd9a0db125b9cfa6308..a5e2ca2b42bc348d0ab45e75445ac8faa01737e2 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -41,6 +41,8 @@ import java.util.stream.Collectors;

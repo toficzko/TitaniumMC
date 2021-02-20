@@ -398,7 +398,7 @@ index a550b21a9756ff1dcb4a21d8116f0a393ee88282..09f8716031c6e7530e507f83c527ac23
 +    int onResize(int i, T t);
  }
 diff --git a/src/main/java/net/minecraft/server/PlayerChunk.java b/src/main/java/net/minecraft/server/PlayerChunk.java
-index f9e5378a564437642fdbcb3a1199f2e90892ec49..79854605012663e152cfad96e2fa78591b500868 100644
+index 13e8bfa62cd8dc1f65b07d7f617e02aec4b83d82..3a851285cc86701eb03855f7bdc44c274155d149 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunk.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunk.java
 @@ -3,6 +3,7 @@ package net.minecraft.server;

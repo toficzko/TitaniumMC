@@ -32,7 +32,7 @@ index 1962c14af5cc4ec4c66fa7c354aff98c5e6a4b2e..0703b3c289208637ef48c6f0e6cd9cdc
          this.enableCommandBlock = this.getBoolean("enable-command-block", false);
          this.spawnProtection = this.getInt("spawn-protection", 16);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 35e437945335399bf5f59bcaa17b8dcd74f82c77..1a706c1307876d9ede761a63af7013db711c7681 100644
+index 17fc80f6e8c838ce5fcdc29c7f11d8633f9824e7..a6ef921402d4f132d72c5d85365a20b14981f558 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -76,7 +76,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -56,7 +56,7 @@ index 35e437945335399bf5f59bcaa17b8dcd74f82c77..1a706c1307876d9ede761a63af7013db
  
          this.dataPackResources.close();
  
-@@ -1334,7 +1336,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1332,7 +1334,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
              //MinecraftServer.LOGGER.debug("Autosave finished"); // Paper
          //} // Paper
  
@@ -65,7 +65,7 @@ index 35e437945335399bf5f59bcaa17b8dcd74f82c77..1a706c1307876d9ede761a63af7013db
          // Akarin - Disable Snooper
          /*
          if (((DedicatedServer) this).getDedicatedServerProperties().snooperEnabled && !this.snooper.d() && this.ticks > 100) { // Spigot
-@@ -1346,7 +1348,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1344,7 +1346,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          }
          */
  

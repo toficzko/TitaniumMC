@@ -7,10 +7,10 @@ A massive improvement to world generation.
 This patch actually schedules chunk status upgrade later rather than doing it right away.
 
 diff --git a/pom.xml b/pom.xml
-index 9a7f6d8da4dd3e55382479d2f9b559c4bba5e3da..2349ea4a8602691acf5afd548c0deaaef3423d08 100644
+index 47ccba15729c9d2d932806cb1766ff3d5ca1a1e2..835a61576cd9172fd121d9922a0fcae22e2d8624 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -188,6 +188,12 @@
+@@ -196,6 +196,12 @@
              <artifactId>commons-rng-core</artifactId>
              <version>1.3</version>
          </dependency>
@@ -292,10 +292,10 @@ index 7abf0e4b7e96dd367b9d03cbc62ac7bb03542d0a..76a76c26650bca73828d7893a537a023
          return i == j ? true : GenLayers.a.get(i) == GenLayers.a.get(j);
      }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 17fc80f6e8c838ce5fcdc29c7f11d8633f9824e7..39bbca811bfceee45c14aaa375d80d1cb0e95807 100644
+index 377d4c851597bfbd99f5f867c932de64f4cf0bbb..4fc43907f71d608e13ec11e17610a748dd60f444 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -836,6 +836,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -838,6 +838,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          // Spigot end
          // Paper start - move final shutdown items here
          LOGGER.info("Flushing Chunk IO");
@@ -305,10 +305,10 @@ index 17fc80f6e8c838ce5fcdc29c7f11d8633f9824e7..39bbca811bfceee45c14aaa375d80d1c
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 6d1550f6943e50db1f045263f63cffe8c12e8073..2dbbb107270064bbd6581ec828abc1578ac5cc86 100644
+index 852ec5ec67ff1fa1be0a29538ced0deeb1bb44a7..7f8d381e1c83292b6b31119c99e7fba8bb056b3b 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -57,6 +57,18 @@ import org.spigotmc.AsyncCatcher;
+@@ -58,6 +58,18 @@ import org.spigotmc.AsyncCatcher;
  
  public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
@@ -327,7 +327,7 @@ index 6d1550f6943e50db1f045263f63cffe8c12e8073..2dbbb107270064bbd6581ec828abc157
      private static final Logger LOGGER = LogManager.getLogger();
      public static final int GOLDEN_TICKET = 33 + ChunkStatus.b();
      // Paper start - faster copying
-@@ -1249,7 +1261,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1258,7 +1270,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                  return;
              }
              // Paper end
@@ -379,10 +379,10 @@ index d98ac030e205dbb1512ef6b837e2f3fdd208e231..451ea5b703d01664942899ca62cf789e
      }
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 68fbbcac7b6b2f24a42c3a63825f940e52f6f51a..3c2abebe3e9d2fd5f54776839744f674a8d3a8e9 100644
+index a5e2ca2b42bc348d0ab45e75445ac8faa01737e2..e00445c7ac452f42e2c5e50efd3044c4f2e90ff1 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -2685,28 +2685,26 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -2698,28 +2698,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
          // Paper start
          BlockPosition blockposition1 = blockposition.immutableCopy();
@@ -416,7 +416,7 @@ index 68fbbcac7b6b2f24a42c3a63825f940e52f6f51a..3c2abebe3e9d2fd5f54776839744f674
  
      public final VillagePlace getPoiStorage() { return this.y(); } // Paper - OBFHELPER
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index 15e2fa125bc293b954cceb5b1fbcec7fade3e4db..4d19162218bd1dcc00f2cca3a4eda83dad1b9d04 100644
+index c57a6b54e262aedd7855ff190b7fa123c48b4e02..4337a4f4d51da1c5e5fbce931acdbde6c334d907 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 @@ -1,5 +1,6 @@
@@ -426,10 +426,11 @@ index 15e2fa125bc293b954cceb5b1fbcec7fade3e4db..4d19162218bd1dcc00f2cca3a4eda83d
  import com.google.common.base.Throwables;
  import java.io.File;
  import java.io.IOException;
-@@ -276,4 +277,12 @@ public class YatopiaConfig {
-         fixProtocolLib = getBoolean("settings.fix-protocollib", fixProtocolLib);
+@@ -288,4 +289,13 @@ public class YatopiaConfig {
+         tcpFastOpen = getBoolean("network.tcp-fastopen", tcpFastOpen);
+         debugNetwork = getBoolean("network.debug", debugNetwork);
      }
- 
++
 +    public static int featureGenExecutorSize = -1;
 +    public static int worldGenExecutorSize = -1;
 +    private static void multiThreadedWorldGen() {

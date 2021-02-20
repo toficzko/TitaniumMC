@@ -226,10 +226,10 @@ index ee906b594b306906c170180a29a8b61997d05168..7e348fcb813707fee830082b826932e0
          if (this.closed) {
              this.pollTasks(true); // this ensures we've emptied the queue
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 39bbca811bfceee45c14aaa375d80d1cb0e95807..35e437945335399bf5f59bcaa17b8dcd74f82c77 100644
+index 4fc43907f71d608e13ec11e17610a748dd60f444..bfb5efb8999d0310dd1674289a387080144b2a7a 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -838,7 +838,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -840,7 +840,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          LOGGER.info("Flushing Chunk IO");
          PlayerChunkMap.shutdownScheduler(); // Yatopia
          ChunkStatus.shutdownExecutors(); // Yatopia
@@ -239,10 +239,10 @@ index 39bbca811bfceee45c14aaa375d80d1cb0e95807..35e437945335399bf5f59bcaa17b8dcd
          SystemUtils.shutdownServerThreadPool(); // Paper
          LOGGER.info("Closing Server");
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 2dbbb107270064bbd6581ec828abc1578ac5cc86..9a8ac212b0f224feebf074fc01895d81045eec7c 100644
+index 7f8d381e1c83292b6b31119c99e7fba8bb056b3b..d46892860159eed369dff1c497b9fab03fabe9a1 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1614,7 +1614,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1623,7 +1623,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      @Nullable
      @Override
      public NBTTagCompound read(ChunkCoordIntPair chunkcoordintpair) throws IOException {
@@ -251,7 +251,7 @@ index 2dbbb107270064bbd6581ec828abc1578ac5cc86..9a8ac212b0f224feebf074fc01895d81
              NBTTagCompound ret = com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE
                  .loadChunkDataAsyncFuture(this.world, chunkcoordintpair.x, chunkcoordintpair.z, com.destroystokyo.paper.io.IOUtil.getPriorityForCurrentThread(),
                      false, true, true).join().chunkData;
-@@ -1629,7 +1629,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1638,7 +1638,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
      @Override
      public void write(ChunkCoordIntPair chunkcoordintpair, NBTTagCompound nbttagcompound) throws IOException {
@@ -261,10 +261,10 @@ index 2dbbb107270064bbd6581ec828abc1578ac5cc86..9a8ac212b0f224feebf074fc01895d81
                  this.world, chunkcoordintpair.x, chunkcoordintpair.z, null, nbttagcompound,
                  com.destroystokyo.paper.io.PrioritizedTaskQueue.NORMAL_PRIORITY); // Tuinity - writes are async, no need for priority
 diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
-index 17db6fb6c8f2be2ae37be92891603a889cb7dbfd..d7345657f2c78f64cb737e070f35586f369b5dde 100644
+index 59b8e29da8155873096d347bdd771571229a69ef..f034e6e5123a7a222f59d1092097b00ae5ccb5fa 100644
 --- a/src/main/java/net/minecraft/server/VillagePlace.java
 +++ b/src/main/java/net/minecraft/server/VillagePlace.java
-@@ -512,7 +512,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -555,7 +555,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
      @javax.annotation.Nullable
      @Override
      public NBTTagCompound read(ChunkCoordIntPair chunkcoordintpair) throws java.io.IOException {
@@ -273,7 +273,7 @@ index 17db6fb6c8f2be2ae37be92891603a889cb7dbfd..d7345657f2c78f64cb737e070f35586f
              NBTTagCompound ret = com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE
                  .loadChunkDataAsyncFuture(this.world, chunkcoordintpair.x, chunkcoordintpair.z, com.destroystokyo.paper.io.IOUtil.getPriorityForCurrentThread(),
                      true, false, true).join().poiData;
-@@ -527,7 +527,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -570,7 +570,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
  
      @Override
      public void write(ChunkCoordIntPair chunkcoordintpair, NBTTagCompound nbttagcompound) throws java.io.IOException {
@@ -283,10 +283,10 @@ index 17db6fb6c8f2be2ae37be92891603a889cb7dbfd..d7345657f2c78f64cb737e070f35586f
                  this.world, chunkcoordintpair.x, chunkcoordintpair.z, nbttagcompound, null,
                  com.destroystokyo.paper.io.PrioritizedTaskQueue.NORMAL_PRIORITY); // Tuinity - writes are async, no need for priority
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index 4d19162218bd1dcc00f2cca3a4eda83dad1b9d04..fa16608b24cd68e4195e72143d39db38702dba40 100644
+index 4337a4f4d51da1c5e5fbce931acdbde6c334d907..cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-@@ -285,4 +285,10 @@ public class YatopiaConfig {
+@@ -298,4 +298,10 @@ public class YatopiaConfig {
          worldGenExecutorSize = getInt("settings.threads.worldgen", -1);
          Preconditions.checkArgument(worldGenExecutorSize == -1 || worldGenExecutorSize > 0, "Invalid settings.threads.worldgen in yatopia.yml");
      }
