@@ -58,7 +58,7 @@ index c1280478ee4565003883df9607d4a8a0e8fe4faa..102f556283e74df1792ad570888bc163
                  .completer(new ConsoleCommandCompleter(this.server))
          );
 diff --git a/src/main/java/net/pl3x/purpur/PurpurConfig.java b/src/main/java/net/pl3x/purpur/PurpurConfig.java
-index 83c1176888ead8fe045f1e1dfc78115ad2bf69f3..092cd80e61770f3effb9d33a40e15f4939f15189 100644
+index 03d5a9f923597c07d050465e261efe9a8bc935a6..e4da7226c7ddf86a1325643c8ca09722f9a53499 100644
 --- a/src/main/java/net/pl3x/purpur/PurpurConfig.java
 +++ b/src/main/java/net/pl3x/purpur/PurpurConfig.java
 @@ -182,7 +182,7 @@ public class PurpurConfig {
@@ -71,7 +71,7 @@ index 83c1176888ead8fe045f1e1dfc78115ad2bf69f3..092cd80e61770f3effb9d33a40e15f49
          serverModName = getString("settings.server-mod-name", serverModName);
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 48dd6de4acf0ef0536a4c562f3eb5f2f90878924..a2674396548507851edaeb471bf4f5ab230a4694 100644
+index e7381a642376ac361cb42033c1d6fc7bdafbbcb3..81f4847f4636568b4c8333ebeaba0607fd9d9f12 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -231,7 +231,7 @@ import javax.annotation.Nullable; // Paper

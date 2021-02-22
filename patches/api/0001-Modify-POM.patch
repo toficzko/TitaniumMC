@@ -5,7 +5,7 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index c441d455e2273b63d2cec136872a5025182d75d6..297e964e2bd77a521c7671102c083e9250254988 100644
+index 6c88a9d9f2292e1e65bd631aedbe15e0430d3af4..58a31269c4889ec784997c9d7b83644a97453ce0 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -3,18 +3,18 @@
@@ -52,12 +52,3 @@ index c441d455e2273b63d2cec136872a5025182d75d6..297e964e2bd77a521c7671102c083e92
      <repositories>
          <!--
              If you are a plugin developer, please use https://hub.spigotmc.org/nexus/content/repositories/snapshots/
-@@ -52,7 +65,7 @@
-         <dependency>
-             <groupId>it.unimi.dsi</groupId>
-             <artifactId>fastutil</artifactId>
--            <version>8.2.2</version>
-+            <version>8.5.2</version>
-             <scope>provided</scope>
-         </dependency>
-         <dependency>

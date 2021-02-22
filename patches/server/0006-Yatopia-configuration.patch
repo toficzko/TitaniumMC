@@ -67,10 +67,10 @@ index a198bdf26b60caea8c8b105cb0e4b82c0340fede..39280197902b330dd3d39c721cdef744
          if (this.isFireProof() || this.world.isClientSide) {
              this.extinguish();
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 2cd6d119a50445e6d5493b23d6dc9daab16d5536..c109578677394bada37e3df60413a996ef7ff080 100644
+index 028d3b82a5039c97e1dbe587eac5866908128d6f..4f3f22b9a90f5abdd9f151d6aa227e1ebe424f7b 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
-@@ -189,7 +189,7 @@ public abstract class PlayerList {
+@@ -191,7 +191,7 @@ public abstract class PlayerList {
          // Spigot - view distance
          playerconnection.sendPacket(new PacketPlayOutLogin(entityplayer.getId(), entityplayer.playerInteractManager.getGameMode(), entityplayer.playerInteractManager.c(), BiomeManager.a(worldserver1.getSeed()), worlddata.isHardcore(), this.server.F(), this.s, worldserver1.getDimensionManager(), worldserver1.getDimensionKey(), this.getMaxPlayers(), worldserver1.getChunkProvider().playerChunkMap.playerChunkManager.getLoadDistance(), flag1, !flag, worldserver1.isDebugWorld(), worldserver1.isFlatWorld())); // Paper - no-tick view distance // Tuinity - replace old player chunk management
          entityplayer.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
@@ -80,10 +80,10 @@ index 2cd6d119a50445e6d5493b23d6dc9daab16d5536..c109578677394bada37e3df60413a996
          playerconnection.sendPacket(new PacketPlayOutAbilities(entityplayer.abilities));
          playerconnection.sendPacket(new PacketPlayOutHeldItemSlot(entityplayer.inventory.itemInHandIndex));
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 6e16648c8afba8320ac6c61dab0a3a4f508882ff..f4985fc65404e2ebf6f721daafe683338511ca83 100644
+index 0528f2ab54faadbbf1fbabd6c2c812bafd6f21fb..e72e233ed93b44705476ef8a70dc8504dfcf757c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -856,6 +856,7 @@ public final class CraftServer implements Server {
+@@ -859,6 +859,7 @@ public final class CraftServer implements Server {
              playerList.getProfileBans().load();
          } catch (IOException ex) {
              logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
@@ -91,7 +91,7 @@ index 6e16648c8afba8320ac6c61dab0a3a4f508882ff..f4985fc65404e2ebf6f721daafe68333
          }
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
-@@ -2321,6 +2322,13 @@ public final class CraftServer implements Server {
+@@ -2369,6 +2370,13 @@ public final class CraftServer implements Server {
              org.spigotmc.RestartCommand.restart();
          }
  
