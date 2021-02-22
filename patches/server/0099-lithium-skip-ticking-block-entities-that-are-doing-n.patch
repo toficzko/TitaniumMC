@@ -1081,10 +1081,10 @@ index ab553f408b31cb7e2d281cc3d8fe42e19dc717d9..5adc0b9bc4bd138d0986443c1d4ce838
  
      @Nullable
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..5cf28a45cccee3b422e972bc49198ce49c99964e 100644
+index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..43d9bcf3cab833e1cafb05cfa7dceb80111f759b 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -37,13 +37,26 @@ import org.bukkit.event.block.BlockPhysicsEvent;
+@@ -37,7 +37,10 @@ import org.bukkit.event.block.BlockPhysicsEvent;
  
  import net.gegy1000.tictacs.NonBlockingWorldAccess;
  
@@ -1096,38 +1096,41 @@ index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..5cf28a45cccee3b422e972bc49198ce4
  
      // Yatopia start - Cache default block/fluid states
      private static final IBlockData DEFAULT_BLOCK_STATE = Blocks.VOID_AIR.getBlockData();
-     private static final Fluid DEFAULT_FLUID_STATE = FluidTypes.EMPTY.getFluidData();
-     // Yatopia end
- 
+@@ -51,9 +54,17 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+     public static final ResourceKey<World> THE_END = ResourceKey.a(IRegistry.L, new MinecraftKey("the_end"));
+     private static final EnumDirection[] a = EnumDirection.values();
+     //public final List<TileEntity> tileEntityList = Lists.newArrayList(); // Paper - remove unused list
+-    public final List<TileEntity> tileEntityListTick = me.jellysquid.mods.lithium.common.util.collections.HashedList.wrapper(Lists.newArrayList()); // Yatopia
++    public List<TileEntity> tileEntityListTick = me.jellysquid.mods.lithium.common.util.collections.HashedList.wrapper(Lists.newArrayList()); // Yatopia
+     protected final List<TileEntity> tileEntityListPending = me.jellysquid.mods.lithium.common.util.collections.HashedList.wrapper(Lists.newArrayList()); // Yatopia
+     protected final java.util.Set<TileEntity> tileEntityListUnload = com.google.common.collect.Sets.newHashSet();
 +    // Yatopia start - lithium: skip ticking block entities that are doing nothing
-+    public List<TileEntity> tickingBlockEntities;
-+    private FilterableLinkedHashSetList<TileEntity> tickingBlockEntities$lithium;
++    private FilterableLinkedHashSetList<TileEntity> tileEntityListTick$lithium;
 +
 +    @Override
 +    public void setAwake(TileEntity tileEntity, boolean needsTicking) {
-+        this.tickingBlockEntities$lithium.setEntryVisible(tileEntity, needsTicking);
++        this.tileEntityListTick$lithium.setEntryVisible(tileEntity, needsTicking);
 +    }
 +    // Yatopia end
-+
-     protected static final Logger LOGGER = LogManager.getLogger();
-     public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
-     public static final ResourceKey<World> OVERWORLD = ResourceKey.a(IRegistry.L, new MinecraftKey("overworld"));
-@@ -314,6 +327,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+     public final Thread serverThread;
+     private final boolean debugWorld;
+     private int d;
+@@ -314,6 +325,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
          this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
          this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
          this.tracker = new EntityTrackerEngine(); // Yatopia - Port lithium
-+        this.tickingBlockEntities$lithium = new FilterableLinkedHashSetList<>(this.tickingBlockEntities);
-+        this.tickingBlockEntities = tickingBlockEntities$lithium;
++        this.tileEntityListTick$lithium = new FilterableLinkedHashSetList<>(this.tileEntityListTick);
++        this.tileEntityListTick = tileEntityListTick$lithium;
      }
  
      // Yatopia start - Port lithium
-@@ -987,6 +1002,15 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -987,6 +1000,15 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
  
      }
  
 +    // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +    public Iterator<TileEntity> getAwakeBlockEntities(List<TileEntity> list) {
-+        if (list == this.tickingBlockEntities && list instanceof FilterableLinkedHashSetList) {
++        if (list == this.tileEntityListTick && list instanceof FilterableLinkedHashSetList) {
 +            return ((FilterableLinkedHashSetList<TileEntity>) list).filteredIterator();
 +        }
 +        return list.iterator();
@@ -1137,7 +1140,7 @@ index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..5cf28a45cccee3b422e972bc49198ce4
      public void tickBlockEntities() {
          GameProfilerFiller gameprofilerfiller = this.getMethodProfiler();
  
-@@ -1004,11 +1028,18 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -1004,11 +1026,18 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
  
          this.tickingTileEntities = true;
          // Spigot start
