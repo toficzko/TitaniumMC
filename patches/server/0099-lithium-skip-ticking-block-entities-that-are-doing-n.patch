@@ -499,7 +499,7 @@ index 0000000000000000000000000000000000000000..2e7a7419900b284440b0dad02dc725e1
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/TileEntityBeehive.java b/src/main/java/net/minecraft/server/TileEntityBeehive.java
-index 69ef94e887fa9da1b3ddaf0a345fecc49d2866b5..c57503c3fe36c5e4f987f7f23b6efdf0cfa35a16 100644
+index 69ef94e887fa9da1b3ddaf0a345fecc49d2866b5..42cd92f4cfa504612417fdd09c9b894077ba9f71 100644
 --- a/src/main/java/net/minecraft/server/TileEntityBeehive.java
 +++ b/src/main/java/net/minecraft/server/TileEntityBeehive.java
 @@ -4,6 +4,9 @@ import com.google.common.collect.Lists;
@@ -512,18 +512,19 @@ index 69ef94e887fa9da1b3ddaf0a345fecc49d2866b5..c57503c3fe36c5e4f987f7f23b6efdf0
  
  public class TileEntityBeehive extends TileEntity implements ITickable {
  
-@@ -11,11 +14,24 @@ public class TileEntityBeehive extends TileEntity implements ITickable {
+@@ -11,11 +14,25 @@ public class TileEntityBeehive extends TileEntity implements ITickable {
      @Nullable
      public BlockPosition flowerPos = null;
      public int maxBees = 3; // CraftBukkit - allow setting max amount of bees a hive can hold
-+    public boolean doInit = true;
-+    public boolean isTicking = true;
++    public boolean doInit = true; // Yatopia
++    public boolean isTicking = true; // Yatopia
 +
  
      public TileEntityBeehive() {
          super(TileEntityTypes.BEEHIVE);
      }
  
++    // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +    public void checkSleepState() {
 +        if (this.world != null ) {
 +            if ((this.bees.size() == 0) == this.isTicking) {
@@ -531,33 +532,35 @@ index 69ef94e887fa9da1b3ddaf0a345fecc49d2866b5..c57503c3fe36c5e4f987f7f23b6efdf0
 +                ((BlockEntitySleepTracker) this.world).setAwake(this, this.isTicking);
 +            }
 +        }
-+
 +    }
++    // Yatopia end
 +
      @Override
      public void update() {
          if (this.d()) {
-@@ -285,6 +301,10 @@ public class TileEntityBeehive extends TileEntity implements ITickable {
+@@ -285,6 +302,12 @@ public class TileEntityBeehive extends TileEntity implements ITickable {
  
      @Override
      public void tick() {
++        // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +        if (this.doInit) {
 +            this.doInit = false;
 +            this.checkSleepState();
 +        }
++        // Yatopia end
          if (this.bees.size() == 0) { return; } // Yatopia - TE optimizations
          if (!this.world.isClientSide) {
              this.y();
-@@ -305,6 +325,7 @@ public class TileEntityBeehive extends TileEntity implements ITickable {
+@@ -305,6 +328,7 @@ public class TileEntityBeehive extends TileEntity implements ITickable {
      @Override
      public void load(IBlockData iblockdata, NBTTagCompound nbttagcompound) {
          super.load(iblockdata, nbttagcompound);
-+        this.checkSleepState();
++        this.checkSleepState(); // Yatopia
          this.bees.clear();
          NBTTagList nbttaglist = nbttagcompound.getList("Bees", 10);
  
 diff --git a/src/main/java/net/minecraft/server/TileEntityBell.java b/src/main/java/net/minecraft/server/TileEntityBell.java
-index 6963f3c8a0e257615084b558f5ce287aab9722ff..d42d4ed110a4a405a9c4d340a633420dee2ac564 100644
+index 6963f3c8a0e257615084b558f5ce287aab9722ff..04af18f97921d52252eb89a70f751d2fb604f8a9 100644
 --- a/src/main/java/net/minecraft/server/TileEntityBell.java
 +++ b/src/main/java/net/minecraft/server/TileEntityBell.java
 @@ -3,6 +3,7 @@ package net.minecraft.server;
@@ -572,38 +575,44 @@ index 6963f3c8a0e257615084b558f5ce287aab9722ff..d42d4ed110a4a405a9c4d340a633420d
      private List<EntityLiving> h; private List<EntityLiving> getEntitiesAtRing() { return this.h; } // Paper - OBFHELPER
      private boolean i; private boolean getShouldReveal() { return this.i; } // Paper - OBFHELPER
      private int j;
-+    public boolean ringing;
-+    public boolean resonating;
++    public boolean ringing; // Yatopia
++    public boolean resonating; // Yatopia
  
      public TileEntityBell() {
          super(TileEntityTypes.BELL);
-@@ -20,6 +23,9 @@ public class TileEntityBell extends TileEntity implements ITickable {
+@@ -20,6 +23,11 @@ public class TileEntityBell extends TileEntity implements ITickable {
  
      @Override
      public boolean setProperty(int i, int j) {
++       // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +       if (!this.ringing && i == 1 && this.world != null) {
 +            ((BlockEntitySleepTracker) this.world).setAwake(this, true);
 +        }
++        // Yatopia end
          if (i == 1) {
              this.f();
              this.j = 0;
-@@ -64,6 +70,9 @@ public class TileEntityBell extends TileEntity implements ITickable {
+@@ -64,6 +72,11 @@ public class TileEntityBell extends TileEntity implements ITickable {
              }
          }
  
++        // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +        if (!this.ringing && !this.resonating && this.world != null) {
 +            ((BlockEntitySleepTracker)this.world).setAwake(this, false);
 +        }
++        // Yatopia end
      }
  
      private void d() {
-@@ -71,6 +80,9 @@ public class TileEntityBell extends TileEntity implements ITickable {
+@@ -71,6 +84,11 @@ public class TileEntityBell extends TileEntity implements ITickable {
      }
  
      public void a(EnumDirection enumdirection) {
++        // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +        if (!this.ringing && this.world != null) {
 +            ((BlockEntitySleepTracker)this.world).setAwake(this, true);
 +        }
++        // Yatopia end
          BlockPosition blockposition = this.getPosition();
  
          this.c = enumdirection;
@@ -839,29 +848,27 @@ index d429c6a4154497fea813ef98d1a30eef2ca5e5e0..73da15dbf19792df968c919a8c72301d
      }
  
 diff --git a/src/main/java/net/minecraft/server/TileEntityEnchantTable.java b/src/main/java/net/minecraft/server/TileEntityEnchantTable.java
-index e3de65b58a599b375b3be7470d918038b5379471..8090c68669159a6385558748970a0f347b0d9601 100644
+index e3de65b58a599b375b3be7470d918038b5379471..ad59d7d4496ce2eaf7f2adbec14367f2c6f4d7a6 100644
 --- a/src/main/java/net/minecraft/server/TileEntityEnchantTable.java
 +++ b/src/main/java/net/minecraft/server/TileEntityEnchantTable.java
-@@ -2,7 +2,8 @@ package net.minecraft.server;
+@@ -2,6 +2,7 @@ package net.minecraft.server;
  
  import java.util.Random;
  import javax.annotation.Nullable;
--
 + import me.jellysquid.mods.lithium.common.world.blockentity.BlockEntitySleepTracker;
-+ 
+ 
  public class TileEntityEnchantTable extends TileEntity implements INamableTileEntity, ITickable {
  
-     public int a;
-@@ -43,6 +44,7 @@ public class TileEntityEnchantTable extends TileEntity implements INamableTileEn
- 
+@@ -44,6 +45,7 @@ public class TileEntityEnchantTable extends TileEntity implements INamableTileEn
      @Override
      public void tick() {
-+        ((BlockEntitySleepTracker) this.world).setAwake(this, false);
          if (!org.yatopiamc.yatopia.server.YatopiaConfig.shouldTickEnchantingTables) { return; } // Yatopia - TE optimizations
++        ((BlockEntitySleepTracker) this.world).setAwake(this, false); // Yatopia
          this.j = this.i;
          this.l = this.k;
+         EntityHuman entityhuman = this.world.a((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D, 3.0D, false);
 diff --git a/src/main/java/net/minecraft/server/TileEntityEnderChest.java b/src/main/java/net/minecraft/server/TileEntityEnderChest.java
-index 80440aa24f546dd151e89b705322d9c3e906b139..d06e6829f411a66ac000a4a002eadd6fc846c9fa 100644
+index 80440aa24f546dd151e89b705322d9c3e906b139..94c2bfce5059d784655d729f384c70b165432311 100644
 --- a/src/main/java/net/minecraft/server/TileEntityEnderChest.java
 +++ b/src/main/java/net/minecraft/server/TileEntityEnderChest.java
 @@ -1,17 +1,42 @@
@@ -907,35 +914,39 @@ index 80440aa24f546dd151e89b705322d9c3e906b139..d06e6829f411a66ac000a4a002eadd6f
          if (++this.g % 20 * 4 == 0) {
              this.world.playBlockAction(this.position, Blocks.ENDER_CHEST, 1, this.c);
          }
-@@ -38,8 +63,12 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
+@@ -38,8 +63,14 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
              double d1 = (double) i + 0.5D;
  
              d0 = (double) k + 0.5D;
++            // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +            if (this.viewerCount == 0 && this.animationProgress == 0.0F && this.lastAnimationProgress == 0 && this.ticks != 0 && this.world != null) {
 +                ((BlockEntitySleepTracker) this.world).setAwake(this, false);
 +            }
++            // Yatopia end
              this.world.playSound((EntityHuman) null, d1, (double) j + 0.5D, d0, SoundEffects.BLOCK_ENDER_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.world.random.nextFloat() * 0.1F + 0.9F);
          }
-+        this.checkWakeUp();
++        this.checkWakeUp(); // Yatopia
          // Paper start
      }
  
-@@ -72,6 +101,9 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
+@@ -72,6 +103,11 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
                  double d2 = (double) k + 0.5D;
  
              MCUtil.scheduleTask(10, () -> {
++                // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +                if (this.viewerCount == 0 && this.animationProgress == 0.0F && this.lastAnimationProgress == 0 && this.ticks != 0 && this.world != null) {
 +                    ((BlockEntitySleepTracker) this.world).setAwake(this, false);
 +                }
++                // Yatopia end
                  this.world.playSound((EntityHuman) null, d0, (double) j + 0.5D, d2, SoundEffects.BLOCK_ENDER_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.world.random.nextFloat() * 0.1F + 0.9F);
              }, "Chest Sounds");
  
-@@ -79,11 +111,12 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
+@@ -79,11 +115,12 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
                  this.a = 0.0F;
              }
          }
 -
-+        this.checkWakeUp();
++        this.checkWakeUp(); // Yatopia
      }
  
      @Override
@@ -945,7 +956,7 @@ index 80440aa24f546dd151e89b705322d9c3e906b139..d06e6829f411a66ac000a4a002eadd6f
              this.c = j;
              return true;
 diff --git a/src/main/java/net/minecraft/server/TileEntityFurnace.java b/src/main/java/net/minecraft/server/TileEntityFurnace.java
-index c1d1ce582c94fd20f42b1979d6edbb6b377adff8..0f4dce7149492147124d00d9720601f653c9b68a 100644
+index c1d1ce582c94fd20f42b1979d6edbb6b377adff8..b914b97604585c57ac06506b9c660170b77eff73 100644
 --- a/src/main/java/net/minecraft/server/TileEntityFurnace.java
 +++ b/src/main/java/net/minecraft/server/TileEntityFurnace.java
 @@ -21,9 +21,11 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -956,7 +967,7 @@ index c1d1ce582c94fd20f42b1979d6edbb6b377adff8..0f4dce7149492147124d00d9720601f6
  
  public abstract class TileEntityFurnace extends TileEntityContainer implements IWorldInventory, RecipeHolder, AutoRecipeOutput, ITickable {
  
-+    private boolean isTicking = true;
++    private boolean isTicking = true; // Yatopia
      private static final int[] g = new int[]{0};
      private static final int[] h = new int[]{2, 1};
      private static final int[] i = new int[]{1};
@@ -978,31 +989,35 @@ index c1d1ce582c94fd20f42b1979d6edbb6b377adff8..0f4dce7149492147124d00d9720601f6
      public List<ItemStack> getContents() {
          return this.items;
      }
-@@ -227,6 +240,10 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
+@@ -227,6 +240,12 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
      @Override
      public void load(IBlockData iblockdata, NBTTagCompound nbttagcompound) {
          super.load(iblockdata, nbttagcompound);
++        // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +        if (!this.isTicking && this.world != null) {
 +            this.isTicking = true;
 +            ((BlockEntitySleepTracker)this.world).setAwake(this, true);
 +        }
++        // Yatopia end
          this.items = NonNullList.a(this.getSize(), ItemStack.b);
          ContainerUtil.b(nbttagcompound, this.items);
          this.burnTime = nbttagcompound.getShort("BurnTime");
-@@ -357,7 +374,10 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
+@@ -357,7 +376,12 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
          if (flag1) {
              this.update();
          }
 -
++        // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +        if (!this.isTicking && this.world != null) {
 +            this.isTicking = true;
 +            ((BlockEntitySleepTracker)this.world).setAwake(this, true);
 +        }
++        // Yatopia end
      }
  
      protected boolean canBurn(@Nullable IRecipe<?> irecipe) {
 diff --git a/src/main/java/net/minecraft/server/TileEntityShulkerBox.java b/src/main/java/net/minecraft/server/TileEntityShulkerBox.java
-index a5950877e82d9f3ba70707e8c5c869535a989663..7e4c9dabd2265c1a8573195b23b90f04c743a9f7 100644
+index a5950877e82d9f3ba70707e8c5c869535a989663..15143051b8460b5a7c522a66ba78b5a388b75e2e 100644
 --- a/src/main/java/net/minecraft/server/TileEntityShulkerBox.java
 +++ b/src/main/java/net/minecraft/server/TileEntityShulkerBox.java
 @@ -7,6 +7,7 @@ import javax.annotation.Nullable;
@@ -1023,17 +1038,19 @@ index a5950877e82d9f3ba70707e8c5c869535a989663..7e4c9dabd2265c1a8573195b23b90f04
      @Nullable
      private EnumColor l;
      private boolean m;
-@@ -70,6 +73,9 @@ public class TileEntityShulkerBox extends TileEntityLootable implements IWorldIn
+@@ -70,6 +73,11 @@ public class TileEntityShulkerBox extends TileEntityLootable implements IWorldIn
              this.m();
          }
  
++        // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +        if (this.getAnimationPhase() == TileEntityShulkerBox.AnimationPhase.CLOSED && this.prevAnimationProgress == 0f && this.animationProgress == 0f && this.world != null) {
-+            ((BlockEntitySleepTracker)this.world).setAwake(this, false);
++            ((BlockEntitySleepTracker) this.world).setAwake(this, false);
 +        }
++        // Yatopia end
      }
  
      protected void h() {
-@@ -101,6 +107,7 @@ public class TileEntityShulkerBox extends TileEntityLootable implements IWorldIn
+@@ -101,6 +109,7 @@ public class TileEntityShulkerBox extends TileEntityLootable implements IWorldIn
  
      }
  
@@ -1041,21 +1058,19 @@ index a5950877e82d9f3ba70707e8c5c869535a989663..7e4c9dabd2265c1a8573195b23b90f04
      public TileEntityShulkerBox.AnimationPhase j() {
          return this.i;
      }
-@@ -183,6 +190,9 @@ public class TileEntityShulkerBox extends TileEntityLootable implements IWorldIn
+@@ -183,6 +192,7 @@ public class TileEntityShulkerBox extends TileEntityLootable implements IWorldIn
  
      @Override
      public boolean setProperty(int i, int j) {
-+        if (this.world != null && i == 1) {
-+            ((BlockEntitySleepTracker)this.world).setAwake(this, true);
-+        }
++        if (this.world != null && i == 1) ((BlockEntitySleepTracker) this.world).setAwake(this, true); // Yatopia
          if (i == 1) {
              this.viewingCount = j;
              if (j == 0) {
 diff --git a/src/main/java/net/minecraft/server/TileEntitySkull.java b/src/main/java/net/minecraft/server/TileEntitySkull.java
-index ab553f408b31cb7e2d281cc3d8fe42e19dc717d9..5adc0b9bc4bd138d0986443c1d4ce838bb7bbedf 100644
+index ab553f408b31cb7e2d281cc3d8fe42e19dc717d9..6e426d8e4c6e3768730b0d66267f44c1eee645ed 100644
 --- a/src/main/java/net/minecraft/server/TileEntitySkull.java
 +++ b/src/main/java/net/minecraft/server/TileEntitySkull.java
-@@ -23,9 +23,11 @@ import com.mojang.authlib.Agent;
+@@ -23,6 +23,7 @@ import com.mojang.authlib.Agent;
  import com.mojang.authlib.ProfileLookupCallback;
  import java.util.concurrent.Callable;
  // Spigot end
@@ -1063,11 +1078,7 @@ index ab553f408b31cb7e2d281cc3d8fe42e19dc717d9..5adc0b9bc4bd138d0986443c1d4ce838
  
  public class TileEntitySkull extends TileEntity /*implements ITickable*/ { // Paper - remove tickable
  
-+    public IBlockData lastState;
-     @Nullable
-     private static UserCache userCache;
-     @Nullable
-@@ -150,7 +152,11 @@ public class TileEntitySkull extends TileEntity /*implements ITickable*/ { // Pa
+@@ -150,7 +151,11 @@ public class TileEntitySkull extends TileEntity /*implements ITickable*/ { // Pa
                  this.h = false;
              }
          }
@@ -1081,7 +1092,7 @@ index ab553f408b31cb7e2d281cc3d8fe42e19dc717d9..5adc0b9bc4bd138d0986443c1d4ce838
  
      @Nullable
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..43d9bcf3cab833e1cafb05cfa7dceb80111f759b 100644
+index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..54dcf85d8867dc4fecf654e8e2ad6aa459ffb0e0 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -37,7 +37,10 @@ import org.bukkit.event.block.BlockPhysicsEvent;
@@ -1119,8 +1130,8 @@ index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..43d9bcf3cab833e1cafb05cfa7dceb80
          this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
          this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
          this.tracker = new EntityTrackerEngine(); // Yatopia - Port lithium
-+        this.tileEntityListTick$lithium = new FilterableLinkedHashSetList<>(this.tileEntityListTick);
-+        this.tileEntityListTick = tileEntityListTick$lithium;
++        this.tileEntityListTick$lithium = new FilterableLinkedHashSetList<>(this.tileEntityListTick); // Yatopia
++        this.tileEntityListTick = tileEntityListTick$lithium; // Yatopia
      }
  
      // Yatopia start - Port lithium
@@ -1140,12 +1151,12 @@ index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..43d9bcf3cab833e1cafb05cfa7dceb80
      public void tickBlockEntities() {
          GameProfilerFiller gameprofilerfiller = this.getMethodProfiler();
  
-@@ -1004,11 +1026,18 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -1004,11 +1026,19 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
  
          this.tickingTileEntities = true;
          // Spigot start
--        // Iterator iterator = this.tileEntityListTick.iterator();
 +        // Yatopia start - lithium: skip ticking block entities that are doing nothing
+         // Iterator iterator = this.tileEntityListTick.iterator();
 +        Iterator iterator = getAwakeBlockEntities(this.tileEntityListTick);
 +
          int tilesThisCycle = 0;
