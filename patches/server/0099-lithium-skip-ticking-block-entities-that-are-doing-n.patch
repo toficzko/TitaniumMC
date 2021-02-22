@@ -1092,7 +1092,7 @@ index ab553f408b31cb7e2d281cc3d8fe42e19dc717d9..6e426d8e4c6e3768730b0d66267f44c1
  
      @Nullable
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..4a8c38fcbfac49a52ab68fa46587adbdafc2706b 100644
+index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..0dc0aa65b53fbbd9ba8e253cb95215cfe8a82616 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -37,7 +37,10 @@ import org.bukkit.event.block.BlockPhysicsEvent;
@@ -1171,12 +1171,23 @@ index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..4a8c38fcbfac49a52ab68fa46587adbd
              // Spigot start
              if (tileentity == null) {
                  getServer().getLogger().severe("Spigot has detected a null entity and has removed it, preventing a crash");
-@@ -1047,7 +1077,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -1046,8 +1076,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+                         throwable.printStackTrace();
                          getServer().getPluginManager().callEvent(new ServerExceptionEvent(new ServerInternalException(msg, throwable)));
                          // Paper end
-                         tilesThisCycle--;
+-                        tilesThisCycle--;
 -                        this.tileEntityListTick.remove(tileTickPosition--);
 +                        iterator.remove(); // Yatopia
                          continue;
                          // Paper end
                          // Spigot start
+@@ -1060,8 +1089,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+ 
+             if (tileentity.isRemoved()) {
+                 // Spigot start
+-                tilesThisCycle--;
+-                this.tileEntityListTick.remove(tileTickPosition--);
++                iterator.remove(); // Yatopia
+                 // Spigot end
+                 //this.tileEntityList.remove(tileentity); // Paper - remove unused list
+                 // Paper - prevent double chunk lookups
