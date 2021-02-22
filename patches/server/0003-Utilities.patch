@@ -9,10 +9,10 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index 8533fcc92ed5dd95741bcdbef4fb83b4a3c3cb56..9b5a9404dcbed42134e56e533615029fe8c80c08 100644
+index 6b5dcd52b84c4a1f39ddea6ce0e1d54f19ac0b66..edf8408742eb2756bdd20a0e62ced491aeeca1a2 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -182,6 +182,12 @@
+@@ -188,6 +188,12 @@
              <artifactId>jafama</artifactId>
              <version>2.3.2</version>
          </dependency>

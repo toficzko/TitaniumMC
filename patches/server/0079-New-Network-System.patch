@@ -6,10 +6,10 @@ Subject: [PATCH] New Network System
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index 9a7f6d8da4dd3e55382479d2f9b559c4bba5e3da..47ccba15729c9d2d932806cb1766ff3d5ca1a1e2 100644
+index f33efd572d81d4304760b452697790529222bb7a..ca6c7bc78251e7914cb08e907b66ba01acfe2da9 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -56,6 +56,14 @@
+@@ -62,6 +62,14 @@
              <version>4.1.59.Final</version>
          </dependency>
          <!-- Tuinity end - fix compile issue (cannot see new api) by moving netty include BEFORE server jar -->
