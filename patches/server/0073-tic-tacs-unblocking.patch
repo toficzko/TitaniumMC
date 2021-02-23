@@ -350,7 +350,7 @@ index d165d1ec9c2d81f26df0a1a4d5d5f79a6358552b..44a91ed875c50f96c4da1c4e2195bead
              if (iblockdata.getBlock() instanceof BlockBed) {
                  this.world.setTypeAndData(blockposition, (IBlockData) iblockdata.set(BlockBed.OCCUPIED, false), 3);
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 9166e932a0b6cdb1057d23562ece5d3938a74da2..6db023a1a9c4e71234873a54e00dc8aa83fb38e2 100644
+index 5139abddb56d687ecedc527a238a932ff57c6205..063cca4b56010eed3fa6dc930e7a7ef80ac13867 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -525,6 +525,10 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

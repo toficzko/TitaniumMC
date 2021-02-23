@@ -6,7 +6,7 @@ Subject: [PATCH] Configurable criterion triggers
 This patch adds toggles for three criterion triggers that are called every tick. These can be very unnecessary, and especially in the case of CriterionTriggerEnterBlock, quite heavy.
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 085e16a3be99c11278b7a50591554af6f8e2ce33..93f722a76d56ea656188936dcda1614454a39ede 100644
+index 02b8e07d61a67118886505353077e0dd439eb2a8..5eec2a3675f60337a1d01f2cd7cf83f7ed72035e 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -439,6 +439,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

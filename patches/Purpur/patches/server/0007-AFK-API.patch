@@ -25,7 +25,7 @@ index 59b00c78f8d92bcceca35d0f25e4d94b3ebdc6e2..e0cf2af8fcbfc66fc32aa8e693b62160
          super(EntityTypes.PLAYER, world);
          this.bL = ItemStack.b;
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index bff69637a1fd5609e056226bc608173940329ee7..1ec7b0b45eb8ccdcd03e7750a869454b690c10b8 100644
+index 326e97f222b53226381b7415609ebaae5bf97f0f..58a50c222f6e8b43a7369a57e9ea3a8050bb6090 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -1929,8 +1929,54 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -263,7 +263,7 @@ index 361f7857e461578e90cb71e15027dadaf794cb69..2578a4677d1ee060f687be531e696b7c
 +    }
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 195bbfae0ac9290f673a551f340df028c43e8969..72c7c3c09e1932c57521cfec5b5c75aac5c0a628 100644
+index d813bab94fe9cf0f4cc90d06fe06f1fa95f8a639..5e0ec6a9db7da00af3a4680d43c61658a52df89a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2482,4 +2482,21 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

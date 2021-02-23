@@ -936,10 +936,10 @@ index 2371557d083446b17ffebdae576b1cc39e939eb1..e79e773f2219f9a9ae076fcbc8108b79
          0, 2, 60L, TimeUnit.SECONDS,
          new LinkedBlockingQueue<Runnable>(),
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 0fc9b6356165fbee30d765dacc3586c2f8a4ba00..b75cc467809250b8dbe98e57c69e5378583a28c5 100644
+index 6d0aad4cf053685d351dbf6aa2d0083684eddc18..1064cef4950a326ab9eda677aaae9c9400b15a7b 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1322,6 +1322,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1327,6 +1327,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          }
          // Paper end
  

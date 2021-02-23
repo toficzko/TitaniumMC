@@ -5,7 +5,7 @@ Subject: [PATCH] Player invulnerabilities
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 1ec7b0b45eb8ccdcd03e7750a869454b690c10b8..d55ab38cb4dedaf156e3435f37685f9ef94cb755 100644
+index 58a50c222f6e8b43a7369a57e9ea3a8050bb6090..34f6f14ec0d3db02a8590b3ca641ed464b27abb6 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -154,6 +154,8 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -79,7 +79,7 @@ index 7034f2d09b7e9911cba7834832a901389e6690dc..371285e86ef6d848c2a1c5eb1ce4bc24
          this.server.getPluginManager().callEvent(new PlayerResourcePackStatusEvent(getPlayer(), packStatus));
          // Paper end
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 46377e6b5d3dcdfaf1c0fdb2df0f23c79e4189a8..6b24048a52039d68c7be355438c346f854a88dfa 100644
+index 07964a7417d914804d2280b11dce1c84ad7acfb3..c72d4b4efb849b3945bd8f5f2151dd61f081a7b9 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -918,6 +918,8 @@ public abstract class PlayerList {
@@ -108,7 +108,7 @@ index 2578a4677d1ee060f687be531e696b7c7be89e84..c441fcea9b2b5a77b801c8a69541cf42
 +    }
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 72c7c3c09e1932c57521cfec5b5c75aac5c0a628..915627cd46f8e3f28d4c4b0c919c140275cf519f 100644
+index 5e0ec6a9db7da00af3a4680d43c61658a52df89a..528bfe36466d4d0990de80cfeccce30dd28fce84 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2498,5 +2498,20 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

@@ -96,7 +96,7 @@ index 2bad182d9d6248c1e8ac9138e46d192dccc2a973..93a45ee333cb9736f6d5dd19331ebd44
                      }
                      // Paper end
 diff --git a/src/main/java/net/minecraft/server/EntityFox.java b/src/main/java/net/minecraft/server/EntityFox.java
-index c4f0564f1ff9707857bddf929eb17002ba4c44df..9112a6cd56327b74d85b7083b24444c2426ef7b1 100644
+index 29035d14656393faddc82936dbf2dbe04f492f49..cdd283a0f417e4be93712d48dffc9f82b8d6f747 100644
 --- a/src/main/java/net/minecraft/server/EntityFox.java
 +++ b/src/main/java/net/minecraft/server/EntityFox.java
 @@ -842,7 +842,7 @@ public class EntityFox extends EntityAnimal {

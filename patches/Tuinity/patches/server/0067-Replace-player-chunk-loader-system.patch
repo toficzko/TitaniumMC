@@ -1235,7 +1235,7 @@ index 5200b0396ee41edb42ff727c78cf3b5fce091d6b..239f504430b6c59923fd677d1be0121b
                  double deltaZ = this.locZ() - player.locZ();
                  double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 81249a38ecfdb04a8e266c8d9c3d00d63ccead4b..bff69637a1fd5609e056226bc608173940329ee7 100644
+index cf14b83ec3c2b9a2812f50f3bca991e029bf7c67..326e97f222b53226381b7415609ebaae5bf97f0f 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -131,7 +131,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -1640,7 +1640,7 @@ index 61570ab947b5a153a4c2bcb5a09344f060e6052d..d2257ece888cb298bb05a5f0a4c6d8c9
                          }
                      }
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 8e49de2f89aded40d760d57f4ddfcb84f73deb1d..46377e6b5d3dcdfaf1c0fdb2df0f23c79e4189a8 100644
+index ce775d9e3953b57f7b312575483dd9ca763c8bc6..07964a7417d914804d2280b11dce1c84ad7acfb3 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -189,7 +189,7 @@ public abstract class PlayerList {
@@ -1738,7 +1738,7 @@ index 15ce459aa15a8bb936740a8c055f4304e21312d2..4886621c3cba05c2d0184835a8ec9d5b
      // Spigot start
      private final Spigot spigot = new Spigot()
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 66522b820786649a1b82647d8ccdb086edf420f6..195bbfae0ac9290f673a551f340df028c43e8969 100644
+index 18a50614a876c0a8ff996e48527a2e89c1078d50..d813bab94fe9cf0f4cc90d06fe06f1fa95f8a639 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2263,15 +2263,70 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

@@ -187,10 +187,10 @@ index eb7282c33dd4f0bb26b9ccafc42bd92e6fdb997e..13bf0a6b9a7bb7d16748a620bbd0dd31
  
      @Deprecated
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e358e797c87584891d1ffbaf3604c5db6768ca58..17fc80f6e8c838ce5fcdc29c7f11d8633f9824e7 100644
+index 6071689a1ba52e35b33e802ba21c3b4ade2154dc..71a6e8e5e490a54f4a9a3e89f8b6636aa1cb636e 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1866,7 +1866,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1871,7 +1871,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
      }
  
      public int au() {
@@ -268,10 +268,10 @@ index 0d10d317cd0b60fc0866ae505c7fd71fa886c48b..7e9a5a22201985da78baa358a56a40ec
  
      public WorldBorder() {}
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 169ff677310bd6e10177c15b390f00ca67e39c41..390b3d78007e8fb9ca1acaa58477f3c2daa1d677 100644
+index 9507d5c69602e0d5c380dcfe9a8a5f0b30df9f32..cfb7fab4251e1d1514f94d4029731b17b86139ed 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -654,7 +654,8 @@ public final class CraftServer implements Server {
+@@ -655,7 +655,8 @@ public final class CraftServer implements Server {
  
      @Override
      public int getMaxWorldSize() {

@@ -46,7 +46,7 @@ index 132fa358b844a609a9ede3032e98f991c5eac65a..b7e60a672d67b083253d68fc6addf93d
          }
  
 diff --git a/src/main/java/net/minecraft/server/EntityFox.java b/src/main/java/net/minecraft/server/EntityFox.java
-index 18d14aca159db9c82a2f56020f503b5d3c4aae59..c4f0564f1ff9707857bddf929eb17002ba4c44df 100644
+index ff78bd607f19a1b9f37281946db3f705c844f7cc..29035d14656393faddc82936dbf2dbe04f492f49 100644
 --- a/src/main/java/net/minecraft/server/EntityFox.java
 +++ b/src/main/java/net/minecraft/server/EntityFox.java
 @@ -1094,8 +1094,8 @@ public class EntityFox extends EntityAnimal {
@@ -93,7 +93,7 @@ index 0511d2a37a7cfc906f13df72e91ffed993639376..c7c2331755c817992e3e917acf578a3c
  
              // CraftBukkit start - fire PlayerDropItemEvent
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 6db023a1a9c4e71234873a54e00dc8aa83fb38e2..749d90778c227e7b733c2a1ee614e276572f7da2 100644
+index 063cca4b56010eed3fa6dc930e7a7ef80ac13867..578a18b7c9f92efb2b0d9b0e36cb050590463125 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -160,15 +160,15 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
