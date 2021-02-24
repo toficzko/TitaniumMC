@@ -9,7 +9,7 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index 6b5dcd52b84c4a1f39ddea6ce0e1d54f19ac0b66..edf8408742eb2756bdd20a0e62ced491aeeca1a2 100644
+index d3580eb8d344e41797f9573abb6e2d6988f885a2..814ae1d58b0c8d0dd980097cc16de07be02100a1 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -188,6 +188,12 @@

@@ -5,10 +5,10 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index d12192dcdf733c28661a338b1b969fea2356dfd8..a624ef35319c5c9fe916f4b7e084a2521eb98482 100644
+index d12192dcdf733c28661a338b1b969fea2356dfd8..83389d41dac4299fc84b7cc198f667463ccd6cd0 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -3,18 +3,18 @@
+@@ -3,27 +3,40 @@
           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
      <modelVersion>4.0.0</modelVersion>
      <parent>
@@ -32,7 +32,11 @@ index d12192dcdf733c28661a338b1b969fea2356dfd8..a624ef35319c5c9fe916f4b7e084a252
      <description>An enhanced plugin API for Minecraft servers.</description>
  
      <properties>
-@@ -24,6 +24,19 @@
+         <!-- <skipTests>true</skipTests> Paper - This [was] not going to end well -->
+-        <maven.compiler.source>1.8</maven.compiler.source>
+-        <maven.compiler.target>1.8</maven.compiler.target>
++        <maven.compiler.source>11</maven.compiler.source>
++        <maven.compiler.target>11</maven.compiler.target>
          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
      </properties>
  

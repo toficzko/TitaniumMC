@@ -7,7 +7,7 @@ A massive improvement to world generation.
 This patch actually schedules chunk status upgrade later rather than doing it right away.
 
 diff --git a/pom.xml b/pom.xml
-index ca6c7bc78251e7914cb08e907b66ba01acfe2da9..aa32ee9c8c81e7106163988340ebab98d9bac1ef 100644
+index 755b1180a2e8aad9fb7fbdd0af7986e950b66f2c..578c46f74fda66ee13259dc8e0a453ccd2060710 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -202,6 +202,12 @@

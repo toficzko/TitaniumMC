@@ -21,12 +21,12 @@ This is an overview over all patches that are currently used.
 | api |  Add ChatColor.getById      | Aikar |  |
 | server |  Add EntityTeleportHinderedEvent      | Mariell Hoversholm |  |
 | api |  Add EntityTeleportHinderedEvent      | Mariell Hoversholm |  |
-| api |  Add GameProfileLookupEvent      | tr7zw |  |
 | server |  Add GameProfileLookupEvent      | tr7zw |  |
+| api |  Add GameProfileLookupEvent      | tr7zw |  |
 | server |  Add IntelliJ IDEA runnable      | Zoe |  |
 | server |  Add JsonList save timings      | Ivan Pekov |  |
-| api |  Add NBT API as a first-class lib      | tr7zw |  |
 | server |  Add NBT API as a first-class lib      | tr7zw |  |
+| api |  Add NBT API as a first-class lib      | tr7zw |  |
 | server |  Add StructureGenerateEvent      | Nahuel | Mariell Hoversholm |
 | api |  Add StructureGenerateEvent      | Nahuel | Mariell Hoversholm |
 | server |  Add Velocity natives for encryption and compression      | Andrew Steinborn |  |
@@ -41,8 +41,8 @@ This is an overview over all patches that are currently used.
 | server |  Add demo command      | BillyGalbreath |  |
 | server |  Add enderman and creeper griefing controls      | William Blake Galbreath |  |
 | server |  Add ghast allow-griefing option      | BillyGalbreath |  |
-| api |  Add last tick time API      | Ivan Pekov | tr7zw |
 | server |  Add last tick time API      | Ivan Pekov | tr7zw |
+| api |  Add last tick time API      | Ivan Pekov | tr7zw |
 | server |  Add mobGriefing bypass to everything affected      | Encode42 |  |
 | server |  Add no-tick block list      | William Blake Galbreath |  |
 | server |  Add nspt command      | Ivan Pekov |  |
@@ -242,8 +242,8 @@ This is an overview over all patches that are currently used.
 | server |  Make sure inlined getChunkAt has inlined logic for loaded      | Spottedleaf |  |
 | server |  Manually inline methods in BlockPosition      | Spottedleaf |  |
 | server |  Mending mends most damages equipment first      | William Blake Galbreath |  |
-| api |  Modify POM      | YatopiaMC |  |
 | server |  Modify POM      | YatopiaMC |  |
+| api |  Modify POM      | YatopiaMC |  |
 | server |  Modify default configs      | tr7zw |  |
 | server |  Movement options for armour stands      | Mariell Hoversholm |  |
 | server |  Multi-Threaded Server Ticking Vanilla      | Spottedleaf |  |
@@ -293,8 +293,8 @@ This is an overview over all patches that are currently used.
 | server |  Pigs give saddle back      | William Blake Galbreath |  |
 | server |  Player invulnerabilities      | William Blake Galbreath |  |
 | api |  Player invulnerabilities      | William Blake Galbreath |  |
-| api |  PlayerAttackEntityEvent      | Ivan Pekov |  |
 | server |  PlayerAttackEntityEvent      | Ivan Pekov |  |
+| api |  PlayerAttackEntityEvent      | Ivan Pekov |  |
 | server |  PlayerBookTooLargeEvent      | BillyGalbreath |  |
 | api |  PlayerBookTooLargeEvent      | BillyGalbreath |  |
 | server |  PlayerSetSpawnerTypeWithEggEvent      | William Blake Galbreath |  |
@@ -360,8 +360,8 @@ This is an overview over all patches that are currently used.
 | server |  Stop wasting resources on JsonList#get      | Ivan Pekov |  |
 | server |  Striders give saddle back      | Ben Kerllenevich |  |
 | server |  Strip raytracing for EntityLiving#hasLineOfSight      | Paul Sauve |  |
-| api |  Suspected plugins report      | ishland |  |
 | server |  Suspected plugins report      | ishland |  |
+| api |  Suspected plugins report      | ishland |  |
 | server |  Swap priority of checks in chunk ticking      | Paul Sauve |  |
 | server |  Threaded WorldGen      | ishland |  |
 | server |  Time scoreboard search      | Spottedleaf |  |
@@ -420,5 +420,5 @@ This is an overview over all patches that are currently used.
 | server |  remove world size checks      | Simon Gardling |  |
 | server |  replace Math.sin and Math.cos with MathHelper      | Simon Gardling |  |
 | server |  tic-tacs: unblocking      | Gegy |  |
-| api |  unsafe pom changes      | Simon Gardling |  |
 | server |  unsafe pom changes      | Simon Gardling |  |
+| api |  unsafe pom changes      | Simon Gardling |  |

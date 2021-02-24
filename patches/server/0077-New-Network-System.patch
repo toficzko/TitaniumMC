@@ -6,7 +6,7 @@ Subject: [PATCH] New Network System
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index f33efd572d81d4304760b452697790529222bb7a..ca6c7bc78251e7914cb08e907b66ba01acfe2da9 100644
+index 1b0355b683e8e3e9c20d59841c86985308c5583c..755b1180a2e8aad9fb7fbdd0af7986e950b66f2c 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -62,6 +62,14 @@

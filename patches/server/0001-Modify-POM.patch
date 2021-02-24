@@ -5,7 +5,7 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..6b5dcd52b84c4a1f39ddea6ce0e1d54f19ac0b66 100644
+index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..d3580eb8d344e41797f9573abb6e2d6988f885a2 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,11 +1,11 @@
@@ -23,7 +23,14 @@ index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..6b5dcd52b84c4a1f39ddea6ce0e1d54f
  
      <properties>
          <!-- <skipTests>true</skipTests> Paper - This [was] not going to end well -->
-@@ -19,17 +19,32 @@
+@@ -14,22 +14,37 @@
+         <bt.name>git</bt.name>
+         <minecraft.version>1.16.5</minecraft.version>
+         <minecraft_version>1_16_R3</minecraft_version>
+-        <maven.compiler.source>1.8</maven.compiler.source>
+-        <maven.compiler.target>1.8</maven.compiler.target>
++        <maven.compiler.source>11</maven.compiler.source>
++        <maven.compiler.target>11</maven.compiler.target>
      </properties>
  
      <parent>
