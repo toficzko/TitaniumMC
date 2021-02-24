@@ -268,10 +268,10 @@ index 0000000000000000000000000000000000000000..edcc9ec27cc7d8dc5bf04e1f70362b50
 \ No newline at end of file
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/util/collections/MaskedTickingBlockEntityList.java b/src/main/java/me/jellysquid/mods/lithium/common/util/collections/MaskedTickingBlockEntityList.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4320010fe88905162c35f0e992a5486970273ce5
+index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1a3163e5e
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/util/collections/MaskedTickingBlockEntityList.java
-@@ -0,0 +1,325 @@
+@@ -0,0 +1,323 @@
 +package me.jellysquid.mods.lithium.common.util.collections;
 +
 +import com.google.common.collect.Iterators;
@@ -366,9 +366,8 @@ index 0000000000000000000000000000000000000000..4320010fe88905162c35f0e992a54869
 +
 +    private void compact() {
 +        int targetSize = this.size();
-+        BitSet all = new BitSet();
 +        int newIndex = this.firstRemovedIndex - 1;
-+        int lastVisible = -1;
++        int lastVisible = this.filteredElementsMask.previousSetBit(newIndex);
 +
 +        for (int i = newIndex + 1; i < this.allElements.size(); i++) {
 +            T t = this.allElements.get(i);
@@ -381,7 +380,6 @@ index 0000000000000000000000000000000000000000..4320010fe88905162c35f0e992a54869
 +            //i is guaranteed to not be smaller than newIndex, therefore we can write to the same collections
 +
 +            this.allElements.set(newIndex, t);
-+            all.set(newIndex);
 +            this.allElements2Index.put(t, newIndex);
 +            this.filteredElementsMask.set(newIndex, visible);
 +
@@ -403,7 +401,7 @@ index 0000000000000000000000000000000000000000..4320010fe88905162c35f0e992a54869
 +
 +        this.filteredSuccessor.removeElements(targetSize + 1, this.filteredSuccessor.size());
 +        this.allElements.removeElements(targetSize, this.allElements.size());
-+        this.filteredElementsMask.and(all);
++        this.filteredElementsMask.clear(targetSize, this.filteredElementsMask.size());
 +
 +        this.filteredSuccessor.trim(targetSize * 4);
 +        this.allElements.trim(targetSize * 4);
