@@ -268,10 +268,10 @@ index 0000000000000000000000000000000000000000..edcc9ec27cc7d8dc5bf04e1f70362b50
 \ No newline at end of file
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/util/collections/MaskedTickingBlockEntityList.java b/src/main/java/me/jellysquid/mods/lithium/common/util/collections/MaskedTickingBlockEntityList.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1a3163e5e
+index 0000000000000000000000000000000000000000..7f7e4810a9aca382d75862e56b0cf93157b54b92
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/util/collections/MaskedTickingBlockEntityList.java
-@@ -0,0 +1,323 @@
+@@ -0,0 +1,320 @@
 +package me.jellysquid.mods.lithium.common.util.collections;
 +
 +import com.google.common.collect.Iterators;
@@ -292,7 +292,6 @@ index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1
 +    private final IntArrayList filteredSuccessor;
 +    private final BitSet filteredElementsMask;
 +
-+    private int removedCount;
 +    private int firstRemovedIndex;
 +
 +    //Visualization of the internal datastructures
@@ -369,6 +368,7 @@ index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1
 +        int newIndex = this.firstRemovedIndex - 1;
 +        int lastVisible = this.filteredElementsMask.previousSetBit(newIndex);
 +
++
 +        for (int i = newIndex + 1; i < this.allElements.size(); i++) {
 +            T t = this.allElements.get(i);
 +            if (t == null) {
@@ -395,8 +395,7 @@ index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1
 +            throw new IllegalStateException("Compaction ended up with incorrect size: Should be: " + targetSize + " but is: " + (newIndex + 1));
 +        }
 +
-+        this.filteredSuccessor.set(targetSize, -1); //-1 means this was the last element
-+        this.removedCount = 0;
++        this.filteredSuccessor.set(lastVisible + 1, -1); //-1 means this was the last element
 +        this.firstRemovedIndex = Integer.MAX_VALUE;
 +
 +        this.filteredSuccessor.removeElements(targetSize + 1, this.filteredSuccessor.size());
@@ -436,12 +435,12 @@ index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1
 +
 +    @Override
 +    public int size() {
-+        return this.allElements.size() - this.removedCount;
++        return this.allElements2Index.size();
 +    }
 +
 +    @Override
 +    public boolean isEmpty() {
-+        return (this.allElements.size() - this.removedCount) == 0;
++        return this.size() == 0;
 +    }
 +
 +    @Override
@@ -469,10 +468,10 @@ index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1
 +
 +    @Override
 +    public boolean add(T t) {
-+        int size = this.allElements.size();
-+
++        int arraySize = this.allElements.size();
++        int invalidEntries = arraySize - this.size();
 +        //Compaction is done during the add operation as it is guaranteed to not happen during iteration
-+        if ((size > 2048 && this.removedCount > (size >> 1)) || size >= Integer.MAX_VALUE - 1 && this.removedCount != 0) {
++        if ((arraySize > 2048 && invalidEntries > (arraySize >> 1)) || arraySize >= Integer.MAX_VALUE - 1 && invalidEntries != 0) {
 +            this.compact();
 +        }
 +
@@ -500,7 +499,6 @@ index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1
 +        }
 +        this.setEntryVisible(index, false);
 +        this.allElements.set(index, null);
-+        this.removedCount++;
 +        this.firstRemovedIndex = Math.min(this.firstRemovedIndex, index);
 +        return true;
 +    }
@@ -545,7 +543,6 @@ index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1
 +        this.allElements.clear();
 +        this.filteredSuccessor.clear();
 +        this.filteredElementsMask.clear();
-+        this.removedCount = 0;
 +        this.firstRemovedIndex = Integer.MAX_VALUE;
 +        this.filteredSuccessor.add(-1);
 +    }
@@ -595,7 +592,6 @@ index 0000000000000000000000000000000000000000..c04169581dc72109b249dface5f151f1
 +        throw new UnsupportedOperationException();
 +    }
 +}
-\ No newline at end of file
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/world/blockentity/BlockEntitySleepTracker.java b/src/main/java/me/jellysquid/mods/lithium/common/world/blockentity/BlockEntitySleepTracker.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..2e7a7419900b284440b0dad02dc725e164e448ee
