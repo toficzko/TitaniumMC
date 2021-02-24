@@ -5,10 +5,10 @@ Subject: [PATCH] unsafe pom changes
 
 
 diff --git a/pom.xml b/pom.xml
-index 1a82a55224f57df2d0b1ab1ab73a6b1972c141a9..0ae37464e6cae5da07dd27d2d0d87d23dc2caf82 100644
+index 1a82a55224f57df2d0b1ab1ab73a6b1972c141a9..00e6048fa125427ceea8137a5adbad241ccb3b35 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -113,20 +113,20 @@
+@@ -113,7 +113,7 @@
          <dependency>
              <groupId>it.unimi.dsi</groupId>
              <artifactId>fastutil</artifactId>
@@ -17,15 +17,7 @@ index 1a82a55224f57df2d0b1ab1ab73a6b1972c141a9..0ae37464e6cae5da07dd27d2d0d87d23
              <scope>provided</scope>
          </dependency>
          <dependency>
--            <groupId>commons-lang</groupId>
--            <artifactId>commons-lang</artifactId>
--            <version>2.6</version>
-+            <groupId>org.apache.commons</groupId>
-+            <artifactId>commons-lang3</artifactId>
-+            <version>3.11</version>
-             <scope>compile</scope>
-         </dependency>
-         <!-- bundled with Minecraft, shouldn't ever change -->
+@@ -126,7 +126,7 @@
          <dependency>
              <groupId>com.google.code.findbugs</groupId>
              <artifactId>jsr305</artifactId>
