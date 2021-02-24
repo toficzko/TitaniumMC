@@ -39,7 +39,7 @@ index e20d863d1308b470a294cb7ab022aac4b9a91f71..3cc3c9da41953e3e5e4609cf4008fbf0
  
      // Spigot start
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index a782286c381907dad341ab4985eb774291f5520f..e59a382ac424479315c96c9e7fc91e8af12c1dce 100644
+index 7cf7e7c32c7504583c991d3ea89ef3bad7093588..aa49ef60464363f5b15f79eea14fa73a43e3201d 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
 @@ -1805,23 +1805,63 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM

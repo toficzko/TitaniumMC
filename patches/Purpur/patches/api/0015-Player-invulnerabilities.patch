@@ -5,7 +5,7 @@ Subject: [PATCH] Player invulnerabilities
 
 
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 9fde3abfc7436b972a0b701c6d9a49a304458ca3..72745b60f07f56576f6bad64f2b4b73e4da8570d 100644
+index aa845d8adb1e0724a22e017ed893ed2391113c3b..d00c479b20d2b2f39cda36020bb585fc24c11892 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
 @@ -2165,5 +2165,26 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
