@@ -36,7 +36,7 @@ index f76ff164c6634d51655c39d1a73773377801cc38..2ba6b58fe5330582c078c53c241eda4d
              if ( throwable.getCause() != null )
              {
 diff --git a/src/main/java/net/minecraft/server/NetworkManager.java b/src/main/java/net/minecraft/server/NetworkManager.java
-index 66cd8e53cf8ef2a143bff7aa2ee421a4466083b0..c87afd90990d7d22e314e83b42e8b806a0d26733 100644
+index 53b5063b43e42f09c2ef335251c91d2051676972..a6908441324fb11ed1e1db2998acc41b71b65142 100644
 --- a/src/main/java/net/minecraft/server/NetworkManager.java
 +++ b/src/main/java/net/minecraft/server/NetworkManager.java
 @@ -404,6 +404,11 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
@@ -76,7 +76,7 @@ index 66cd8e53cf8ef2a143bff7aa2ee421a4466083b0..c87afd90990d7d22e314e83b42e8b806
                          close(new ChatMessage("disconnect.genericReason", "Internal Exception: " + e.getMessage()));;
                          packet.onPacketDispatchFinish(player, null);
 diff --git a/src/main/java/net/minecraft/server/PlayerConnectionUtils.java b/src/main/java/net/minecraft/server/PlayerConnectionUtils.java
-index 7fff1b3e4eda519851b714502d33122c1e408009..41949bebe38bfa734f1d06df209ca842d1a42933 100644
+index 8112b01f15c33f50fe5ec9aebf75d8091d440994..eb7e229ba4a2e4701a5a7a599f5e18da403a638b 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnectionUtils.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnectionUtils.java
 @@ -45,6 +45,11 @@ public class PlayerConnectionUtils {
@@ -175,10 +175,10 @@ index 0be39dac4b9dd69d7d73d86d64cf1e33e4086e81..c53531bc769ecd39c4f03b7a10c5bc6a
 +    // Yatopia end
  }
 diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
-index 476939bde38246eb0fd96e6a4ba8076c9d1b0ff4..d13bd96716db90a5d9ab65f3c7d025b75947b71a 100644
+index c1dc53a7863d3b3c01e35858c0e01826b2ea341f..bb73aaf821a87896e99bfd39d018adc37367f9af 100644
 --- a/src/main/java/org/spigotmc/WatchdogThread.java
 +++ b/src/main/java/org/spigotmc/WatchdogThread.java
-@@ -140,6 +140,15 @@ public class WatchdogThread extends Thread
+@@ -145,6 +145,15 @@ public class WatchdogThread extends Thread
                  log.log(Level.SEVERE, "Handling packet for connection: " + packetListener);
              }
          }
@@ -194,7 +194,7 @@ index 476939bde38246eb0fd96e6a4ba8076c9d1b0ff4..d13bd96716db90a5d9ab65f3c7d025b7
      }
      // Tuinity end - log detailed tick information
  
-@@ -271,6 +280,10 @@ public class WatchdogThread extends Thread
+@@ -276,6 +285,10 @@ public class WatchdogThread extends Thread
                  log.log( Level.SEVERE, "\t\tLocked on:" + monitor.getLockedStackFrame() );
              }
          }

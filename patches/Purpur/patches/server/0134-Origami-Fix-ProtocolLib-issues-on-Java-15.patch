@@ -5,7 +5,7 @@ Subject: [PATCH] Origami - Fix ProtocolLib issues on Java 15
 
 
 diff --git a/src/main/java/net/minecraft/server/NetworkManager.java b/src/main/java/net/minecraft/server/NetworkManager.java
-index 12df0d8bd73e803d63985673a3a6c7a582ac1df8..66cd8e53cf8ef2a143bff7aa2ee421a4466083b0 100644
+index d93634391501da01cb1afe70fedd5247c654e8fc..53b5063b43e42f09c2ef335251c91d2051676972 100644
 --- a/src/main/java/net/minecraft/server/NetworkManager.java
 +++ b/src/main/java/net/minecraft/server/NetworkManager.java
 @@ -416,9 +416,9 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
