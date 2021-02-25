@@ -19,7 +19,7 @@ index cc6e6f245ee5e73bd570cf42381bf55ee0b364d3..2f8ec64c26f5ed239b4dd9f9532c402d
              StackTraceElement[] astacktraceelement = this.h;
              int i = astacktraceelement.length;
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 7ff4ef37a4c26a5546f615f6a2d88b652b0906ea..6071689a1ba52e35b33e802ba21c3b4ade2154dc 100644
+index f76ff164c6634d51655c39d1a73773377801cc38..2ba6b58fe5330582c078c53c241eda4d224f198a 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1045,7 +1045,11 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas

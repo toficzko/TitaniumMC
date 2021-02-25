@@ -226,7 +226,7 @@ index ee906b594b306906c170180a29a8b61997d05168..7e348fcb813707fee830082b826932e0
          if (this.closed) {
              this.pollTasks(true); // this ensures we've emptied the queue
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 36d4f1d03d01a12c5baf92b9992bfdd44479ba79..9f8ed0d375776d3f207d0f9df9daba4762dd23ad 100644
+index b0751ba3489fde834fde74bdd29460b91787f4ee..c46c3e8aaeb7496a4cfedae68181cf6e09b75acd 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -843,7 +843,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas

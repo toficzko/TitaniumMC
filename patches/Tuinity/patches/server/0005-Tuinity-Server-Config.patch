@@ -274,7 +274,7 @@ index 5504facd2e453238caa71d98743be5416d4dd4fe..fcba187bbdc1b468cfea2bc922187d9b
          this.setPVP(dedicatedserverproperties.pvp);
          this.setAllowFlight(dedicatedserverproperties.allowFlight);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 928d18fa4c1ea889cafce583c3839266a733224c..7fb740598e943bd11a11f498e207a15a446f1aeb 100644
+index 76ff032febd9da5d2b62a1ef2947452b5df56a81..c55273cbfda3662254e9132d3c497df571987d46 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -958,6 +958,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas

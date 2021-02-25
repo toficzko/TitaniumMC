@@ -66,7 +66,7 @@ index 4dc027577656b423cd06a1eca5fdf9c9a5fcf107..ba8523ab5cf5d2320624ed1fd40fa0c2
                  this.dropChanceArmor[EnumItemSlot.HEAD.b()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index a43e92bf950b1ddcf90761f6ac3f73a330d6c2d4..399a8e32572eab8438de75fbe0fd28ba0f819006 100644
+index 9bbab2a53752724e776855b3d27fa0199fd0c2c6..8a97f6e6fc73945147657bc031c12f3e675a452a 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1351,6 +1351,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas

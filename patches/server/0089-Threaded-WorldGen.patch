@@ -292,7 +292,7 @@ index 7abf0e4b7e96dd367b9d03cbc62ac7bb03542d0a..76a76c26650bca73828d7893a537a023
          return i == j ? true : GenLayers.a.get(i) == GenLayers.a.get(j);
      }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 1e7d4fb8e62848c24b0d52af76eeb752035d4f92..36d4f1d03d01a12c5baf92b9992bfdd44479ba79 100644
+index f583443f9a938b9ad5d84d35f2d7508e71af7ade..b0751ba3489fde834fde74bdd29460b91787f4ee 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -841,6 +841,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
