@@ -5,7 +5,7 @@ Subject: [PATCH] finally remove worldborder
 
 
 diff --git a/src/main/java/net/minecraft/server/WorldBorder.java b/src/main/java/net/minecraft/server/WorldBorder.java
-index 7e9a5a22201985da78baa358a56a40ec7b9b6954..a8775bb4c315fa0e20745d7d25a9b86d5b344c8c 100644
+index 7e9a5a22201985da78baa358a56a40ec7b9b6954..62fc0beb781bc3aa4db90722c8d1b7b7466f9d9c 100644
 --- a/src/main/java/net/minecraft/server/WorldBorder.java
 +++ b/src/main/java/net/minecraft/server/WorldBorder.java
 @@ -29,38 +29,45 @@ public class WorldBorder {
@@ -96,11 +96,38 @@ index 7e9a5a22201985da78baa358a56a40ec7b9b6954..a8775bb4c315fa0e20745d7d25a9b86d
      public double getSize() {
 -        return this.j.e();
 +        // return this.j.e();
-+        return 4294967294D;
++        return Double.MAX_VALUE;
      }
  
      public long j() {
-@@ -334,7 +348,8 @@ public class WorldBorder {
+@@ -176,6 +190,7 @@ public class WorldBorder {
+     }
+ 
+     public void setSize(double d0) {
++        /*
+         this.j = new WorldBorder.d(d0);
+         Iterator iterator = this.l().iterator();
+ 
+@@ -184,6 +199,7 @@ public class WorldBorder {
+ 
+             iworldborderlistener.a(this, d0);
+         }
++        */
+ 
+     }
+ 
+@@ -297,8 +313,10 @@ public class WorldBorder {
+         this.setWarningTime(worldborder_c.f());
+         if (worldborder_c.h() > 0L) {
+             this.transitionSizeBetween(worldborder_c.g(), worldborder_c.i(), worldborder_c.h());
++        /*
+         } else {
+             this.setSize(worldborder_c.g());
++        */
+         }
+ 
+     }
+@@ -334,7 +352,8 @@ public class WorldBorder {
              this.d = worldborder.getDamageBuffer();
              this.e = worldborder.getWarningDistance();
              this.f = worldborder.getWarningTime();
@@ -110,3 +137,13 @@ index 7e9a5a22201985da78baa358a56a40ec7b9b6954..a8775bb4c315fa0e20745d7d25a9b86d
              this.h = worldborder.j();
              this.i = worldborder.k();
          }
+@@ -378,7 +397,8 @@ public class WorldBorder {
+         public static WorldBorder.c a(DynamicLike<?> dynamiclike, WorldBorder.c worldborder_c) {
+             double d0 = dynamiclike.get("BorderCenterX").asDouble(worldborder_c.a);
+             double d1 = dynamiclike.get("BorderCenterZ").asDouble(worldborder_c.b);
+-            double d2 = dynamiclike.get("BorderSize").asDouble(worldborder_c.g);
++            // double d2 = dynamiclike.get("BorderSize").asDouble(worldborder_c.g);
++            double d2 = Double.MAX_VALUE;
+             long i = dynamiclike.get("BorderSizeLerpTime").asLong(worldborder_c.h);
+             double d3 = dynamiclike.get("BorderSizeLerpTarget").asDouble(worldborder_c.i);
+             double d4 = dynamiclike.get("BorderSafeZone").asDouble(worldborder_c.d);
