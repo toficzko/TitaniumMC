@@ -304,6 +304,7 @@ This is an overview over all patches that are currently used.
 | server |  Port Cadmium      | Lucy-t |  |
 | server |  Port LazyDFU      | Andrew Steinborn |  |
 | server |  Port hydrogen      | JellySquid |  |
+| server |  Port krypton      | Andrew Steinborn | Hugo Planque |
 | server |  Preload ProtocolLib EnumWrappers      | ishland |  |
 | server |  Prevent grindstones from overstacking items      | chickeneer |  |
 | server |  Prevent light queue overfill when no players are online      | Spottedleaf |  |
@@ -390,6 +391,7 @@ This is an overview over all patches that are currently used.
 | server |  add config for logging login location      | Simon Gardling |  |
 | server |  cache default block/fluid states in World.java      | Simon Gardling |  |
 | server |  dont load chunks for physics      | Aikar |  |
+| server |  enable asyncChunks no matter what      | Simon Gardling |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fully remove snooper      | Simon Gardling |  |

@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Fri, 26 Feb 2021 14:59:33 -0500
+Subject: [PATCH] enable asyncChunks no matter what
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+index 992eb7b286becc03549136d031b677dbd6877c17..2020447d8685c7603c31552484ffacddfd6852ec 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+@@ -374,7 +374,7 @@ public class PaperConfig {
+         }
+     }
+ 
+-    public static boolean asyncChunks = false;
++    public static final boolean asyncChunks = true;
+     private static void asyncChunks() {
+         ConfigurationSection section;
+         if (version < 15) {
+@@ -402,11 +402,13 @@ public class PaperConfig {
+         if (threads <= 0) {
+             threads = (int) Math.min(Integer.getInteger("paper.maxChunkThreads", 8), Math.max(1, cpus - 1));
+         }
++        /*
+         if (cpus == 1 && !Boolean.getBoolean("Paper.allowAsyncChunksSingleCore")) {
+             asyncChunks = false;
+         } else {
+             asyncChunks = true;
+         }
++        */
+ 
+         // Let Shared Host set some limits
+         String sharedHostThreads = System.getenv("PAPER_ASYNC_CHUNKS_SHARED_HOST_THREADS");
