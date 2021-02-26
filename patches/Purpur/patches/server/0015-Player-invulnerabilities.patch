@@ -79,7 +79,7 @@ index 7034f2d09b7e9911cba7834832a901389e6690dc..371285e86ef6d848c2a1c5eb1ce4bc24
          this.server.getPluginManager().callEvent(new PlayerResourcePackStatusEvent(getPlayer(), packStatus));
          // Paper end
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 07964a7417d914804d2280b11dce1c84ad7acfb3..c72d4b4efb849b3945bd8f5f2151dd61f081a7b9 100644
+index 22205d7b3302076942a3cd45ddee82c3027a017b..a28f913507ced308205b7ad9f3682feb80c30ab7 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -918,6 +918,8 @@ public abstract class PlayerList {

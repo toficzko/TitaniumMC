@@ -37,7 +37,7 @@ index cd01859f3fe24d2eb9554e663c1a092038e93f02..e620d3596fdc2ca64485b451513bfae4
          this.isRestarting = isRestarting;
          this.hasLoggedStop = true; // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 88a6b6f4646e268d5d0ce475db8587e592e317e0..981e1235f18742bdf136d4fdc197838f9902b208 100644
+index 11a8d39daa81c3fd5ce1cc62605eaa81578f47e9..ea44ea919b1ec8f73889f3498050854ae6b27b66 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -517,6 +517,8 @@ public abstract class PlayerList {

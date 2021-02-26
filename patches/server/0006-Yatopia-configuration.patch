@@ -67,7 +67,7 @@ index a198bdf26b60caea8c8b105cb0e4b82c0340fede..39280197902b330dd3d39c721cdef744
          if (this.isFireProof() || this.world.isClientSide) {
              this.extinguish();
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 981e1235f18742bdf136d4fdc197838f9902b208..d49d1a507ac82e0317b6af752d2cbf8a993d598e 100644
+index ea44ea919b1ec8f73889f3498050854ae6b27b66..ad25b643a350162ac4fc93b94f00ae1dd8f7e19d 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -191,7 +191,7 @@ public abstract class PlayerList {
