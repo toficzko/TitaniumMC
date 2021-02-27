@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Fri, 26 Feb 2021 19:48:02 -0500
+Subject: [PATCH] mysql 8.0.23
+
+
+diff --git a/pom.xml b/pom.xml
+index 7686566b1817c9c2f9d3c5fc188f74c568d35a85..f76e7ecffacd494014049dea0cc0c74554914e1d 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -154,7 +154,7 @@
+         <dependency>
+             <groupId>mysql</groupId>
+             <artifactId>mysql-connector-java</artifactId>
+-            <version>5.1.49</version>
++            <version>8.0.23</version>
+             <scope>runtime</scope>
+         </dependency>
+         <!-- testing -->
