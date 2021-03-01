@@ -123,10 +123,10 @@ index a3b810556e306bc2be65c7811cfa7806d5752cfa..f96c41fc8788ee7b674c18cc0fa692df
          }
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index b0979c1405dec97a4efad5133fc30f178bbd9a4c..4e6c25b46f699fed142101e50803efcf07eaf18d 100644
+index 4eeae837b559e135f224cc97f88c80eb53a06d66..ee37a3b2a352955877dc18892f3c793cb2dbcfcd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -116,6 +116,7 @@ import org.bukkit.entity.EntityType;
+@@ -117,6 +117,7 @@ import org.bukkit.entity.EntityType;
  import org.bukkit.entity.Player;
  import org.bukkit.event.player.PlayerRegisterChannelEvent;
  import org.bukkit.event.player.PlayerTeleportEvent;
@@ -134,7 +134,7 @@ index b0979c1405dec97a4efad5133fc30f178bbd9a4c..4e6c25b46f699fed142101e50803efcf
  import org.bukkit.event.player.PlayerUnregisterChannelEvent;
  import org.bukkit.inventory.InventoryView.Property;
  import org.bukkit.inventory.ItemStack;
-@@ -873,6 +874,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -874,6 +875,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          }
  
          if (entity.isVehicle()) {

@@ -56,10 +56,10 @@ index 50d00e24190d67778f2a8e86c7bb5a72fc7e81c5..11a8d39daa81c3fd5ce1cc62605eaa81
  
      public void sendAll(Packet<?> packet) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index ce06555ce146cedcd04338b6a5cfa6be2989b7bb..b0979c1405dec97a4efad5133fc30f178bbd9a4c 100644
+index fea339b1ad35020b23cde0c347c5a2f3746792c4..4eeae837b559e135f224cc97f88c80eb53a06d66 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -1464,7 +1464,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1465,7 +1465,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
  
      @Override
      public boolean canSee(Player player) {

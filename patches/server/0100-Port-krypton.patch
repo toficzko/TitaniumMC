@@ -88,7 +88,7 @@ index fce976bc6a0eb08083a06622935bff05d737a9a3..545cac51325f4a369595767948ef3d52
  import java.util.Arrays;
  import java.util.Random;
 diff --git a/src/main/java/net/minecraft/server/PacketDataSerializer.java b/src/main/java/net/minecraft/server/PacketDataSerializer.java
-index 4be310ada6477b2040f2ea11010f429c3f38c4ac..c1c4454b613eeb1d97307a4dd2a75e0cc4dd2268 100644
+index 8865e8e375f7cb437e5a7ff9f42a4156d8edd9e3..927ff69cc953bea4cb4a2a6075c3f6b7eb7a1e9f 100644
 --- a/src/main/java/net/minecraft/server/PacketDataSerializer.java
 +++ b/src/main/java/net/minecraft/server/PacketDataSerializer.java
 @@ -7,6 +7,7 @@ import io.netty.buffer.ByteBuf;
@@ -108,7 +108,7 @@ index 4be310ada6477b2040f2ea11010f429c3f38c4ac..c1c4454b613eeb1d97307a4dd2a75e0c
      public java.util.Locale adventure$locale; // Paper
  
      public PacketDataSerializer(ByteBuf bytebuf) {
-@@ -219,6 +220,7 @@ public class PacketDataSerializer extends ByteBuf {
+@@ -224,6 +225,7 @@ public class PacketDataSerializer extends ByteBuf {
          return new UUID(this.readLong(), this.readLong());
      }
  
@@ -116,7 +116,7 @@ index 4be310ada6477b2040f2ea11010f429c3f38c4ac..c1c4454b613eeb1d97307a4dd2a75e0c
      public PacketDataSerializer d(int i) {
          while ((i & -128) != 0) {
              this.writeByte(i & 127 | 128);
-@@ -368,6 +370,8 @@ public class PacketDataSerializer extends ByteBuf {
+@@ -373,6 +375,8 @@ public class PacketDataSerializer extends ByteBuf {
  
      public PacketDataSerializer writeUtf(final String string, final int maxLength) { return this.a(string, maxLength); } // Paper - OBFHELPER
      public PacketDataSerializer a(String s, int i) {
@@ -125,7 +125,7 @@ index 4be310ada6477b2040f2ea11010f429c3f38c4ac..c1c4454b613eeb1d97307a4dd2a75e0c
          byte[] abyte = s.getBytes(StandardCharsets.UTF_8);
  
          if (abyte.length > i) {
-@@ -377,6 +381,16 @@ public class PacketDataSerializer extends ByteBuf {
+@@ -382,6 +386,16 @@ public class PacketDataSerializer extends ByteBuf {
              this.writeBytes(abyte);
              return this;
          }

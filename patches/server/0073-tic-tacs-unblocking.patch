@@ -42,7 +42,7 @@ index 0000000000000000000000000000000000000000..9bf6f73e2a7fc4f3cd07e10fde287c40
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 259f8934586d2175cdc44d6b1e258f0d7c2d7570..27456043c75c0a327692c639c74865f179a11017 100644
+index 26811b19851bf9dd091fcc58e3ec91b2f794446b..c88c776818c5652e8dfb362fac430c07b051e170 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -50,8 +50,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;

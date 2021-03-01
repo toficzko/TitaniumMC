@@ -39,10 +39,10 @@ index e20d863d1308b470a294cb7ab022aac4b9a91f71..3cc3c9da41953e3e5e4609cf4008fbf0
  
      // Spigot start
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 5fe48dcc5a3ea492915350cff44d5f112ce11dbf..1f3fee7c6640561909627cf1899460ea18735a1d 100644
+index b391c720b69714cf49f8733cf4440864ac3dcd72..7c9297ee71e8a1c42c11b8099831eca334cc90bb 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -1816,23 +1816,63 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -1817,23 +1817,63 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       * Gets the view distance for this player
       *
       * @return the player's view distance

@@ -58,7 +58,7 @@ index 92cca6c44f12a9283988b84681aac760f1c38d7e..31f2ca273eb35aa389caf328abe1b0e8
          return true;
          // Purpur end
 diff --git a/src/main/java/net/minecraft/server/EntityEnderDragon.java b/src/main/java/net/minecraft/server/EntityEnderDragon.java
-index eef018e2970de7f0191ecc9f0224ba30dc16b213..d8da655432af6cf64693174449ba0757dd445b9f 100644
+index 2aef80dada9d2a70e296ee5f8cf61a6c78a490c8..35934565a66d381a1441c98131d4cda824414ccd 100644
 --- a/src/main/java/net/minecraft/server/EntityEnderDragon.java
 +++ b/src/main/java/net/minecraft/server/EntityEnderDragon.java
 @@ -489,7 +489,7 @@ public class EntityEnderDragon extends EntityInsentient implements IMonster {
@@ -246,7 +246,7 @@ index fa0c459dcd773e003a2852c594ec7254e4eb11b8..88eeabeb89fe733c462a667d7564da3b
              }
  
 diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
-index 690ae9281cbe108fa0881e3404f9814a8e1a7ac6..5c4e28220fcac318daae9cb36ad6e1dcff2fbc47 100644
+index 5418ef33035427932e675a7e2aae1b94524e71bf..fb3bdd7e0c114d0cb59b7aff19d785d3e2a0ccf3 100644
 --- a/src/main/java/net/minecraft/server/EntityWither.java
 +++ b/src/main/java/net/minecraft/server/EntityWither.java
 @@ -322,7 +322,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {

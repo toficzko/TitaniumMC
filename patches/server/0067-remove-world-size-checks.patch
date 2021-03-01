@@ -131,7 +131,7 @@ index 780474397acb4d0e7ecb4540e1a2db5721e59d3d..1962c14af5cc4ec4c66fa7c354aff98c
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index b02e2b92a3d17b81cc6bf69adba1db6c945c57ac..259f8934586d2175cdc44d6b1e258f0d7c2d7570 100644
+index a79e88ab1999c040bf957e5afe7755874a76711d..26811b19851bf9dd091fcc58e3ec91b2f794446b 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -1540,6 +1540,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke

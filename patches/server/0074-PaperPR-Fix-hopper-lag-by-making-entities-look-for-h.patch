@@ -141,7 +141,7 @@ index 0000000000000000000000000000000000000000..8dff63d32718343d80e17837fa947fba
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
-index 9f0674196c709f121f2baea5ca95138303a8c48d..0eb23571f0909e037fdfeed0d89b1cd3b7d6b3e4 100644
+index 1b39f724e30515f962705687a59ee907da5bdec9..e843f0c56b934d974288445e222a4770b8709120 100644
 --- a/src/main/java/net/minecraft/server/EntityItem.java
 +++ b/src/main/java/net/minecraft/server/EntityItem.java
 @@ -12,7 +12,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;

@@ -285,7 +285,7 @@ index 0ad3b893ca45bd84149ae26d63e157b85296b471..487ad215baed2e671eb5919d5a299484
  
      public boolean b(IBlockData iblockdata, IBlockAccess iblockaccess, BlockPosition blockposition) {
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 27456043c75c0a327692c639c74865f179a11017..434e7f2c0996a668a9aa812a270e99e7ab29c4a2 100644
+index c88c776818c5652e8dfb362fac430c07b051e170..3f0a1102515a97a8507d798793168301f0936292 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -2541,6 +2541,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
