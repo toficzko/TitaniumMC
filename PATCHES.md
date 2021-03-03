@@ -420,6 +420,7 @@ This is an overview over all patches that are currently used.
 | server |  lithium: skip ticking block entities that are doing nothing      | Simon Gardling |  |
 | server |  mysql 8.0.23      | Simon Gardling |  |
 | server |  playerchunkloading modifications      | Simon Gardling |  |
+| server |  print Clientbrand on login      | Simon Gardling |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
 | server |  remove world size checks      | Simon Gardling |  |
 | server |  replace Math.sin and Math.cos with MathHelper      | Simon Gardling |  |
