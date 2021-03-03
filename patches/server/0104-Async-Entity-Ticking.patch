@@ -420,10 +420,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f9dab2bb49cf5dc6bf52183d79a228e1
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityTask.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityTask.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..fba9e77e3258f7f3d93ca06a1cc55b00e70e3b50
+index 0000000000000000000000000000000000000000..f11b744f6c146344cd6d8812b3e94d410b9dda0f
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityTask.java
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,59 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -471,7 +471,8 @@ index 0000000000000000000000000000000000000000..fba9e77e3258f7f3d93ca06a1cc55b00
 +                    entity.tick();
 +                    entity.postTick();
 +                } catch (Throwable throwable) {
-+                    System.err.println("Entity threw exception at " + entity.world.getWorld().getName() + ":" + entity.locX() + "," + entity.locY() + "," + entity.locZ());
++                    String msg = "Entity threw exception at " + entity.world.getWorld().getName() + ":" + entity.locX() + "," + entity.locY() + "," + entity.locZ();
++                    System.err.println(msg);
 +                    throwable.printStackTrace();
 +                    worldserver.getServer().getPluginManager().callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerInternalException(msg, throwable)));
 +                    entity.dead = true;
