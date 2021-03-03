@@ -6,20 +6,20 @@ Subject: [PATCH] Async Entity Ticking
 Based off of: https://github.com/PaperMC/Paper/pull/2671 by Bloodrayne1995
 
 diff --git a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
-index cdda74564ced196ae577a64782236c2bfe36e433..7aa78e48d45b8026b12f8b2d425fb5932a56bfd9 100644
+index cdda74564ced196ae577a64782236c2bfe36e433..05725e36e44bf8c103263aca58ec80384e2c6ee3 100644
 --- a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
 +++ b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
 @@ -27,10 +27,13 @@ public final class EntityList implements Iterable<Entity> {
      }
  
      public boolean contains(final Entity entity) {
-+        synchronized (this.entityToIndex) {
++        synchronized (this.entityToIndex) { // Yatopia
          return this.entityToIndex.containsKey(entity.getId());
-+        }
++        } // Yatopia
      }
  
      public boolean remove(final Entity entity) {
-+        synchronized (this.entityToIndex) {
++        synchronized (this.entityToIndex) { // Yatopia
          final int index = this.entityToIndex.remove(entity.getId());
          if (index == Integer.MIN_VALUE) {
              return false;
@@ -28,13 +28,13 @@ index cdda74564ced196ae577a64782236c2bfe36e433..7aa78e48d45b8026b12f8b2d425fb593
          this.entities[index] = end;
          this.entities[endIndex] = null;
 -
-+        }
++        } // Yatopia
          return true;
      }
  
      public boolean add(final Entity entity) {
          final int count = this.count;
-+        synchronized (this.entityToIndex) {
++        synchronized (this.entityToIndex) { // Yatopia
          final int currIndex = this.entityToIndex.putIfAbsent(entity.getId(), count);
  
          if (currIndex != Integer.MIN_VALUE) {
@@ -43,7 +43,7 @@ index cdda74564ced196ae577a64782236c2bfe36e433..7aa78e48d45b8026b12f8b2d425fb593
          list[count] = entity;
          this.count = count + 1;
 -
-+        }
++        } // Yatopia
          return true;
      }
  
@@ -51,9 +51,9 @@ index cdda74564ced196ae577a64782236c2bfe36e433..7aa78e48d45b8026b12f8b2d425fb593
      }
  
      public void clear() {
-+        synchronized (this.entityToIndex) {
++        synchronized (this.entityToIndex) { // Yatopia
          this.entityToIndex.clear();
-+        }
++        } // Yatopia
          Arrays.fill(this.entities, 0, this.count, null);
          this.count = 0;
      }
@@ -75,22 +75,22 @@ index 08ed243259f052165c6f75aed1d1d65a14219715..2a64e01d2fb84510db14d4627fd15d4c
  
      public final int id; /* We don't override getId as the spec requires that it be unique (with respect to all other threads) */
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java b/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
-index 180c724b40228f11ed0c9869779cf466e8e97ebe..b938b2edb80d2f29ef5b77157b31f5a1db438b98 100644
+index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6475135ca 100644
 --- a/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
 @@ -158,11 +158,15 @@ public class EntityTrackerEngine {
      }
  
      private TrackedEntityList getOrCreateList(int x, int y, int z) {
-+        synchronized (this.sections) {
++        synchronized (this.sections) { // Yatopia
          return this.sections.computeIfAbsent(encode(x, y, z), TrackedEntityList::new);
-+        }
++        } // Yatopia
      }
  
      private TrackedEntityList getList(int x, int y, int z) {
-+        synchronized (this.sections) {
++        synchronized (this.sections) { // Yatopia
          return this.sections.get(encode(x, y, z));
-+        }
++        } // Yatopia
      }
  
      private static long encode(int x, int y, int z) {
@@ -98,17 +98,17 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..b938b2edb80d2f29ef5b77157b31f5a1
          }
  
          public void addListener(NearbyEntityListener listener) {
-+            synchronized (this.entities) {
++            synchronized (this.entities) { // Yatopia
              for (EntityLiving entity : this.entities) {
                  listener.onEntityEnteredRange(entity);
              }
  
              this.listeners.add(listener);
-+            }
++            } // Yatopia
          }
  
          public void removeListener(NearbyEntityListener listener) {
-+            synchronized (this.entities) {
++            synchronized (this.entities) { // Yatopia
              if (this.listeners.remove(listener)) {
                  for (EntityLiving entity : this.entities) {
                      listener.onEntityLeftRange(entity);
@@ -116,21 +116,21 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..b938b2edb80d2f29ef5b77157b31f5a1
  
                  this.checkEmpty();
              }
-+            }
++            } // Yatopia
          }
  
          public boolean addTrackedEntity(EntityLiving entity) {
-+            synchronized (this.entities) {
++            synchronized (this.entities) { // Yatopia
              for (NearbyEntityListener listener : this.listeners) {
                  listener.onEntityEnteredRange(entity);
              }
  
              return this.entities.add(entity);
-+            }
++            } // Yatopia
          }
  
          public boolean removeTrackedEntity(EntityLiving entity) {
-+            synchronized (this.entities) {
++            synchronized (this.entities) { // Yatopia
              boolean ret = this.entities.remove(entity);
  
              if (ret) {
@@ -138,21 +138,21 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..b938b2edb80d2f29ef5b77157b31f5a1
              }
  
              return ret;
-+            }
++            } // Yatopia
          }
  
          private void checkEmpty() {
-+            synchronized (this.entities) {
++            synchronized (this.entities) { // Yatopia
              if (this.entities.isEmpty() && this.listeners.isEmpty()) {
-+                synchronized (EntityTrackerEngine.this.sections) {
++                synchronized (EntityTrackerEngine.this.sections) { // Yatopia
                  EntityTrackerEngine.this.sections.remove(this.key);
-+                }
-+            }
++                } // Yatopia
++            } // Yatopia
              }
          }
      }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..170087c6ad3e9b26a94d90278197269df692a4f4 100644
+index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..d472b223b51cb25a303e2e0289ddaeba3ff2a2a2 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -167,7 +167,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..170087c6ad3e9b26a94d90278197269d
      private double fakeTime; // Purpur
  
  
-+    private AsyncTickManager aTickManager = null; // Yatopia - async entity ticking
++    private AsyncTickManager aTickManager = null; // Yatopia - Async entity ticking
      // CraftBukkit start
      private int tickPosition;
      public final Convertable.ConversionSession convertable;
@@ -186,7 +186,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..170087c6ad3e9b26a94d90278197269d
              }
  
              this.tickingEntities = true;
-+            synchronized (this.entitiesForIteration) {
++            synchronized (this.entitiesForIteration) { // Yatopia
              com.tuinity.tuinity.util.maplist.IteratorSafeOrderedReferenceSet.Iterator<Entity> objectiterator = this.entitiesForIteration.iterator(); // Tuinity
  
              org.spigotmc.ActivationRange.activateEntities(this); // Spigot
@@ -194,9 +194,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..170087c6ad3e9b26a94d90278197269d
                  gameprofilerfiller.enter("remove");
                  if (entity.dead) {
                      this.removeEntityFromChunk(entity);
-+                    synchronized (this.entitiesById) {
++                    synchronized (this.entitiesById) { // Yatopia
                      this.entitiesById.remove(entity.getId()); // Tuinity
-+                    }
++                    } // Yatopia
                      this.unregisterEntity(entity);
                  } else if (entity.inChunk && entity.valid) { // Tuinity start - optimise notify()
                      if (this.getChunkProvider().isInEntityTickingChunk(entity)) {
@@ -204,7 +204,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..170087c6ad3e9b26a94d90278197269d
              timings.entityTick.stopTiming(); // Spigot
  
              objectiterator.finishedIterating(); // Tuinity
-+            }
++            } // Yatopia
 +            if (org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities) this.aTickManager.startTick(); // Yatopia - Async entity ticking
              this.tickingEntities = false;
              // Paper start
@@ -228,51 +228,51 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..170087c6ad3e9b26a94d90278197269d
      public List<Entity> a(@Nullable EntityTypes<?> entitytypes, Predicate<? super Entity> predicate) {
          List<Entity> list = Lists.newArrayList();
          ChunkProviderServer chunkproviderserver = this.getChunkProvider();
-+        synchronized (this.entitiesById) {
++        synchronized (this.entitiesById) { // Yatopia
          ObjectIterator objectiterator = this.entitiesById.values().iterator();
  
          while (objectiterator.hasNext()) {
-@@ -1634,12 +1652,13 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1634,12 +1652,14 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                  list.add(entity);
              }
          }
--
-+        }
++        } // Yatopia
+ 
          return list;
      }
  
      public List<EntityEnderDragon> g() {
          List<EntityEnderDragon> list = Lists.newArrayList();
-+        synchronized (this.entitiesById) {
++        synchronized (this.entitiesById) { // Yatopia
          ObjectIterator objectiterator = this.entitiesById.values().iterator();
  
          while (objectiterator.hasNext()) {
-@@ -1649,6 +1668,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1649,6 +1669,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                  list.add((EntityEnderDragon) entity);
              }
          }
-+        }
++        } // Yatopia
  
          return list;
      }
-@@ -1915,8 +1935,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1915,8 +1936,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                          continue;
                      }
                      // Paper end
 -
-+                    synchronized (this.entitiesById) {
++                    synchronized (this.entitiesById) { // Yatopia
                      this.entitiesById.remove(entity.getId());
-+                    }
++                    } // Yatopia
                      this.unregisterEntity(entity);
  
                      if (entity.dead) iterator.remove(); // Paper - don't save dead entities during unload
-@@ -1934,12 +1955,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1934,12 +1956,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
      public void unregisterEntity(Entity entity) {
          org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
-+        synchronized (this.entitiesForIteration) {
++        synchronized (this.entitiesForIteration) { // Yatopia
          this.entitiesForIteration.remove(entity); // Tuinity
-+        }
++        } // Yatopia
          // Paper start - fix entity registration issues
          if (entity instanceof EntityComplexPart) {
              // Usually this is a no-op for complex parts, and ID's should be removed, but go ahead and remove it anyways
@@ -283,103 +283,100 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..170087c6ad3e9b26a94d90278197269d
              return;
          }
          if (!entity.valid) {
-@@ -2108,6 +2133,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2108,6 +2134,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          org.spigotmc.AsyncCatcher.catchOp("entity register"); // Spigot
          // Paper start - don't double enqueue entity registration
          //noinspection ObjectEquality
-+        synchronized (this.entitiesById) {
++        synchronized (this.entitiesById) { // Yatopia
          if (this.entitiesById.get(entity.getId()) == entity) {
              LOGGER.error(entity + " was already registered!");
              new Throwable().printStackTrace();
-@@ -2121,7 +2147,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
-             }
+@@ -2122,6 +2149,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          } else {
              entity.isQueuedForRegister = false; // Paper
-+            synchronized (this.entitiesById) {
              this.entitiesById.put(entity.getId(), entity);
-+            synchronized (this.entitiesForIteration) {
++            synchronized (this.entitiesForIteration) { // Yatopia
              this.entitiesForIteration.add(entity); // Tuinity
              if (entity instanceof EntityEnderDragon) {
                  EntityComplexPart[] aentitycomplexpart = ((EntityEnderDragon) entity).eJ();
-@@ -2134,6 +2162,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2134,6 +2162,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                      this.entitiesForIteration.add(entitycomplexpart); // Tuinity
                  }
              }
-+            }
-+            }
++            } // Yatopia
  
              if (DEBUG_ENTITIES) {
                  entity.addedToWorldStack = getAddToWorldStackTrace(entity);
-@@ -2177,6 +2207,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2177,6 +2206,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              entity.shouldBeRemoved = false; // Paper - shouldn't be removed after being re-added
              new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
          }
-+        }
++        } // Yatopia
  
      }
  
-@@ -2185,7 +2216,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2185,7 +2215,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              throw (IllegalStateException) SystemUtils.c((Throwable) (new IllegalStateException("Removing entity while ticking!")));
          } else {
              this.removeEntityFromChunk(entity);
-+            synchronized (this.entitiesById) {
++            synchronized (this.entitiesById) { // Yatopia
              this.entitiesById.remove(entity.getId());
-+            }
++            } // Yatopia
              this.unregisterEntity(entity);
              entity.shouldBeRemoved = true; // Paper
          }
-@@ -2483,7 +2516,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2483,7 +2515,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      @Nullable
      @Override
      public Entity getEntity(int i) {
-+        synchronized (this.entitiesById) {
++        synchronized (this.entitiesById) { // Yatopia
          return (Entity) this.entitiesById.get(i);
-+        }
++        } // Yatopia
      }
  
      @Nullable
-@@ -2776,8 +2811,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2776,8 +2810,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                      bufferedwriter.write(String.format("spawn_count.%s: %d\n", ((EnumCreatureType) it_unimi_dsi_fastutil_objects_object2intmap_entry.getKey()).b(), it_unimi_dsi_fastutil_objects_object2intmap_entry.getIntValue()));
                  }
              }
 -
-+            synchronized (this.entitiesById) {
++            synchronized (this.entitiesById) { // Yatopia
              bufferedwriter.write(String.format("entities: %d\n", this.entitiesById.size()));
-+            }
++            } // Yatopia
              bufferedwriter.write(String.format("block_entities: %d\n", this.tileEntityListTick.size())); // Paper - remove unused list
              bufferedwriter.write(String.format("block_ticks: %d\n", this.getBlockTickList().a()));
              bufferedwriter.write(String.format("fluid_ticks: %d\n", this.getFluidTickList().a()));
-@@ -2856,7 +2892,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2856,7 +2891,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          Throwable throwable9 = null;
  
          try {
-+            synchronized (this.entitiesById) {
++            synchronized (this.entitiesById) { // Yatopia
              a((Writer) bufferedwriter3, (Iterable) this.entitiesById.values());
-+            }
++            } // Yatopia
          } catch (Throwable throwable10) {
              throwable9 = throwable10;
              throw throwable10;
-@@ -2949,7 +2987,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2949,7 +2986,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      }
  
      public Iterable<Entity> A() {
-+        synchronized (this.entitiesById) {
++        synchronized (this.entitiesById) { // Yatopia
          return Iterables.unmodifiableIterable(this.entitiesById.values());
-+        }
++        } // Yatopia
      }
  
      public String toString() {
-@@ -2982,11 +3022,13 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2982,11 +3021,13 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
      @VisibleForTesting
      public String F() {
-+        synchronized (this.entitiesById) {
++        synchronized (this.entitiesById) { // Yatopia
          return String.format("players: %s, entities: %d [%s], block_entities: %d [%s], block_ticks: %d, fluid_ticks: %d, chunk_source: %s", this.players.size(), this.entitiesById.size(), a(this.entitiesById.values(), (entity) -> { // CraftBukkit - decompile error
              return IRegistry.ENTITY_TYPE.getKey(entity.getEntityType());
          }), this.tileEntityListTick.size(), a(this.tileEntityListTick, (tileentity) -> { // CraftBukkit - decompile error
              return IRegistry.BLOCK_ENTITY_TYPE.getKey(tileentity.getTileType());
          }), this.getBlockTickList().a(), this.getFluidTickList().a(), this.P());
-+        }
++        } // Yatopia
      }
  
      private static <T> String a(Collection<T> collection, Function<T, MinecraftKey> function) {
@@ -414,66 +411,12 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f9dab2bb49cf5dc6bf52183d79a228e1
 +        asyncEntityDebug = getBoolean("settings.async-entity.debug", asyncEntityDebug);
 +    }
  }
-diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickManager.java
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityTask.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityTask.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..00521050220d9e7b65c4bf0b7082d7dd880d3105
+index 0000000000000000000000000000000000000000..ab6dda1fba4c93a056c779e4a2eafbb58e4dded1
 --- /dev/null
-+++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickManager.java
-@@ -0,0 +1,48 @@
-+package org.yatopiamc.yatopia.server.ticking;
-+
-+import net.minecraft.server.Entity;
-+import net.minecraft.server.WorldServer;
-+import java.util.ArrayList;
-+
-+
-+public class AsyncTickManager {
-+
-+    private WorldServer targetWorld = null;
-+
-+    private ArrayList<AsyncTickTask> tasks = new ArrayList<>();
-+
-+    private int current_task = 0;
-+
-+    private int max_task = 1;
-+
-+    public AsyncTickManager(WorldServer world) {
-+        targetWorld = world;
-+    }
-+
-+    public void prepareManager() {
-+        max_task = org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntitiestickTasksCount;
-+
-+        if (max_task <= 0) {
-+            max_task = 1;
-+        }
-+
-+        for (int i = 0; i < max_task; i++) {
-+            tasks.add(new AsyncTickTask(targetWorld));
-+        }
-+    }
-+
-+    public void queueEntity(Entity entity) {
-+        if (current_task >= max_task) {
-+            current_task = 0;
-+        }
-+
-+        tasks.get(current_task).addEntity(entity);
-+        current_task++;
-+    }
-+
-+    public void startTick() {
-+        for (AsyncTickTask task:tasks) {
-+            task.startTick();
-+        }
-+    }
-+}
-diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickTask.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickTask.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..db70a6ed701ff78b2a7d892a6c0ac6379b9fed79
---- /dev/null
-+++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickTask.java
-@@ -0,0 +1,75 @@
++++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityTask.java
+@@ -0,0 +1,68 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -483,26 +426,23 @@ index 0000000000000000000000000000000000000000..db70a6ed701ff78b2a7d892a6c0ac637
 +import java.util.function.Consumer;
 +import java.util.concurrent.CopyOnWriteArrayList;
 +
-+public class AsyncTickTask implements Runnable {
++public class AsyncEntityTask implements Runnable {
 +
 +    private CopyOnWriteArrayList<Entity> target_entities = new CopyOnWriteArrayList<>();
-+
 +    private WorldServer targetWorld = null;
 +
-+    public AsyncTickTask(WorldServer world) {
++    public AsyncEntityTask(WorldServer world) {
 +        targetWorld = world;
 +    }
 +
 +    public void addEntity(Entity entity){
-+        // synchronized (target_entities) {
-+            target_entities.add(entity);
-+        // }
++        target_entities.add(entity);
 +    }
 +
 +    public void startTick() {
-+        Thread a = new Thread(this);
-+        a.setName("AsyncEntityTask: (" + targetWorld.getWorld().getName()+")");
-+        a.start();
++        Thread thread = new Thread(this);
++        thread.setName("AsyncEntityTask: (" + targetWorld.getWorld().getName()+")");
++        thread.start();
 +    }
 +
 +
@@ -518,21 +458,17 @@ index 0000000000000000000000000000000000000000..db70a6ed701ff78b2a7d892a6c0ac637
 +        }
 +        synchronized(target_entities) {
 +            for (Entity entity:target_entities) {
-+                if (entity == null) {
-+                    continue;
-+                }
++                if (entity == null) continue;
 +                this.a((entity1) -> {
 +                    ++entity.ticksLived;
 +                    entity.tick();
 +                    entity.postTick();
 +                }, entity);
 +                if (entity.dead) {
-+                    // TODO: Queue to remove
-+                    targetWorld.removeEntity(entity);
++                    targetWorld.removeEntity(entity); // TODO: Queue to remove
 +                }
 +            }
-+            // Clear entities for next tick
-+            target_entities.clear();
++            target_entities.clear(); // Clear entities for next tick
 +        }
 +    }
 +
@@ -546,6 +482,57 @@ index 0000000000000000000000000000000000000000..db70a6ed701ff78b2a7d892a6c0ac637
 +            targetWorld.getServer().getPluginManager().callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerInternalException(msg, throwable)));
 +            entity.dead = true;
 +            return;
++        }
++    }
++}
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickManager.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..3eb4a019dc286a9e35cab6ce1b148903812527fb
+--- /dev/null
++++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncTickManager.java
+@@ -0,0 +1,45 @@
++package org.yatopiamc.yatopia.server.ticking;
++
++import net.minecraft.server.Entity;
++import net.minecraft.server.WorldServer;
++import java.util.ArrayList;
++
++
++public class AsyncTickManager {
++
++    private WorldServer targetWorld = null;
++    private ArrayList<AsyncEntityTask> tasks = new ArrayList<>();
++    private int current_task = 0;
++    private int max_task = 1;
++
++    public AsyncTickManager(WorldServer world) {
++        targetWorld = world;
++    }
++
++    public void prepareManager() {
++        max_task = org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntitiestickTasksCount;
++
++        if (max_task <= 0) {
++            max_task = 1;
++        }
++
++        for (int i = 0; i < max_task; i++) {
++            tasks.add(new AsyncEntityTask(targetWorld));
++        }
++    }
++
++    public void queueEntity(Entity entity) {
++        if (current_task >= max_task) {
++            current_task = 0;
++        }
++
++        tasks.get(current_task).addEntity(entity);
++        current_task++;
++    }
++
++    public void startTick() {
++        for (AsyncEntityTask task:tasks) {
++            task.startTick();
 +        }
 +    }
 +}
