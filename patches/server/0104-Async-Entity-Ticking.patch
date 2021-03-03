@@ -401,7 +401,7 @@ index 51e9c54cddf4b28ba3d3d892322c487774bdab70..c0d0e69711e0db496085cc07a6a92603
  
      public static void catchOp(String reason)
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f9dab2bb49cf5dc6bf52183d79a228e1573ddb1c 100644
+index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..6d291ce764214dbd8454f38cc72f367f5c9f19ad 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 @@ -304,4 +304,13 @@ public class YatopiaConfig {
@@ -410,7 +410,7 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f9dab2bb49cf5dc6bf52183d79a228e1
      }
 +
 +    public static boolean asyncEntities = false;
-+    public static int asyncEntitiestickTasksCount = 1;
++    public static int asyncEntitiesTickTasksCount = 1;
 +    public static boolean asyncEntityDebug = false;
 +    private static void asyncentityTicking() {
 +        asyncEntities = getBoolean("settings.async-entity.enabled", asyncEntities);
@@ -420,7 +420,7 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f9dab2bb49cf5dc6bf52183d79a228e1
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..85a55f7d3615c8322928a2cdaca89994c2bbc1b3
+index 0000000000000000000000000000000000000000..8904e49a487cc85bb73f7ba19e38073aa675e44f
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 @@ -0,0 +1,41 @@
@@ -443,7 +443,7 @@ index 0000000000000000000000000000000000000000..85a55f7d3615c8322928a2cdaca89994
 +    }
 +
 +    public void prepareManager() {
-+        max_task = org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntitiestickTasksCount;
++        max_task = org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntitiesTickTasksCount;
 +
 +        if (max_task <= 0) max_task = 1;
 +
