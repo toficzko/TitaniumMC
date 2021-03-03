@@ -401,7 +401,7 @@ index 51e9c54cddf4b28ba3d3d892322c487774bdab70..c0d0e69711e0db496085cc07a6a92603
  
      public static void catchOp(String reason)
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..6d291ce764214dbd8454f38cc72f367f5c9f19ad 100644
+index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..19ef3cd75c68f4057dabf93e43b960ae0f2d4ba0 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 @@ -304,4 +304,13 @@ public class YatopiaConfig {
@@ -414,7 +414,7 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..6d291ce764214dbd8454f38cc72f367f
 +    public static boolean asyncEntityDebug = false;
 +    private static void asyncentityTicking() {
 +        asyncEntities = getBoolean("settings.async-entity.enabled", asyncEntities);
-+        asyncEntitiestickTasksCount = getInt("settings.async-entity.count-task", asyncEntitiestickTasksCount);
++        asyncEntitiesTickTasksCount = getInt("settings.async-entity.count-task", asyncEntitiesTickTasksCount);
 +        asyncEntityDebug = getBoolean("settings.async-entity.debug", asyncEntityDebug);
 +    }
  }
