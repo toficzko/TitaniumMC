@@ -1,0 +1,64 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Wed, 3 Mar 2021 12:12:24 -0500
+Subject: [PATCH] Mark some deprecated items as deprecated
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/event/player/PlayerInitialSpawnEvent.java b/src/main/java/com/destroystokyo/paper/event/player/PlayerInitialSpawnEvent.java
+index 8b1fdb9d2869d4c1862d557c91bf8a1d8c537507..626e97bbcaa19d55475a0fc8770412d437af2733 100644
+--- a/src/main/java/com/destroystokyo/paper/event/player/PlayerInitialSpawnEvent.java
++++ b/src/main/java/com/destroystokyo/paper/event/player/PlayerInitialSpawnEvent.java
+@@ -8,6 +8,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+ /**
+  * @deprecated Use {@link PlayerSpawnLocationEvent}, Duplicate API
+  */
++@Deprecated
+ public class PlayerInitialSpawnEvent extends PlayerSpawnLocationEvent {
+ 
+     public PlayerInitialSpawnEvent(@NotNull Player who, @NotNull Location spawnLocation) {
+diff --git a/src/main/java/org/bukkit/entity/LingeringPotion.java b/src/main/java/org/bukkit/entity/LingeringPotion.java
+index f124b35ec76e6cb6a1a0dc464005087043c3efd0..bafef53c1d449135f1300c8c8fbb06f482ba67e1 100644
+--- a/src/main/java/org/bukkit/entity/LingeringPotion.java
++++ b/src/main/java/org/bukkit/entity/LingeringPotion.java
+@@ -5,4 +5,5 @@ package org.bukkit.entity;
+  *
+  * @deprecated lingering status depends on only on the potion item.
+  */
++@Deprecated
+ public interface LingeringPotion extends ThrownPotion { }
+diff --git a/src/main/java/org/bukkit/event/enchantment/PrepareItemEnchantEvent.java b/src/main/java/org/bukkit/event/enchantment/PrepareItemEnchantEvent.java
+index 2ff1b1308571d8f8056d3359e8a8ba4a589c3726..fc2120e03737f5882d6ae916db93fdcf4939b2ba 100644
+--- a/src/main/java/org/bukkit/event/enchantment/PrepareItemEnchantEvent.java
++++ b/src/main/java/org/bukkit/event/enchantment/PrepareItemEnchantEvent.java
+@@ -69,6 +69,7 @@ public class PrepareItemEnchantEvent extends InventoryEvent implements Cancellab
+      * @deprecated Use {@link #getOffers()} instead of this method
+      */
+     @NotNull
++    @Deprecated
+     public int[] getExpLevelCostsOffered() {
+         int[] levelOffers = new int[offers.length];
+         for (int i = 0; i < offers.length; i++) {
+diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
+index 9243c9fc2f1dd0ff0a8b7d07387b2b8d6f5f63d0..b9bb2745ee6f6c51fd8ab43a772ec70f426de14c 100644
+--- a/src/main/java/org/bukkit/inventory/ItemStack.java
++++ b/src/main/java/org/bukkit/inventory/ItemStack.java
+@@ -81,6 +81,7 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
+      * @param damage durability / damage
+      * @deprecated see {@link #setDurability(short)}
+      */
++    @Deprecated
+     public ItemStack(@NotNull final Material type, final int amount, final short damage) {
+         this(type, amount, damage, null);
+     }
+diff --git a/src/main/java/org/bukkit/material/Step.java b/src/main/java/org/bukkit/material/Step.java
+index 9f502e7ee05d0512e190a1722cc112ece068c4e2..ea94222120ddd4e692b67cf48b029af9ed0e5835 100644
+--- a/src/main/java/org/bukkit/material/Step.java
++++ b/src/main/java/org/bukkit/material/Step.java
+@@ -79,6 +79,7 @@ public class Step extends TexturedMaterial {
+      * @deprecated Magic value
+      */
+     @Override
++    @Deprecated
+     protected int getTextureIndex() {
+         return getData() & 0x7;
+     }

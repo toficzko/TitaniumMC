@@ -91,6 +91,7 @@ This is an overview over all patches that are currently used.
 | api |  Anvil API      | William Blake Galbreath |  |
 | server |  Apply display names from item forms of entities to entities      | jmp |  |
 | server |  Arrows should not reset despawn counter      | William Blake Galbreath |  |
+| server |  Async Entity Ticking      | Simon Gardling |  |
 | server |  Attempt to recalculate regionfile header if it is corrupt      | Spottedleaf |  |
 | server |  Avoid double I/O operation on load player file      | ㄗㄠˋ ㄑㄧˊ |  |
 | server |  Barrels and enderchests 6 rows      | William Blake Galbreath |  |
@@ -241,6 +242,7 @@ This is an overview over all patches that are currently used.
 | server |  Make lava flow speed configurable      | William Blake Galbreath |  |
 | server |  Make sure inlined getChunkAt has inlined logic for loaded      | Spottedleaf |  |
 | server |  Manually inline methods in BlockPosition      | Spottedleaf |  |
+| api |  Mark some deprecated items as deprecated      | Simon Gardling |  |
 | server |  Mending mends most damages equipment first      | William Blake Galbreath |  |
 | server |  Modify POM      | YatopiaMC |  |
 | api |  Modify POM      | YatopiaMC |  |
@@ -422,6 +424,7 @@ This is an overview over all patches that are currently used.
 | server |  playerchunkloading modifications      | Simon Gardling |  |
 | server |  print Clientbrand on login      | Simon Gardling |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
+| api |  remove sync and async checks      | Simon Gardling |  |
 | server |  remove world size checks      | Simon Gardling |  |
 | server |  replace Math.sin and Math.cos with MathHelper      | Simon Gardling |  |
 | server |  tic-tacs: unblocking      | Gegy |  |

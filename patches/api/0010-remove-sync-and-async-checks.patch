@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Tue, 9 Feb 2021 13:11:34 -0500
+Subject: [PATCH] remove sync and async checks
+
+
+diff --git a/src/main/java/org/bukkit/plugin/SimplePluginManager.java b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
+index 02c20a33161094b08dc2ae9353c0504561b0b452..97a66da45b0ec062146f704bcc90dd60aea17f45 100644
+--- a/src/main/java/org/bukkit/plugin/SimplePluginManager.java
++++ b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
+@@ -593,11 +593,13 @@ public final class SimplePluginManager implements PluginManager {
+     @Override
+     public void callEvent(@NotNull Event event) {
+         // Paper - replace callEvent by merging to below method
++        /*
+         if (event.isAsynchronous() && server.isPrimaryThread()) {
+             throw new IllegalStateException(event.getEventName() + " may only be triggered asynchronously.");
+         } else if (!event.isAsynchronous() && !server.isPrimaryThread() && !server.isStopping() ) {
+             throw new IllegalStateException(event.getEventName() + " may only be triggered synchronously.");
+         }
++        */
+ 
+         HandlerList handlers = event.getHandlers();
+         RegisteredListener[] listeners = handlers.getRegisteredListeners();
