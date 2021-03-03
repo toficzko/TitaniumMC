@@ -152,7 +152,7 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6
          }
      }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..61aefe5fbf42ef00304f889652e9c3247a5cc0af 100644
+index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f8620c4246bf 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -239,9 +239,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..61aefe5fbf42ef00304f889652e9c324
 +                    TimingHistory.activatedEntityTicks++;
 +                    entity.tick();
 +                    entity.postTick();
-+                } else { 
++                } else {
 +                    entity.inactiveTick(); // Paper - EAR 2
-+                } 
++                }
                  gameprofilerfiller.exit();
 +                }
 +                // Yatopia end
