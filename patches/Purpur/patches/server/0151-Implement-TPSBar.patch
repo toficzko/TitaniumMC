@@ -37,10 +37,10 @@ index cd01859f3fe24d2eb9554e663c1a092038e93f02..e620d3596fdc2ca64485b451513bfae4
          this.isRestarting = isRestarting;
          this.hasLoggedStop = true; // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 11a8d39daa81c3fd5ce1cc62605eaa81578f47e9..ea44ea919b1ec8f73889f3498050854ae6b27b66 100644
+index c7bc6a65e1289fa601d4f6d49390ad87d75bbf78..43df0e6f929f79625faecc7ab896f86dbd994d4c 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
-@@ -517,6 +517,8 @@ public abstract class PlayerList {
+@@ -518,6 +518,8 @@ public abstract class PlayerList {
          if (entityplayer.didPlayerJoinEvent) cserver.getPluginManager().callEvent(playerQuitEvent); // Paper - if we disconnected before join ever fired, don't fire quit
          entityplayer.getBukkitEntity().disconnect(playerQuitEvent.getQuitMessage());
  

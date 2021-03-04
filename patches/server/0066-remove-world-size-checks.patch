@@ -92,10 +92,10 @@ index 11ad785b2408ba94f9d80c4af3a81e0c0e7e9a64..42ffb688d933a33e484a816390b91abf
              if (i > 0L) {
                  worldborder.transitionSizeBetween(d1, d0, i);
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index 72e093bceb7cbf5b55271bf09d04ee73b79e5d45..23d0241afb64d51ac9e2f66c283cfbd50de25ed3 100644
+index dfb334bf0a9f491ebe5221a891c33f8d2ffbd195..c00feff787ee62bc6d460a8db6e529c725d94269 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -558,7 +558,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+@@ -560,7 +560,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
  
      @Override
      public int au() {

@@ -1640,10 +1640,10 @@ index 3ae51a3a5d863d58fde73934ed100fbd62e2b279..0638477cdeb8b024b9a9b0376ea78202
                          }
                      }
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 2aafb0295e37eae3510fd5c5105ad53fa6f2690c..22205d7b3302076942a3cd45ddee82c3027a017b 100644
+index 193a39ba0c07b0f438aba6b3a00af51fa93bd53d..3a43b2d0e30ba85ddf552d1409393958b53e24f2 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
-@@ -189,7 +189,7 @@ public abstract class PlayerList {
+@@ -190,7 +190,7 @@ public abstract class PlayerList {
          boolean flag1 = gamerules.getBoolean(GameRules.REDUCED_DEBUG_INFO);
  
          // Spigot - view distance
@@ -1652,7 +1652,7 @@ index 2aafb0295e37eae3510fd5c5105ad53fa6f2690c..22205d7b3302076942a3cd45ddee82c3
          entityplayer.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
          playerconnection.sendPacket(new PacketPlayOutCustomPayload(PacketPlayOutCustomPayload.a, (new PacketDataSerializer(Unpooled.buffer())).a(this.getServer().getServerModName())));
          playerconnection.sendPacket(new PacketPlayOutServerDifficulty(worlddata.getDifficulty(), worlddata.isDifficultyLocked()));
-@@ -861,7 +861,7 @@ public abstract class PlayerList {
+@@ -862,7 +862,7 @@ public abstract class PlayerList {
          // CraftBukkit start
          WorldData worlddata = worldserver1.getWorldData();
          entityplayer1.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver1.getDimensionManager(), worldserver1.getDimensionKey(), BiomeManager.a(worldserver1.getSeed()), entityplayer1.playerInteractManager.getGameMode(), entityplayer1.playerInteractManager.c(), worldserver1.isDebugWorld(), worldserver1.isFlatWorld(), flag));
@@ -1661,7 +1661,7 @@ index 2aafb0295e37eae3510fd5c5105ad53fa6f2690c..22205d7b3302076942a3cd45ddee82c3
          entityplayer1.spawnIn(worldserver1);
          entityplayer1.dead = false;
          entityplayer1.playerConnection.teleport(new Location(worldserver1.getWorld(), entityplayer1.locX(), entityplayer1.locY(), entityplayer1.locZ(), entityplayer1.yaw, entityplayer1.pitch));
-@@ -1130,7 +1130,7 @@ public abstract class PlayerList {
+@@ -1131,7 +1131,7 @@ public abstract class PlayerList {
              // Really shouldn't happen...
              backingSet = world != null ? world.players.toArray() : players.toArray();
          } else {

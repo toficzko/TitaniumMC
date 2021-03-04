@@ -55,10 +55,10 @@ index 90b397da12c220c8e704fc558b9586e5c001415f..b92ac6088007c73815f9b55ff7ad0543
          Throwable throwable = null;
  
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index ad25b643a350162ac4fc93b94f00ae1dd8f7e19d..240caa50c4ad55a82d18ecde2896e104c11443ad 100644
+index ee14125f5c07738a8317a5a785faa4d6ffedbf66..5d5834b0b5f96d00a0ad1dde73e34a5b9834e2b9 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
-@@ -651,6 +651,7 @@ public abstract class PlayerList {
+@@ -652,6 +652,7 @@ public abstract class PlayerList {
          GameProfileBanEntry gameprofilebanentry;
          if (getProfileBans().isBanned(gameprofile) && (gameprofilebanentry = getProfileBans().get(gameprofile)) != null) {
              // Paper end
@@ -66,7 +66,7 @@ index ad25b643a350162ac4fc93b94f00ae1dd8f7e19d..240caa50c4ad55a82d18ecde2896e104
  
              chatmessage = new ChatMessage("multiplayer.disconnect.banned.reason", new Object[]{gameprofilebanentry.getReason()});
              if (gameprofilebanentry.getExpires() != null) {
-@@ -658,7 +659,11 @@ public abstract class PlayerList {
+@@ -659,7 +660,11 @@ public abstract class PlayerList {
              }
  
              // return chatmessage;
