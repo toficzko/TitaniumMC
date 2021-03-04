@@ -5,7 +5,7 @@ Subject: [PATCH] Option for simpler Villagers
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityVillager.java b/src/main/java/net/minecraft/server/EntityVillager.java
-index 39e49b50140266fc36ba821eb1a77cda83fe884f..157ba2fd6cd0b56a0edbe8fe3604a7cb21679aaa 100644
+index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a7326853444 100644
 --- a/src/main/java/net/minecraft/server/EntityVillager.java
 +++ b/src/main/java/net/minecraft/server/EntityVillager.java
 @@ -31,6 +31,7 @@ import org.bukkit.event.entity.VillagerReplenishTradeEvent;
@@ -78,10 +78,10 @@ index 39e49b50140266fc36ba821eb1a77cda83fe884f..157ba2fd6cd0b56a0edbe8fe3604a7cb
          BehaviorController<EntityVillager> behaviorcontroller = this.cK().a(dynamic);
  
          this.a(behaviorcontroller);
-@@ -213,11 +253,39 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -212,10 +252,39 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+     }
      // Purpur end
  
-     private int behaviorTick = 0;
 +    // Yatopia start
 +    private VillagerProfession getRandomProfession() {
 +        int type = random.nextInt(13);
@@ -103,7 +103,7 @@ index 39e49b50140266fc36ba821eb1a77cda83fe884f..157ba2fd6cd0b56a0edbe8fe3604a7cb
 +        }
 +    }
 +    // Yatopia end
- 
++
      @Override
      protected void mobTick() { mobTick(false); }
      protected void mobTick(boolean inactive) {
@@ -118,7 +118,7 @@ index 39e49b50140266fc36ba821eb1a77cda83fe884f..157ba2fd6cd0b56a0edbe8fe3604a7cb
          // Purpur start
          if (world.purpurConfig.villagerLobotomizeEnabled) inactive = inactive || isLobotomized();
          boolean tick = (world.getTime() + brainTickOffset) % world.purpurConfig.villagerBrainTicks == 0;
-@@ -344,6 +412,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -338,6 +407,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
          this.fl();
      }
  
@@ -126,7 +126,7 @@ index 39e49b50140266fc36ba821eb1a77cda83fe884f..157ba2fd6cd0b56a0edbe8fe3604a7cb
      private void fl() {
          Iterator iterator = this.getOffers().iterator();
  
-@@ -418,6 +487,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -412,6 +482,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
          return this.fn() && this.fm();
      }
  
@@ -134,7 +134,7 @@ index 39e49b50140266fc36ba821eb1a77cda83fe884f..157ba2fd6cd0b56a0edbe8fe3604a7cb
      private void fo() {
          int i = 2 - this.bD;
  
-@@ -650,6 +720,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -644,6 +715,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
      }
  
      private void a(Entity entity) {
@@ -142,7 +142,7 @@ index 39e49b50140266fc36ba821eb1a77cda83fe884f..157ba2fd6cd0b56a0edbe8fe3604a7cb
          if (this.world instanceof WorldServer) {
              Optional<List<EntityLiving>> optional = this.bg.getMemory(MemoryModuleType.VISIBLE_MOBS);
  
-@@ -666,6 +737,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -660,6 +732,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
      }
  
      public void a(MemoryModuleType<GlobalPos> memorymoduletype) {

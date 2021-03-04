@@ -159,7 +159,6 @@ This is an overview over all patches that are currently used.
 | server |  Don&#39;t trigger Lootable Refresh for non player interaction      | Aikar |  |
 | server |  Don&#39;t wake up entities when damage event is cancelled      | Phoenix616 |  |
 | server |  Dont send useless entity packets      | William Blake Galbreath |  |
-| server |  Dynamic activation range      | Paul Sauve |  |
 | server |  EMC - Configurable disable give dropping      | Aikar |  |
 | server |  EMC - MonsterEggSpawnEvent      | Aikar |  |
 | api |  EMC - MonsterEggSpawnEvent      | Aikar |  |

@@ -131,10 +131,10 @@ index 780474397acb4d0e7ecb4540e1a2db5721e59d3d..1962c14af5cc4ec4c66fa7c354aff98c
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index a79e88ab1999c040bf957e5afe7755874a76711d..26811b19851bf9dd091fcc58e3ec91b2f794446b 100644
+index 6cec63f9548802140c29bd655affed00f8659bed..6453c12adda4fd8d38caccd6149c82fac06418db 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -1540,6 +1540,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -1537,6 +1537,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
      }
  
      public void f(double d0, double d1, double d2) {
@@ -142,7 +142,7 @@ index a79e88ab1999c040bf957e5afe7755874a76711d..26811b19851bf9dd091fcc58e3ec91b2
          double d3 = MathHelper.a(d0, -3.0E7D, 3.0E7D);
          double d4 = MathHelper.a(d2, -3.0E7D, 3.0E7D);
  
-@@ -1547,6 +1548,11 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -1544,6 +1545,11 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
          this.lastY = d1;
          this.lastZ = d4;
          this.setPosition(d3, d1, d4);
@@ -154,7 +154,7 @@ index a79e88ab1999c040bf957e5afe7755874a76711d..26811b19851bf9dd091fcc58e3ec91b2
          if (valid) world.getChunkAt((int) Math.floor(this.locX()) >> 4, (int) Math.floor(this.locZ()) >> 4); // CraftBukkit // Paper
      }
  
-@@ -2914,10 +2920,17 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2911,10 +2917,17 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
                  return null;
              } else {
                  WorldBorder worldborder = worldserver.getWorldBorder();
