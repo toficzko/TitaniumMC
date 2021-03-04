@@ -152,7 +152,7 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6
          }
      }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f8620c4246bf 100644
+index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..c67df29fc5961412f6b387d669266c7d847de838 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -209,16 +209,15 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
              this.tickingEntities = false;
              // Paper start
              for (java.lang.Runnable run : this.afterEntityTickingTasks) {
-@@ -1404,7 +1415,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
-             entity.lastYaw = entity.yaw;
+@@ -1405,6 +1416,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              entity.lastPitch = entity.pitch;
              if (entity.inChunk) {
--                ++entity.ticksLived;
+                 ++entity.ticksLived;
 +                // Yatopia start - Async entity ticking
                  GameProfilerFiller gameprofilerfiller = this.getMethodProfiler();
  
                  // Airplane start - create debug lambda once, todo do we even WANT the method profiler?
-@@ -1416,12 +1427,24 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1416,12 +1428,24 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                  gameprofilerfiller.a(entity.getEntityType().getEntityName);
                  // Airplane end
                  gameprofilerfiller.c("tickNonPassenger");
@@ -227,9 +226,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
 -                entity.tick();
 -                entity.postTick(); // CraftBukkit
 -                } else { entity.inactiveTick(); } // Paper - EAR 2
-+                ++entity.ticksLived;
 +                if (org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities && !(entity instanceof EntityHuman)) {
 +                    if (isActive) {
++                        TimingHistory.activatedEntityTicks++;
 +                        this.asyncentitymanager.queueEntity(entity);
 +                    } else {
 +                        this.asyncentitymanager.queueEntityInactive(entity);
@@ -248,7 +247,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
              }
  
              this.chunkCheck(entity);
-@@ -1625,6 +1648,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1625,6 +1649,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      public List<Entity> a(@Nullable EntityTypes<?> entitytypes, Predicate<? super Entity> predicate) {
          List<Entity> list = Lists.newArrayList();
          ChunkProviderServer chunkproviderserver = this.getChunkProvider();
@@ -256,7 +255,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
          ObjectIterator objectiterator = this.entitiesById.values().iterator();
  
          while (objectiterator.hasNext()) {
-@@ -1634,12 +1658,14 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1634,12 +1659,14 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                  list.add(entity);
              }
          }
@@ -271,7 +270,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
          ObjectIterator objectiterator = this.entitiesById.values().iterator();
  
          while (objectiterator.hasNext()) {
-@@ -1649,6 +1675,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1649,6 +1676,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                  list.add((EntityEnderDragon) entity);
              }
          }
@@ -279,7 +278,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
  
          return list;
      }
-@@ -1915,8 +1942,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1915,8 +1943,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                          continue;
                      }
                      // Paper end
@@ -290,7 +289,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
                      this.unregisterEntity(entity);
  
                      if (entity.dead) iterator.remove(); // Paper - don't save dead entities during unload
-@@ -1934,12 +1962,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1934,12 +1963,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
      public void unregisterEntity(Entity entity) {
          org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
@@ -307,7 +306,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
              return;
          }
          if (!entity.valid) {
-@@ -2108,6 +2140,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2108,6 +2141,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          org.spigotmc.AsyncCatcher.catchOp("entity register"); // Spigot
          // Paper start - don't double enqueue entity registration
          //noinspection ObjectEquality
@@ -315,7 +314,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
          if (this.entitiesById.get(entity.getId()) == entity) {
              LOGGER.error(entity + " was already registered!");
              new Throwable().printStackTrace();
-@@ -2122,6 +2155,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2122,6 +2156,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          } else {
              entity.isQueuedForRegister = false; // Paper
              this.entitiesById.put(entity.getId(), entity);
@@ -323,7 +322,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
              this.entitiesForIteration.add(entity); // Tuinity
              if (entity instanceof EntityEnderDragon) {
                  EntityComplexPart[] aentitycomplexpart = ((EntityEnderDragon) entity).eJ();
-@@ -2134,6 +2168,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2134,6 +2169,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                      this.entitiesForIteration.add(entitycomplexpart); // Tuinity
                  }
              }
@@ -331,7 +330,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
  
              if (DEBUG_ENTITIES) {
                  entity.addedToWorldStack = getAddToWorldStackTrace(entity);
-@@ -2177,18 +2212,23 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2177,18 +2213,23 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              entity.shouldBeRemoved = false; // Paper - shouldn't be removed after being re-added
              new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
          }
@@ -356,7 +355,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
      }
  
      private void removeEntityFromChunk(Entity entity) {
-@@ -2483,7 +2523,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2483,7 +2524,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      @Nullable
      @Override
      public Entity getEntity(int i) {
@@ -366,7 +365,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
      }
  
      @Nullable
-@@ -2776,8 +2818,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2776,8 +2819,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                      bufferedwriter.write(String.format("spawn_count.%s: %d\n", ((EnumCreatureType) it_unimi_dsi_fastutil_objects_object2intmap_entry.getKey()).b(), it_unimi_dsi_fastutil_objects_object2intmap_entry.getIntValue()));
                  }
              }
@@ -377,7 +376,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
              bufferedwriter.write(String.format("block_entities: %d\n", this.tileEntityListTick.size())); // Paper - remove unused list
              bufferedwriter.write(String.format("block_ticks: %d\n", this.getBlockTickList().a()));
              bufferedwriter.write(String.format("fluid_ticks: %d\n", this.getFluidTickList().a()));
-@@ -2856,7 +2899,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2856,7 +2900,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          Throwable throwable9 = null;
  
          try {
@@ -387,7 +386,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
          } catch (Throwable throwable10) {
              throwable9 = throwable10;
              throw throwable10;
-@@ -2949,7 +2994,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2949,7 +2995,9 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      }
  
      public Iterable<Entity> A() {
@@ -397,7 +396,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..91028ff599cf78402ad542731687f862
      }
  
      public String toString() {
-@@ -2982,11 +3029,13 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2982,11 +3030,13 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
      @VisibleForTesting
      public String F() {
@@ -499,16 +498,16 @@ index 0000000000000000000000000000000000000000..b435f60d23c1a81698a08836b235067c
 +}
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..26b3a1ccd5cf249e47136c79527caa2b6b2564a5
+index 0000000000000000000000000000000000000000..7abfaaad437ef9571e00105a184160519821d5cc
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,56 @@
+@@ -0,0 +1,60 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
 +import net.minecraft.server.WorldServer;
 +import java.util.ArrayList;
-+
++import java.util.concurrent.CompletableFuture;
 +
 +public class AsyncEntityManager {
 +
@@ -551,12 +550,16 @@ index 0000000000000000000000000000000000000000..26b3a1ccd5cf249e47136c79527caa2b
 +    }
 +
 +    public void startTick() {
++        activeTasks.stream().forEach(task -> CompletableFuture.runAsync(() -> task.startTick()));
++        inactiveTasks.stream().forEach(task -> CompletableFuture.runAsync(() -> task.startTick()));
++        /*
 +        for (AsyncEntityTickTask task: activeTasks) {
 +            task.startTick();
 +        }
 +        for (AsyncEntityInactiveTickTask task: inactiveTasks) {
 +            task.startTick();
 +        }
++        */
 +    }
 +}
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityTickTask.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityTickTask.java
