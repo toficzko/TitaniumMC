@@ -151,26 +151,6 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6
              }
          }
      }
-diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 967561f869d681b38f9e6f7065e554b9700be282..a96e79294109553125d7aac14888be72def589e4 100644
---- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
-+++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -2087,6 +2087,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
-             // Airplane end
-             com.tuinity.tuinity.util.maplist.IteratorSafeOrderedReferenceSet.Iterator<Chunk> iterator = this.world.getChunkProvider().entityTickingChunks.iterator();
-             try {
-+            synchronized (this.trackedEntities) {
-             while (iterator.hasNext()) {
-                 Chunk chunk = iterator.next();
-                 Entity[] entities = chunk.entities.getRawData();
-@@ -2099,6 +2100,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
-                     }
-                 }
-             }
-+            }
-             } finally {
-                 iterator.finishedIterating();
-             }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
 index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12f67a82e5 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java

@@ -305,10 +305,10 @@ index f583443f9a938b9ad5d84d35f2d7508e71af7ade..b0751ba3489fde834fde74bdd29460b9
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index a750a46d398b5519b29394fcc58543ab125b5e7a..c77747c2e80fc5ab3adfce3585260aa2a64e6e4c 100644
+index 90dfbc0c0f9a81be4ace4c64ef6524433667cd8f..2642916db0901b9b1e3aac381ab7ee80d3a36b37 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -58,6 +58,18 @@ import org.spigotmc.AsyncCatcher;
+@@ -57,6 +57,18 @@ import org.spigotmc.AsyncCatcher;
  
  public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
@@ -327,7 +327,7 @@ index a750a46d398b5519b29394fcc58543ab125b5e7a..c77747c2e80fc5ab3adfce3585260aa2
      private static final Logger LOGGER = LogManager.getLogger();
      public static final int GOLDEN_TICKET = 33 + ChunkStatus.b();
      // Paper start - faster copying
-@@ -1258,7 +1270,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1249,7 +1261,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                  return;
              }
              // Paper end

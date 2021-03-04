@@ -1099,10 +1099,10 @@ index 9907047028b754fe0e314a7d5c5238ce4286c373..83008998a701c19f95bfc0199490cf59
              // Tuinity start - optimise culling shape cache for light
              if (this.a != null && this.a.getCullingShapeCache() != null) {
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 779a726b564dbc85e3f548ee15cdc0c505605c61..fbaf79132c4dc3a5610fcf7944ce932407344d16 100644
+index 91cd340c5ee0604dcbf9b5bdac31597c15efe53f..0de899fad70f2b00d807646fcc9f5a521f879a04 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
-@@ -814,6 +814,11 @@ public class Chunk implements IChunkAccess {
+@@ -794,6 +794,11 @@ public class Chunk implements IChunkAccess {
          if (!this.entitySlices[i].remove(entity)) { // Tuinity - optimise hard colliding entities // Tuinity - entities by class // Tuinity
              return;
          }
@@ -1114,7 +1114,7 @@ index 779a726b564dbc85e3f548ee15cdc0c505605c61..fbaf79132c4dc3a5610fcf7944ce9324
          if (entity instanceof EntityItem) {
              itemCounts[i]--;
          } else if (entity instanceof IInventory) {
-@@ -823,6 +828,11 @@ public class Chunk implements IChunkAccess {
+@@ -803,6 +808,11 @@ public class Chunk implements IChunkAccess {
          this.markDirty(); // Paper
          // Paper end
          this.entities.remove(entity); // Paper
