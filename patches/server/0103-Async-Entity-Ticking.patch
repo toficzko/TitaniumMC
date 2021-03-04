@@ -6,10 +6,10 @@ Subject: [PATCH] Async Entity Ticking
 Based off of: https://github.com/PaperMC/Paper/pull/2671 by Bloodrayne1995
 
 diff --git a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
-index cdda74564ced196ae577a64782236c2bfe36e433..05725e36e44bf8c103263aca58ec80384e2c6ee3 100644
+index cdda74564ced196ae577a64782236c2bfe36e433..006e2a3384d29d50f6bd3d190ec2ffb902a8757d 100644
 --- a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
 +++ b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
-@@ -27,10 +27,13 @@ public final class EntityList implements Iterable<Entity> {
+@@ -27,15 +27,19 @@ public final class EntityList implements Iterable<Entity> {
      }
  
      public boolean contains(final Entity entity) {
@@ -23,12 +23,18 @@ index cdda74564ced196ae577a64782236c2bfe36e433..05725e36e44bf8c103263aca58ec8038
          final int index = this.entityToIndex.remove(entity.getId());
          if (index == Integer.MIN_VALUE) {
              return false;
-@@ -45,12 +48,13 @@ public final class EntityList implements Iterable<Entity> {
+         }
+ 
++        synchronized (this.entities) {
+         // move the entity at the end to this index
+         final int endIndex = --this.count;
+         final Entity end = this.entities[endIndex];
+@@ -45,18 +49,20 @@ public final class EntityList implements Iterable<Entity> {
          }
          this.entities[index] = end;
          this.entities[endIndex] = null;
 -
-+        } // Yatopia
++        }} // Yatopia
          return true;
      }
  
@@ -38,25 +44,53 @@ index cdda74564ced196ae577a64782236c2bfe36e433..05725e36e44bf8c103263aca58ec8038
          final int currIndex = this.entityToIndex.putIfAbsent(entity.getId(), count);
  
          if (currIndex != Integer.MIN_VALUE) {
-@@ -66,7 +70,7 @@ public final class EntityList implements Iterable<Entity> {
+             return false; // already in this list
+         }
+ 
++        synchronized (this.entities) {
+         Entity[] list = this.entities;
+ 
+         if (list.length == count) {
+@@ -66,7 +72,7 @@ public final class EntityList implements Iterable<Entity> {
  
          list[count] = entity;
          this.count = count + 1;
 -
-+        } // Yatopia
++        }} // Yatopia
          return true;
      }
  
-@@ -86,7 +90,9 @@ public final class EntityList implements Iterable<Entity> {
+@@ -74,20 +80,30 @@ public final class EntityList implements Iterable<Entity> {
+         if (index < 0 || index >= this.count) {
+             throw new IndexOutOfBoundsException("Index: " + index + " is out of bounds, size: " + this.count);
+         }
++        synchronized (this.entities) {
+         return this.entities[index];
++        }
+     }
+ 
+     public Entity getUnchecked(final int index) {
++        synchronized (this.entities) {
+         return this.entities[index];
++        }
+     }
+ 
+     public Entity[] getRawData() {
++        synchronized (this.entities) {
+         return this.entities;
++        }
      }
  
      public void clear() {
 +        synchronized (this.entityToIndex) { // Yatopia
          this.entityToIndex.clear();
 +        } // Yatopia
++        synchronized (this.entities) {
          Arrays.fill(this.entities, 0, this.count, null);
++        }
          this.count = 0;
      }
+ 
 diff --git a/src/main/java/com/tuinity/tuinity/util/TickThread.java b/src/main/java/com/tuinity/tuinity/util/TickThread.java
 index 08ed243259f052165c6f75aed1d1d65a14219715..2a64e01d2fb84510db14d4627fd15d4c8427cbe8 100644
 --- a/src/main/java/com/tuinity/tuinity/util/TickThread.java
