@@ -6,7 +6,7 @@ Subject: [PATCH] Async Entity Ticking
 Based off of: https://github.com/PaperMC/Paper/pull/2671 by Bloodrayne1995
 
 diff --git a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
-index cdda74564ced196ae577a64782236c2bfe36e433..006e2a3384d29d50f6bd3d190ec2ffb902a8757d 100644
+index cdda74564ced196ae577a64782236c2bfe36e433..798a6c3587bd948bacac8feaa5efeb1b9a5a4d46 100644
 --- a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
 +++ b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
 @@ -27,15 +27,19 @@ public final class EntityList implements Iterable<Entity> {
@@ -29,7 +29,7 @@ index cdda74564ced196ae577a64782236c2bfe36e433..006e2a3384d29d50f6bd3d190ec2ffb9
          // move the entity at the end to this index
          final int endIndex = --this.count;
          final Entity end = this.entities[endIndex];
-@@ -45,18 +49,20 @@ public final class EntityList implements Iterable<Entity> {
+@@ -45,20 +49,23 @@ public final class EntityList implements Iterable<Entity> {
          }
          this.entities[index] = end;
          this.entities[endIndex] = null;
@@ -47,20 +47,24 @@ index cdda74564ced196ae577a64782236c2bfe36e433..006e2a3384d29d50f6bd3d190ec2ffb9
              return false; // already in this list
          }
  
+-        Entity[] list = this.entities;
 +        synchronized (this.entities) {
-         Entity[] list = this.entities;
  
++        Entity[] list = this.entities;
++        synchronized (list) {
          if (list.length == count) {
-@@ -66,7 +72,7 @@ public final class EntityList implements Iterable<Entity> {
+             // resize required
+             list = this.entities = Arrays.copyOf(list, (int)Math.max(4L, count * 2L)); // overflow results in negative
+@@ -66,7 +73,7 @@ public final class EntityList implements Iterable<Entity> {
  
          list[count] = entity;
          this.count = count + 1;
 -
-+        }} // Yatopia
++        }}} // Yatopia
          return true;
      }
  
-@@ -74,20 +80,30 @@ public final class EntityList implements Iterable<Entity> {
+@@ -74,20 +81,30 @@ public final class EntityList implements Iterable<Entity> {
          if (index < 0 || index >= this.count) {
              throw new IndexOutOfBoundsException("Index: " + index + " is out of bounds, size: " + this.count);
          }
