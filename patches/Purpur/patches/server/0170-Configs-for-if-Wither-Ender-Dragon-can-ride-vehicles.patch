@@ -5,7 +5,7 @@ Subject: [PATCH] Configs for if Wither/Ender Dragon can ride vehicles
 
 
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index e5260633de3a6ffd8236c5baecddc612821c8910..e0a508a596eaf4438a84c81f8e684e840cb076fe 100644
+index 9718812a3b5b4fe68c55390a52f7686cd78e44cd..a96b74b99cac14ef83066bafc514d2ff40dc8b4e 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -2261,7 +2261,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
@@ -30,10 +30,10 @@ index 35934565a66d381a1441c98131d4cda824414ccd..ebab1a06724555e80cb5fc1792f4a3f0
      }
  
 diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
-index fb3bdd7e0c114d0cb59b7aff19d785d3e2a0ccf3..0ee39f7ee78aa31ce728dc7f890054d515d6fdf0 100644
+index 7d5183cd2121092f7342a282ba98f659f10f19f8..2c81a5d1381afa37b966625d3a6ec6cf603f466d 100644
 --- a/src/main/java/net/minecraft/server/EntityWither.java
 +++ b/src/main/java/net/minecraft/server/EntityWither.java
-@@ -672,6 +672,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
+@@ -673,6 +673,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
  
      @Override
      protected boolean n(Entity entity) {

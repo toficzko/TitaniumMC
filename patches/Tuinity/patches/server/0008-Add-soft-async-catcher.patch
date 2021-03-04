@@ -212,7 +212,7 @@ index c8c0748628e83b6396c13afe896acc16c85109b0..4082c4f366bce1784759bda773d3d354
          try {
              boolean execChunkTask = com.destroystokyo.paper.io.chunk.ChunkTaskManager.pollChunkWaitQueue() || ChunkProviderServer.this.world.asyncChunkTaskManager.pollNextChunkTask(); // Paper
 diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
-index 3960a975e74ed81c45819fe5e0f01c6c18252982..526c1419af7bd0b6098a8f9a0a24a64ba61c6ebc 100644
+index f2a9396c2ec64c79391782249db7507f12a69a9e..798ebfdcd8e06ffb576964da006e77bd188ad274 100644
 --- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 +++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 @@ -74,6 +74,7 @@ public class EntityTrackerEntry {
@@ -220,11 +220,11 @@ index 3960a975e74ed81c45819fe5e0f01c6c18252982..526c1419af7bd0b6098a8f9a0a24a64b
      public final void tick() { this.a(); } // Paper - OBFHELPER
      public void a() {
 +        com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Tracker update"); // Tuinity
-         List<Entity> list = this.tracker.getPassengers();
+         List<Entity> list = this.tracker.passengers; // Paper - do not copy list
  
          if (!list.equals(this.p)) {
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index fb46fdeb22a7c31c8d132bdc80d657ae82c191be..2be8c1b7974f3f6271be60872d45123ba9743672 100644
+index 8dd386d1e841415d4142d30889ef2671dd65a65b..e22b83815d7c05dcd45508df05b548f9c956ef6e 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -200,6 +200,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {

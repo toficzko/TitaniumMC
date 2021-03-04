@@ -5,7 +5,7 @@ Subject: [PATCH] remove config for Optimized Explotions (always on)
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-index c46ef87f02450340e8be6ac3936f72598a7c9088..8b2e003dc5f5539fc8f6057c383a3dc800db62d6 100644
+index 085dd654650c202fb61c71978ddaf56c7fea840b..6dd1b3d2a894aaf47accc932a1c7af660db8ceac 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 @@ -179,12 +179,6 @@ public class PaperWorldConfig {

@@ -42,7 +42,7 @@ index 0000000000000000000000000000000000000000..9bf6f73e2a7fc4f3cd07e10fde287c40
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 6453c12adda4fd8d38caccd6149c82fac06418db..5499dc4959d27b14fb87d5dcb6a0aee516231a20 100644
+index ef9f1a8acd8da0f5ed5e55cb4aaa33c81a8773c9..eb4c2f5da1095ed6214799418b90142f62628d2d 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -50,8 +50,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
@@ -213,7 +213,7 @@ index 6453c12adda4fd8d38caccd6149c82fac06418db..5499dc4959d27b14fb87d5dcb6a0aee5
                          if (fluid.a(tag)) {
                              double d2 = (double) ((float) i2 + fluid.getHeight(this.world, blockposition_mutableblockposition));
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index d165d1ec9c2d81f26df0a1a4d5d5f79a6358552b..44a91ed875c50f96c4da1c4e2195beadc66ca4e8 100644
+index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd440095e2 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -44,6 +44,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;

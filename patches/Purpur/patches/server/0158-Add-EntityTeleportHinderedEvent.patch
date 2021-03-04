@@ -123,7 +123,7 @@ index a3b810556e306bc2be65c7811cfa7806d5752cfa..f96c41fc8788ee7b674c18cc0fa692df
          }
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 4eeae837b559e135f224cc97f88c80eb53a06d66..ee37a3b2a352955877dc18892f3c793cb2dbcfcd 100644
+index 1030ab9d457f8abb43a6078fedcdd9ddc5061b10..db1ef3d0bc1ce136799649ac4a72615b49288cf7 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -117,6 +117,7 @@ import org.bukkit.entity.EntityType;

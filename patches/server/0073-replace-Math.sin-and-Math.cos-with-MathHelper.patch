@@ -20,7 +20,7 @@ index 0d8fba494ed11ad79201dfd1c7f3ad5b288ca0ca..48dd107f39572c33ff99a8e1362ae801
              this.a(new BlockPosition(j, 75, k));
          }
 diff --git a/src/main/java/net/minecraft/server/EntityBoat.java b/src/main/java/net/minecraft/server/EntityBoat.java
-index 72d2eea40c37b5fa627c8deeda1802734e94f866..86a10b1082a2cc8065c5d37e388076498b0ff040 100644
+index fcb4936e78d56907b0e56d0aaf7f8361513d0a4e..068095faeb42874a347ee1e6628dd304cca6762e 100644
 --- a/src/main/java/net/minecraft/server/EntityBoat.java
 +++ b/src/main/java/net/minecraft/server/EntityBoat.java
 @@ -365,7 +365,7 @@ public class EntityBoat extends Entity {
@@ -80,10 +80,10 @@ index 476f692df79e98779271cc5a395276ab9c755a58..75b89fbbc8bce25a8a0edebe6a6d0d2e
                  this.i.setMot(this.i.getMot().add(d4 * d5, d7 * (d6 + d5) * 0.25D + (double) f2 * d2 * 0.1D, d4 * d6));
                  ControllerLook controllerlook = this.i.getControllerLook();
 diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
-index 0511d2a37a7cfc906f13df72e91ffed993639376..c7c2331755c817992e3e917acf578a3cf39363fd 100644
+index 9452eae41bbad0305b3d66ce2fe20667effd2bdf..9bf8f50e9a892b747b27e937092e4b4942d6010e 100644
 --- a/src/main/java/net/minecraft/server/EntityHuman.java
 +++ b/src/main/java/net/minecraft/server/EntityHuman.java
-@@ -602,7 +602,7 @@ public abstract class EntityHuman extends EntityLiving {
+@@ -604,7 +604,7 @@ public abstract class EntityHuman extends EntityLiving {
                  float f5 = this.random.nextFloat() * 6.2831855F;
                  float f6 = 0.02F * this.random.nextFloat();
  
@@ -117,7 +117,7 @@ index 11ec2d9b957fdce54f4fecd88f9e9ffba4018b19..916c12df23fe27470b994b7267e3db2d
      }
      // Paper end
 diff --git a/src/main/java/net/minecraft/server/EntityRavager.java b/src/main/java/net/minecraft/server/EntityRavager.java
-index f9df1389189962ce08e50647baffd9eecb00968a..f8d146d215b4acf162b1ef4fdbb8656192a70d17 100644
+index 3606440e41ab3193fadebb455c0967dbc0ccbb63..b160e0886d431be7b281fd3d7d30e822cd26234c 100644
 --- a/src/main/java/net/minecraft/server/EntityRavager.java
 +++ b/src/main/java/net/minecraft/server/EntityRavager.java
 @@ -182,9 +182,9 @@ public class EntityRavager extends EntityRaider {

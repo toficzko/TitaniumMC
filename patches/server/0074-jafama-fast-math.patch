@@ -135,7 +135,7 @@ index 239f504430b6c59923fd677d1be0121be5022604..24185ba2898bbc46058f0c477a5bb3b2
                      double relativeZ = player.locZ() + (deltaZ / deltaLength) * viewDistance;
                      player.playerConnection.sendPacket(new PacketPlayOutNamedSoundEffect(SoundEffects.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, relativeX, this.locY(), relativeZ, 10000.0F, pitch));
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 44a91ed875c50f96c4da1c4e2195beadc66ca4e8..345211aa1a77894a41bd461083eae7cbd143c4eb 100644
+index 330189ac1bd951e02efd3799b37173fd440095e2..c4acfe1e9b1b0a5548256baf1d346d53cc1ec0b2 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -2335,8 +2335,8 @@ public abstract class EntityLiving extends Entity {
@@ -168,7 +168,7 @@ index 44a91ed875c50f96c4da1c4e2195beadc66ca4e8..345211aa1a77894a41bd461083eae7cb
              float f5 = MathHelper.e(MathHelper.g(this.yaw) - f4);
  
 diff --git a/src/main/java/net/minecraft/server/EntityMinecartAbstract.java b/src/main/java/net/minecraft/server/EntityMinecartAbstract.java
-index 298af30b1a7f12d42216fc1b7ee801fd7be93d3c..ef07646eaf0f66a77c63a988e5a83e7afb2f60b7 100644
+index 4de2877f30a9b231a5c8bbd1739416991e9d7633..911940176ad53e3c97f331a14a22dc98ec62f6b3 100644
 --- a/src/main/java/net/minecraft/server/EntityMinecartAbstract.java
 +++ b/src/main/java/net/minecraft/server/EntityMinecartAbstract.java
 @@ -556,7 +556,7 @@ public abstract class EntityMinecartAbstract extends Entity {
@@ -237,10 +237,10 @@ index bd84a3ac6146cfe6952a9334820696b4583b45b5..7f267a10e17097439006979056041d6a
                          if (entityliving == entity) {
                              d1 = 1.0D;
 diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
-index 0ee39f7ee78aa31ce728dc7f890054d515d6fdf0..5a8cab800f2026df1ed16cd985c675186a2df5d7 100644
+index 2c81a5d1381afa37b966625d3a6ec6cf603f466d..615ffe20166e887944b3522b50a9bb17719a6c11 100644
 --- a/src/main/java/net/minecraft/server/EntityWither.java
 +++ b/src/main/java/net/minecraft/server/EntityWither.java
-@@ -344,7 +344,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
+@@ -345,7 +345,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
                          double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
                          if ( world.spigotConfig.witherSpawnSoundRadius > 0 && distanceSquared > world.spigotConfig.witherSpawnSoundRadius * world.spigotConfig.witherSpawnSoundRadius ) continue; // Spigot
                          if (distanceSquared > viewDistance * viewDistance) {

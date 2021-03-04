@@ -305,7 +305,7 @@ index f583443f9a938b9ad5d84d35f2d7508e71af7ade..b0751ba3489fde834fde74bdd29460b9
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 90dfbc0c0f9a81be4ace4c64ef6524433667cd8f..2642916db0901b9b1e3aac381ab7ee80d3a36b37 100644
+index cc7f1b343fd072cd946865a2c55428973ca8b5e3..c1daa6c543d3dfdca357b694badd1bb80c626408 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -57,6 +57,18 @@ import org.spigotmc.AsyncCatcher;

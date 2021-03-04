@@ -21,12 +21,12 @@ which is why it can be disabled in the configuration.
 Co-authored-by: Yannick Lamprecht <yannicklamprecht@live.de>
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-index 8b2e003dc5f5539fc8f6057c383a3dc800db62d6..50d91fb6267528fb03c5901cb1dac00ecce26c96 100644
+index 6dd1b3d2a894aaf47accc932a1c7af660db8ceac..2a51ee337c1be820f0c15fe214707654abf3f5ec 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-@@ -803,4 +803,14 @@ public class PaperWorldConfig {
-     private void setUpdatePathfindingOnBlockUpdate() {
-         updatePathfindingOnBlockUpdate = getBoolean("update-pathfinding-on-block-update", this.updatePathfindingOnBlockUpdate);
+@@ -809,4 +809,14 @@ public class PaperWorldConfig {
+         fixWitherTargetingBug = getBoolean("fix-wither-targeting-bug", false);
+         log("Withers properly target players: " + fixWitherTargetingBug);
      }
 +
 +    public boolean isHopperPushBased;

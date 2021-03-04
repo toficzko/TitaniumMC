@@ -131,7 +131,7 @@ index 780474397acb4d0e7ecb4540e1a2db5721e59d3d..1962c14af5cc4ec4c66fa7c354aff98c
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 6cec63f9548802140c29bd655affed00f8659bed..6453c12adda4fd8d38caccd6149c82fac06418db 100644
+index dc4b80101223fc3a248f1498f6fc5b4d2099567d..ef9f1a8acd8da0f5ed5e55cb4aaa33c81a8773c9 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -1537,6 +1537,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
@@ -201,7 +201,7 @@ index 2ba6b58fe5330582c078c53c241eda4d224f198a..8f306cbe2e88f088f2f8d4bad6f82bee
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 4ca5036b75586007a7569283dfa20f023345c878..e4faa7529cac622f84592214018b7e95013cb74a 100644
+index 48914de72454d76de11e7493633f4c24302346b0..bea7801f795268922e9dbf413e005c1bf1d2b882 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
 @@ -382,7 +382,8 @@ public class PlayerConnection implements PacketListenerPlayIn {

@@ -1093,7 +1093,7 @@ index 80440aa24f546dd151e89b705322d9c3e906b139..94c2bfce5059d784655d729f384c70b1
              this.c = j;
              return true;
 diff --git a/src/main/java/net/minecraft/server/TileEntityFurnace.java b/src/main/java/net/minecraft/server/TileEntityFurnace.java
-index c1d1ce582c94fd20f42b1979d6edbb6b377adff8..b914b97604585c57ac06506b9c660170b77eff73 100644
+index 0369dcf947ab28805106f292d8d8da87d86e5e16..5ded9548c175c6f944475a96326ed8641ab1631d 100644
 --- a/src/main/java/net/minecraft/server/TileEntityFurnace.java
 +++ b/src/main/java/net/minecraft/server/TileEntityFurnace.java
 @@ -21,9 +21,11 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;

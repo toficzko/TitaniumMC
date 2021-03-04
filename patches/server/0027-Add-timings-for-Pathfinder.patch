@@ -18,7 +18,7 @@ index d8c1a8dd867437443494ac169569139e25c9a635..0efdddc12247ed4aa6acce118c707090
       * Gets a timer associated with a plugins tasks.
       * @param bukkitTask
 diff --git a/src/main/java/net/minecraft/server/NavigationAbstract.java b/src/main/java/net/minecraft/server/NavigationAbstract.java
-index 1208464fba96daf276c9cc0c1c9b18db75b03abc..ae954c018e47cb114f8706a0cea6f4222b14c161 100644
+index b5ea7997040b5bfd98925a146e446aa3c56574da..c6162740b01b51a49cfa312722d82856610e823c 100644
 --- a/src/main/java/net/minecraft/server/NavigationAbstract.java
 +++ b/src/main/java/net/minecraft/server/NavigationAbstract.java
 @@ -29,6 +29,7 @@ public abstract class NavigationAbstract {

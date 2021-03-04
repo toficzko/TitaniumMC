@@ -14,7 +14,7 @@ Our changes are the following:
    triggers removing of all stale entries.
 
 diff --git a/src/main/java/net/minecraft/server/JsonList.java b/src/main/java/net/minecraft/server/JsonList.java
-index a674140b61547841a1a6060e9f36aa14d0a86ff9..99580abac1ff30c784b6792d69c9d4cad12c1b1f 100644
+index 90b397da12c220c8e704fc558b9586e5c001415f..b92ac6088007c73815f9b55ff7ad0543e5b1b6b5 100644
 --- a/src/main/java/net/minecraft/server/JsonList.java
 +++ b/src/main/java/net/minecraft/server/JsonList.java
 @@ -71,9 +71,13 @@ public abstract class JsonList<K, V extends JsonListEntry<K>> {

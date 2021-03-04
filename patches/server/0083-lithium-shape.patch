@@ -257,7 +257,7 @@ index 0000000000000000000000000000000000000000..72d56b474fd2ec92c1d3639022970682
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/Block.java b/src/main/java/net/minecraft/server/Block.java
-index 0ad3b893ca45bd84149ae26d63e157b85296b471..487ad215baed2e671eb5919d5a2994848075502c 100644
+index b74b8b796c6da0d478d2b9a88c64b07196415068..d717c1856201bf7155b78507e86bc90c70c80762 100644
 --- a/src/main/java/net/minecraft/server/Block.java
 +++ b/src/main/java/net/minecraft/server/Block.java
 @@ -10,6 +10,7 @@ import java.util.stream.Stream;
@@ -285,7 +285,7 @@ index 0ad3b893ca45bd84149ae26d63e157b85296b471..487ad215baed2e671eb5919d5a299484
  
      public boolean b(IBlockData iblockdata, IBlockAccess iblockaccess, BlockPosition blockposition) {
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 5499dc4959d27b14fb87d5dcb6a0aee516231a20..263e69e89859ddc9d05509786d8d1764c113198e 100644
+index eb4c2f5da1095ed6214799418b90142f62628d2d..930a8998b6d8e6af3dcb80308e7a1e965bb9e554 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -2538,6 +2538,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
