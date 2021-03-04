@@ -9,7 +9,6 @@ This is an overview over all patches that are currently used.
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
 | server |  (AI-Improvements) Optimized tan for ControllerLook      | bl4ckscor3 |  |
-| server |  (PaperPR) Concurrently load biome info in AreaLazy      | Techcable |  |
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
 | server |  (PaperPR) optimized dirt and snow spreading      | lukas81298 |  |
 | server |  AFK API      | William Blake Galbreath |  |

@@ -5,12 +5,12 @@ Subject: [PATCH] lithium gen
 
 
 diff --git a/src/main/java/net/minecraft/server/AreaLazy.java b/src/main/java/net/minecraft/server/AreaLazy.java
-index f6a2b6d114276fa3ab0a96d8249ce57e70e6d18c..b3d6a27733cf238781e7c35541227637e6006373 100644
+index c274b9c560afbae75aab7c201559e54400c98a5f..7cd6b1d99e05a6cd658a958d5a4a2a7dabdd8cd5 100644
 --- a/src/main/java/net/minecraft/server/AreaLazy.java
 +++ b/src/main/java/net/minecraft/server/AreaLazy.java
-@@ -63,6 +63,7 @@ public final class AreaLazy implements Area {
-     */
-     // Paper end
+@@ -14,6 +14,7 @@ public final class AreaLazy implements Area {
+         this.a = areatransformer8;
+     }
  
 +    public int sample(int i, int j){ return a(i, j); } // Yatopia - OBFHELPER
      @Override
