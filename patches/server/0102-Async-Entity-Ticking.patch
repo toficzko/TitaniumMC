@@ -6,41 +6,49 @@ Subject: [PATCH] Async Entity Ticking
 Based off of: https://github.com/PaperMC/Paper/pull/2671 by Bloodrayne1995
 
 diff --git a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
-index cdda74564ced196ae577a64782236c2bfe36e433..798a6c3587bd948bacac8feaa5efeb1b9a5a4d46 100644
+index cdda74564ced196ae577a64782236c2bfe36e433..2369c567cd6bc9679ba929b4dad7df52a0692e1b 100644
 --- a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
 +++ b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
-@@ -27,15 +27,19 @@ public final class EntityList implements Iterable<Entity> {
+@@ -5,6 +5,7 @@ import net.minecraft.server.Entity;
+ import java.util.Arrays;
+ import java.util.Iterator;
+ import java.util.NoSuchElementException;
++import java.util.Collections;
+ 
+ // list with O(1) remove & contains
+ /**
+@@ -27,15 +28,19 @@ public final class EntityList implements Iterable<Entity> {
      }
  
      public boolean contains(final Entity entity) {
-+        synchronized (this.entityToIndex) { // Yatopia
++        // synchronized (this.entityToIndex) { // Yatopia
          return this.entityToIndex.containsKey(entity.getId());
-+        } // Yatopia
++        // } // Yatopia
      }
  
      public boolean remove(final Entity entity) {
-+        synchronized (this.entityToIndex) { // Yatopia
++        // synchronized (this.entityToIndex) { // Yatopia
          final int index = this.entityToIndex.remove(entity.getId());
          if (index == Integer.MIN_VALUE) {
              return false;
          }
  
-+        synchronized (this.entities) {
++        // synchronized (this.entities) { // Yatopia
          // move the entity at the end to this index
          final int endIndex = --this.count;
          final Entity end = this.entities[endIndex];
-@@ -45,20 +49,23 @@ public final class EntityList implements Iterable<Entity> {
+@@ -45,20 +50,23 @@ public final class EntityList implements Iterable<Entity> {
          }
          this.entities[index] = end;
          this.entities[endIndex] = null;
 -
-+        }} // Yatopia
++        // }} // Yatopia
          return true;
      }
  
      public boolean add(final Entity entity) {
          final int count = this.count;
-+        synchronized (this.entityToIndex) { // Yatopia
++        // synchronized (this.entityToIndex) { // Yatopia
          final int currIndex = this.entityToIndex.putIfAbsent(entity.getId(), count);
  
          if (currIndex != Integer.MIN_VALUE) {
@@ -48,50 +56,50 @@ index cdda74564ced196ae577a64782236c2bfe36e433..798a6c3587bd948bacac8feaa5efeb1b
          }
  
 -        Entity[] list = this.entities;
-+        synchronized (this.entities) {
++        // synchronized (this.entities) { // Yatopia
  
 +        Entity[] list = this.entities;
-+        synchronized (list) {
++        // synchronized (list) { // Yatopia
          if (list.length == count) {
              // resize required
              list = this.entities = Arrays.copyOf(list, (int)Math.max(4L, count * 2L)); // overflow results in negative
-@@ -66,7 +73,7 @@ public final class EntityList implements Iterable<Entity> {
+@@ -66,7 +74,7 @@ public final class EntityList implements Iterable<Entity> {
  
          list[count] = entity;
          this.count = count + 1;
 -
-+        }}} // Yatopia
++        // }}} // Yatopia
          return true;
      }
  
-@@ -74,20 +81,30 @@ public final class EntityList implements Iterable<Entity> {
+@@ -74,20 +82,30 @@ public final class EntityList implements Iterable<Entity> {
          if (index < 0 || index >= this.count) {
              throw new IndexOutOfBoundsException("Index: " + index + " is out of bounds, size: " + this.count);
          }
-+        synchronized (this.entities) {
++        // synchronized (this.entities) {
          return this.entities[index];
-+        }
++        // }
      }
  
      public Entity getUnchecked(final int index) {
-+        synchronized (this.entities) {
++        // synchronized (this.entities) {
          return this.entities[index];
-+        }
++        // }
      }
  
      public Entity[] getRawData() {
-+        synchronized (this.entities) {
++        // synchronized (this.entities) {
          return this.entities;
-+        }
++        // }
      }
  
      public void clear() {
-+        synchronized (this.entityToIndex) { // Yatopia
++        // synchronized (this.entityToIndex) { // Yatopia
          this.entityToIndex.clear();
-+        } // Yatopia
-+        synchronized (this.entities) {
++        // } // Yatopia
++        // synchronized (this.entities) {
          Arrays.fill(this.entities, 0, this.count, null);
-+        }
++        // }
          this.count = 0;
      }
  
@@ -113,10 +121,38 @@ index 08ed243259f052165c6f75aed1d1d65a14219715..2a64e01d2fb84510db14d4627fd15d4c
  
      public final int id; /* We don't override getId as the spec requires that it be unique (with respect to all other threads) */
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java b/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
-index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6475135ca 100644
+index 180c724b40228f11ed0c9869779cf466e8e97ebe..346050cf67cbb7ac5d9c8be48196f1e32a650225 100644
 --- a/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
-@@ -158,11 +158,15 @@ public class EntityTrackerEngine {
+@@ -87,8 +87,9 @@ public class EntityTrackerEngine {
+                 }
+             }
+         }
+-
++        synchronized (this.sectionsByEntity) {
+         this.sectionsByEntity.put(listener, all);
++        }
+     }
+ 
+     private void removeListener(NearbyEntityListener listener) {
+@@ -97,7 +98,7 @@ public class EntityTrackerEngine {
+         if (r == 0) {
+             return;
+         }
+-
++        synchronized (this.sectionsByEntity) {
+         List<TrackedEntityList> all = this.sectionsByEntity.remove(listener);
+ 
+         if (all != null) {
+@@ -107,6 +108,7 @@ public class EntityTrackerEngine {
+         } else {
+             throw new IllegalArgumentException("Entity listener not tracked:" + listener.toString());
+         }
++        }
+     }
+ 
+     // Faster implementation which avoids removing from/adding to every list twice on an entity move event
+@@ -158,11 +160,15 @@ public class EntityTrackerEngine {
      }
  
      private TrackedEntityList getOrCreateList(int x, int y, int z) {
@@ -132,7 +168,7 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6
      }
  
      private static long encode(int x, int y, int z) {
-@@ -184,14 +188,17 @@ public class EntityTrackerEngine {
+@@ -184,14 +190,17 @@ public class EntityTrackerEngine {
          }
  
          public void addListener(NearbyEntityListener listener) {
@@ -150,7 +186,7 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6
              if (this.listeners.remove(listener)) {
                  for (EntityLiving entity : this.entities) {
                      listener.onEntityLeftRange(entity);
-@@ -199,17 +206,21 @@ public class EntityTrackerEngine {
+@@ -199,17 +208,21 @@ public class EntityTrackerEngine {
  
                  this.checkEmpty();
              }
@@ -172,7 +208,7 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6
              boolean ret = this.entities.remove(entity);
  
              if (ret) {
-@@ -221,11 +232,16 @@ public class EntityTrackerEngine {
+@@ -221,12 +234,17 @@ public class EntityTrackerEngine {
              }
  
              return ret;
@@ -185,12 +221,33 @@ index 180c724b40228f11ed0c9869779cf466e8e97ebe..476c2f0e371fa496a504745d61197af6
 +                synchronized (EntityTrackerEngine.this.sections) { // Yatopia
                  EntityTrackerEngine.this.sections.remove(this.key);
 +                } // Yatopia
-+            } // Yatopia
              }
++            } // Yatopia
          }
      }
+ 
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index c46c3e8aaeb7496a4cfedae68181cf6e09b75acd..85ae1a0faf336412876d303e7897ce65c358a462 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -68,6 +68,7 @@ import co.aikar.timings.MinecraftTimings; // Paper
+ import io.papermc.paper.util.PaperJvmChecker; // Paper
+ import io.papermc.paper.event.server.ServerResourcesReloadedEvent; // Paper
+ import org.spigotmc.SlackActivityAccountant; // Spigot
++import org.yatopiamc.yatopia.server.ticking.AsyncEntityManager;
+ 
+ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTask> implements IMojangStatistics, ICommandListener, AutoCloseable {
+ 
+@@ -808,6 +809,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             worldserver = (WorldServer) iterator.next();
+             if (worldserver != null) {
+                 try {
++                    worldserver.asyncentitymanager.shutdownExecutors(); // Yatopia
+                     worldserver.close();
+                 } catch (IOException ioexception) {
+                     MinecraftServer.LOGGER.error("Exception closing the level", ioexception);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12f67a82e5 100644
+index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..4959fad6f8f5e11ecc10cc44e9e81f7a7151ce4b 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -205,7 +262,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
      private double fakeTime; // Purpur
  
  
-+    private AsyncEntityManager asyncentitymanager = null; // Yatopia - Async entity ticking
++    public AsyncEntityManager asyncentitymanager = null; // Yatopia - Async entity ticking
      // CraftBukkit start
      private int tickPosition;
      public final Convertable.ConversionSession convertable;
@@ -213,7 +270,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
  
          this.asyncChunkTaskManager = new com.destroystokyo.paper.io.chunk.ChunkTaskManager(this); // Paper
          this.fakeTime = this.worldDataServer.getDayTime(); // Purpur
-+        this.asyncentitymanager = new AsyncEntityManager(this); // Yatopia - Async entity Ticking
++        this.asyncentitymanager = new AsyncEntityManager(); // Yatopia - Async entity Ticking
      }
  
      // Tuinity start - optimise collision
@@ -221,7 +278,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
              }
  
              this.tickingEntities = true;
-+            synchronized (this.entitiesForIteration) { // Yatopia
++            // synchronized (this.entitiesForIteration) { // Yatopia
              com.tuinity.tuinity.util.maplist.IteratorSafeOrderedReferenceSet.Iterator<Entity> objectiterator = this.entitiesForIteration.iterator(); // Tuinity
  
              org.spigotmc.ActivationRange.activateEntities(this); // Spigot
@@ -229,9 +286,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
                  gameprofilerfiller.enter("remove");
                  if (entity.dead) {
                      this.removeEntityFromChunk(entity);
-+                    synchronized (this.entitiesById) { // Yatopia
++                    // synchronized (this.entitiesById) { // Yatopia
                      this.entitiesById.remove(entity.getId()); // Tuinity
-+                    } // Yatopia
++                    // } // Yatopia
                      this.unregisterEntity(entity);
                  } else if (entity.inChunk && entity.valid) { // Tuinity start - optimise notify()
                      if (this.getChunkProvider().isInEntityTickingChunk(entity)) {
@@ -239,7 +296,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
              timings.entityTick.stopTiming(); // Spigot
  
              objectiterator.finishedIterating(); // Tuinity
-+            } // Yatopia
++            // } // Yatopia
 +            if (org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities) this.asyncentitymanager.startTick(); // Yatopia - Async entity ticking
              this.tickingEntities = false;
              // Paper start
@@ -286,7 +343,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
      public List<Entity> a(@Nullable EntityTypes<?> entitytypes, Predicate<? super Entity> predicate) {
          List<Entity> list = Lists.newArrayList();
          ChunkProviderServer chunkproviderserver = this.getChunkProvider();
-+        synchronized (this.entitiesById) { // Yatopia
++        // synchronized (this.entitiesById) { // Yatopia
          ObjectIterator objectiterator = this.entitiesById.values().iterator();
  
          while (objectiterator.hasNext()) {
@@ -294,14 +351,14 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
                  list.add(entity);
              }
          }
-+        } // Yatopia
++        // } // Yatopia
  
          return list;
      }
  
      public List<EntityEnderDragon> g() {
          List<EntityEnderDragon> list = Lists.newArrayList();
-+        synchronized (this.entitiesById) { // Yatopia
++        // synchronized (this.entitiesById) { // Yatopia
          ObjectIterator objectiterator = this.entitiesById.values().iterator();
  
          while (objectiterator.hasNext()) {
@@ -309,7 +366,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
                  list.add((EntityEnderDragon) entity);
              }
          }
-+        } // Yatopia
++        // } // Yatopia
  
          return list;
      }
@@ -318,9 +375,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
                      }
                      // Paper end
 -
-+                    synchronized (this.entitiesById) { // Yatopia
++                    // synchronized (this.entitiesById) { // Yatopia
                      this.entitiesById.remove(entity.getId());
-+                    } // Yatopia
++                    // } // Yatopia
                      this.unregisterEntity(entity);
  
                      if (entity.dead) iterator.remove(); // Paper - don't save dead entities during unload
@@ -328,16 +385,16 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
  
      public void unregisterEntity(Entity entity) {
          org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
-+        synchronized (this.entitiesForIteration) { // Yatopia
++        // synchronized (this.entitiesForIteration) { // Yatopia
          this.entitiesForIteration.remove(entity); // Tuinity
-+        } // Yatopia
++        // } // Yatopia
          // Paper start - fix entity registration issues
          if (entity instanceof EntityComplexPart) {
              // Usually this is a no-op for complex parts, and ID's should be removed, but go ahead and remove it anyways
              // Dragon parts are handled special in register. they don't receive a valid = true or register by UUID etc.
-+            synchronized (this.entitiesById) {
++            // synchronized (this.entitiesById) {
              this.entitiesById.remove(entity.getId(), entity);
-+            }
++            // }
              return;
          }
          if (!entity.valid) {
@@ -345,7 +402,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
          org.spigotmc.AsyncCatcher.catchOp("entity register"); // Spigot
          // Paper start - don't double enqueue entity registration
          //noinspection ObjectEquality
-+        synchronized (this.entitiesById) { // Yatopia
++        // synchronized (this.entitiesById) { // Yatopia
          if (this.entitiesById.get(entity.getId()) == entity) {
              LOGGER.error(entity + " was already registered!");
              new Throwable().printStackTrace();
@@ -353,7 +410,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
          } else {
              entity.isQueuedForRegister = false; // Paper
              this.entitiesById.put(entity.getId(), entity);
-+            synchronized (this.entitiesForIteration) { // Yatopia
++            // synchronized (this.entitiesForIteration) { // Yatopia
              this.entitiesForIteration.add(entity); // Tuinity
              if (entity instanceof EntityEnderDragon) {
                  EntityComplexPart[] aentitycomplexpart = ((EntityEnderDragon) entity).eJ();
@@ -361,7 +418,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
                      this.entitiesForIteration.add(entitycomplexpart); // Tuinity
                  }
              }
-+            } // Yatopia
++            // } // Yatopia
  
              if (DEBUG_ENTITIES) {
                  entity.addedToWorldStack = getAddToWorldStackTrace(entity);
@@ -369,7 +426,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
              entity.shouldBeRemoved = false; // Paper - shouldn't be removed after being re-added
              new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
          }
-+        } // Yatopia
++        // } // Yatopia
  
      }
  
@@ -380,9 +437,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
          } else {
 +        */
              this.removeEntityFromChunk(entity);
-+            synchronized (this.entitiesById) { // Yatopia
++            // synchronized (this.entitiesById) { // Yatopia
              this.entitiesById.remove(entity.getId());
-+            } // Yatopia
++            // } // Yatopia
              this.unregisterEntity(entity);
              entity.shouldBeRemoved = true; // Paper
 -        }
@@ -394,9 +451,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
      @Nullable
      @Override
      public Entity getEntity(int i) {
-+        synchronized (this.entitiesById) { // Yatopia
++        // synchronized (this.entitiesById) { // Yatopia
          return (Entity) this.entitiesById.get(i);
-+        } // Yatopia
++        // } // Yatopia
      }
  
      @Nullable
@@ -405,9 +462,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
                  }
              }
 -
-+            synchronized (this.entitiesById) { // Yatopia
++            // synchronized (this.entitiesById) { // Yatopia
              bufferedwriter.write(String.format("entities: %d\n", this.entitiesById.size()));
-+            } // Yatopia
++            // } // Yatopia
              bufferedwriter.write(String.format("block_entities: %d\n", this.tileEntityListTick.size())); // Paper - remove unused list
              bufferedwriter.write(String.format("block_ticks: %d\n", this.getBlockTickList().a()));
              bufferedwriter.write(String.format("fluid_ticks: %d\n", this.getFluidTickList().a()));
@@ -415,9 +472,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
          Throwable throwable9 = null;
  
          try {
-+            synchronized (this.entitiesById) { // Yatopia
++            // synchronized (this.entitiesById) { // Yatopia
              a((Writer) bufferedwriter3, (Iterable) this.entitiesById.values());
-+            } // Yatopia
++            // } // Yatopia
          } catch (Throwable throwable10) {
              throwable9 = throwable10;
              throw throwable10;
@@ -435,13 +492,13 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..ac95deb343a77a6d0a4d67712bfe4d12
  
      @VisibleForTesting
      public String F() {
-+        synchronized (this.entitiesById) { // Yatopia
++        // synchronized (this.entitiesById) { // Yatopia
          return String.format("players: %s, entities: %d [%s], block_entities: %d [%s], block_ticks: %d, fluid_ticks: %d, chunk_source: %s", this.players.size(), this.entitiesById.size(), a(this.entitiesById.values(), (entity) -> { // CraftBukkit - decompile error
              return IRegistry.ENTITY_TYPE.getKey(entity.getEntityType());
          }), this.tileEntityListTick.size(), a(this.tileEntityListTick, (tileentity) -> { // CraftBukkit - decompile error
              return IRegistry.BLOCK_ENTITY_TYPE.getKey(tileentity.getTileType());
          }), this.getBlockTickList().a(), this.getFluidTickList().a(), this.P());
-+        } // Yatopia
++        // } // Yatopia
      }
  
      private static <T> String a(Collection<T> collection, Function<T, MinecraftKey> function) {
@@ -476,10 +533,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..ec3fbc74ea0227bcdf92db365db07a6c
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7120108660e87c9ce35f26b5c60612c44573d841
+index 0000000000000000000000000000000000000000..eede998e302a005ff23e8a2f00464afdbd9cbf59
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,63 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -490,47 +547,56 @@ index 0000000000000000000000000000000000000000..7120108660e87c9ce35f26b5c60612c4
 +import org.bukkit.Server;
 +import org.bukkit.Bukkit;
 +import co.aikar.timings.TimingHistory;
-+import java.util.concurrent.ConcurrentHashMap;
++import java.util.concurrent.Executors;
++import java.util.concurrent.ExecutorService;
++import java.util.concurrent.TimeUnit;
 +
 +public class AsyncEntityManager {
 +
-+    private WorldServer targetWorld = null;
++    public ExecutorService entityTickExecutor = Executors.newFixedThreadPool(8);
 +
-+    /*
-+    private ConcurrentHashMap<WorldServer, CopyOnWriteArrayList<Entity>> targetEntitiesTick = new ConcurrentHashMap<>();
-+    private ConcurrentHashMap<WorldServer, CopyOnWriteArrayList<Entity>> targetEntitiesInactive = new ConcurrentHashMap<>();
-+    */
 +    private CopyOnWriteArrayList<Entity> targetEntitiesTick = new CopyOnWriteArrayList<>();
 +    private CopyOnWriteArrayList<Entity> targetEntitiesInactive = new CopyOnWriteArrayList<>();
 +
-+    public AsyncEntityManager(WorldServer world) {
-+        targetWorld = world;
-+    }
++    public AsyncEntityManager() {}
 +
 +    public void queueEntity(Entity entity) {
-+        synchronized(targetEntitiesTick) {
++        // synchronized(targetEntitiesTick) {
 +            targetEntitiesTick.add(entity);
-+        }
++        // }
 +    }
 +
 +    public void queueEntityInactive(Entity entity) {
-+        synchronized(targetEntitiesInactive) {
++        // synchronized(targetEntitiesInactive) {
 +            targetEntitiesInactive.add(entity);
-+        }
++        // }
 +    }
 +
 +    public void startTick() {
-+        targetEntitiesTick.stream().forEach(entity -> CompletableFuture.runAsync(() -> {
++        targetEntitiesTick.stream().forEach(entity -> {
++            entityTickExecutor.execute(() -> {
 +            TimingHistory.activatedEntityTicks++;
 +            entity.tick();
 +            entity.postTick();
-+        }));
++            });
++        });
++        targetEntitiesInactive.stream().forEach(entity -> {
++            entityTickExecutor.execute(() -> {
++                entity.inactiveTick();
++            });
++        });
 +        targetEntitiesTick.clear();
-+
-+
-+        targetEntitiesInactive.stream().forEach(entity -> CompletableFuture.runAsync(() -> {
-+            entity.inactiveTick();
-+        }));
 +        targetEntitiesInactive.clear();
 +    }
++
++    public void shutdownExecutors() {
++        entityTickExecutor.shutdown();
++        while (!entityTickExecutor.isTerminated()) {
++            try {
++                entityTickExecutor.awaitTermination(30, TimeUnit.SECONDS);
++            } catch (InterruptedException ignored) {
++            }
++        }
++    }
++
 +}
