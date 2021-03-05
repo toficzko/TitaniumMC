@@ -263,6 +263,104 @@ index c46c3e8aaeb7496a4cfedae68181cf6e09b75acd..85ae1a0faf336412876d303e7897ce65
                      worldserver.close();
                  } catch (IOException ioexception) {
                      MinecraftServer.LOGGER.error("Exception closing the level", ioexception);
+diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+index b551c1dec17162eb23cf0a480bca1746ea9e3306..74558fb12af40f694609c2b0a17424df56294114 100644
+--- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
++++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+@@ -1983,6 +1983,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+     protected void addEntity(Entity entity) {
+         org.spigotmc.AsyncCatcher.catchOp("entity track"); // Spigot
+         // Paper start - ignore and warn about illegal addEntity calls instead of crashing server
++        synchronized (this.trackedEntities) {
+         if (!entity.valid || entity.world != this.world || this.trackedEntities.containsKey(entity.getId())) {
+             new Throwable("[ERROR] Illegal PlayerChunkMap::addEntity for world " + this.world.getWorld().getName()
+                 + ": " + entity  + (this.trackedEntities.containsKey(entity.getId()) ? " ALREADY CONTAINED (This would have crashed your server)" : ""))
+@@ -2022,10 +2023,12 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+ 
+             }
+         }
++        }
+     }
+ 
+     protected void removeEntity(Entity entity) {
+         org.spigotmc.AsyncCatcher.catchOp("entity untrack"); // Spigot
++        synchronized (this.trackedEntities) {
+         if (entity instanceof EntityPlayer) {
+             EntityPlayer entityplayer = (EntityPlayer) entity;
+ 
+@@ -2045,10 +2048,12 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+             playerchunkmap_entitytracker1.a();
+         }
+         entity.tracker = null; // Paper - We're no longer tracked
++        }
+     }
+ 
+     // Paper start - optimised tracker
+     private final void processTrackQueue() {
++        synchronized (this.trackedEntities) {
+         this.world.timings.tracker1.startTiming();
+         try {
+             com.tuinity.tuinity.util.maplist.IteratorSafeOrderedReferenceSet.Iterator<Chunk> iterator = this.world.getChunkProvider().entityTickingChunks.iterator();
+@@ -2071,10 +2076,12 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+         } finally {
+             this.world.timings.tracker1.stopTiming();
+         }
++        }
+     }
+     // Paper end - optimised tracker
+ 
+     protected void g() {
++        synchronized (this.trackedEntities) {
+         // Paper start - optimized tracker
+         if (true) {
+             this.processTrackQueue();
+@@ -2117,25 +2124,27 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+             world.timings.tracker2.stopTiming(); // Paper
+         }
+ 
+-
++        }
+     }
+ 
+     protected void broadcast(Entity entity, Packet<?> packet) {
++        synchronized (this.trackedEntities) {
+         PlayerChunkMap.EntityTracker playerchunkmap_entitytracker = (PlayerChunkMap.EntityTracker) this.trackedEntities.get(entity.getId());
+ 
+         if (playerchunkmap_entitytracker != null) {
+             playerchunkmap_entitytracker.broadcast(packet);
+         }
+-
++        }
+     }
+ 
+     protected void broadcastIncludingSelf(Entity entity, Packet<?> packet) {
++        synchronized (this.trackedEntities) {
+         PlayerChunkMap.EntityTracker playerchunkmap_entitytracker = (PlayerChunkMap.EntityTracker) this.trackedEntities.get(entity.getId());
+ 
+         if (playerchunkmap_entitytracker != null) {
+             playerchunkmap_entitytracker.broadcastIncludingSelf(packet);
+         }
+-
++        }
+     }
+ 
+     // Paper start
+@@ -2181,6 +2190,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+ 
+     final void sendChunk(EntityPlayer entityplayer, Packet<?>[] apacket, Chunk chunk) { this.a(entityplayer, apacket, chunk); } // Paper - OBFHELPER
+     private void a(EntityPlayer entityplayer, Packet<?>[] apacket, Chunk chunk) {
++        synchronized (this.trackedEntities) {
+         if (apacket[0] == null) {
+             // Paper start - add 8 for light fix workaround
+             if (apacket.length != 10) { // in case Plugins call sendChunk, resize
+@@ -2303,6 +2313,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+                 entityplayer.playerConnection.sendPacket(new PacketPlayOutMount(entity1));
+             }
+         }
++        }
+ 
+     }
+ 
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
 index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..23a0f31a2fe7181580b1b8f01a0b8d0693645f41 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
