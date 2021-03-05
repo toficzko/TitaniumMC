@@ -6,7 +6,7 @@ Subject: [PATCH] Async Entity Ticking
 Based off of: https://github.com/PaperMC/Paper/pull/2671 by Bloodrayne1995
 
 diff --git a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
-index cdda74564ced196ae577a64782236c2bfe36e433..2369c567cd6bc9679ba929b4dad7df52a0692e1b 100644
+index cdda74564ced196ae577a64782236c2bfe36e433..caa086cebcec5b0d60854528eb1e77ea36a3e814 100644
 --- a/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
 +++ b/src/main/java/com/destroystokyo/paper/util/maplist/EntityList.java
 @@ -5,6 +5,7 @@ import net.minecraft.server.Entity;
@@ -27,13 +27,13 @@ index cdda74564ced196ae577a64782236c2bfe36e433..2369c567cd6bc9679ba929b4dad7df52
      }
  
      public boolean remove(final Entity entity) {
-+        // synchronized (this.entityToIndex) { // Yatopia
++        synchronized (this.entityToIndex) { // Yatopia
          final int index = this.entityToIndex.remove(entity.getId());
          if (index == Integer.MIN_VALUE) {
              return false;
          }
  
-+        // synchronized (this.entities) { // Yatopia
++        synchronized (this.entities) { // Yatopia
          // move the entity at the end to this index
          final int endIndex = --this.count;
          final Entity end = this.entities[endIndex];
@@ -42,13 +42,13 @@ index cdda74564ced196ae577a64782236c2bfe36e433..2369c567cd6bc9679ba929b4dad7df52
          this.entities[index] = end;
          this.entities[endIndex] = null;
 -
-+        // }} // Yatopia
++        }} // Yatopia
          return true;
      }
  
      public boolean add(final Entity entity) {
          final int count = this.count;
-+        // synchronized (this.entityToIndex) { // Yatopia
++        synchronized (this.entityToIndex) { // Yatopia
          final int currIndex = this.entityToIndex.putIfAbsent(entity.getId(), count);
  
          if (currIndex != Integer.MIN_VALUE) {
@@ -56,10 +56,10 @@ index cdda74564ced196ae577a64782236c2bfe36e433..2369c567cd6bc9679ba929b4dad7df52
          }
  
 -        Entity[] list = this.entities;
-+        // synchronized (this.entities) { // Yatopia
++        synchronized (this.entities) { // Yatopia
  
 +        Entity[] list = this.entities;
-+        // synchronized (list) { // Yatopia
++        synchronized (list) { // Yatopia
          if (list.length == count) {
              // resize required
              list = this.entities = Arrays.copyOf(list, (int)Math.max(4L, count * 2L)); // overflow results in negative
@@ -68,7 +68,7 @@ index cdda74564ced196ae577a64782236c2bfe36e433..2369c567cd6bc9679ba929b4dad7df52
          list[count] = entity;
          this.count = count + 1;
 -
-+        // }}} // Yatopia
++        }}} // Yatopia
          return true;
      }
  
@@ -76,30 +76,30 @@ index cdda74564ced196ae577a64782236c2bfe36e433..2369c567cd6bc9679ba929b4dad7df52
          if (index < 0 || index >= this.count) {
              throw new IndexOutOfBoundsException("Index: " + index + " is out of bounds, size: " + this.count);
          }
-+        // synchronized (this.entities) {
++        synchronized (this.entities) {
          return this.entities[index];
-+        // }
++        }
      }
  
      public Entity getUnchecked(final int index) {
-+        // synchronized (this.entities) {
++        synchronized (this.entities) {
          return this.entities[index];
-+        // }
++        }
      }
  
      public Entity[] getRawData() {
-+        // synchronized (this.entities) {
++        synchronized (this.entities) {
          return this.entities;
-+        // }
++        }
      }
  
      public void clear() {
-+        // synchronized (this.entityToIndex) { // Yatopia
++        synchronized (this.entityToIndex) { // Yatopia
          this.entityToIndex.clear();
-+        // } // Yatopia
-+        // synchronized (this.entities) {
++        } // Yatopia
++        synchronized (this.entities) {
          Arrays.fill(this.entities, 0, this.count, null);
-+        // }
++        }
          this.count = 0;
      }
  
