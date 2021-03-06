@@ -74,7 +74,6 @@ This is an overview over all patches that are currently used.
 | api |  Advancement API      | William Blake Galbreath |  |
 | server |  Airplane Configuration      | Paul Sauve |  |
 | server |  Airplane MC Dev Fixes      | Paul Sauve |  |
-| server |  AirplaneLite Data Structs      | Paul Sauve |  |
 | server |  Allow Entities to be removed from a world while ticking      | Spottedleaf |  |
 | server |  Allow anvil colors      | William Blake Galbreath |  |
 | server |  Allow color codes in books      | William Blake Galbreath |  |
@@ -107,7 +106,6 @@ This is an overview over all patches that are currently used.
 | server |  Charged creeper naturally spawn      | William Blake Galbreath |  |
 | api |  ChatColor conveniences      | William Blake Galbreath |  |
 | server |  Chickens can retaliate      | William Blake Galbreath |  |
-| server |  Concurrent visibleChunks and updatingChunks      | Paul Sauve |  |
 | server |  Config migration: climbing should not bypass cramming      | jmp |  |
 | server |  Config migration: disable saving projectiles to disk -&gt;      | jmp |  |
 | server |  Config to allow Note Block sounds when blocked      | Encode42 |  |
