@@ -5,10 +5,10 @@ Subject: [PATCH] finally remove worldborder
 
 
 diff --git a/src/main/java/net/minecraft/server/WorldBorder.java b/src/main/java/net/minecraft/server/WorldBorder.java
-index 7e9a5a22201985da78baa358a56a40ec7b9b6954..62fc0beb781bc3aa4db90722c8d1b7b7466f9d9c 100644
+index f49ea31334c861e02252acde1e6075a2b17a7e53..a31f50feddea00574f1ee2cf669efa517b77fce5 100644
 --- a/src/main/java/net/minecraft/server/WorldBorder.java
 +++ b/src/main/java/net/minecraft/server/WorldBorder.java
-@@ -29,38 +29,45 @@ public class WorldBorder {
+@@ -32,38 +32,45 @@ public class WorldBorder {
  
      public final boolean isInBounds(BlockPosition blockposition) { return this.a(blockposition); } // Paper - OBFHELPER
      public boolean a(BlockPosition blockposition) {
@@ -62,7 +62,7 @@ index 7e9a5a22201985da78baa358a56a40ec7b9b6954..62fc0beb781bc3aa4db90722c8d1b7b7
          double borderMinX = this.getMinX();
          double borderMaxX = this.getMaxX();
  
-@@ -83,13 +90,17 @@ public class WorldBorder {
+@@ -86,13 +93,17 @@ public class WorldBorder {
                          borderMinX, Double.NEGATIVE_INFINITY, borderMinZ, borderMaxX, Double.POSITIVE_INFINITY, borderMaxZ
                  )
                  ;
@@ -81,7 +81,7 @@ index 7e9a5a22201985da78baa358a56a40ec7b9b6954..62fc0beb781bc3aa4db90722c8d1b7b7
          double borderMinX = this.getMinX() + MCUtil.COLLISION_EPSILON;
          double borderMaxX = this.getMaxX() - MCUtil.COLLISION_EPSILON;
  
-@@ -97,6 +108,8 @@ public class WorldBorder {
+@@ -100,6 +111,8 @@ public class WorldBorder {
          double borderMaxZ = this.getMaxZ() - MCUtil.COLLISION_EPSILON;
  
          return boxMinX < borderMinX || boxMaxX > borderMaxX || boxMinZ < borderMinZ || boxMaxZ > borderMaxZ;
@@ -90,7 +90,7 @@ index 7e9a5a22201985da78baa358a56a40ec7b9b6954..62fc0beb781bc3aa4db90722c8d1b7b7
      }
      // Tuinity end - optimise collisions
  
-@@ -164,7 +177,8 @@ public class WorldBorder {
+@@ -171,7 +184,8 @@ public class WorldBorder {
      }
  
      public double getSize() {
@@ -100,23 +100,23 @@ index 7e9a5a22201985da78baa358a56a40ec7b9b6954..62fc0beb781bc3aa4db90722c8d1b7b7
      }
  
      public long j() {
-@@ -176,6 +190,7 @@ public class WorldBorder {
+@@ -183,6 +197,7 @@ public class WorldBorder {
      }
  
      public void setSize(double d0) {
 +        /*
-         this.j = new WorldBorder.d(d0);
-         Iterator iterator = this.l().iterator();
+         // Paper start
+         WorldBorderBoundsChangeEvent event = new WorldBorderBoundsChangeEvent(world.getWorld(), world.getWorld().getWorldBorder(), WorldBorderBoundsChangeEvent.Type.INSTANT_MOVE, getSize(), d0, 0);
+         if (!event.callEvent()) return;
+@@ -199,6 +214,7 @@ public class WorldBorder {
  
-@@ -184,6 +199,7 @@ public class WorldBorder {
- 
-             iworldborderlistener.a(this, d0);
+             iworldborderlistener.a(this, event.getNewSize()); // Paper
          }
 +        */
  
      }
  
-@@ -297,8 +313,10 @@ public class WorldBorder {
+@@ -322,8 +338,10 @@ public class WorldBorder {
          this.setWarningTime(worldborder_c.f());
          if (worldborder_c.h() > 0L) {
              this.transitionSizeBetween(worldborder_c.g(), worldborder_c.i(), worldborder_c.h());
@@ -127,7 +127,7 @@ index 7e9a5a22201985da78baa358a56a40ec7b9b6954..62fc0beb781bc3aa4db90722c8d1b7b7
          }
  
      }
-@@ -334,7 +352,8 @@ public class WorldBorder {
+@@ -359,7 +377,8 @@ public class WorldBorder {
              this.d = worldborder.getDamageBuffer();
              this.e = worldborder.getWarningDistance();
              this.f = worldborder.getWarningTime();
@@ -137,7 +137,7 @@ index 7e9a5a22201985da78baa358a56a40ec7b9b6954..62fc0beb781bc3aa4db90722c8d1b7b7
              this.h = worldborder.j();
              this.i = worldborder.k();
          }
-@@ -378,7 +397,8 @@ public class WorldBorder {
+@@ -403,7 +422,8 @@ public class WorldBorder {
          public static WorldBorder.c a(DynamicLike<?> dynamiclike, WorldBorder.c worldborder_c) {
              double d0 = dynamiclike.get("BorderCenterX").asDouble(worldborder_c.a);
              double d1 = dynamiclike.get("BorderCenterZ").asDouble(worldborder_c.b);

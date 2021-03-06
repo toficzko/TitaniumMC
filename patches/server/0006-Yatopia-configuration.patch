@@ -27,12 +27,12 @@ index 4b171a2a60e24947e884f8988920f335bd99a471..5431ec9e8794397b3082a1eb49f82767
              String hostName = "BrokenHost";
              try {
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index 84d13600973eae3f5e61605cd6b041cb3ca61754..fb49f59baddf610e7fd304fa744e312baf70022a 100644
+index 5d0eb1ebe07a01e9d9a0ab2968be032f1b847075..679d3e573eb75f6074be04e8b0ff0ab2afaf6cb8 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -187,6 +187,15 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
-         com.tuinity.tuinity.config.TuinityConfig.init((java.io.File) options.valueOf("tuinity-settings")); // Tuinity - Server Config
+@@ -188,6 +188,15 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
          gg.airplane.AirplaneConfig.load(); // Airplane - config
+         gg.airplane.AirplaneCommand.register(); // Airplane - command
  
 +        // Yatopia start
 +        try {
@@ -47,7 +47,7 @@ index 84d13600973eae3f5e61605cd6b041cb3ca61754..fb49f59baddf610e7fd304fa744e312b
          this.setAllowFlight(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.ba());
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index e66671e905b2ed4bae3eb989f8443ea44ed4d7e5..28526dc96d2ccef58db715b7f6d8ac16eb23f229 100644
+index 310c2a3a37b77b929032be8a2d3099e30339f06c..1bf30786549cb36e3bcd7f682e3091f70747b4e7 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -271,6 +271,7 @@ public abstract class EntityLiving extends Entity {

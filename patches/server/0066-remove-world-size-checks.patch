@@ -92,10 +92,10 @@ index 11ad785b2408ba94f9d80c4af3a81e0c0e7e9a64..42ffb688d933a33e484a816390b91abf
              if (i > 0L) {
                  worldborder.transitionSizeBetween(d1, d0, i);
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index dfb334bf0a9f491ebe5221a891c33f8d2ffbd195..c00feff787ee62bc6d460a8db6e529c725d94269 100644
+index 335669d4adf32f2143fca67377f851f351f40950..ac0a2ec6b7d03fa565d774ec0ba52c5361c866fe 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -560,7 +560,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+@@ -561,7 +561,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
  
      @Override
      public int au() {
@@ -201,7 +201,7 @@ index 2ba6b58fe5330582c078c53c241eda4d224f198a..8f306cbe2e88f088f2f8d4bad6f82bee
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 48914de72454d76de11e7493633f4c24302346b0..bea7801f795268922e9dbf413e005c1bf1d2b882 100644
+index f4539f065bc052d90650bfe1557a84b5a80cccf8..9016554f9f7b637ce5e80ce56504b4a23b25e7ac 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
 @@ -382,7 +382,8 @@ public class PlayerConnection implements PacketListenerPlayIn {
@@ -248,10 +248,10 @@ index b321f2b9104263fd4ad770b359337fd6a59e1e63..80689896972bd0dcdb2537c30d8f2827
          return k;
      }
 diff --git a/src/main/java/net/minecraft/server/WorldBorder.java b/src/main/java/net/minecraft/server/WorldBorder.java
-index 0d10d317cd0b60fc0866ae505c7fd71fa886c48b..7e9a5a22201985da78baa358a56a40ec7b9b6954 100644
+index 6b4c007550c3e2e405314d8931630557655ce6f1..f49ea31334c861e02252acde1e6075a2b17a7e53 100644
 --- a/src/main/java/net/minecraft/server/WorldBorder.java
 +++ b/src/main/java/net/minecraft/server/WorldBorder.java
-@@ -14,9 +14,15 @@ public class WorldBorder {
+@@ -17,9 +17,15 @@ public class WorldBorder {
      private int f = 5;
      private double g;
      private double h;

@@ -213,7 +213,7 @@ index ef9f1a8acd8da0f5ed5e55cb4aaa33c81a8773c9..eb4c2f5da1095ed6214799418b90142f
                          if (fluid.a(tag)) {
                              double d2 = (double) ((float) i2 + fluid.getHeight(this.world, blockposition_mutableblockposition));
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd440095e2 100644
+index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c3426c9b825 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -44,6 +44,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;
@@ -286,7 +286,7 @@ index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd
  
              if (!iblockdata.isAir()) {
                  SoundEffectType soundeffecttype = iblockdata.getStepSound();
-@@ -2202,7 +2207,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2211,7 +2216,7 @@ public abstract class EntityLiving extends Entity {
      private void a(Entity entity) {
          Vec3D vec3d;
  
@@ -295,7 +295,7 @@ index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd
              vec3d = entity.b(this);
          } else {
              vec3d = new Vec3D(entity.locX(), entity.locY() + (double) entity.getHeight(), entity.locZ());
-@@ -2256,7 +2261,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2265,7 +2270,7 @@ public abstract class EntityLiving extends Entity {
                  this.fallDistance = 0.0F;
              }
  
@@ -304,7 +304,7 @@ index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd
              double d1;
              float f;
  
-@@ -2372,7 +2377,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2381,7 +2386,7 @@ public abstract class EntityLiving extends Entity {
                  }
              } else {
                  BlockPosition blockposition = this.as();
@@ -313,7 +313,7 @@ index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd
  
                  f = this.onGround ? f5 * 0.91F : 0.91F;
                  Vec3D vec3d6 = this.a(vec3d, f5);
-@@ -3433,7 +3438,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3442,7 +3447,7 @@ public abstract class EntityLiving extends Entity {
  
              while (!flag2 && blockposition.getY() > 0) {
                  BlockPosition blockposition1 = blockposition.down();
@@ -322,7 +322,7 @@ index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd
  
                  if (iblockdata.getMaterial().isSolid()) {
                      flag2 = true;
-@@ -3528,7 +3533,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3537,7 +3542,7 @@ public abstract class EntityLiving extends Entity {
              this.stopRiding();
          }
  
@@ -331,7 +331,7 @@ index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd
  
          if (iblockdata.getBlock() instanceof BlockBed) {
              this.world.setTypeAndData(blockposition, (IBlockData) iblockdata.set(BlockBed.OCCUPIED, true), 3);
-@@ -3547,7 +3552,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3556,7 +3561,7 @@ public abstract class EntityLiving extends Entity {
  
      private boolean x() {
          return (Boolean) this.getBedPosition().map((blockposition) -> {
@@ -340,7 +340,7 @@ index d649fc863c3a656f59a6a3a0fdbbdfec75742922..330189ac1bd951e02efd3799b37173fd
          }).orElse(false);
      }
  
-@@ -3557,7 +3562,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3566,7 +3571,7 @@ public abstract class EntityLiving extends Entity {
  
          this.world.getClass();
          optional.filter(world::isLoaded).ifPresent((blockposition) -> {
