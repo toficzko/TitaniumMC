@@ -365,10 +365,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..af7d363467730c6f03387b621aba5d64
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cd6439eeb5f4e717cbe6fce8b9941e410f3b1866
+index 0000000000000000000000000000000000000000..8d434396cde4a4ca0fb934516805a01d321aad83
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,62 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -379,8 +379,10 @@ index 0000000000000000000000000000000000000000..cd6439eeb5f4e717cbe6fce8b9941e41
 +import org.bukkit.Server;
 +import org.bukkit.Bukkit;
 +import co.aikar.timings.TimingHistory;
++
 +import java.util.concurrent.Executors;
 +import java.util.concurrent.ExecutorService;
++import java.util.concurrent.ThreadPoolExecutor;
 +import java.util.concurrent.TimeUnit;
 +
 +public class AsyncEntityManager {
@@ -393,26 +395,23 @@ index 0000000000000000000000000000000000000000..cd6439eeb5f4e717cbe6fce8b9941e41
 +    public AsyncEntityManager() {}
 +
 +    public void queueEntity(Entity entity) {
-+        // synchronized(targetEntitiesTick) {
-+            targetEntitiesTick.add(entity);
-+        // }
++        targetEntitiesTick.add(entity);
 +    }
 +
 +    public void queueEntityInactive(Entity entity) {
-+        // synchronized(targetEntitiesInactive) {
-+            targetEntitiesInactive.add(entity);
-+        // }
++        targetEntitiesInactive.add(entity);
 +    }
 +
 +    public void startTick() {
-+        targetEntitiesTick.stream().forEach(entity -> {
++        targetEntitiesTick.parallelStream().forEach(entity -> {
 +            entityTickExecutor.execute(() -> {
-+            TimingHistory.activatedEntityTicks++;
-+            entity.tick();
-+            entity.postTick();
++                TimingHistory.activatedEntityTicks++;
++                entity.tick();
++                entity.postTick();
 +            });
 +        });
-+        targetEntitiesInactive.stream().forEach(entity -> {
++
++        targetEntitiesInactive.parallelStream().forEach(entity -> {
 +            entityTickExecutor.execute(() -> {
 +                entity.inactiveTick();
 +            });
