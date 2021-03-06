@@ -140,8 +140,33 @@ index c46c3e8aaeb7496a4cfedae68181cf6e09b75acd..85ae1a0faf336412876d303e7897ce65
                      worldserver.close();
                  } catch (IOException ioexception) {
                      MinecraftServer.LOGGER.error("Exception closing the level", ioexception);
+diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+index d87a675ee78d8596bb03694ee57636cca43fb590..cedfdaf0686dfb6d33716e5b81fa75a1c134c824 100644
+--- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
++++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+@@ -681,11 +681,6 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+         return chunk == null ? null : chunk.visible;
+         // AirplaneL end
+     }
+-    // Airplane start - since neither map can be updated during tracker tick, it's safe to allow direct retrieval here
+-    private PlayerChunk trackerGetVisibleChunk(long i) {
+-        return this.hasPendingVisibleUpdate ? this.pendingVisibleChunks.get(i) : ((ProtectedVisibleChunksMap) this.visibleChunks).safeGet(i);
+-    }
+-    // Airplane end
+ 
+     protected final IntSupplier getPrioritySupplier(long i) { return c(i); } // Paper - OBFHELPER
+     protected IntSupplier c(long i) {
+@@ -2504,7 +2499,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+ 
+                     if (!flag1) {
+                         ChunkCoordIntPair chunkcoordintpair = new ChunkCoordIntPair(this.tracker.chunkX, this.tracker.chunkZ);
+-                        PlayerChunk playerchunk = PlayerChunkMap.this.trackerGetVisibleChunk(chunkcoordintpair.pair()); // Airplane
++                        PlayerChunk playerchunk = PlayerChunkMap.this.getVisibleChunk(chunkcoordintpair.pair());
+ 
+                         if (playerchunk != null && playerchunk.getSendingChunk() != null && PlayerChunkMap.this.playerChunkManager.isChunkSent(entityplayer, MathHelper.floor(this.tracker.locX()) >> 4, MathHelper.floor(this.tracker.locZ()) >> 4)) { // Paper - no-tick view distance // Tuinity - don't broadcast in chunks the player hasn't received
+                             flag1 = PlayerChunkMap.b(chunkcoordintpair, entityplayer, false) <= PlayerChunkMap.this.viewDistance;
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..4529bebde9a07b3d2c17420fd220b27a6ce8fb84 100644
+index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..8f7d5903f595d040d29d96cc1c8a991833af4602 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -252,7 +277,20 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..4529bebde9a07b3d2c17420fd220b27a
      }
  
      // Tuinity start - optimise notify()
-@@ -2181,16 +2200,21 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2105,6 +2124,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+     // Tuinity end - optimise notify()
+ 
+     private void registerEntity(Entity entity) {
++        MCUtil.ensureMain(() -> {
+         org.spigotmc.AsyncCatcher.catchOp("entity register"); // Spigot
+         // Paper start - don't double enqueue entity registration
+         //noinspection ObjectEquality
+@@ -2177,20 +2197,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+             entity.shouldBeRemoved = false; // Paper - shouldn't be removed after being re-added
+             new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
+         }
++        });
+ 
      }
  
      public void removeEntity(Entity entity) {
@@ -281,7 +319,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..4529bebde9a07b3d2c17420fd220b27a
      private void removeEntityFromChunk(Entity entity) {
          Chunk ichunkaccess = entity.getCurrentChunk(); // Paper - getChunkAt(x,z,full,false) is broken by CraftBukkit as it won't return an unloading chunk. Use our current chunk reference as this points to what chunk they need to be removed from anyways
  
-@@ -2199,6 +2223,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2199,6 +2225,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          }
  
      }
