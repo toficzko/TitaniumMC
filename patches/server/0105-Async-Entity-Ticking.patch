@@ -22,6 +22,87 @@ index 08ed243259f052165c6f75aed1d1d65a14219715..2a64e01d2fb84510db14d4627fd15d4c
      }
  
      public final int id; /* We don't override getId as the spec requires that it be unique (with respect to all other threads) */
+diff --git a/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java b/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
+index 180c724b40228f11ed0c9869779cf466e8e97ebe..507d71825603fdcd64fa1a14469bf7689f3d37fc 100644
+--- a/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
++++ b/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
+@@ -31,7 +31,7 @@ public class EntityTrackerEngine {
+     /**
+      * Called when an entity is added to the world.
+      */
+-    public void onEntityAdded(int x, int y, int z, EntityLiving entity) {
++    public synchronized void onEntityAdded(int x, int y, int z, EntityLiving entity) {
+         if (this.addEntity(x, y, z, entity)) {
+             this.addListener(x, y, z, entity.getListener());
+         }
+@@ -40,7 +40,7 @@ public class EntityTrackerEngine {
+     /**
+      * Called when an entity is removed from the world.
+      */
+-    public void onEntityRemoved(int x, int y, int z, EntityLiving entity) {
++    public synchronized void onEntityRemoved(int x, int y, int z, EntityLiving entity) {
+         if (this.removeEntity(x, y, z, entity)) {
+             this.removeListener(entity.getListener());
+         }
+@@ -183,7 +183,7 @@ public class EntityTrackerEngine {
+             this.key = key;
+         }
+ 
+-        public void addListener(NearbyEntityListener listener) {
++        public synchronized void addListener(NearbyEntityListener listener) {
+             for (EntityLiving entity : this.entities) {
+                 listener.onEntityEnteredRange(entity);
+             }
+@@ -191,7 +191,7 @@ public class EntityTrackerEngine {
+             this.listeners.add(listener);
+         }
+ 
+-        public void removeListener(NearbyEntityListener listener) {
++        public synchronized void removeListener(NearbyEntityListener listener) {
+             if (this.listeners.remove(listener)) {
+                 for (EntityLiving entity : this.entities) {
+                     listener.onEntityLeftRange(entity);
+diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
+index 04acf3b9052986c0ad305350133644031d240b9b..2adf655f562419da05189cf970d52aef83070c56 100644
+--- a/src/main/java/net/minecraft/server/Chunk.java
++++ b/src/main/java/net/minecraft/server/Chunk.java
+@@ -22,6 +22,7 @@ import java.util.stream.StreamSupport;
+ import javax.annotation.Nullable;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import net.minecraft.server.MCUtil;
+ 
+ public class Chunk implements IChunkAccess {
+ 
+@@ -814,11 +815,13 @@ public class Chunk implements IChunkAccess {
+         if (!this.entitySlices[i].remove(entity)) { // Tuinity - optimise hard colliding entities // Tuinity - entities by class // Tuinity
+             return;
+         }
++        MCUtil.ensureMain(() -> {
+         // Yatopia start - Port lithium
+         if (entity instanceof EntityLiving) {
+             this.world.getEntityTracker().onEntityAdded(entity.chunkX, entity.chunkY, entity.chunkZ, (EntityLiving) entity);
+         }
+         // Yatopia end
++        });
+         if (entity instanceof EntityItem) {
+             itemCounts[i]--;
+         } else if (entity instanceof IInventory) {
+@@ -828,11 +831,14 @@ public class Chunk implements IChunkAccess {
+         this.markDirty(); // Paper
+         // Paper end
+         this.entities.remove(entity); // Paper
++        MCUtil.ensureMain(() -> {
+         // Yatopia start - Port lithium
+         if (entity instanceof EntityLiving) {
+             this.world.getEntityTracker().onEntityRemoved(entity.chunkX, entity.chunkY, entity.chunkZ, (EntityLiving) entity);
+         }
+         // Yatopia end
++        });
++
+     }
+ 
+     public final int getHighestBlockY(HeightMap.Type heightmap_type, int i, int j) { return this.getHighestBlock(heightmap_type, i, j) + 1; } // Paper - sort of an obfhelper, but without -1
 diff --git a/src/main/java/net/minecraft/server/CombatTracker.java b/src/main/java/net/minecraft/server/CombatTracker.java
 index a8054a599e3eb502e7bbce903b5683987f95fb66..f96fce1e7bf8aa68fe03cdfefa8600d8653ce88e 100644
 --- a/src/main/java/net/minecraft/server/CombatTracker.java
