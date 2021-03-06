@@ -141,7 +141,7 @@ index c46c3e8aaeb7496a4cfedae68181cf6e09b75acd..85ae1a0faf336412876d303e7897ce65
                  } catch (IOException ioexception) {
                      MinecraftServer.LOGGER.error("Exception closing the level", ioexception);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..78cc8bea66d9a61e37615493a7d0dcaba6c83ff0 100644
+index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..d6bd4e59218e2c044f9a2e9def34210a2ebc32c1 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -204,7 +204,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..78cc8bea66d9a61e37615493a7d0dcab
 -                entity.tick();
 -                entity.postTick(); // CraftBukkit
 -                } else { entity.inactiveTick(); } // Paper - EAR 2
-+                if (org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities && !(entity instanceof EntityHuman)) {
++                if (org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities && !(entity instanceof EntityHuman || entity instanceof EntityFallingBlock)) {
 +                    if (isActive) {
 +                        TimingHistory.activatedEntityTicks++;
 +                        this.asyncentitymanager.queueEntity(entity);
