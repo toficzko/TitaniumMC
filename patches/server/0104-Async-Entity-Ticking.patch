@@ -334,7 +334,7 @@ index 51e9c54cddf4b28ba3d3d892322c487774bdab70..c0d0e69711e0db496085cc07a6a92603
  
      public static void catchOp(String reason)
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..ec3fbc74ea0227bcdf92db365db07a6c8cf80fb2 100644
+index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f3ac86c9f8d2df2573cdd5d6f8d67192a4e438be 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 @@ -304,4 +304,11 @@ public class YatopiaConfig {
@@ -343,15 +343,15 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..ec3fbc74ea0227bcdf92db365db07a6c
      }
 +
 +    public static boolean asyncEntities = false;
-+    public static boolean asyncEntityDebug = false;
++    public static int asyncEntityThreads = 4;
 +    private static void asyncentityTicking() {
 +        asyncEntities = getBoolean("settings.async-entity.enabled", asyncEntities);
-+        asyncEntityDebug = getBoolean("settings.async-entity.debug", asyncEntityDebug);
++        asyncEntityThreads = getInt("settings.async-entity.threads", asyncEntityThreads);
 +    }
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a7492ef2b52f42f2593169d9fb86462210551d2a
+index 0000000000000000000000000000000000000000..f6d9efa036ad15e83607ede754a2fd93ba6ee379
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 @@ -0,0 +1,66 @@
@@ -376,7 +376,7 @@ index 0000000000000000000000000000000000000000..a7492ef2b52f42f2593169d9fb864622
 +
 +public class AsyncEntityManager {
 +
-+    public ForkJoinPool entityTickPool = new ForkJoinPool();
++    public ForkJoinPool entityTickPool = new ForkJoinPool(org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntityThreads);
 +
 +    private CopyOnWriteArrayList<Entity> targetEntitiesTick = new CopyOnWriteArrayList<>();
 +    private CopyOnWriteArrayList<Entity> targetEntitiesInactive = new CopyOnWriteArrayList<>();
