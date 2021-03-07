@@ -194,7 +194,7 @@ index 916c12df23fe27470b994b7267e3db2dbb4ed13e..578a18b7c9f92efb2b0d9b0e36cb0505
      private final ServerStatisticManager serverStatisticManager;
      private float lastHealthScored = Float.MIN_VALUE;
 diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
-index 2f758b3d3eaf5d5781a2072d0f3f7442b73cb9a8..5fbc9dfdc113da71940fd5b38bfd77b2aa4e2ada 100644
+index 2f758b3d3eaf5d5781a2072d0f3f7442b73cb9a8..63bcd1b61d0485b064d619ddfa0e201034087772 100644
 --- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 +++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 @@ -46,6 +46,10 @@ public class EntityTrackerEntry {
@@ -213,7 +213,7 @@ index 2f758b3d3eaf5d5781a2072d0f3f7442b73cb9a8..5fbc9dfdc113da71940fd5b38bfd77b2
      public final void tick() { this.a(); } // Paper - OBFHELPER
      public void a() {
 -        com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Tracker update"); // Tuinity
-+        // com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Tracker update"); // Tuinity
++        //com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Tracker update"); // Tuinity // Airplane - allow multithreaded
          List<Entity> list = this.tracker.passengers; // Paper - do not copy list
  
          if (!list.equals(this.p)) {
@@ -287,7 +287,7 @@ index 2f758b3d3eaf5d5781a2072d0f3f7442b73cb9a8..5fbc9dfdc113da71940fd5b38bfd77b2
          if (this.tracker instanceof EntityPlayer) {
              ((EntityPlayer) this.tracker).playerConnection.sendPacket(packet);
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index b551c1dec17162eb23cf0a480bca1746ea9e3306..27bcbfe73aeb638c3303ef2a56c6563c7388a277 100644
+index b551c1dec17162eb23cf0a480bca1746ea9e3306..09eb783b322147a6065416fba8c516692a2ca276 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -659,6 +659,11 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
@@ -325,7 +325,7 @@ index b551c1dec17162eb23cf0a480bca1746ea9e3306..27bcbfe73aeb638c3303ef2a56c6563c
          try {
 +            // Airplane start - multithreaded tracker
 +            if (this.trackQueue == null) this.trackQueue = new gg.airplane.structs.TrackQueue(this.world.getChunkProvider().entityTickingChunks, trackerMainQueue);
-+            if (gg.airplane.AirplaneConfig.multithreadedEntityTracker && this.world.getChunkProvider().entityTickingChunks.size() > 250) {
++            if (gg.airplane.AirplaneConfig.multithreadedEntityTracker) {
 +                this.trackQueue.start();
 +                return;
 +            }
