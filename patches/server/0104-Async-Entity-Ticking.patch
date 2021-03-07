@@ -140,6 +140,19 @@ index c46c3e8aaeb7496a4cfedae68181cf6e09b75acd..85ae1a0faf336412876d303e7897ce65
                      worldserver.close();
                  } catch (IOException ioexception) {
                      MinecraftServer.LOGGER.error("Exception closing the level", ioexception);
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index 07d90599da20eb7c15a1cebb2401e157d617c475..72a2f5b93db5bbc73e1142275501de942eea3473 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -590,7 +590,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+     }
+ 
+     @Override
+-    public final boolean setTypeAndData(BlockPosition blockposition, IBlockData iblockdata, int i) { // Paper - final for inline
++    public synchronized final boolean setTypeAndData(BlockPosition blockposition, IBlockData iblockdata, int i) { // Paper - final for inline
+         return this.a(blockposition, iblockdata, i, 512);
+     }
+ 
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
 index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..9b9e9efe3813028371e823b5563eeadf32644ec3 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
