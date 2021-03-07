@@ -20,10 +20,10 @@ index 07c24a62c56f8bd20490560953d64bbeff265cca..a1b5752ab6b1471b28345abbe38f155a
  
              this.d(chunkcoordintpair);
 diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
-index f034e6e5123a7a222f59d1092097b00ae5ccb5fa..829d6c7ca3e270ec8c103df7f9646ce10f6eb659 100644
+index 1bf2c27b6b66963a0130debfa04647fb38899b4b..ea36457481532453aa510b6d69c4a7d54624d46e 100644
 --- a/src/main/java/net/minecraft/server/VillagePlace.java
 +++ b/src/main/java/net/minecraft/server/VillagePlace.java
-@@ -412,6 +412,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -391,6 +391,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
          }).orElse(false);
      }
  
@@ -31,7 +31,7 @@ index f034e6e5123a7a222f59d1092097b00ae5ccb5fa..829d6c7ca3e270ec8c103df7f9646ce1
      @Override
      public void a(BooleanSupplier booleansupplier) {
          // Paper start - async chunk io
-@@ -419,7 +420,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -398,7 +399,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
              super.a(booleansupplier);
          } else {
              //super.a(booleansupplier); // re-implement below

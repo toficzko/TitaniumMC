@@ -5,7 +5,7 @@ Subject: [PATCH] mysql 8.0.23
 
 
 diff --git a/pom.xml b/pom.xml
-index 7686566b1817c9c2f9d3c5fc188f74c568d35a85..f76e7ecffacd494014049dea0cc0c74554914e1d 100644
+index 0ac0612bc4a15616e18cc7bb043a58f7d25f40e0..893149bf879f22b29e4dfc4418c24c6f11698d02 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -154,7 +154,7 @@

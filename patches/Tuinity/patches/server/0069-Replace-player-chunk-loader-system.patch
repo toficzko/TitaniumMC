@@ -1376,7 +1376,7 @@ index 3127fc9dd87e82243e167862cae83ac87b7f4fa0..13e8bfa62cd8dc1f65b07d7f617e02ae
              }
          }
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 3ae51a3a5d863d58fde73934ed100fbd62e2b279..0638477cdeb8b024b9a9b0376ea7820227d0948b 100644
+index b76da339bc009edcd3fc1bce6cba729fd3883054..70333ada38945877f225c145e2ffbe6d7fb9965c 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -180,20 +180,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {

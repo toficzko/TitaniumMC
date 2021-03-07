@@ -75,6 +75,7 @@ This is an overview over all patches that are currently used.
 | api |  Advancement API      | William Blake Galbreath |  |
 | server |  Airplane Configuration      | Paul Sauve |  |
 | server |  Airplane MC Dev Fixes      | Paul Sauve |  |
+| server |  Airplane Profiler      | Paul Sauve |  |
 | server |  Allow Entities to be removed from a world while ticking      | Spottedleaf |  |
 | server |  Allow anvil colors      | William Blake Galbreath |  |
 | server |  Allow color codes in books      | William Blake Galbreath |  |
@@ -153,6 +154,7 @@ This is an overview over all patches that are currently used.
 | server |  Do not allow ticket level changes while unloading      | Spottedleaf |  |
 | server |  Do not load chunks during a crash report      | Spottedleaf |  |
 | server |  Do not retain playerchunkmap instance in light thread factory      | Spottedleaf |  |
+| server |  Do not run raytrace logic for AIR      | Spottedleaf |  |
 | server |  Don&#39;t allow StructureLocateEvent to change worlds      | Spottedleaf |  |
 | server |  Don&#39;t get entity equipment if not needed      | Paul Sauve |  |
 | server |  Don&#39;t load chunk with seed based feature search      | Phoenix616 |  |
@@ -173,6 +175,7 @@ This is an overview over all patches that are currently used.
 | server |  Entity lifespan      | William Blake Galbreath |  |
 | server |  Execute chunk tasks mid-tick      | Spottedleaf |  |
 | api |  ExecuteCommandEvent      | William Blake Galbreath |  |
+| api |  Expose findClass for profiler      | Paul Sauve |  |
 | server |  Farmland trampling changes      | Mariell Hoversholm |  |
 | server |  Fix &#39;outdated server&#39; showing in ping before server fully      | William Blake Galbreath |  |
 | server |  Fix Bukkit.createInventory() with type LECTERN      | willies952002 |  |
@@ -240,6 +243,7 @@ This is an overview over all patches that are currently used.
 | server |  Make CallbackExecutor strict again      | Spottedleaf |  |
 | server |  Make Iron Golems Swim      | William Blake Galbreath |  |
 | server |  Make entity breeding times configurable      | jmp |  |
+| server |  Make entity tracker use highest range of passengers      | Spottedleaf |  |
 | server |  Make lava flow speed configurable      | William Blake Galbreath |  |
 | server |  Make sure inlined getChunkAt has inlined logic for loaded      | Spottedleaf |  |
 | server |  Manually inline methods in BlockPosition      | Spottedleaf |  |

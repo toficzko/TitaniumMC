@@ -5,7 +5,7 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..d3580eb8d344e41797f9573abb6e2d6988f885a2 100644
+index a40fee5b4a88cf9dcb418b7d7bb7be5f59590c94..cf35ecffe22de3b456aaf9a9a4616eb4df37ad87 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,11 +1,11 @@
@@ -125,8 +125,8 @@ index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..d3580eb8d344e41797f9573abb6e2d69
              <scope>test</scope>
          </dependency>
          <!-- for optimized protocol handling -->
-@@ -161,6 +176,18 @@
-             <version>1.1.0-SNAPSHOT</version>
+@@ -168,6 +183,18 @@
+             <version>master-SNAPSHOT</version>
              <scope>compile</scope>
          </dependency>
 +        <!-- Fast Math -->
@@ -144,11 +144,10 @@ index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..d3580eb8d344e41797f9573abb6e2d69
      </dependencies>
  
      <repositories>
-@@ -174,6 +201,20 @@
-             <id>spigotmc-public</id>
-             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+@@ -186,6 +213,19 @@
+             <id>jitpack.io</id>
+             <url>https://jitpack.io</url>
          </repository>
-+
 +        <repository>
 +            <id>destroystokyo-repo</id>
 +            <url>https://papermc.io/repo/repository/maven-public/</url>
@@ -165,7 +164,7 @@ index 752d62eb3b87ab24260ec2c029bae0d2b0e3b908..d3580eb8d344e41797f9573abb6e2d69
      </repositories>
  
      <pluginRepositories>
-@@ -185,15 +226,15 @@
+@@ -197,15 +237,15 @@
  
      <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
      <build>

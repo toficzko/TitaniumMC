@@ -890,3 +890,71 @@ index 79a11d17a2822b192dec5981d0344ae689c3d385..d1ea47654db190e7cb7fa4ec1ac002f6
      protected Optional<R> d(long i) {
          SectionPosition sectionposition = SectionPosition.a(i);
  
+diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
+index fce9967912628c232fe41ccc17fe2296f001ec61..245bdedd17b844dcd13aa0b60dffb1cac6a5bdb8 100644
+--- a/src/main/java/net/minecraft/server/VillagePlace.java
++++ b/src/main/java/net/minecraft/server/VillagePlace.java
+@@ -227,31 +227,47 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+     }
+ 
+     public Optional<BlockPosition> c(Predicate<VillagePlaceType> predicate, Predicate<BlockPosition> predicate1, BlockPosition blockposition, int i, VillagePlace.Occupancy villageplace_occupancy) {
+-        return this.a(predicate, predicate1, blockposition, i, villageplace_occupancy).findFirst();
++        // Tuinity start - re-route to faster logic
++        BlockPosition ret = com.tuinity.tuinity.util.PoiAccess.findAnyPoiPosition(this, predicate, predicate1, blockposition, i, villageplace_occupancy, false);
++        return Optional.ofNullable(ret);
++        // Tuinity end - re-route to faster logic
+     }
+ 
+     public Optional<BlockPosition> d(Predicate<VillagePlaceType> predicate, BlockPosition blockposition, int i, VillagePlace.Occupancy villageplace_occupancy) {
+-        return this.c(predicate, blockposition, i, villageplace_occupancy).map(VillagePlaceRecord::f).min(Comparator.comparingDouble((blockposition1) -> {
+-            return blockposition1.j(blockposition);
+-        }));
++        // Tuinity start - re-route to faster logic
++        BlockPosition ret = com.tuinity.tuinity.util.PoiAccess.findClosestPoiDataPosition(this, predicate, null, blockposition, i, i*i, villageplace_occupancy, false);
++        return Optional.ofNullable(ret);
++        // Tuinity end - re-route to faster logic
+     }
+ 
+     public Optional<BlockPosition> a(Predicate<VillagePlaceType> predicate, Predicate<BlockPosition> predicate1, BlockPosition blockposition, int i) {
+-        return this.c(predicate, blockposition, i, VillagePlace.Occupancy.HAS_SPACE).filter((villageplacerecord) -> {
+-            return predicate1.test(villageplacerecord.f());
+-        }).findFirst().map((villageplacerecord) -> {
+-            villageplacerecord.b();
+-            return villageplacerecord.f();
+-        });
++        // Tuinity start - re-route to faster logic
++        VillagePlaceRecord ret = com.tuinity.tuinity.util.PoiAccess.findAnyPoiRecord(this, predicate, predicate1, blockposition, i,
++                VillagePlace.Occupancy.HAS_SPACE, false);
++        if (ret == null) {
++            return Optional.empty();
++        }
++        // copy from the map() from the old code
++        ret.b();
++        return Optional.ofNullable(ret.f());
++        // Tuinity end - re-route to faster logic
+     }
+ 
+     public Optional<BlockPosition> a(Predicate<VillagePlaceType> predicate, Predicate<BlockPosition> predicate1, VillagePlace.Occupancy villageplace_occupancy, BlockPosition blockposition, int i, Random random) {
+-        List<VillagePlaceRecord> list = (List) this.c(predicate, blockposition, i, villageplace_occupancy).collect(Collectors.toList());
+-
+-        Collections.shuffle(list, random);
+-        return list.stream().filter((villageplacerecord) -> {
+-            return predicate1.test(villageplacerecord.f());
+-        }).findFirst().map(VillagePlaceRecord::f);
++        // Tuinity start - re-route to faster logic
++        List<VillagePlaceRecord> list = new java.util.ArrayList<>();
++        com.tuinity.tuinity.util.PoiAccess.findAnyPoiRecords(this, predicate, predicate1, blockposition, i, villageplace_occupancy, false, Integer.MAX_VALUE, list);
++        // Tuinity end - re-route to faster logic
++
++        // Tuinity start - rewrite this to use improved logic
++        // the old method shuffled the list and then tried to find the first element in it that
++        // matched predicate1, however we moved predicate1 into the poi search. This means we can avoid a shuffle
++        // entirely, and just pick a random element from list
++        if (list.isEmpty()) {
++            return Optional.empty();
++        }
++        return Optional.ofNullable(list.get(random.nextInt(list.size())).f());
++        // Tuinity end - rewrite this to use improved logic
+     }
+ 
+     public boolean b(BlockPosition blockposition) {

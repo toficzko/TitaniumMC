@@ -5,7 +5,7 @@ Subject: [PATCH] unsafe pom changes
 
 
 diff --git a/pom.xml b/pom.xml
-index c4043be045d74c6a7e88fea24046ec9fa2d9e213..7686566b1817c9c2f9d3c5fc188f74c568d35a85 100644
+index bb6b2b574afbef1291837c13ec3f12b2ea49a09c..0ac0612bc4a15616e18cc7bb043a58f7d25f40e0 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -181,7 +181,7 @@
@@ -16,4 +16,4 @@ index c4043be045d74c6a7e88fea24046ec9fa2d9e213..7686566b1817c9c2f9d3c5fc188f74c5
 +            <version>2.0.0-SNAPSHOT</version>
              <scope>compile</scope>
          </dependency>
-         <!-- Fast Math -->
+         <!-- Airplane - Flare -->

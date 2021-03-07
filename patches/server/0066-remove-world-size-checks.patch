@@ -92,10 +92,10 @@ index 11ad785b2408ba94f9d80c4af3a81e0c0e7e9a64..42ffb688d933a33e484a816390b91abf
              if (i > 0L) {
                  worldborder.transitionSizeBetween(d1, d0, i);
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index 335669d4adf32f2143fca67377f851f351f40950..ac0a2ec6b7d03fa565d774ec0ba52c5361c866fe 100644
+index bd43204760663363fcc53c1a8c175668809f96b0..67725d06cba08cb171fad1600f4ea545393a7dc4 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -561,7 +561,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+@@ -562,7 +562,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
  
      @Override
      public int au() {
@@ -131,10 +131,10 @@ index 780474397acb4d0e7ecb4540e1a2db5721e59d3d..1962c14af5cc4ec4c66fa7c354aff98c
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index dc4b80101223fc3a248f1498f6fc5b4d2099567d..ef9f1a8acd8da0f5ed5e55cb4aaa33c81a8773c9 100644
+index e8090d425f36e60c5182adbf0c318ef3edb869ce..c1487c066213417faeec7a9461026aa01db2e8c1 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -1537,6 +1537,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -1550,6 +1550,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
      }
  
      public void f(double d0, double d1, double d2) {
@@ -142,7 +142,7 @@ index dc4b80101223fc3a248f1498f6fc5b4d2099567d..ef9f1a8acd8da0f5ed5e55cb4aaa33c8
          double d3 = MathHelper.a(d0, -3.0E7D, 3.0E7D);
          double d4 = MathHelper.a(d2, -3.0E7D, 3.0E7D);
  
-@@ -1544,6 +1545,11 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -1557,6 +1558,11 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
          this.lastY = d1;
          this.lastZ = d4;
          this.setPosition(d3, d1, d4);
@@ -154,7 +154,7 @@ index dc4b80101223fc3a248f1498f6fc5b4d2099567d..ef9f1a8acd8da0f5ed5e55cb4aaa33c8
          if (valid) world.getChunkAt((int) Math.floor(this.locX()) >> 4, (int) Math.floor(this.locZ()) >> 4); // CraftBukkit // Paper
      }
  
-@@ -2911,10 +2917,17 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2924,10 +2930,17 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
                  return null;
              } else {
                  WorldBorder worldborder = worldserver.getWorldBorder();

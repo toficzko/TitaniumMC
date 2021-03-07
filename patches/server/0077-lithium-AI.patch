@@ -1727,7 +1727,7 @@ index 8e90fabb0681457ec140f8553799463023a7a03b..c1e8a2cf070fd06c4b70a8f78ca7672d
          return (int) (i << 22 >> 42);
      }
 diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
-index 17db6fb6c8f2be2ae37be92891603a889cb7dbfd..59b8e29da8155873096d347bdd771571229a69ef 100644
+index 4b631a2f4e464e9ee397cf6d12534b81910ed8c1..475ac7a0d81c51a39ea588deb30d428002aa00d4 100644
 --- a/src/main/java/net/minecraft/server/VillagePlace.java
 +++ b/src/main/java/net/minecraft/server/VillagePlace.java
 @@ -7,7 +7,12 @@ import it.unimi.dsi.fastutil.longs.Long2ByteOpenHashMap;
@@ -1825,16 +1825,7 @@ index 17db6fb6c8f2be2ae37be92891603a889cb7dbfd..59b8e29da8155873096d347bdd771571
      public java.util.List<BlockPosition> bList(Predicate<VillagePlaceType> predicate, Predicate<BlockPosition> posFilter, BlockPosition pos, int i, VillagePlace.Occupancy occupancy) {
          java.util.List<BlockPosition> ret = aList(predicate, posFilter, pos, i, occupancy);
          ret.sort(Comparator.comparingDouble((pos1) -> pos1.distanceSquared(pos)));
-@@ -327,7 +365,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
-     }
- 
-     public Optional<BlockPosition> a(Predicate<VillagePlaceType> predicate, Predicate<BlockPosition> predicate1, VillagePlace.Occupancy villageplace_occupancy, BlockPosition blockposition, int i, Random random) {
--        List<VillagePlaceRecord> list = this.cList(predicate, blockposition, i, villageplace_occupancy); // Yatopia
-+        List<VillagePlaceRecord> list = this.getAllWithinCircle(predicate, blockposition, i, villageplace_occupancy); // Yatopia
- 
-         Collections.shuffle(list, random);
-         // Yatopia start - replace stream
-@@ -412,24 +450,28 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -391,24 +429,28 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
          this.updateDistanceTracking(i); // Tuinity - move to new distance tracking util
      }
  
@@ -1875,7 +1866,7 @@ index 17db6fb6c8f2be2ae37be92891603a889cb7dbfd..59b8e29da8155873096d347bdd771571
      }
  
      private static boolean a(ChunkSection chunksection) {
-@@ -439,6 +481,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+@@ -418,6 +460,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
          return chunksection.a(set::contains);
      }
  

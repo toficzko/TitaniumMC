@@ -37,11 +37,11 @@ index be408aebbccbda46e8aa82ef337574137cfa0096..b9bdce7c7ca8b7b107b0dca165d72232
      protected final double maxFragFactor;
  
 diff --git a/src/main/java/gg/airplane/AirplaneConfig.java b/src/main/java/gg/airplane/AirplaneConfig.java
-index 4feb9686f45ce4ae9f474447496b8e0f6fcb7e31..5183e890dfaad733e36f922d24b7b70c54b9c53e 100644
+index 51ce31343420b025cae1a2d806f05298ca2fe3da..aeee55e8f9a5471581205ad2fe9c4b55b0a1af7a 100644
 --- a/src/main/java/gg/airplane/AirplaneConfig.java
 +++ b/src/main/java/gg/airplane/AirplaneConfig.java
-@@ -43,4 +43,18 @@ public class AirplaneConfig {
-         }
+@@ -62,4 +62,18 @@ public class AirplaneConfig {
+         // todo lookup token (off-thread) and let users know if their token is valid
      }
  
 +
@@ -287,7 +287,7 @@ index 2f758b3d3eaf5d5781a2072d0f3f7442b73cb9a8..63bcd1b61d0485b064d619ddfa0e2010
          if (this.tracker instanceof EntityPlayer) {
              ((EntityPlayer) this.tracker).playerConnection.sendPacket(packet);
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index b551c1dec17162eb23cf0a480bca1746ea9e3306..09eb783b322147a6065416fba8c516692a2ca276 100644
+index ce92e7154783063664c68fe0505aeb9bb12afeb8..c6491d4ee66141ccc61dd1faf96f039e1e63b43d 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -659,6 +659,11 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {

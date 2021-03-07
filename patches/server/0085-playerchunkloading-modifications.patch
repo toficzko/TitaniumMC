@@ -38,7 +38,7 @@ index f65e59c9ee85e0a42d8a12cf66ac3d99f776f5c9..79f4c574fe7309b2f5a33af5e667cb35
  
      public static final class WorldConfig {
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 0638477cdeb8b024b9a9b0376ea7820227d0948b..cc7f1b343fd072cd946865a2c55428973ca8b5e3 100644
+index 70333ada38945877f225c145e2ffbe6d7fb9965c..5b59dbb3518771a999d8b512560f13987833eb0a 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -2178,6 +2178,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
