@@ -121,7 +121,7 @@ index a8054a599e3eb502e7bbce903b5683987f95fb66..f96fce1e7bf8aa68fe03cdfefa8600d8
      private int c;
      private int d;
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index c46c3e8aaeb7496a4cfedae68181cf6e09b75acd..85ae1a0faf336412876d303e7897ce65c358a462 100644
+index 673f2da97c59232d048151c394a84c36264bbdac..7a8efa332ee7f5fd16831d36fd788c69a91c44d0 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -68,6 +68,7 @@ import co.aikar.timings.MinecraftTimings; // Paper

@@ -187,10 +187,10 @@ index eb7282c33dd4f0bb26b9ccafc42bd92e6fdb997e..13bf0a6b9a7bb7d16748a620bbd0dd31
  
      @Deprecated
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 2ba6b58fe5330582c078c53c241eda4d224f198a..8f306cbe2e88f088f2f8d4bad6f82bee28316af5 100644
+index bb905777daf768c35dfe9469203321bccdd93825..7441cf1c9ebbb8cd5362a13112a0283433b29494 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1871,7 +1871,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1872,7 +1872,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
      }
  
      public int au() {
