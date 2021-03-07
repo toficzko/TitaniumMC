@@ -351,10 +351,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f3ac86c9f8d2df2573cdd5d6f8d67192
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f6d9efa036ad15e83607ede754a2fd93ba6ee379
+index 0000000000000000000000000000000000000000..7bb990cf0e8c4093b0233c5034f5aa9acedb29a1
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,66 @@
+@@ -0,0 +1,64 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -365,7 +365,6 @@ index 0000000000000000000000000000000000000000..f6d9efa036ad15e83607ede754a2fd93
 +import java.util.concurrent.CopyOnWriteArrayList;
 +import org.bukkit.Server;
 +import org.bukkit.Bukkit;
-+import co.aikar.timings.TimingHistory;
 +
 +import java.util.concurrent.Executors;
 +import java.util.concurrent.ExecutorService;
@@ -396,7 +395,6 @@ index 0000000000000000000000000000000000000000..f6d9efa036ad15e83607ede754a2fd93
 +    }
 +
 +    public void entityActiveTick(Entity entity) {
-+        TimingHistory.activatedEntityTicks++;
 +        entity.tick();
 +        entity.postTick();
 +    }
