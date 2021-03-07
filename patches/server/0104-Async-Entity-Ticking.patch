@@ -154,7 +154,7 @@ index 07d90599da20eb7c15a1cebb2401e157d617c475..72a2f5b93db5bbc73e1142275501de94
      }
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..e9e49fec4ad4533cf26c45131fbd781c20d741eb 100644
+index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..0ceef1397ef9d62ac87611b369fdb3b91dd9d460 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -217,7 +217,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..e9e49fec4ad4533cf26c45131fbd781c
 -                entity.tick();
 -                entity.postTick(); // CraftBukkit
 -                } else { entity.inactiveTick(); } // Paper - EAR 2
-+                if (org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities && !(entity instanceof EntityHuman && entity instanceof EntityFallingBlock)) {
++                if (org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities && !(entity instanceof EntityHuman) && !(entity instanceof EntityFallingBlock)) {
 +                    if (isActive) {
 +                        TimingHistory.activatedEntityTicks++;
 +                        this.asyncentitymanager.queueEntity(entity);
