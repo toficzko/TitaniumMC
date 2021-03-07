@@ -334,29 +334,27 @@ index 51e9c54cddf4b28ba3d3d892322c487774bdab70..c0d0e69711e0db496085cc07a6a92603
  
      public static void catchOp(String reason)
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..af7d363467730c6f03387b621aba5d647e9f6e1b 100644
+index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..ec3fbc74ea0227bcdf92db365db07a6c8cf80fb2 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-@@ -304,4 +304,13 @@ public class YatopiaConfig {
+@@ -304,4 +304,11 @@ public class YatopiaConfig {
          regionFileIOThreadPoolSize = getInt("settings.threads.regionfile", -1);
          Preconditions.checkArgument(regionFileIOThreadPoolSize == -1 || regionFileIOThreadPoolSize > 0, "Invalid settings.threads.regionfile in yatopia.yml");
      }
 +
 +    public static boolean asyncEntities = false;
-+    public static int asyncEntityThreads = 2;
 +    public static boolean asyncEntityDebug = false;
 +    private static void asyncentityTicking() {
 +        asyncEntities = getBoolean("settings.async-entity.enabled", asyncEntities);
-+        asyncEntityThreads = getInt("settings.async-entity.threads", asyncEntityThreads);
 +        asyncEntityDebug = getBoolean("settings.async-entity.debug", asyncEntityDebug);
 +    }
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..781dba21015608f17b3d8143c2fe43d5992788bd
+index 0000000000000000000000000000000000000000..a7492ef2b52f42f2593169d9fb86462210551d2a
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,65 @@
+@@ -0,0 +1,66 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -374,10 +372,11 @@ index 0000000000000000000000000000000000000000..781dba21015608f17b3d8143c2fe43d5
 +import java.util.concurrent.ThreadPoolExecutor;
 +import java.util.concurrent.TimeUnit;
 +import java.util.stream.Collectors;
++import java.util.concurrent.ForkJoinPool;
 +
 +public class AsyncEntityManager {
 +
-+    public ExecutorService entityTickExecutor = Executors.newFixedThreadPool(org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntityThreads);
++    public ForkJoinPool entityTickPool = new ForkJoinPool();
 +
 +    private CopyOnWriteArrayList<Entity> targetEntitiesTick = new CopyOnWriteArrayList<>();
 +    private CopyOnWriteArrayList<Entity> targetEntitiesInactive = new CopyOnWriteArrayList<>();
@@ -403,19 +402,19 @@ index 0000000000000000000000000000000000000000..781dba21015608f17b3d8143c2fe43d5
 +    }
 +
 +    public void startTick() {
-+        targetEntitiesTick.stream().map(entity -> CompletableFuture.runAsync(() -> entityActiveTick(entity), entityTickExecutor)).collect(Collectors.toSet());
++        targetEntitiesTick.stream().map(entity -> CompletableFuture.runAsync(() -> entityActiveTick(entity), entityTickPool)).collect(Collectors.toSet());
 +
-+        targetEntitiesInactive.stream().map(entity -> CompletableFuture.runAsync(() -> entityInactiveTick(entity), entityTickExecutor)).collect(Collectors.toSet());
++        targetEntitiesInactive.stream().map(entity -> CompletableFuture.runAsync(() -> entityInactiveTick(entity), entityTickPool)).collect(Collectors.toSet());
 +
 +        targetEntitiesTick.clear();
 +        targetEntitiesInactive.clear();
 +    }
 +
 +    public void shutdownExecutors() {
-+        entityTickExecutor.shutdown();
-+        while (!entityTickExecutor.isTerminated()) {
++        entityTickPool.shutdown();
++        while (!entityTickPool.isTerminated()) {
 +            try {
-+                entityTickExecutor.awaitTermination(30, TimeUnit.SECONDS);
++                entityTickPool.awaitTermination(30, TimeUnit.SECONDS);
 +            } catch (InterruptedException ignored) {
 +            }
 +        }
