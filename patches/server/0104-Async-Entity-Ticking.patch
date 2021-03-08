@@ -154,7 +154,7 @@ index 07d90599da20eb7c15a1cebb2401e157d617c475..72a2f5b93db5bbc73e1142275501de94
      }
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a3644742bfe 100644
+index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce818b5532f 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -200,15 +200,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a36
              this.tickingEntities = false;
              // Paper start
              for (java.lang.Runnable run : this.afterEntityTickingTasks) {
-@@ -1405,6 +1407,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
-             entity.lastPitch = entity.pitch;
-             if (entity.inChunk) {
-                 ++entity.ticksLived;
-+                // Yatopia start - Async entity ticking
-                 GameProfilerFiller gameprofilerfiller = this.getMethodProfiler();
- 
-                 // Airplane start - create debug lambda once, todo do we even WANT the method profiler?
-@@ -1416,12 +1419,24 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1416,12 +1418,24 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                  gameprofilerfiller.a(entity.getEntityType().getEntityName);
                  // Airplane end
                  gameprofilerfiller.c("tickNonPassenger");
@@ -217,6 +209,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a36
 -                entity.tick();
 -                entity.postTick(); // CraftBukkit
 -                } else { entity.inactiveTick(); } // Paper - EAR 2
++                // Yatopia start - Async entity ticking
 +                if (org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities && !(entity instanceof EntityHuman) && !(entity instanceof EntityFallingBlock)) {
 +                    if (isActive) {
 +                        TimingHistory.activatedEntityTicks++;
@@ -231,14 +224,13 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a36
 +                    entity.postTick();
 +                } else {
 +                    entity.inactiveTick(); // Paper - EAR 2
-+                }
++                }}
                  gameprofilerfiller.exit();
-+                }
 +                // Yatopia end
              }
  
              this.chunkCheck(entity);
-@@ -1791,8 +1806,10 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1791,8 +1805,10 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              if (!(ichunkaccess instanceof Chunk)) {
                  return false;
              } else {
@@ -249,7 +241,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a36
                  return true;
              }
          }
-@@ -1932,7 +1949,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1932,7 +1948,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          chunkProvider.getLightEngine().queue.remove(chunk.getPos().pair()); // Yatopia - unregister from light queue
      }
  
@@ -259,7 +251,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a36
          org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
          this.entitiesForIteration.remove(entity); // Tuinity
          // Paper start - fix entity registration issues
-@@ -2016,6 +2034,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2016,6 +2033,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          new com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
          this.removeNavigatorsFromData(entity); // Tuinity - optimise notify()
          entity.valid = false; // CraftBukkit
@@ -267,7 +259,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a36
      }
  
      // Tuinity start - optimise notify()
-@@ -2104,7 +2123,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2104,7 +2122,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      }
      // Tuinity end - optimise notify()
  
@@ -277,7 +269,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a36
          org.spigotmc.AsyncCatcher.catchOp("entity register"); // Spigot
          // Paper start - don't double enqueue entity registration
          //noinspection ObjectEquality
-@@ -2177,20 +2197,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2177,20 +2196,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              entity.shouldBeRemoved = false; // Paper - shouldn't be removed after being re-added
              new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
          }
@@ -312,7 +304,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..b0c9788883acee6e044717fa09cf4a36
      private void removeEntityFromChunk(Entity entity) {
          Chunk ichunkaccess = entity.getCurrentChunk(); // Paper - getChunkAt(x,z,full,false) is broken by CraftBukkit as it won't return an unloading chunk. Use our current chunk reference as this points to what chunk they need to be removed from anyways
  
-@@ -2199,6 +2225,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2199,6 +2224,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          }
  
      }
