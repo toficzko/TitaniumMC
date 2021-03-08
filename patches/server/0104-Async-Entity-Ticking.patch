@@ -351,10 +351,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f3ac86c9f8d2df2573cdd5d6f8d67192
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7bb990cf0e8c4093b0233c5034f5aa9acedb29a1
+index 0000000000000000000000000000000000000000..c35f728a272bfc29ed0a634f1532325ed1e69c04
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,63 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -371,11 +371,10 @@ index 0000000000000000000000000000000000000000..7bb990cf0e8c4093b0233c5034f5aa9a
 +import java.util.concurrent.ThreadPoolExecutor;
 +import java.util.concurrent.TimeUnit;
 +import java.util.stream.Collectors;
-+import java.util.concurrent.ForkJoinPool;
 +
 +public class AsyncEntityManager {
 +
-+    public ForkJoinPool entityTickPool = new ForkJoinPool(org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntityThreads);
++    public ExecutorService entityTickPool = Executors.newFixedThreadPool(org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntityThreads);
 +
 +    private CopyOnWriteArrayList<Entity> targetEntitiesTick = new CopyOnWriteArrayList<>();
 +    private CopyOnWriteArrayList<Entity> targetEntitiesInactive = new CopyOnWriteArrayList<>();
