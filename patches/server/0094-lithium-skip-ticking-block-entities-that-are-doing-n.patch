@@ -1229,7 +1229,7 @@ index ab553f408b31cb7e2d281cc3d8fe42e19dc717d9..6e426d8e4c6e3768730b0d66267f44c1
  
      @Nullable
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 2c081fbf7b1eb0fc0081721a4e9750fcae46e211..07d90599da20eb7c15a1cebb2401e157d617c475 100644
+index 5af4e46fdca48358f66e3b22cfb1a956fc495db2..74ba8de1bf70a8bd212906d3dd39bb435c917585 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -37,7 +37,11 @@ import org.bukkit.event.block.BlockPhysicsEvent;

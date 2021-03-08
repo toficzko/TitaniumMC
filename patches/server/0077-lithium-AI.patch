@@ -1099,10 +1099,10 @@ index 9907047028b754fe0e314a7d5c5238ce4286c373..83008998a701c19f95bfc0199490cf59
              // Tuinity start - optimise culling shape cache for light
              if (this.a != null && this.a.getCullingShapeCache() != null) {
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 91cd340c5ee0604dcbf9b5bdac31597c15efe53f..0de899fad70f2b00d807646fcc9f5a521f879a04 100644
+index 54078b3e06468ba357157416871aecf54a709662..04acf3b9052986c0ad305350133644031d240b9b 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
-@@ -794,6 +794,11 @@ public class Chunk implements IChunkAccess {
+@@ -814,6 +814,11 @@ public class Chunk implements IChunkAccess {
          if (!this.entitySlices[i].remove(entity)) { // Tuinity - optimise hard colliding entities // Tuinity - entities by class // Tuinity
              return;
          }
@@ -1114,7 +1114,7 @@ index 91cd340c5ee0604dcbf9b5bdac31597c15efe53f..0de899fad70f2b00d807646fcc9f5a52
          if (entity instanceof EntityItem) {
              itemCounts[i]--;
          } else if (entity instanceof IInventory) {
-@@ -803,6 +808,11 @@ public class Chunk implements IChunkAccess {
+@@ -823,6 +828,11 @@ public class Chunk implements IChunkAccess {
          this.markDirty(); // Paper
          // Paper end
          this.entities.remove(entity); // Paper
@@ -2027,7 +2027,7 @@ index f0fdfd6891e59891e7370a2d682b65c647b28e9e..c205175f2e8825aa0900972f5400ad9f
 +    }
 +} // Yatopia End
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index f8b117cbb7d97cff54f5f96a6ac0eac14f05fe3f..730bdc2589b1df6100420ef48561801d1085a05b 100644
+index 635c4dffc5cca2e1a1d1cc54f42292b8b4c0c466..609b7fcbb4a0e1191a11ec198ccd1e6f61075db4 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -18,6 +18,8 @@ import java.util.function.Consumer;
@@ -2071,7 +2071,7 @@ index f8b117cbb7d97cff54f5f96a6ac0eac14f05fe3f..730bdc2589b1df6100420ef48561801d
          return i < 0 || i >= 256;
      }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 8c167d1829b75d8fef1fedd9a0db125b9cfa6308..a5e2ca2b42bc348d0ab45e75445ac8faa01737e2 100644
+index 6abb6d9d49f536a16b06a6d2af9384faeb884b1d..6c3c00976a5ee943db33905b97256816bc89d8b9 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -41,6 +41,8 @@ import java.util.stream.Collectors;
@@ -2083,7 +2083,7 @@ index 8c167d1829b75d8fef1fedd9a0db125b9cfa6308..a5e2ca2b42bc348d0ab45e75445ac8fa
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -1892,6 +1894,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1866,6 +1868,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              while (iterator.hasNext()) {
                  Entity entity = (Entity) iterator.next();
  

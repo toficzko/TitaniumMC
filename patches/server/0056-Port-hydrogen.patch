@@ -507,10 +507,10 @@ index b7f5c932197529c0ea045cfe696fd5da1ccc7202..af6245ba0c6b1389703722596ab7aa50
 +    } // Yatopia end
  }
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 045b4af6721817b3dbfb05b9aec0bf382de9fcf5..91cd340c5ee0604dcbf9b5bdac31597c15efe53f 100644
+index 6cde93d62c4c324a6544401cabe045cbb80f465e..54078b3e06468ba357157416871aecf54a709662 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
-@@ -298,6 +298,14 @@ public class Chunk implements IChunkAccess {
+@@ -318,6 +318,14 @@ public class Chunk implements IChunkAccess {
  
          // CraftBukkit start
          this.bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);

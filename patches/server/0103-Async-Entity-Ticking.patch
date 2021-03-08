@@ -141,7 +141,7 @@ index 673f2da97c59232d048151c394a84c36264bbdac..7a8efa332ee7f5fd16831d36fd788c69
                  } catch (IOException ioexception) {
                      MinecraftServer.LOGGER.error("Exception closing the level", ioexception);
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 07d90599da20eb7c15a1cebb2401e157d617c475..72a2f5b93db5bbc73e1142275501de942eea3473 100644
+index 74ba8de1bf70a8bd212906d3dd39bb435c917585..518df27500e6d6bb46c9cc0c67ede886f15aeb7a 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -590,7 +590,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
@@ -154,7 +154,7 @@ index 07d90599da20eb7c15a1cebb2401e157d617c475..72a2f5b93db5bbc73e1142275501de94
      }
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce818b5532f 100644
+index 1a960e1f839b435da29321ad01751b5df9a630fc..20cb2013846628d3b9e6cf611f7f29860d34cd6f 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -181,7 +181,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
      }
  
      // Tuinity start - optimise collision
-@@ -1049,9 +1052,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1028,9 +1031,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
                  gameprofilerfiller.exit();
                  gameprofilerfiller.enter("remove");
                  if (entity.dead) {
@@ -192,7 +192,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
                  } else if (entity.inChunk && entity.valid) { // Tuinity start - optimise notify()
                      if (this.getChunkProvider().isInEntityTickingChunk(entity)) {
                          this.updateNavigatorsInRegion(entity);
-@@ -1066,6 +1067,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1045,6 +1046,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              timings.entityTick.stopTiming(); // Spigot
  
              objectiterator.finishedIterating(); // Tuinity
@@ -200,9 +200,9 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
              this.tickingEntities = false;
              // Paper start
              for (java.lang.Runnable run : this.afterEntityTickingTasks) {
-@@ -1416,12 +1418,24 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
-                 gameprofilerfiller.a(entity.getEntityType().getEntityName);
-                 // Airplane end
+@@ -1390,12 +1392,24 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+                     return IRegistry.ENTITY_TYPE.getKey(entity.getEntityType()).toString();
+                 });
                  gameprofilerfiller.c("tickNonPassenger");
 -                if (isActive) { // Paper - EAR 2
 -                    TimingHistory.activatedEntityTicks++; // Paper
@@ -230,7 +230,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
              }
  
              this.chunkCheck(entity);
-@@ -1791,8 +1805,10 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1765,8 +1779,10 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              if (!(ichunkaccess instanceof Chunk)) {
                  return false;
              } else {
@@ -241,7 +241,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
                  return true;
              }
          }
-@@ -1932,7 +1948,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1906,7 +1922,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          chunkProvider.getLightEngine().queue.remove(chunk.getPos().pair()); // Yatopia - unregister from light queue
      }
  
@@ -251,7 +251,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
          org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
          this.entitiesForIteration.remove(entity); // Tuinity
          // Paper start - fix entity registration issues
-@@ -2016,6 +2033,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1990,6 +2007,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          new com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
          this.removeNavigatorsFromData(entity); // Tuinity - optimise notify()
          entity.valid = false; // CraftBukkit
@@ -259,7 +259,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
      }
  
      // Tuinity start - optimise notify()
-@@ -2104,7 +2122,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2078,7 +2096,8 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      }
      // Tuinity end - optimise notify()
  
@@ -269,7 +269,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
          org.spigotmc.AsyncCatcher.catchOp("entity register"); // Spigot
          // Paper start - don't double enqueue entity registration
          //noinspection ObjectEquality
-@@ -2177,20 +2196,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2151,20 +2170,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              entity.shouldBeRemoved = false; // Paper - shouldn't be removed after being re-added
              new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity()).callEvent(); // Paper - fire while valid
          }
@@ -304,7 +304,7 @@ index e00445c7ac452f42e2c5e50efd3044c4f2e90ff1..97a25d916d4d8ba0add7c88cd3b40ce8
      private void removeEntityFromChunk(Entity entity) {
          Chunk ichunkaccess = entity.getCurrentChunk(); // Paper - getChunkAt(x,z,full,false) is broken by CraftBukkit as it won't return an unloading chunk. Use our current chunk reference as this points to what chunk they need to be removed from anyways
  
-@@ -2199,6 +2224,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2173,6 +2198,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          }
  
      }

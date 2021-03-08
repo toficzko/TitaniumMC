@@ -5,7 +5,7 @@ Subject: [PATCH] Spread out and optimise player list ticks
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 08991ca8a1be9d819a40159ad60886740282d9cf..c7bc6a65e1289fa601d4f6d49390ad87d75bbf78 100644
+index ab1e8f115915b6f8eb89e5f7ab1ace00b4ee9415..f810e4a65b125650fbfe9e05b3f83e13b71999a2 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -73,7 +73,7 @@ public abstract class PlayerList {
@@ -56,7 +56,7 @@ index 08991ca8a1be9d819a40159ad60886740282d9cf..c7bc6a65e1289fa601d4f6d49390ad87
  
      public void sendAll(Packet<?> packet) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index c012ae45b919ee5221aff515f8464f05edaeab51..1030ab9d457f8abb43a6078fedcdd9ddc5061b10 100644
+index 1b0df08a50c05b9345fd06981d44b4c3a2032036..6ee7275c2ceb19bb976908e68c169a7a9d888d91 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -1435,7 +1435,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

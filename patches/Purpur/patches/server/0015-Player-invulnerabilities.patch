@@ -79,7 +79,7 @@ index ee9fa89c15d52ae00f33c7e3d3102ca107055160..958b7eadbab06226259c9ae9db7615cc
          this.server.getPluginManager().callEvent(new PlayerResourcePackStatusEvent(getPlayer(), packStatus));
          // Paper end
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 3a43b2d0e30ba85ddf552d1409393958b53e24f2..1021f0673b8905439992cd727b667b4d07da6a62 100644
+index 540ed4846e4c5a28cd392879353a4dd17232739b..c4fee5bd9051d31477c701c83a928708e2e9d996 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -919,6 +919,8 @@ public abstract class PlayerList {
@@ -108,7 +108,7 @@ index 2578a4677d1ee060f687be531e696b7c7be89e84..c441fcea9b2b5a77b801c8a69541cf42
 +    }
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 8089cd5f3c16159fc0a5d36cdc88a359073a6c7f..c012ae45b919ee5221aff515f8464f05edaeab51 100644
+index c78b2038bd0faa7d1b5ebd02129390742a9f96fb..1b0df08a50c05b9345fd06981d44b4c3a2032036 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2497,5 +2497,20 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

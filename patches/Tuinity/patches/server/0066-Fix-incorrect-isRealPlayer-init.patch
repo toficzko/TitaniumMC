@@ -9,7 +9,7 @@ paper placed their logic. So it wont correctly set in this case.
 Fix by moving it to a different place.
 
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 610613c2dbea18e1064c5f29cc36cf39aece2277..193a39ba0c07b0f438aba6b3a00af51fa93bd53d 100644
+index ccdc9590dfcdf75a2cfb09078afb24a1b3b19c1a..d0f31765adf94db790c5795dbadbccbeb5043140 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -101,6 +101,7 @@ public abstract class PlayerList {

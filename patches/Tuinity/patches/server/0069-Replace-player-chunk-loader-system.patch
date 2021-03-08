@@ -1019,7 +1019,7 @@ index 0000000000000000000000000000000000000000..ff05688a729d8dd2ec7ea1e1a247c718
 +    }
 +}
 diff --git a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
-index 0959aa6855a150b121b9b75885216c46b151179e..c40335607275771bd7b3c5f1282af71d7f71754d 100644
+index 0959aa6855a150b121b9b75885216c46b151179e..a7bf1dbbcc888f22ecf70cae6d4dea8a1d695285 100644
 --- a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 +++ b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 @@ -235,6 +235,25 @@ public final class TuinityConfig {
@@ -1036,8 +1036,8 @@ index 0959aa6855a150b121b9b75885216c46b151179e..c40335607275771bd7b3c5f1282af71d
 +
 +    private static void newPlayerChunkManagement() {
 +        playerMinChunkLoadRadius = TuinityConfig.getInt("player-chunks.min-load-radius", 2);
-+        playerMaxConcurrentChunkSends = TuinityConfig.getDouble("player-chunks.max-concurrent-sends", 1.0);
-+        playerMaxConcurrentChunkLoads = TuinityConfig.getDouble("player-chunks.max-concurrent-loads", 2.0);
++        playerMaxConcurrentChunkSends = TuinityConfig.getDouble("player-chunks.max-concurrent-sends", 3.0);
++        playerMaxConcurrentChunkLoads = TuinityConfig.getDouble("player-chunks.max-concurrent-loads", -9.0);
 +        playerAutoConfigureSendViewDistance = TuinityConfig.getBoolean("player-chunks.autoconfig-send-distance", true);
 +        // this costs server bandwidth. latest phosphor or starlight on the client fixes mc162253 anyways.
 +        enableMC162253Workaround = TuinityConfig.getBoolean("player-chunks.enable-mc162253-workaround", false);
@@ -1640,7 +1640,7 @@ index b76da339bc009edcd3fc1bce6cba729fd3883054..70333ada38945877f225c145e2ffbe6d
                          }
                      }
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 193a39ba0c07b0f438aba6b3a00af51fa93bd53d..3a43b2d0e30ba85ddf552d1409393958b53e24f2 100644
+index d0f31765adf94db790c5795dbadbccbeb5043140..540ed4846e4c5a28cd392879353a4dd17232739b 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -190,7 +190,7 @@ public abstract class PlayerList {
@@ -1738,7 +1738,7 @@ index 15ce459aa15a8bb936740a8c055f4304e21312d2..4886621c3cba05c2d0184835a8ec9d5b
      // Spigot start
      private final Spigot spigot = new Spigot()
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index fc761a3bd87004f16ff9b0a3b0add52f7938f566..50ae793ddf67475d294c4a651a33e81775016661 100644
+index b3bc2a697356674056b0e4ee345da42c45e09e4c..add2e8d50c97070eb5601a2b2ba0ce1ce0473387 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -2247,15 +2247,70 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

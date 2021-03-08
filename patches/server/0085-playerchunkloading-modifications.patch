@@ -5,7 +5,7 @@ Subject: [PATCH] playerchunkloading modifications
 
 
 diff --git a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
-index f65e59c9ee85e0a42d8a12cf66ac3d99f776f5c9..79f4c574fe7309b2f5a33af5e667cb35580c9253 100644
+index 5155a79f78eba532d0f1314ca7f4e667d0c5e30f..804e495a5612590140b07fa2278f8762adb0e5d7 100644
 --- a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 +++ b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 @@ -240,9 +240,10 @@ public final class TuinityConfig {
@@ -21,7 +21,7 @@ index f65e59c9ee85e0a42d8a12cf66ac3d99f776f5c9..79f4c574fe7309b2f5a33af5e667cb35
      private static void newPlayerChunkManagement() {
          playerMinChunkLoadRadius = TuinityConfig.getInt("player-chunks.min-load-radius", 2);
 @@ -250,9 +251,15 @@ public final class TuinityConfig {
-         playerMaxConcurrentChunkLoads = TuinityConfig.getDouble("player-chunks.max-concurrent-loads", 2.0);
+         playerMaxConcurrentChunkLoads = TuinityConfig.getDouble("player-chunks.max-concurrent-loads", -9.0);
          playerAutoConfigureSendViewDistance = TuinityConfig.getBoolean("player-chunks.autoconfig-send-distance", true);
          // this costs server bandwidth. latest phosphor or starlight on the client fixes mc162253 anyways.
 -        enableMC162253Workaround = TuinityConfig.getBoolean("player-chunks.enable-mc162253-workaround", false);
@@ -38,10 +38,10 @@ index f65e59c9ee85e0a42d8a12cf66ac3d99f776f5c9..79f4c574fe7309b2f5a33af5e667cb35
  
      public static final class WorldConfig {
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 70333ada38945877f225c145e2ffbe6d7fb9965c..5b59dbb3518771a999d8b512560f13987833eb0a 100644
+index 005505d9070a43f0a63fef21b06a91f48467b055..38e6928c8812e0a93fc69003452687ae992dcca3 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -2178,6 +2178,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2203,6 +2203,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
              apacket[0] = new PacketPlayOutMapChunk(chunk, 65535, chunk.world.chunkPacketBlockController.shouldModify(entityplayer, chunk, 65535)); // Paper - Anti-Xray - Bypass
              apacket[1] = new PacketPlayOutLightUpdate(chunk.getPos(), this.lightEngine, true);
  
@@ -49,7 +49,7 @@ index 70333ada38945877f225c145e2ffbe6d7fb9965c..5b59dbb3518771a999d8b512560f1398
              // Paper start - Fix MC-162253
              if (com.tuinity.tuinity.config.TuinityConfig.enableMC162253Workaround) { // Tuinity - hide behind config option, this logic has undesirable network effects
              final int lightMask = getLightMask(chunk);
-@@ -2205,8 +2206,10 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2230,8 +2231,10 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
                  }
              }
          } // Tuinity - hide behind config option, this logic has undesirable network effects
@@ -60,7 +60,7 @@ index 70333ada38945877f225c145e2ffbe6d7fb9965c..5b59dbb3518771a999d8b512560f1398
          if (com.tuinity.tuinity.config.TuinityConfig.enableMC162253Workaround) { // Tuinity - hide behind config option, this logic has undesirable network effects
          final int viewDistance = this.playerChunkManager.broadcastMap.getLastViewDistance(entityplayer); // Tuinity - replace player chunk loader
          final long lastPosition = this.playerChunkManager.broadcastMap.getLastCoordinate(entityplayer); // Tuinity - replace player chunk loader
-@@ -2236,6 +2239,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2261,6 +2264,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
          }
          } // Tuinity - hide behind config option, this logic has undesirable network effects
          // Paper end - Fix MC-162253

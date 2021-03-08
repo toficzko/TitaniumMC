@@ -350,7 +350,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
              if (iblockdata.getBlock() instanceof BlockBed) {
                  this.world.setTypeAndData(blockposition, (IBlockData) iblockdata.set(BlockBed.OCCUPIED, false), 3);
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 5eec2a3675f60337a1d01f2cd7cf83f7ed72035e..11ec2d9b957fdce54f4fecd88f9e9ffba4018b19 100644
+index 5139abddb56d687ecedc527a238a932ff57c6205..063cca4b56010eed3fa6dc930e7a7ef80ac13867 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -525,6 +525,10 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -377,7 +377,7 @@ index a3d6ab9f76d40d1d4998bc942084cae503e3dfd5..6eeb60ed8deb2d01ea2be835f1dce7bd
          return this.a;
      }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 80689896972bd0dcdb2537c30d8f28279a111b84..f8b117cbb7d97cff54f5f96a6ac0eac14f05fe3f 100644
+index 352131afbb2fc54c0e92b2fc10dd8be83694f041..635c4dffc5cca2e1a1d1cc54f42292b8b4c0c466 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -33,7 +33,9 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
@@ -392,7 +392,7 @@ index 80689896972bd0dcdb2537c30d8f28279a111b84..f8b117cbb7d97cff54f5f96a6ac0eac1
      protected static final Logger LOGGER = LogManager.getLogger();
      public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 68fbbcac7b6b2f24a42c3a63825f940e52f6f51a..8c167d1829b75d8fef1fedd9a0db125b9cfa6308 100644
+index 88e6ee95972310c7dd3878f7dae55e852fd7cc4a..6abb6d9d49f536a16b06a6d2af9384faeb884b1d 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -56,8 +56,9 @@ import org.bukkit.event.weather.LightningStrikeEvent;

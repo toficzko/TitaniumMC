@@ -7,7 +7,7 @@ A massive improvement to world generation.
 This patch actually schedules chunk status upgrade later rather than doing it right away.
 
 diff --git a/pom.xml b/pom.xml
-index 0a45803070674fc96235139318f2cf5feddfeb32..bb6b2b574afbef1291837c13ec3f12b2ea49a09c 100644
+index 5bc87f52e3f524dc582eaf3e9f42e5ff2cb5f6e9..15a35832dc6e73faf43bf6297df766ebf65b0752 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -209,6 +209,12 @@
@@ -305,7 +305,7 @@ index 71c06385ddf9a35f566de486c51de37e06277865..6bf0f7b97212b64f3734f1441c5234e6
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 5b59dbb3518771a999d8b512560f13987833eb0a..9c05d79f25af62e845cd96346c18ac54869f944f 100644
+index 38e6928c8812e0a93fc69003452687ae992dcca3..955b4dfd9febf1b0d40b3a15cd610a5870395ad0 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -57,6 +57,18 @@ import org.spigotmc.AsyncCatcher;
@@ -327,7 +327,7 @@ index 5b59dbb3518771a999d8b512560f13987833eb0a..9c05d79f25af62e845cd96346c18ac54
      private static final Logger LOGGER = LogManager.getLogger();
      public static final int GOLDEN_TICKET = 33 + ChunkStatus.b();
      // Paper start - faster copying
-@@ -1249,7 +1261,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1254,7 +1266,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                  return;
              }
              // Paper end
@@ -379,10 +379,10 @@ index d98ac030e205dbb1512ef6b837e2f3fdd208e231..451ea5b703d01664942899ca62cf789e
      }
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index a5e2ca2b42bc348d0ab45e75445ac8faa01737e2..e00445c7ac452f42e2c5e50efd3044c4f2e90ff1 100644
+index 6c3c00976a5ee943db33905b97256816bc89d8b9..1a960e1f839b435da29321ad01751b5df9a630fc 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -2698,28 +2698,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2672,28 +2672,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
          // Paper start
          BlockPosition blockposition1 = blockposition.immutableCopy();

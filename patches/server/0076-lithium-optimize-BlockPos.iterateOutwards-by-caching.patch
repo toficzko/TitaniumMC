@@ -140,7 +140,7 @@ index 0000000000000000000000000000000000000000..07714e6b61a9860cbf035804f98973cb
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BlockPosition.java b/src/main/java/net/minecraft/server/BlockPosition.java
-index c4dd89d9bae1960d25b64e2a715a83adde65719a..7b320ea0b5d0067eebb84c623a67bbd9f56b3f7e 100644
+index f13b4e6ec815792c2f2b49193707da94df427424..447822c335bbd948af83ea3434c3c8b69c7051ca 100644
 --- a/src/main/java/net/minecraft/server/BlockPosition.java
 +++ b/src/main/java/net/minecraft/server/BlockPosition.java
 @@ -12,10 +12,16 @@ import javax.annotation.concurrent.Immutable;

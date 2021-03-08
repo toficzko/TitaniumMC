@@ -37,11 +37,11 @@ index be408aebbccbda46e8aa82ef337574137cfa0096..b9bdce7c7ca8b7b107b0dca165d72232
      protected final double maxFragFactor;
  
 diff --git a/src/main/java/gg/airplane/AirplaneConfig.java b/src/main/java/gg/airplane/AirplaneConfig.java
-index c39c9929a251b41ab60e1509b4e6c90d0825dc0c..fe97adecada7bba8a6ba15365ed1a04cb5b2c399 100644
+index 51ce31343420b025cae1a2d806f05298ca2fe3da..aeee55e8f9a5471581205ad2fe9c4b55b0a1af7a 100644
 --- a/src/main/java/gg/airplane/AirplaneConfig.java
 +++ b/src/main/java/gg/airplane/AirplaneConfig.java
-@@ -68,4 +68,18 @@ public class AirplaneConfig {
-         dynamicHoglinBehavior = manual.get("behavior-activation.hoglin", dynamicHoglinBehavior);
+@@ -62,4 +62,18 @@ public class AirplaneConfig {
+         // todo lookup token (off-thread) and let users know if their token is valid
      }
  
 +
@@ -150,7 +150,7 @@ index 0000000000000000000000000000000000000000..601694aa6d36ce230d84cc6b55231d2f
 +
 +}
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 0924f6b484468f3cf3c2d405101c0158c12d69e6..1d65d884d1f31a73333e4cf6a9ce30d7863dab9f 100644
+index 045b4af6721817b3dbfb05b9aec0bf382de9fcf5..6cde93d62c4c324a6544401cabe045cbb80f465e 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -65,6 +65,26 @@ public class Chunk implements IChunkAccess {
@@ -181,10 +181,10 @@ index 0924f6b484468f3cf3c2d405101c0158c12d69e6..1d65d884d1f31a73333e4cf6a9ce30d7
          this(world, chunkcoordintpair, biomestorage, ChunkConverter.a, TickListEmpty.b(), TickListEmpty.b(), 0L, (ChunkSection[]) null, (Consumer) null);
      }
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 173a210392d71cdfc551f095dc0d9c9040d22d3f..d87f80fe7c7086d07057c11227807c883a0f6821 100644
+index 02b8e07d61a67118886505353077e0dd439eb2a8..23d91933508f829df3191935ca4818b15cc17d88 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
-@@ -51,7 +51,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+@@ -52,7 +52,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
      public NetworkManager networkManager; // Paper
      public final MinecraftServer server;
      public final PlayerInteractManager playerInteractManager;
@@ -194,7 +194,7 @@ index 173a210392d71cdfc551f095dc0d9c9040d22d3f..d87f80fe7c7086d07057c11227807c88
      private final ServerStatisticManager serverStatisticManager;
      private float lastHealthScored = Float.MIN_VALUE;
 diff --git a/src/main/java/net/minecraft/server/EntityTrackerEntry.java b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
-index 81869215876d10a84ab27c0e6f41963c1346fd1c..c5c12fa51261ed77f745170ffa837f7dd0bf76b1 100644
+index 2f758b3d3eaf5d5781a2072d0f3f7442b73cb9a8..63bcd1b61d0485b064d619ddfa0e201034087772 100644
 --- a/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 +++ b/src/main/java/net/minecraft/server/EntityTrackerEntry.java
 @@ -46,6 +46,10 @@ public class EntityTrackerEntry {
@@ -214,7 +214,7 @@ index 81869215876d10a84ab27c0e6f41963c1346fd1c..c5c12fa51261ed77f745170ffa837f7d
      public void a() {
 -        com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Tracker update"); // Tuinity
 +        //com.tuinity.tuinity.util.TickThread.softEnsureTickThread("Tracker update"); // Tuinity // Airplane - allow multithreaded
-         List<Entity> list = this.tracker.getPassengers();
+         List<Entity> list = this.tracker.passengers; // Paper - do not copy list
  
          if (!list.equals(this.p)) {
 @@ -88,6 +92,8 @@ public class EntityTrackerEntry {
@@ -235,7 +235,7 @@ index 81869215876d10a84ab27c0e6f41963c1346fd1c..c5c12fa51261ed77f745170ffa837f7d
              }
  
              this.c();
-@@ -235,18 +243,25 @@ public class EntityTrackerEntry {
+@@ -245,18 +253,25 @@ public class EntityTrackerEntry {
              // CraftBukkit start - Create PlayerVelocity event
              boolean cancelled = false;
  
@@ -265,7 +265,7 @@ index 81869215876d10a84ab27c0e6f41963c1346fd1c..c5c12fa51261ed77f745170ffa837f7d
              }
  
              if (!cancelled) {
-@@ -330,7 +345,9 @@ public class EntityTrackerEntry {
+@@ -356,7 +371,9 @@ public class EntityTrackerEntry {
              if (!list.isEmpty()) {
                  consumer.accept(new PacketPlayOutEntityEquipment(this.tracker.getId(), list));
              }
@@ -275,7 +275,7 @@ index 81869215876d10a84ab27c0e6f41963c1346fd1c..c5c12fa51261ed77f745170ffa837f7d
          }
  
          // CraftBukkit start - Fix for nonsensical head yaw
-@@ -408,6 +425,10 @@ public class EntityTrackerEntry {
+@@ -434,6 +451,10 @@ public class EntityTrackerEntry {
      // Paper end
  
      private void broadcastIncludingSelf(Packet<?> packet) {
@@ -287,10 +287,10 @@ index 81869215876d10a84ab27c0e6f41963c1346fd1c..c5c12fa51261ed77f745170ffa837f7d
          if (this.tracker instanceof EntityPlayer) {
              ((EntityPlayer) this.tracker).playerConnection.sendPacket(packet);
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e3546d4221e 100644
+index 70333ada38945877f225c145e2ffbe6d7fb9965c..005505d9070a43f0a63fef21b06a91f48467b055 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -727,6 +727,11 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -647,6 +647,11 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          return (PlayerChunk) (this.hasPendingVisibleUpdate ? this.pendingVisibleChunks.get(i) : ((ProtectedVisibleChunksMap)this.visibleChunks).safeGet(i));
          // Paper end
      }
@@ -302,7 +302,7 @@ index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e35
  
      protected final IntSupplier getPrioritySupplier(long i) { return c(i); } // Paper - OBFHELPER
      protected IntSupplier c(long i) {
-@@ -2126,10 +2131,30 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -2035,10 +2040,30 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          entity.tracker = null; // Paper - We're no longer tracked
      }
  
@@ -325,7 +325,7 @@ index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e35
          try {
 +            // Airplane start - multithreaded tracker
 +            if (this.trackQueue == null) this.trackQueue = new gg.airplane.structs.TrackQueue(this.world.getChunkProvider().entityTickingChunks, trackerMainQueue);
-+            if (gg.airplane.AirplaneConfig.multithreadedEntityTracker && this.world.getChunkProvider().entityTickingChunks.size() > 250) {
++            if (gg.airplane.AirplaneConfig.multithreadedEntityTracker) {
 +                this.trackQueue.start();
 +                return;
 +            }
@@ -333,7 +333,7 @@ index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e35
              com.tuinity.tuinity.util.maplist.IteratorSafeOrderedReferenceSet.Iterator<Chunk> iterator = this.world.getChunkProvider().entityTickingChunks.iterator();
              try {
              while (iterator.hasNext()) {
-@@ -2391,7 +2416,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2304,7 +2329,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
      public class EntityTracker {
  
          final EntityTrackerEntry trackerEntry; // Paper - private -> package private
@@ -342,7 +342,7 @@ index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e35
          private final int trackingDistance;
          private SectionPosition e;
          // Paper start
-@@ -2410,7 +2435,9 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2323,7 +2348,9 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
          // Paper start - use distance map to optimise tracker
          com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<EntityPlayer> lastTrackerCandidates;
  
@@ -353,7 +353,7 @@ index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e35
              com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<EntityPlayer> oldTrackerCandidates = this.lastTrackerCandidates;
              this.lastTrackerCandidates = newTrackerCandidates;
  
-@@ -2451,7 +2478,13 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2364,7 +2391,13 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
              return this.tracker.getId();
          }
  
@@ -368,7 +368,7 @@ index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e35
              Iterator iterator = this.trackedPlayers.iterator();
  
              while (iterator.hasNext()) {
-@@ -2463,6 +2496,12 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2376,6 +2409,12 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
          }
  
          public void broadcastIncludingSelf(Packet<?> packet) {
@@ -381,7 +381,7 @@ index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e35
              this.broadcast(packet);
              if (this.tracker instanceof EntityPlayer) {
                  ((EntityPlayer) this.tracker).playerConnection.sendPacket(packet);
-@@ -2489,8 +2528,8 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2402,8 +2441,8 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
  
          }
  
@@ -392,12 +392,12 @@ index 121deda90227cb0416d6642607b24093df2baa80..70d54e554385a614dc117f0231fe0e35
              if (entityplayer != this.tracker) {
                  // Paper start - remove allocation of Vec3D here
                  //Vec3D vec3d = entityplayer.getPositionVector().d(this.tracker.getPositionVector()); // MC-155077, SPIGOT-5113
-@@ -2511,7 +2550,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
-                          */
-                         int x = this.tracker.chunkX, z = this.tracker.chunkZ;
-                         long chunkcoordintpair = ChunkCoordIntPair.pair(x, z);
--                        PlayerChunk playerchunk = PlayerChunkMap.this.getVisibleChunk(chunkcoordintpair);
-+                        PlayerChunk playerchunk = PlayerChunkMap.this.trackerGetVisibleChunk(chunkcoordintpair); // Airplane
+@@ -2419,7 +2458,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
  
-                         if (playerchunk != null && playerchunk.getSendingChunk() != null) { // Paper - no-tick view distance
-                             flag1 = PlayerChunkMap.someDistanceCalculation(x, z, entityplayer, false) <= PlayerChunkMap.this.viewDistance;
+                     if (!flag1) {
+                         ChunkCoordIntPair chunkcoordintpair = new ChunkCoordIntPair(this.tracker.chunkX, this.tracker.chunkZ);
+-                        PlayerChunk playerchunk = PlayerChunkMap.this.getVisibleChunk(chunkcoordintpair.pair());
++                        PlayerChunk playerchunk = PlayerChunkMap.this.trackerGetVisibleChunk(chunkcoordintpair.pair()); // Airplane
+ 
+                         if (playerchunk != null && playerchunk.getSendingChunk() != null && PlayerChunkMap.this.playerChunkManager.isChunkSent(entityplayer, MathHelper.floor(this.tracker.locX()) >> 4, MathHelper.floor(this.tracker.locZ()) >> 4)) { // Paper - no-tick view distance // Tuinity - don't broadcast in chunks the player hasn't received
+                             flag1 = PlayerChunkMap.b(chunkcoordintpair, entityplayer, false) <= PlayerChunkMap.this.viewDistance;

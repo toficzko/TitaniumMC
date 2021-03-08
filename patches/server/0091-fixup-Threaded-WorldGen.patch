@@ -159,10 +159,10 @@ index 3a851285cc86701eb03855f7bdc44c274155d149..79854605012663e152cfad96e2fa7859
          return this.n;
      }
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index baee0b83ada8166facfa907a5aba9f0570fc4dd4..ce92e7154783063664c68fe0505aeb9bb12afeb8 100644
+index 10774ae1582d96b174338dce8d6dad44802c890f..c6491d4ee66141ccc61dd1faf96f039e1e63b43d 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1122,9 +1122,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1127,9 +1127,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                          if (chunkstatus == ChunkStatus.LIGHT) {
                              completablefuture1 = this.b(playerchunk, chunkstatus);
                          } else {
@@ -174,7 +174,7 @@ index baee0b83ada8166facfa907a5aba9f0570fc4dd4..ce92e7154783063664c68fe0505aeb9b
                          }
  
                          this.worldLoadListener.a(chunkcoordintpair, chunkstatus);
-@@ -1235,9 +1235,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1240,9 +1240,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          return completablefuture.thenComposeAsync((either) -> {
              return either.map((list) -> { // Paper - Shut up.
                  try {

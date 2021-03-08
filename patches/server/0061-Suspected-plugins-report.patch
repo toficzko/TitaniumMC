@@ -108,7 +108,7 @@ index 0668d383db1f3a81d1053954d72678c7ac5aecec..7b9f83e63d0f9cd83a246be33af4ab91
                              ChatComponentText chatcomponenttext = new ChatComponentText("Internal server error");
  
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 502efb68ba6f62fd577b19e37687d60e7d4ecf18..b321f2b9104263fd4ad770b359337fd6a59e1e63 100644
+index c79088ed191fe8539bdee5efa9872036efa4671f..c93fb9998b99d77c2c271a099d5b2355c7d5fe5d 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -1019,6 +1019,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
