@@ -213,7 +213,7 @@ index c1487c066213417faeec7a9461026aa01db2e8c1..67fe985dd13762867d6fd8fe81876cab
                          if (fluid.a(tag)) {
                              double d2 = (double) ((float) i2 + fluid.getHeight(this.world, blockposition_mutableblockposition));
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c3426c9b825 100644
+index cd48e116b9663e1172e6a96f05722443705fdfc2..f5d7436b3f5aa75b9623189dd48f96141e84046c 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -44,6 +44,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;
@@ -286,7 +286,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
  
              if (!iblockdata.isAir()) {
                  SoundEffectType soundeffecttype = iblockdata.getStepSound();
-@@ -2211,7 +2216,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2219,7 +2224,7 @@ public abstract class EntityLiving extends Entity {
      private void a(Entity entity) {
          Vec3D vec3d;
  
@@ -295,7 +295,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
              vec3d = entity.b(this);
          } else {
              vec3d = new Vec3D(entity.locX(), entity.locY() + (double) entity.getHeight(), entity.locZ());
-@@ -2265,7 +2270,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2273,7 +2278,7 @@ public abstract class EntityLiving extends Entity {
                  this.fallDistance = 0.0F;
              }
  
@@ -304,7 +304,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
              double d1;
              float f;
  
-@@ -2381,7 +2386,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2389,7 +2394,7 @@ public abstract class EntityLiving extends Entity {
                  }
              } else {
                  BlockPosition blockposition = this.as();
@@ -313,7 +313,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
  
                  f = this.onGround ? f5 * 0.91F : 0.91F;
                  Vec3D vec3d6 = this.a(vec3d, f5);
-@@ -3442,7 +3447,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3450,7 +3455,7 @@ public abstract class EntityLiving extends Entity {
  
              while (!flag2 && blockposition.getY() > 0) {
                  BlockPosition blockposition1 = blockposition.down();
@@ -322,7 +322,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
  
                  if (iblockdata.getMaterial().isSolid()) {
                      flag2 = true;
-@@ -3537,7 +3542,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3545,7 +3550,7 @@ public abstract class EntityLiving extends Entity {
              this.stopRiding();
          }
  
@@ -331,7 +331,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
  
          if (iblockdata.getBlock() instanceof BlockBed) {
              this.world.setTypeAndData(blockposition, (IBlockData) iblockdata.set(BlockBed.OCCUPIED, true), 3);
-@@ -3556,7 +3561,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3564,7 +3569,7 @@ public abstract class EntityLiving extends Entity {
  
      private boolean x() {
          return (Boolean) this.getBedPosition().map((blockposition) -> {
@@ -340,7 +340,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
          }).orElse(false);
      }
  
-@@ -3566,7 +3571,7 @@ public abstract class EntityLiving extends Entity {
+@@ -3574,7 +3579,7 @@ public abstract class EntityLiving extends Entity {
  
          this.world.getClass();
          optional.filter(world::isLoaded).ifPresent((blockposition) -> {
@@ -350,7 +350,7 @@ index ab2362931eb927857b874af515015cf525e7cb57..2c5469648777444e3956ce4175769c34
              if (iblockdata.getBlock() instanceof BlockBed) {
                  this.world.setTypeAndData(blockposition, (IBlockData) iblockdata.set(BlockBed.OCCUPIED, false), 3);
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 5139abddb56d687ecedc527a238a932ff57c6205..063cca4b56010eed3fa6dc930e7a7ef80ac13867 100644
+index 4d63ca7b486dc083dee48c0424603904ba9e918d..e1228f08d4d472e5a31318a0f6c53f3ef72ddee4 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -525,6 +525,10 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

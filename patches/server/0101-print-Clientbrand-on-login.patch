@@ -5,7 +5,7 @@ Subject: [PATCH] print Clientbrand on login
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 9016554f9f7b637ce5e80ce56504b4a23b25e7ac..8b4d76da5dd2503cd149e2171d8a2efdc5ac429c 100644
+index a1ed80a50eaedf53ffd22b08450e931253ce0016..ad7ff7fd55da19709a6d5abbf55a70f7b3ce7508 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
 @@ -3056,6 +3056,7 @@ public class PlayerConnection implements PacketListenerPlayIn {

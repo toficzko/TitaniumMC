@@ -135,10 +135,10 @@ index 239f504430b6c59923fd677d1be0121be5022604..24185ba2898bbc46058f0c477a5bb3b2
                      double relativeZ = player.locZ() + (deltaZ / deltaLength) * viewDistance;
                      player.playerConnection.sendPacket(new PacketPlayOutNamedSoundEffect(SoundEffects.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, relativeX, this.locY(), relativeZ, 10000.0F, pitch));
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 2c5469648777444e3956ce4175769c3426c9b825..6231d11b7f9c8c60ec50e093b036e8749d5c9c1d 100644
+index f5d7436b3f5aa75b9623189dd48f96141e84046c..5400d756af3249df9c5bba9d858dde185305d450 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
-@@ -2344,8 +2344,8 @@ public abstract class EntityLiving extends Entity {
+@@ -2352,8 +2352,8 @@ public abstract class EntityLiving extends Entity {
                  Vec3D vec3d5 = this.getLookDirection();
  
                  f = this.pitch * 0.017453292F;
@@ -149,7 +149,7 @@ index 2c5469648777444e3956ce4175769c3426c9b825..6231d11b7f9c8c60ec50e093b036e874
                  double d4 = vec3d5.f();
                  float f3 = MathHelper.cos(f);
  
-@@ -2370,7 +2370,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2378,7 +2378,7 @@ public abstract class EntityLiving extends Entity {
                  this.setMot(vec3d4.d(0.9900000095367432D, 0.9800000190734863D, 0.9900000095367432D));
                  this.move(EnumMoveType.SELF, this.getMot());
                  if (this.positionChanged && !this.world.isClientSide) {
@@ -158,7 +158,7 @@ index 2c5469648777444e3956ce4175769c3426c9b825..6231d11b7f9c8c60ec50e093b036e874
                      double d6 = d3 - d5;
                      float f4 = (float) (d6 * 10.0D - 3.0D);
  
-@@ -2555,7 +2555,7 @@ public abstract class EntityLiving extends Entity {
+@@ -2563,7 +2563,7 @@ public abstract class EntityLiving extends Entity {
  
          if (f > 0.0025000002F) {
              f3 = 1.0F;

@@ -1139,7 +1139,7 @@ index 33b8f4e0f09fdc41c8ea48b6ed77af199136ab92..6652d4b6af551da22962df9849f3a490
          return this.blockIds.contains(predicate);
      }
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 6231d11b7f9c8c60ec50e093b036e8749d5c9c1d..ef36a98fd61984453f5e5960d81b46c966bd3d5a 100644
+index 5400d756af3249df9c5bba9d858dde185305d450..d2f9ae4c770458c2240da45ed0cb39dd64c2c83e 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -21,6 +21,8 @@ import java.util.Random;

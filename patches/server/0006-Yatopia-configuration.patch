@@ -47,7 +47,7 @@ index a85a844a4766cde16eea9e814abfec29d8935c0f..b55d73e39b5665f5444497e54e940e17
          this.setAllowFlight(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.ba());
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 310c2a3a37b77b929032be8a2d3099e30339f06c..1bf30786549cb36e3bcd7f682e3091f70747b4e7 100644
+index 6bfd3a92e7b760c780e756ecbc5323d10235da9d..48496d8cc88dd758e68dba8e7051ff8c3c8d99c7 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -271,6 +271,7 @@ public abstract class EntityLiving extends Entity {
@@ -80,7 +80,7 @@ index 3a4165efa33cce86457092c29d2cf2aced42f43d..7cad3e754a8c0398ad6394edd0cb7675
          playerconnection.sendPacket(new PacketPlayOutAbilities(entityplayer.abilities));
          playerconnection.sendPacket(new PacketPlayOutHeldItemSlot(entityplayer.inventory.itemInHandIndex));
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index e2b59aae7b4933d4953da4868969b4bbbc566e1e..a5de2eced00ccab7b47011950026c7e691845443 100644
+index 6b14949acc2a7fa584896e3a57e4c7a245acf502..68f989b662bd12e23cebd45f45cd43a69184a8da 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -860,6 +860,7 @@ public final class CraftServer implements Server {
@@ -91,7 +91,7 @@ index e2b59aae7b4933d4953da4868969b4bbbc566e1e..a5de2eced00ccab7b47011950026c7e6
          }
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
-@@ -2371,6 +2372,13 @@ public final class CraftServer implements Server {
+@@ -2380,6 +2381,13 @@ public final class CraftServer implements Server {
              org.spigotmc.RestartCommand.restart();
          }
  

@@ -201,7 +201,7 @@ index c0be5153d117208edf69459728d57e11e26b8955..e7ed05998b180d58a9c97d6fc3293c45
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index f4539f065bc052d90650bfe1557a84b5a80cccf8..9016554f9f7b637ce5e80ce56504b4a23b25e7ac 100644
+index 0364c923792acb30dc600db8ed4f05f8d5597e1d..a1ed80a50eaedf53ffd22b08450e931253ce0016 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
 @@ -382,7 +382,8 @@ public class PlayerConnection implements PacketListenerPlayIn {
@@ -268,7 +268,7 @@ index 6b4c007550c3e2e405314d8931630557655ce6f1..f49ea31334c861e02252acde1e6075a2
  
      public WorldBorder() {}
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index a5b3da88ce6146fd46581b2d2d95eaed4b9f3de9..90d2917e0a5504085251fdd829c7c6f43312d8b5 100644
+index 7eb92e9168a8e330d94883471e39ec35961c601e..285512e633aac6d94ed99026972cbedd7a09a8eb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -655,7 +655,8 @@ public final class CraftServer implements Server {

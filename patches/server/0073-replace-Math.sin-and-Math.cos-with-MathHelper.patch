@@ -93,7 +93,7 @@ index 9452eae41bbad0305b3d66ce2fe20667effd2bdf..9bf8f50e9a892b747b27e937092e4b49
  
              // CraftBukkit start - fire PlayerDropItemEvent
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 063cca4b56010eed3fa6dc930e7a7ef80ac13867..578a18b7c9f92efb2b0d9b0e36cb050590463125 100644
+index e1228f08d4d472e5a31318a0f6c53f3ef72ddee4..f71eb53498c7c002a29d308b72dca5e817557416 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -160,15 +160,15 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

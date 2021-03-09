@@ -21,12 +21,12 @@ which is why it can be disabled in the configuration.
 Co-authored-by: Yannick Lamprecht <yannicklamprecht@live.de>
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-index 6dd1b3d2a894aaf47accc932a1c7af660db8ceac..2a51ee337c1be820f0c15fe214707654abf3f5ec 100644
+index c5dda7204e903573c7243b862aa4d1e6f1e6ab7d..6981ff8d81972f400a4312a276507e2a1df20955 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-@@ -809,4 +809,14 @@ public class PaperWorldConfig {
-         fixWitherTargetingBug = getBoolean("fix-wither-targeting-bug", false);
-         log("Withers properly target players: " + fixWitherTargetingBug);
+@@ -814,4 +814,14 @@ public class PaperWorldConfig {
+     private void allowUsingSignsInsideSpawnProtection() {
+         allowUsingSignsInsideSpawnProtection = getBoolean("allow-using-signs-inside-spawn-protection", allowUsingSignsInsideSpawnProtection);
      }
 +
 +    public boolean isHopperPushBased;

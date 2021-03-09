@@ -818,7 +818,7 @@ index caee4f612238ee7112ed2f29e954cfe3b74a558e..bc4a30a771e4cdfcccf3733dc7f8111b
          ContainerUtil.b(nbttagcompound, this.items);
          this.brewTime = nbttagcompound.getShort("BrewTime");
 diff --git a/src/main/java/net/minecraft/server/TileEntityCampfire.java b/src/main/java/net/minecraft/server/TileEntityCampfire.java
-index c56c588f508b51677c599412215f043aa0a35f98..5b5281093b2490595bbf9ec92d64621135a2f476 100644
+index 3239d8dd120fda2faa6b770603c5f613c13f7c43..ff301c8c212b38ee9a4b84ad08f393d5947d2eb2 100644
 --- a/src/main/java/net/minecraft/server/TileEntityCampfire.java
 +++ b/src/main/java/net/minecraft/server/TileEntityCampfire.java
 @@ -9,12 +9,18 @@ import org.bukkit.craftbukkit.block.CraftBlock;
@@ -891,7 +891,7 @@ index c56c588f508b51677c599412215f043aa0a35f98..5b5281093b2490595bbf9ec92d646211
          boolean flag = (Boolean) this.getBlock().get(BlockCampfire.LIT);
          boolean flag1 = this.world.isClientSide;
  
-@@ -128,6 +176,7 @@ public class TileEntityCampfire extends TileEntity implements Clearable, ITickab
+@@ -131,6 +179,7 @@ public class TileEntityCampfire extends TileEntity implements Clearable, ITickab
      @Override
      public void load(IBlockData iblockdata, NBTTagCompound nbttagcompound) {
          super.load(iblockdata, nbttagcompound);
@@ -1093,7 +1093,7 @@ index 80440aa24f546dd151e89b705322d9c3e906b139..94c2bfce5059d784655d729f384c70b1
              this.c = j;
              return true;
 diff --git a/src/main/java/net/minecraft/server/TileEntityFurnace.java b/src/main/java/net/minecraft/server/TileEntityFurnace.java
-index 578b4087c449079d6a000d4791ba419459af8b41..e90bab6dc1485cff11f78bc7c6f006bf534bf731 100644
+index 9ff95817cc1ec4f28070e8e91bf8ab64cad7b23c..ccb869f9d41de090d382ef632758bc6b1ca14154 100644
 --- a/src/main/java/net/minecraft/server/TileEntityFurnace.java
 +++ b/src/main/java/net/minecraft/server/TileEntityFurnace.java
 @@ -22,9 +22,11 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;

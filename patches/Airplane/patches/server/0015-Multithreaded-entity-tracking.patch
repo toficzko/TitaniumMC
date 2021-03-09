@@ -181,7 +181,7 @@ index 045b4af6721817b3dbfb05b9aec0bf382de9fcf5..6cde93d62c4c324a6544401cabe045cb
          this(world, chunkcoordintpair, biomestorage, ChunkConverter.a, TickListEmpty.b(), TickListEmpty.b(), 0L, (ChunkSection[]) null, (Consumer) null);
      }
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 02b8e07d61a67118886505353077e0dd439eb2a8..23d91933508f829df3191935ca4818b15cc17d88 100644
+index 49e1a433f0908dc93e5a9216995a50bda14304e3..408f8022e9ce14061d379b872d79603c425467d8 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -52,7 +52,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
