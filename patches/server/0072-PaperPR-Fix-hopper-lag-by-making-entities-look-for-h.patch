@@ -141,10 +141,10 @@ index 0000000000000000000000000000000000000000..8dff63d32718343d80e17837fa947fba
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
-index 1b39f724e30515f962705687a59ee907da5bdec9..e843f0c56b934d974288445e222a4770b8709120 100644
+index 8f2daa6312fdd6d9a9695175cd17416ea6b51775..753bfdd7d99e2d921f47efa71cf1c62f9ab4e0d1 100644
 --- a/src/main/java/net/minecraft/server/EntityItem.java
 +++ b/src/main/java/net/minecraft/server/EntityItem.java
-@@ -12,7 +12,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
+@@ -13,7 +13,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
  // CraftBukkit end
  import org.bukkit.event.player.PlayerAttemptPickupItemEvent; // Paper
  
@@ -155,7 +155,7 @@ index 1b39f724e30515f962705687a59ee907da5bdec9..e843f0c56b934d974288445e222a4770
  
      private static final DataWatcherObject<ItemStack> ITEM = DataWatcher.a(EntityItem.class, DataWatcherRegistry.g);
      public int age;
-@@ -45,6 +47,19 @@ public class EntityItem extends Entity {
+@@ -46,6 +48,19 @@ public class EntityItem extends Entity {
          this.setItemStack(itemstack);
      }
  
@@ -175,7 +175,7 @@ index 1b39f724e30515f962705687a59ee907da5bdec9..e843f0c56b934d974288445e222a4770
      @Override
      protected boolean playStepSound() {
          return false;
-@@ -61,6 +76,7 @@ public class EntityItem extends Entity {
+@@ -62,6 +77,7 @@ public class EntityItem extends Entity {
              this.die();
          } else {
              super.tick();
@@ -183,7 +183,7 @@ index 1b39f724e30515f962705687a59ee907da5bdec9..e843f0c56b934d974288445e222a4770
              // CraftBukkit start - Use wall time for pickup and despawn timers
              int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
              if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
-@@ -154,6 +170,7 @@ public class EntityItem extends Entity {
+@@ -155,6 +171,7 @@ public class EntityItem extends Entity {
      // Spigot start - copied from above
      @Override
      public void inactiveTick() {
@@ -192,10 +192,10 @@ index 1b39f724e30515f962705687a59ee907da5bdec9..e843f0c56b934d974288445e222a4770
          int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
          if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
 diff --git a/src/main/java/net/minecraft/server/EntityMinecartContainer.java b/src/main/java/net/minecraft/server/EntityMinecartContainer.java
-index 574838bd33a46e464ff7d801345613a3351f487f..9001718066370c9f9fbcae2a9f5003202f6f7006 100644
+index 8e13aebb7043ddfb4b1c02bac46081eb15e906bf..2625d3f5dae37f251a72b5c6218f2c103912e753 100644
 --- a/src/main/java/net/minecraft/server/EntityMinecartContainer.java
 +++ b/src/main/java/net/minecraft/server/EntityMinecartContainer.java
-@@ -8,9 +8,10 @@ import org.bukkit.Location;
+@@ -9,9 +9,10 @@ import org.bukkit.Location;
  import org.bukkit.craftbukkit.entity.CraftHumanEntity;
  import org.bukkit.entity.HumanEntity;
  import org.bukkit.inventory.InventoryHolder;
@@ -207,7 +207,7 @@ index 574838bd33a46e464ff7d801345613a3351f487f..9001718066370c9f9fbcae2a9f500320
  
      private NonNullList<ItemStack> items;
      private boolean c;
-@@ -45,6 +46,31 @@ public abstract class EntityMinecartContainer extends EntityMinecartAbstract imp
+@@ -46,6 +47,31 @@ public abstract class EntityMinecartContainer extends EntityMinecartAbstract imp
          return null;
      }
  

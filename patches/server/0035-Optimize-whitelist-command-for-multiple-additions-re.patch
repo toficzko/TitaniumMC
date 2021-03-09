@@ -185,10 +185,10 @@ index b92ac6088007c73815f9b55ff7ad0543e5b1b6b5..e75dab3b7f23c0636bf27c2df2918cf0
          return (String[]) this.d.keySet().toArray(new String[this.d.size()]);
      }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index ee50af5b879b6d306aade95bc3cbd29ed29f8178..44d6c7882d020b2b1541f95dccec81c58ca26f0b 100644
+index dcb757ff80885ead374750a6b9d2247cfd12d70c..0585d18a0bd04fe8ceb429e55f962e245b76e54d 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1990,6 +1990,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1992,6 +1992,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          return new DataPackConfiguration(list, list1);
      }
  

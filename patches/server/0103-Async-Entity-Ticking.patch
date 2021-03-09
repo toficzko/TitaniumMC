@@ -121,18 +121,18 @@ index a8054a599e3eb502e7bbce903b5683987f95fb66..f96fce1e7bf8aa68fe03cdfefa8600d8
      private int c;
      private int d;
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 673f2da97c59232d048151c394a84c36264bbdac..7a8efa332ee7f5fd16831d36fd788c69a91c44d0 100644
+index c0498d03a8d3097eb7e54c8cf74bf7ca41cac6b7..1d2c1f9d6d2c12d7d5c8f0217cf13f00022528b7 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -68,6 +68,7 @@ import co.aikar.timings.MinecraftTimings; // Paper
+@@ -70,6 +70,7 @@ import co.aikar.timings.MinecraftTimings; // Paper
+ import org.spigotmc.SlackActivityAccountant; // Spigot
  import io.papermc.paper.util.PaperJvmChecker; // Paper
  import io.papermc.paper.event.server.ServerResourcesReloadedEvent; // Paper
- import org.spigotmc.SlackActivityAccountant; // Spigot
 +import org.yatopiamc.yatopia.server.ticking.AsyncEntityManager;
  
  public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTask> implements IMojangStatistics, ICommandListener, AutoCloseable {
  
-@@ -808,6 +809,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -810,6 +811,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
              worldserver = (WorldServer) iterator.next();
              if (worldserver != null) {
                  try {

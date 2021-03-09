@@ -292,10 +292,10 @@ index 7abf0e4b7e96dd367b9d03cbc62ac7bb03542d0a..76a76c26650bca73828d7893a537a023
          return i == j ? true : GenLayers.a.get(i) == GenLayers.a.get(j);
      }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 71c06385ddf9a35f566de486c51de37e06277865..6bf0f7b97212b64f3734f1441c5234e67fdc2aa1 100644
+index 763b69770444035f0378f69ab9661d6236fdeac4..e055290e1fa3501d024e4b115323941549bb1372 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -841,6 +841,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -843,6 +843,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          // Spigot end
          // Paper start - move final shutdown items here
          LOGGER.info("Flushing Chunk IO");
@@ -305,10 +305,10 @@ index 71c06385ddf9a35f566de486c51de37e06277865..6bf0f7b97212b64f3734f1441c5234e6
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 38e6928c8812e0a93fc69003452687ae992dcca3..955b4dfd9febf1b0d40b3a15cd610a5870395ad0 100644
+index 6e92cfcdfcda34d9308be94842e694fa5411464c..f817dc8ba8f9578cb2fa7843f961b003e357a37c 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -57,6 +57,18 @@ import org.spigotmc.AsyncCatcher;
+@@ -58,6 +58,18 @@ import org.spigotmc.AsyncCatcher;
  
  public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
@@ -327,7 +327,7 @@ index 38e6928c8812e0a93fc69003452687ae992dcca3..955b4dfd9febf1b0d40b3a15cd610a58
      private static final Logger LOGGER = LogManager.getLogger();
      public static final int GOLDEN_TICKET = 33 + ChunkStatus.b();
      // Paper start - faster copying
-@@ -1254,7 +1266,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1255,7 +1267,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                  return;
              }
              // Paper end

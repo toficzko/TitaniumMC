@@ -148,10 +148,10 @@ index 918cd774bc7e9f84ddbc1e65b4cb4d661eb127a5..d35ac0a170e4213be007147e36746454
          double z = vector.getZ();
          vector.setX(cos * x - sine * z);
 diff --git a/src/main/java/net/minecraft/server/EntityTNTPrimed.java b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
-index b108874d977a4fb1a7c0d52f66bc08390decb4d0..6f7a247b123dcc1817b1ea092e62722293519286 100644
+index 6e77dc89f5441f0f483571fee9aa9f34b6d1dd1c..9271efb508a1b73fff8dd7f5d8c685a9f92d6a35 100644
 --- a/src/main/java/net/minecraft/server/EntityTNTPrimed.java
 +++ b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
-@@ -23,7 +23,7 @@ public class EntityTNTPrimed extends Entity {
+@@ -24,7 +24,7 @@ public class EntityTNTPrimed extends Entity {
          this.setPosition(d0, d1, d2);
          double d3 = world.random.nextDouble() * 6.2831854820251465D;
  

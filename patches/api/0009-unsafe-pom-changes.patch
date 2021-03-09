@@ -5,7 +5,7 @@ Subject: [PATCH] unsafe pom changes
 
 
 diff --git a/pom.xml b/pom.xml
-index 35af1381655d0efe6ecc6eacb6b3bb48f58afafa..225573eac66f38595c3fad2da5bd4df577a6d1df 100644
+index 0d8380d779ded94078825a26b5bcd3085cb463b1..65aae6f9dc81e24e06b45b5bd519e00c08d76a8a 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -113,7 +113,7 @@

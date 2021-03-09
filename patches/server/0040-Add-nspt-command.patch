@@ -17,7 +17,7 @@ index f6c6fde2e4157b4723706c2d390942026839df98..bd43204760663363fcc53c1a8c175668
          de.minebench.origami.OrigamiConfig.init((java.io.File) options.valueOf("origami-settings"));
          this.setPVP(dedicatedserverproperties.pvp);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index c51c9b5669fad5a5e744d629308071a49047a3e1..9507d5c69602e0d5c380dcfe9a8a5f0b30df9f32 100644
+index a5de2eced00ccab7b47011950026c7e691845443..a5b3da88ce6146fd46581b2d2d95eaed4b9f3de9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -924,6 +924,7 @@ public final class CraftServer implements Server {

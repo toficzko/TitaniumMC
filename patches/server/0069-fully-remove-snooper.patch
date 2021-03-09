@@ -5,10 +5,10 @@ Subject: [PATCH] fully remove snooper
 
 
 diff --git a/src/main/java/net/minecraft/server/DedicatedServerProperties.java b/src/main/java/net/minecraft/server/DedicatedServerProperties.java
-index 1962c14af5cc4ec4c66fa7c354aff98c5e6a4b2e..0703b3c289208637ef48c6f0e6cd9cdc91e3f306 100644
+index d2520b7ee84f1e307faca2018c75f79d75ed707d..adda2a0af7814ae04d0ce84ae4d3980061aae84a 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServerProperties.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServerProperties.java
-@@ -35,7 +35,7 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
+@@ -39,7 +39,7 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
      public final boolean hardcore;
      public final boolean allowNether;
      public final boolean spawnMonsters;
@@ -17,7 +17,7 @@ index 1962c14af5cc4ec4c66fa7c354aff98c5e6a4b2e..0703b3c289208637ef48c6f0e6cd9cdc
      public final boolean useNativeTransport;
      public final boolean enableCommandBlock;
      public final int spawnProtection;
-@@ -82,11 +82,13 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
+@@ -86,11 +86,13 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
          this.hardcore = this.getBoolean("hardcore", false);
          this.allowNether = this.getBoolean("allow-nether", true);
          this.spawnMonsters = this.getBoolean("spawn-monsters", true);
@@ -32,10 +32,10 @@ index 1962c14af5cc4ec4c66fa7c354aff98c5e6a4b2e..0703b3c289208637ef48c6f0e6cd9cdc
          this.enableCommandBlock = this.getBoolean("enable-command-block", false);
          this.spawnProtection = this.getInt("spawn-protection", 16);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 7441cf1c9ebbb8cd5362a13112a0283433b29494..8f3a0556c92684687408bb1922a4161cb9b26e86 100644
+index e7ed05998b180d58a9c97d6fc3293c45c752847a..f7cf231ff6f26e3d30423d04a05ff6c6844872ca 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -77,7 +77,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -79,7 +79,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
      public static final WorldSettings c = new WorldSettings("Demo World", EnumGamemode.SURVIVAL, false, EnumDifficulty.NORMAL, false, new GameRules(), DataPackConfiguration.a);
      public Convertable.ConversionSession convertable;
      public final WorldNBTStorage worldNBTStorage;
@@ -44,7 +44,7 @@ index 7441cf1c9ebbb8cd5362a13112a0283433b29494..8f3a0556c92684687408bb1922a4161c
      private final List<Runnable> tickables = Lists.newArrayList();
      private final GameProfilerSwitcher m;
      private GameProfilerFiller methodProfiler;
-@@ -815,9 +815,11 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -817,9 +817,11 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
              }
          }
  
@@ -56,7 +56,7 @@ index 7441cf1c9ebbb8cd5362a13112a0283433b29494..8f3a0556c92684687408bb1922a4161c
  
          this.dataPackResources.close();
  
-@@ -1337,7 +1339,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1339,7 +1341,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
              //MinecraftServer.LOGGER.debug("Autosave finished"); // Paper
          //} // Paper
  
@@ -65,7 +65,7 @@ index 7441cf1c9ebbb8cd5362a13112a0283433b29494..8f3a0556c92684687408bb1922a4161c
          // Akarin - Disable Snooper
          /*
          if (((DedicatedServer) this).getDedicatedServerProperties().snooperEnabled && !this.snooper.d() && this.ticks > 100) { // Spigot
-@@ -1349,7 +1351,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1351,7 +1353,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          }
          */
  

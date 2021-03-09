@@ -67,10 +67,10 @@ index 310c2a3a37b77b929032be8a2d3099e30339f06c..1bf30786549cb36e3bcd7f682e3091f7
          if (this.isFireProof() || this.world.isClientSide) {
              this.extinguish();
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index cdc6d664c75d5bf5c0b21e3c83684b1d7e7a6832..5d10844f1ad4f2cb235275c865c3b9ae016cba99 100644
+index 3a4165efa33cce86457092c29d2cf2aced42f43d..7cad3e754a8c0398ad6394edd0cb767566b09c88 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
-@@ -192,7 +192,7 @@ public abstract class PlayerList {
+@@ -187,7 +187,7 @@ public abstract class PlayerList {
          // Spigot - view distance
          playerconnection.sendPacket(new PacketPlayOutLogin(entityplayer.getId(), entityplayer.playerInteractManager.getGameMode(), entityplayer.playerInteractManager.c(), BiomeManager.a(worldserver1.getSeed()), worlddata.isHardcore(), this.server.F(), this.s, worldserver1.getDimensionManager(), worldserver1.getDimensionKey(), this.getMaxPlayers(), worldserver1.getChunkProvider().playerChunkMap.playerChunkManager.getLoadDistance(), flag1, !flag, worldserver1.isDebugWorld(), worldserver1.isFlatWorld())); // Paper - no-tick view distance // Tuinity - replace old player chunk management
          entityplayer.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
@@ -80,7 +80,7 @@ index cdc6d664c75d5bf5c0b21e3c83684b1d7e7a6832..5d10844f1ad4f2cb235275c865c3b9ae
          playerconnection.sendPacket(new PacketPlayOutAbilities(entityplayer.abilities));
          playerconnection.sendPacket(new PacketPlayOutHeldItemSlot(entityplayer.inventory.itemInHandIndex));
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 1f888e3c079e0700ea2fba673491f2fbcefcf956..c51c9b5669fad5a5e744d629308071a49047a3e1 100644
+index e2b59aae7b4933d4953da4868969b4bbbc566e1e..a5de2eced00ccab7b47011950026c7e691845443 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -860,6 +860,7 @@ public final class CraftServer implements Server {

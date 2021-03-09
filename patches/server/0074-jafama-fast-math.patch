@@ -31,7 +31,7 @@ index c9f4b69874e693c8e5c3346f09db7b5014dcfb63..47e8603f13d81b74cf234ad633398dc4
  
          void a() {
 diff --git a/src/main/java/net/minecraft/server/EntityEnderDragon.java b/src/main/java/net/minecraft/server/EntityEnderDragon.java
-index ebab1a06724555e80cb5fc1792f4a3f007baf356..aeffdc6ae7f82180c9cea342c66428e578f37998 100644
+index a495c14b9f168884a0bba6b95d28c9ecfa9dfdab..b4d0f8a7cdf642e09157be139888396a174b0372 100644
 --- a/src/main/java/net/minecraft/server/EntityEnderDragon.java
 +++ b/src/main/java/net/minecraft/server/EntityEnderDragon.java
 @@ -659,7 +659,7 @@ public class EntityEnderDragon extends EntityInsentient implements IMonster {
@@ -57,10 +57,10 @@ index b7e60a672d67b083253d68fc6addf93de4f47f6e..0404bf980bc33dbb2c11c864ae461ab5
              double d5 = MathHelper.d(0.0025D, (double) f, (double) f1);
              double d6 = vec3d.y;
 diff --git a/src/main/java/net/minecraft/server/EntityExperienceOrb.java b/src/main/java/net/minecraft/server/EntityExperienceOrb.java
-index 358d6d660581686a2e8d49e13e8c2ade9ec2fec2..590fd4846b616de8d1ff780aa17200472b146fab 100644
+index 4aee11c980105a523bdcb35470053aae51b002df..1a8b6e0cefe4d3725e0ca9ea2f4ac565e4d091fd 100644
 --- a/src/main/java/net/minecraft/server/EntityExperienceOrb.java
 +++ b/src/main/java/net/minecraft/server/EntityExperienceOrb.java
-@@ -148,7 +148,7 @@ public class EntityExperienceOrb extends Entity {
+@@ -149,7 +149,7 @@ public class EntityExperienceOrb extends Entity {
              double d1 = vec3d.g();
  
              if (d1 < 64.0D) {
@@ -70,10 +70,10 @@ index 358d6d660581686a2e8d49e13e8c2ade9ec2fec2..590fd4846b616de8d1ff780aa1720047
                  this.setMot(this.getMot().e(vec3d.d().a(d2 * d2 * 0.1D)));
              }
 diff --git a/src/main/java/net/minecraft/server/EntityFireworks.java b/src/main/java/net/minecraft/server/EntityFireworks.java
-index 601f639275f4df983f19aa9cb0dc5f2611387853..c0f78f4497acbf26f170efcc352f972c9260d905 100644
+index e4c2bf2de6c032332b7557c240bb458297bdd33f..fe1281b8fdbc90ebec272f02d693002bd22c970e 100644
 --- a/src/main/java/net/minecraft/server/EntityFireworks.java
 +++ b/src/main/java/net/minecraft/server/EntityFireworks.java
-@@ -231,7 +231,7 @@ public class EntityFireworks extends IProjectile {
+@@ -232,7 +232,7 @@ public class EntityFireworks extends IProjectile {
                      }
  
                      if (flag) {
@@ -83,10 +83,10 @@ index 601f639275f4df983f19aa9cb0dc5f2611387853..c0f78f4497acbf26f170efcc352f972c
                          CraftEventFactory.entityDamage = this; // CraftBukkit
                          entityliving.damageEntity(DamageSource.a(this, this.getShooter()), f1);
 diff --git a/src/main/java/net/minecraft/server/EntityFishingHook.java b/src/main/java/net/minecraft/server/EntityFishingHook.java
-index 2bad182d9d6248c1e8ac9138e46d192dccc2a973..93a45ee333cb9736f6d5dd19331ebd44cec8cd3b 100644
+index f0502c7f5419f637641b48d8c87f5df206e4f922..0b9df5dc24096bbc63436711e2296147462538bf 100644
 --- a/src/main/java/net/minecraft/server/EntityFishingHook.java
 +++ b/src/main/java/net/minecraft/server/EntityFishingHook.java
-@@ -470,7 +470,7 @@ public class EntityFishingHook extends IProjectile {
+@@ -471,7 +471,7 @@ public class EntityFishingHook extends IProjectile {
  
                      // Paper start, entity item can be null, so we need to check against this
                      if (entityitem != null) {
@@ -224,10 +224,10 @@ index 4de2877f30a9b231a5c8bbd1739416991e9d7633..911940176ad53e3c97f331a14a22dc98
                  double d20 = 0.06D;
  
 diff --git a/src/main/java/net/minecraft/server/EntityPotion.java b/src/main/java/net/minecraft/server/EntityPotion.java
-index bd84a3ac6146cfe6952a9334820696b4583b45b5..7f267a10e17097439006979056041d6aa5e3b365 100644
+index dfc0538cc8cb8015fe79978ee360c86127118330..aae4d6370dae8980e7997a5ebf0fd3f7301f8618 100644
 --- a/src/main/java/net/minecraft/server/EntityPotion.java
 +++ b/src/main/java/net/minecraft/server/EntityPotion.java
-@@ -125,7 +125,7 @@ public class EntityPotion extends EntityProjectileThrowable {
+@@ -126,7 +126,7 @@ public class EntityPotion extends EntityProjectileThrowable {
                      double d0 = this.h(entityliving);
  
                      if (d0 < 16.0D) {

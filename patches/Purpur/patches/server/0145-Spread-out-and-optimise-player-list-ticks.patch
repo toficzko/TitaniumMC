@@ -5,10 +5,10 @@ Subject: [PATCH] Spread out and optimise player list ticks
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index ab1e8f115915b6f8eb89e5f7ab1ace00b4ee9415..f810e4a65b125650fbfe9e05b3f83e13b71999a2 100644
+index f9043744ad0a622c6aa5e5bd3986fb9f60cab4c3..4415d081983d46bcece9b80bad6f3b5cdc624a4e 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
-@@ -73,7 +73,7 @@ public abstract class PlayerList {
+@@ -68,7 +68,7 @@ public abstract class PlayerList {
      private int viewDistance;
      private EnumGamemode u;
      private boolean v;
@@ -17,7 +17,7 @@ index ab1e8f115915b6f8eb89e5f7ab1ace00b4ee9415..f810e4a65b125650fbfe9e05b3f83e13
  
      // CraftBukkit start
      private CraftServer cserver;
-@@ -933,22 +933,23 @@ public abstract class PlayerList {
+@@ -928,22 +928,23 @@ public abstract class PlayerList {
      }
  
      public void tick() {

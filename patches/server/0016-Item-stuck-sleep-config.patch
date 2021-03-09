@@ -5,10 +5,10 @@ Subject: [PATCH] Item stuck sleep config
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
-index f4ba0dc132da65eb4d3f7e768eab2d73094d7b37..1b39f724e30515f962705687a59ee907da5bdec9 100644
+index c25dce9a75b0e79f9b59f31892d863f46e2565e9..8f2daa6312fdd6d9a9695175cd17416ea6b51775 100644
 --- a/src/main/java/net/minecraft/server/EntityItem.java
 +++ b/src/main/java/net/minecraft/server/EntityItem.java
-@@ -85,7 +85,7 @@ public class EntityItem extends Entity {
+@@ -86,7 +86,7 @@ public class EntityItem extends Entity {
  
              if (this.world.isClientSide) {
                  this.noclip = false;

@@ -226,10 +226,10 @@ index ee906b594b306906c170180a29a8b61997d05168..7e348fcb813707fee830082b826932e0
          if (this.closed) {
              this.pollTasks(true); // this ensures we've emptied the queue
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 6bf0f7b97212b64f3734f1441c5234e67fdc2aa1..673f2da97c59232d048151c394a84c36264bbdac 100644
+index e055290e1fa3501d024e4b115323941549bb1372..c0498d03a8d3097eb7e54c8cf74bf7ca41cac6b7 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -843,7 +843,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -845,7 +845,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          LOGGER.info("Flushing Chunk IO");
          PlayerChunkMap.shutdownScheduler(); // Yatopia
          ChunkStatus.shutdownExecutors(); // Yatopia
@@ -239,10 +239,10 @@ index 6bf0f7b97212b64f3734f1441c5234e67fdc2aa1..673f2da97c59232d048151c394a84c36
          SystemUtils.shutdownServerThreadPool(); // Paper
          LOGGER.info("Closing Server");
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 955b4dfd9febf1b0d40b3a15cd610a5870395ad0..10774ae1582d96b174338dce8d6dad44802c890f 100644
+index f817dc8ba8f9578cb2fa7843f961b003e357a37c..d6390896c40028ffb1016a8749f2761c810eb99f 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1619,7 +1619,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1620,7 +1620,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      @Nullable
      @Override
      public NBTTagCompound read(ChunkCoordIntPair chunkcoordintpair) throws IOException {
@@ -251,7 +251,7 @@ index 955b4dfd9febf1b0d40b3a15cd610a5870395ad0..10774ae1582d96b174338dce8d6dad44
              NBTTagCompound ret = com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE
                  .loadChunkDataAsyncFuture(this.world, chunkcoordintpair.x, chunkcoordintpair.z, com.destroystokyo.paper.io.IOUtil.getPriorityForCurrentThread(),
                      false, true, true).join().chunkData;
-@@ -1634,7 +1634,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1635,7 +1635,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
      @Override
      public void write(ChunkCoordIntPair chunkcoordintpair, NBTTagCompound nbttagcompound) throws IOException {

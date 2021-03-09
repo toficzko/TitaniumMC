@@ -5,10 +5,10 @@ Subject: [PATCH] Option for simpler Villagers
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityVillager.java b/src/main/java/net/minecraft/server/EntityVillager.java
-index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a7326853444 100644
+index 850dae5f20649854f013c0e530a3325455b5db4a..7fa7cdc0b369bb86946101c93e026409eb5d1c85 100644
 --- a/src/main/java/net/minecraft/server/EntityVillager.java
 +++ b/src/main/java/net/minecraft/server/EntityVillager.java
-@@ -31,6 +31,7 @@ import org.bukkit.event.entity.VillagerReplenishTradeEvent;
+@@ -29,6 +29,7 @@ import org.bukkit.event.entity.VillagerReplenishTradeEvent;
  
  public class EntityVillager extends EntityVillagerAbstract implements ReputationHandler, VillagerDataHolder {
  
@@ -16,7 +16,7 @@ index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a73
      private static final DataWatcherObject<VillagerData> br = DataWatcher.a(EntityVillager.class, DataWatcherRegistry.q);
      public static final Map<Item, Integer> bp = ImmutableMap.of(Items.BREAD, 4, Items.POTATO, 1, Items.CARROT, 1, Items.BEETROOT, 1);
      private static final Set<Item> bs = ImmutableSet.of(Items.BREAD, Items.POTATO, Items.CARROT, Items.WHEAT, Items.WHEAT_SEEDS, Items.BEETROOT, new Item[]{Items.BEETROOT_SEEDS});
-@@ -67,8 +68,14 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -65,8 +66,14 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
      public EntityVillager(EntityTypes<? extends EntityVillager> entitytypes, World world, VillagerType villagertype) {
          super(entitytypes, world);
          this.by = new Reputation();
@@ -31,7 +31,7 @@ index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a73
          this.setCanPickupLoot(true);
          this.setVillagerData(this.getVillagerData().withType(villagertype).withProfession(VillagerProfession.NONE));
          this.brainTickOffset = getRandom().nextInt(100); // Purpur
-@@ -89,6 +96,38 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -87,6 +94,38 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
      protected void initPathfinder() {
          this.goalSelector.a(0, new PathfinderGoalHasRider(this)); // Purpur
          if (world.purpurConfig.villagerFollowEmeraldBlock) this.goalSelector.a(3, new PathfinderGoalTempt(this, 1.0D, false, TEMPT_ITEMS));
@@ -70,7 +70,7 @@ index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a73
      }
  
      @Override
-@@ -114,6 +153,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -112,6 +151,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
  
      @Override
      protected BehaviorController<?> a(Dynamic<?> dynamic) {
@@ -78,7 +78,7 @@ index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a73
          BehaviorController<EntityVillager> behaviorcontroller = this.cK().a(dynamic);
  
          this.a(behaviorcontroller);
-@@ -212,10 +252,39 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -210,10 +250,39 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
      }
      // Purpur end
  
@@ -118,7 +118,7 @@ index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a73
          // Purpur start
          if (world.purpurConfig.villagerLobotomizeEnabled) inactive = inactive || isLobotomized();
          boolean tick = (world.getTime() + brainTickOffset) % world.purpurConfig.villagerBrainTicks == 0;
-@@ -338,6 +407,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -336,6 +405,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
          this.fl();
      }
  
@@ -126,7 +126,7 @@ index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a73
      private void fl() {
          Iterator iterator = this.getOffers().iterator();
  
-@@ -412,6 +482,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -410,6 +480,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
          return this.fn() && this.fm();
      }
  
@@ -134,7 +134,7 @@ index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a73
      private void fo() {
          int i = 2 - this.bD;
  
-@@ -644,6 +715,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -642,6 +713,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
      }
  
      private void a(Entity entity) {
@@ -142,7 +142,7 @@ index ec6e5766d3a7e77e0698093d966bd5a96775f642..68b7249ce6e9269eabd0f165caf12a73
          if (this.world instanceof WorldServer) {
              Optional<List<EntityLiving>> optional = this.bg.getMemory(MemoryModuleType.VISIBLE_MOBS);
  
-@@ -660,6 +732,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+@@ -658,6 +730,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
      }
  
      public void a(MemoryModuleType<GlobalPos> memorymoduletype) {

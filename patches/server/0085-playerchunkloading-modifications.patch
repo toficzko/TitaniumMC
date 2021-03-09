@@ -38,10 +38,10 @@ index 5155a79f78eba532d0f1314ca7f4e667d0c5e30f..804e495a5612590140b07fa2278f8762
  
      public static final class WorldConfig {
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 005505d9070a43f0a63fef21b06a91f48467b055..38e6928c8812e0a93fc69003452687ae992dcca3 100644
+index 4d66a9006c07d5366396f38c489d1c07ce207250..6e92cfcdfcda34d9308be94842e694fa5411464c 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -2203,6 +2203,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2204,6 +2204,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
              apacket[0] = new PacketPlayOutMapChunk(chunk, 65535, chunk.world.chunkPacketBlockController.shouldModify(entityplayer, chunk, 65535)); // Paper - Anti-Xray - Bypass
              apacket[1] = new PacketPlayOutLightUpdate(chunk.getPos(), this.lightEngine, true);
  
@@ -49,7 +49,7 @@ index 005505d9070a43f0a63fef21b06a91f48467b055..38e6928c8812e0a93fc69003452687ae
              // Paper start - Fix MC-162253
              if (com.tuinity.tuinity.config.TuinityConfig.enableMC162253Workaround) { // Tuinity - hide behind config option, this logic has undesirable network effects
              final int lightMask = getLightMask(chunk);
-@@ -2230,8 +2231,10 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2231,8 +2232,10 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
                  }
              }
          } // Tuinity - hide behind config option, this logic has undesirable network effects
@@ -60,7 +60,7 @@ index 005505d9070a43f0a63fef21b06a91f48467b055..38e6928c8812e0a93fc69003452687ae
          if (com.tuinity.tuinity.config.TuinityConfig.enableMC162253Workaround) { // Tuinity - hide behind config option, this logic has undesirable network effects
          final int viewDistance = this.playerChunkManager.broadcastMap.getLastViewDistance(entityplayer); // Tuinity - replace player chunk loader
          final long lastPosition = this.playerChunkManager.broadcastMap.getLastCoordinate(entityplayer); // Tuinity - replace player chunk loader
-@@ -2261,6 +2264,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2262,6 +2265,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
          }
          } // Tuinity - hide behind config option, this logic has undesirable network effects
          // Paper end - Fix MC-162253

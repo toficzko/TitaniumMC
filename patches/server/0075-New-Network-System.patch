@@ -25,10 +25,10 @@ index 21694e5de48f098d0b4071ffbbaee0b3c8dd6f6a..5bc87f52e3f524dc582eaf3e9f42e5ff
              <groupId>io.papermc</groupId>
              <artifactId>minecraft-server</artifactId>
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 8f3a0556c92684687408bb1922a4161cb9b26e86..71c06385ddf9a35f566de486c51de37e06277865 100644
+index f7cf231ff6f26e3d30423d04a05ff6c6844872ca..763b69770444035f0378f69ab9661d6236fdeac4 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1756,6 +1756,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1758,6 +1758,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          return true;
      }
  
