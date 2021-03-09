@@ -1,5 +1,5 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Simon Gardling <titaniumtown@gmail.com>
+From: 2No2Name <50278648+2No2Name@users.noreply.github.com>
 Date: Sun, 21 Feb 2021 21:34:18 -0500
 Subject: [PATCH] lithium: skip ticking block entities that are doing nothing
 

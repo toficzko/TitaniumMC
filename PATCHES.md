@@ -423,7 +423,7 @@ This is an overview over all patches that are currently used.
 | server |  lithium shape      | JellySquid |  |
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
 | server |  lithium: optimize &#96;BlockPos.iterateOutwards&#96; by caching      | 2No2Name |  |
-| server |  lithium: skip ticking block entities that are doing nothing      | Simon Gardling |  |
+| server |  lithium: skip ticking block entities that are doing nothing      | 2No2Name |  |
 | server |  mysql 8.0.23      | Simon Gardling |  |
 | server |  playerchunkloading modifications      | Simon Gardling |  |
 | server |  print Clientbrand on login      | Simon Gardling |  |
