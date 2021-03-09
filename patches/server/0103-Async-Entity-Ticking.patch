@@ -3,7 +3,7 @@ From: Simon Gardling <titaniumtown@gmail.com>
 Date: Wed, 3 Mar 2021 12:02:28 -0500
 Subject: [PATCH] Async Entity Ticking
 
-Based off of: https://github.com/PaperMC/Paper/pull/2671 by Bloodrayne1995
+Initial basis from: https://github.com/PaperMC/Paper/pull/2671 by Bloodrayne1995
 
 diff --git a/src/main/java/com/tuinity/tuinity/util/TickThread.java b/src/main/java/com/tuinity/tuinity/util/TickThread.java
 index 08ed243259f052165c6f75aed1d1d65a14219715..2a64e01d2fb84510db14d4627fd15d4c8427cbe8 100644
@@ -462,10 +462,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f3ac86c9f8d2df2573cdd5d6f8d67192
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..13a2d0764d26299709d984f762af2aee1682aa9c
+index 0000000000000000000000000000000000000000..1dfebcb152f2813e77944e999644765f4c7278a8
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,191 @@
+@@ -0,0 +1,189 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -551,6 +551,7 @@ index 0000000000000000000000000000000000000000..13a2d0764d26299709d984f762af2aee
 +            if (entity.inChunk) {
 +                ++entity.ticksLived;
 +                GameProfilerFiller gameprofilerfiller = worldserver.getMethodProfiler();
++                // TODO: resolve issue with IRegistry not being found
 +                /*
 +                gameprofilerfiller.a(() -> {
 +                    return IRegistry.ENTITY_TYPE.getKey(entity.getEntityType()).toString();
@@ -577,7 +578,9 @@ index 0000000000000000000000000000000000000000..13a2d0764d26299709d984f762af2aee
 +            }
 +
 +            worldserver.chunkCheck(entity);
-+            } finally { timer.stopTiming(); }
++            } finally {
++                timer.stopTiming();
++            }
 +            if (entity.inChunk) {
 +                Iterator iterator = entity.getPassengers().iterator();
 +                while (iterator.hasNext()) {
@@ -608,14 +611,17 @@ index 0000000000000000000000000000000000000000..13a2d0764d26299709d984f762af2aee
 +            tickEntity(entity, gameprofilerfiller);
 +        });
 +
++        // Ticks active entities
 +        targetEntitiesTick.stream().map(entity -> CompletableFuture.runAsync(() -> entityActiveTick(entity), entityTickPool)).collect(Collectors.toSet());
 +
++        // Ticks inactive entities
 +        targetEntitiesInactive.stream().map(entity -> CompletableFuture.runAsync(() -> entityInactiveTick(entity), entityTickPool)).collect(Collectors.toSet());
 +
 +
++        // Modified from entity iteration in WorldServer.java
 +        entityList.stream().forEach(entity -> {
 +            if (entity.dead) {
-+                queueEntityRemove(entity);
++                queueEntityRemove(entity); // Adds dead entities to a queue to be removed
 +            } else if (entity.inChunk && entity.valid) {
 +                if (worldserver.getChunkProvider().isInEntityTickingChunk(entity)) {
 +                    worldserver.updateNavigatorsInRegion(entity);
@@ -626,24 +632,16 @@ index 0000000000000000000000000000000000000000..13a2d0764d26299709d984f762af2aee
 +        });
 +
 +        gameprofilerfiller.enter("remove");
++        // Removes dead entities that were previously added to the queue
 +        targetEntitiesRemove.stream().forEach(entity -> {
 +            worldserver.removeEntity(entity);
 +        });
 +        gameprofilerfiller.exit();
 +
++        // Clears queues of entities for next tick
 +        targetEntitiesTick.clear();
 +        targetEntitiesInactive.clear();
 +        targetEntitiesRemove.clear();
-+    }
-+
-+
-+    public void startTick() {
-+        targetEntitiesTick.stream().map(entity -> CompletableFuture.runAsync(() -> entityActiveTick(entity), entityTickPool)).collect(Collectors.toSet());
-+
-+        targetEntitiesInactive.stream().map(entity -> CompletableFuture.runAsync(() -> entityInactiveTick(entity), entityTickPool)).collect(Collectors.toSet());
-+
-+        targetEntitiesTick.clear();
-+        targetEntitiesInactive.clear();
 +    }
 +
 +    public void shutdownExecutors() {
