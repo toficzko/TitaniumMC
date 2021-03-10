@@ -59,7 +59,7 @@ index 740bf89d566097308fcd24f77ba3149217d0feea..8f33d3e22989f525d66b8aa5bdf92048
  }
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 48496d8cc88dd758e68dba8e7051ff8c3c8d99c7..33dc4ecbe165346be6e372883c4ae223741a135b 100644
+index 424e0a1c31561aa06229a13b68d0cc367f392545..86493a37a1ca5d35e660dadf1d6005af55f67144 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -2957,7 +2957,7 @@ public abstract class EntityLiving extends Entity {

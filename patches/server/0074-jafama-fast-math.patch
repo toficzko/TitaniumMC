@@ -135,7 +135,7 @@ index 239f504430b6c59923fd677d1be0121be5022604..24185ba2898bbc46058f0c477a5bb3b2
                      double relativeZ = player.locZ() + (deltaZ / deltaLength) * viewDistance;
                      player.playerConnection.sendPacket(new PacketPlayOutNamedSoundEffect(SoundEffects.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, relativeX, this.locY(), relativeZ, 10000.0F, pitch));
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index f5d7436b3f5aa75b9623189dd48f96141e84046c..5400d756af3249df9c5bba9d858dde185305d450 100644
+index 93ce6c5905225776111e09df11931dfb5a9c5b11..bed25cbcd76635a5067037fdd774b1b3252a8d00 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -2352,8 +2352,8 @@ public abstract class EntityLiving extends Entity {

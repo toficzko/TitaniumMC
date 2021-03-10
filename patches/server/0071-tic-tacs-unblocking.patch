@@ -213,7 +213,7 @@ index c1487c066213417faeec7a9461026aa01db2e8c1..67fe985dd13762867d6fd8fe81876cab
                          if (fluid.a(tag)) {
                              double d2 = (double) ((float) i2 + fluid.getHeight(this.world, blockposition_mutableblockposition));
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index cd48e116b9663e1172e6a96f05722443705fdfc2..f5d7436b3f5aa75b9623189dd48f96141e84046c 100644
+index 5745ac2e932ba934604072951a33edf2fa16b3cb..93ce6c5905225776111e09df11931dfb5a9c5b11 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -44,6 +44,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;
