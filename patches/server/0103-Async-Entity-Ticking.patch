@@ -121,18 +121,10 @@ index a8054a599e3eb502e7bbce903b5683987f95fb66..f96fce1e7bf8aa68fe03cdfefa8600d8
      private int c;
      private int d;
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index c0498d03a8d3097eb7e54c8cf74bf7ca41cac6b7..1d2c1f9d6d2c12d7d5c8f0217cf13f00022528b7 100644
+index c0498d03a8d3097eb7e54c8cf74bf7ca41cac6b7..91084166d63f328c9d9b7e0697697d78938b40bc 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -70,6 +70,7 @@ import co.aikar.timings.MinecraftTimings; // Paper
- import org.spigotmc.SlackActivityAccountant; // Spigot
- import io.papermc.paper.util.PaperJvmChecker; // Paper
- import io.papermc.paper.event.server.ServerResourcesReloadedEvent; // Paper
-+import org.yatopiamc.yatopia.server.ticking.AsyncEntityManager;
- 
- public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTask> implements IMojangStatistics, ICommandListener, AutoCloseable {
- 
-@@ -810,6 +811,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -810,6 +810,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
              worldserver = (WorldServer) iterator.next();
              if (worldserver != null) {
                  try {
@@ -141,7 +133,7 @@ index c0498d03a8d3097eb7e54c8cf74bf7ca41cac6b7..1d2c1f9d6d2c12d7d5c8f0217cf13f00
                  } catch (IOException ioexception) {
                      MinecraftServer.LOGGER.error("Exception closing the level", ioexception);
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 74ba8de1bf70a8bd212906d3dd39bb435c917585..518df27500e6d6bb46c9cc0c67ede886f15aeb7a 100644
+index 74ba8de1bf70a8bd212906d3dd39bb435c917585..07b24e43e591acdcf3ee5e2b795bac8ecb2e1bfe 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -590,7 +590,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
@@ -149,12 +141,12 @@ index 74ba8de1bf70a8bd212906d3dd39bb435c917585..518df27500e6d6bb46c9cc0c67ede886
  
      @Override
 -    public final boolean setTypeAndData(BlockPosition blockposition, IBlockData iblockdata, int i) { // Paper - final for inline
-+    public synchronized final boolean setTypeAndData(BlockPosition blockposition, IBlockData iblockdata, int i) { // Paper - final for inline
++    public synchronized final boolean setTypeAndData(BlockPosition blockposition, IBlockData iblockdata, int i) { // Paper - final for inline // Yatopia - synchronize
          return this.a(blockposition, iblockdata, i, 512);
      }
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 1a960e1f839b435da29321ad01751b5df9a630fc..87fbf8c38ad150180be2e80685105a870676ba45 100644
+index 1a960e1f839b435da29321ad01751b5df9a630fc..b94bf3ba8bccdf56c5b3a4bb5e9bca4997caca16 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -170,7 +162,7 @@ index 1a960e1f839b435da29321ad01751b5df9a630fc..87fbf8c38ad150180be2e80685105a87
      }
      // Paper end
 -    private final MinecraftServer server;
-+    public final MinecraftServer server;
++    public final MinecraftServer server; // Yatopia - private -> public
      public final WorldDataServer worldDataServer; // CraftBukkit - type
      public boolean savingDisabled;
      private boolean everyoneSleeping;
@@ -455,10 +447,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..f3ac86c9f8d2df2573cdd5d6f8d67192
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..445dac1291483726e9aa18a296cfca481647ae75
+index 0000000000000000000000000000000000000000..e9344782a66bdab03dce00556306b71fc26ca975
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,202 @@
+@@ -0,0 +1,190 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -499,18 +491,6 @@ index 0000000000000000000000000000000000000000..445dac1291483726e9aa18a296cfca48
 +
 +    public AsyncEntityManager(WorldServer worldserver) {
 +        this.worldserver = worldserver;
-+    }
-+
-+    public void queueEntity(Entity entity) {
-+        targetEntitiesTick.add(entity);
-+    }
-+
-+    public void queueEntityInactive(Entity entity) {
-+        targetEntitiesInactive.add(entity);
-+    }
-+
-+    public void queueEntityRemove(Entity entity) {
-+        targetEntitiesRemove.add(entity);
 +    }
 +
 +    public void entityInactiveTick(Entity entity) {
@@ -557,11 +537,12 @@ index 0000000000000000000000000000000000000000..445dac1291483726e9aa18a296cfca48
 +                if (shouldTickEntityAsync(entity)) {
 +                    if (isActive) {
 +                        TimingHistory.activatedEntityTicks++;
-+                        queueEntity(entity);
++                        targetEntitiesTick.add(entity);
 +                    } else {
-+                        queueEntityInactive(entity);
++                        targetEntitiesInactive.add(entity);
 +                    }
 +                } else {
++                    // TODO: maybe add queue for ticking entities sync?
 +                    if (isActive) {
 +                        TimingHistory.activatedEntityTicks++;
 +                        entity.tick();
@@ -593,7 +574,6 @@ index 0000000000000000000000000000000000000000..445dac1291483726e9aa18a296cfca48
 +
 +
 +    public void tickEntity(Entity entity, GameProfilerFiller gameprofilerfiller) {
-+        Entity entity1 = entity.getVehicle();
 +        gameprofilerfiller.enter("tick");
 +        if (!entity.dead && !(entity instanceof EntityComplexPart)) {
 +            try {
@@ -627,7 +607,7 @@ index 0000000000000000000000000000000000000000..445dac1291483726e9aa18a296cfca48
 +        // Modified from entity iteration in WorldServer.java
 +        entityList.stream().forEach(entity -> {
 +            if (entity.dead) {
-+                queueEntityRemove(entity); // Adds dead entities to a queue to be removed
++                targetEntitiesRemove.add(entity); // Adds dead entities to a queue to be removed
 +            } else if (entity.inChunk && entity.valid) {
 +                if (worldserver.getChunkProvider().isInEntityTickingChunk(entity)) {
 +                    worldserver.updateNavigatorsInRegion(entity);
