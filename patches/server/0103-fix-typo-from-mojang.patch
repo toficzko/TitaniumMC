@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Wed, 10 Mar 2021 11:47:53 -0500
+Subject: [PATCH] fix typo from mojang
+
+
+diff --git a/src/main/java/net/minecraft/server/WorldMap.java b/src/main/java/net/minecraft/server/WorldMap.java
+index f24741ab831b620c3b3d306596a58fda7abea0d3..21f6ef363f4491d4642d4d514b3e24ca21c66e71 100644
+--- a/src/main/java/net/minecraft/server/WorldMap.java
++++ b/src/main/java/net/minecraft/server/WorldMap.java
+@@ -84,7 +84,7 @@ public class WorldMap extends PersistentBase {
+                 this.uniqueId = new UUID(most, least);
+                 CraftWorld world = (CraftWorld) server.getWorld(this.uniqueId);
+                 if (world != null) {
+-                    dimension = NBTTagString.create("minecaft:" + world.getName().toLowerCase(java.util.Locale.ENGLISH));
++                    dimension = NBTTagString.create("minecraft:" + world.getName().toLowerCase(java.util.Locale.ENGLISH));
+                 } else {
+                     dimension = NBTTagString.create("bukkit:_invalidworld_");
+                 }

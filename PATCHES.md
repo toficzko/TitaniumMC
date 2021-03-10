@@ -403,6 +403,7 @@ This is an overview over all patches that are currently used.
 | server |  enable asyncChunks no matter what      | Simon Gardling |  |
 | server |  finally remove worldborder      | Simon Gardling |  |
 | server |  fix Purpur rideables patch      | Simon Gardling |  |
+| server |  fix typo from mojang      | Simon Gardling |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fully remove snooper      | Simon Gardling |  |
