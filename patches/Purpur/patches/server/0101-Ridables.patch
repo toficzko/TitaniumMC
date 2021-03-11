@@ -2125,10 +2125,10 @@ index 0e98173607c810e0e74552a2ba8febf292357c39..559ba50977147b8e2a0e7c1e7dc281fa
 +    protected void eV() { if (world.purpurConfig.zombieHorseCanSwim) goalSelector.a(0, new PathfinderGoalFloat(this)); } // Purpur
  }
 diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
-index 10365180f518042d56929d0c0061e5297b73cf9b..9266a37f66337a6051c8472934e2e396e1131736 100644
+index ab2ad054ce8d896e38ab4eb6ed38d8ea73d42954..3a7dc584bd2b88415a238f9c0cb7f85968fb8dfb 100644
 --- a/src/main/java/net/minecraft/server/EntityHuman.java
 +++ b/src/main/java/net/minecraft/server/EntityHuman.java
-@@ -2149,4 +2149,15 @@ public abstract class EntityHuman extends EntityLiving {
+@@ -2155,4 +2155,15 @@ public abstract class EntityHuman extends EntityLiving {
              return this.g;
          }
      }
@@ -3194,7 +3194,7 @@ index a3a428da99574c485fcf2b8c7944e0d8354146ee..cf7de0127166f6175a6246062c8664e6
          this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
          this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false));
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 5c252f0c225b23a564e3ef11dac17787b02ab456..1083987cda9bc97c0d2763c703ca1437d50b61ec 100644
+index 2aef37c4602d9c3ec12a2b5deade36801c171be0..04879594b5157d2e0ed7c464bcea52fa937fa68f 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -512,6 +512,15 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -5015,7 +5015,7 @@ index d86a23c6febc638080c0d26857839918db22ce93..af46e9ccfcc24e8222fdd49d66c3ba20
      // Purpur end
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index dc15d19fb75cd0988235ce193ac7f03c35d713c7..9163ee821cc91f6ceb317fb4914e0394564a821b 100644
+index 59301aad8c257758cb0fe9709901847925d60be4..33b41dc393e302c114f2ea69e789505b7ec77935 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -102,6 +102,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {

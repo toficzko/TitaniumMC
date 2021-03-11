@@ -80,7 +80,7 @@ index 3a4165efa33cce86457092c29d2cf2aced42f43d..7cad3e754a8c0398ad6394edd0cb7675
          playerconnection.sendPacket(new PacketPlayOutAbilities(entityplayer.abilities));
          playerconnection.sendPacket(new PacketPlayOutHeldItemSlot(entityplayer.inventory.itemInHandIndex));
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 6b14949acc2a7fa584896e3a57e4c7a245acf502..68f989b662bd12e23cebd45f45cd43a69184a8da 100644
+index e9d3883f5c322ad8437c87aa2ccc0ecaa6f01bae..89456056da3420055a9366fdddfa858e78664329 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -860,6 +860,7 @@ public final class CraftServer implements Server {
@@ -106,7 +106,7 @@ index 6b14949acc2a7fa584896e3a57e4c7a245acf502..68f989b662bd12e23cebd45f45cd43a6
          public void broadcast(BaseComponent component) {
              for (Player player : getOnlinePlayers()) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 448538cc8a3d16b028a0a6f0f05c9370a02f4259..f414d9ba7285c9253778b3dec78aa16ded13198a 100644
+index e51dcb259d511c369806a83b96c2820f316e1401..e65f4b990c24e6cee850521f9ad02c2bf4c85ad6 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -162,6 +162,14 @@ public class Main {

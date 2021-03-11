@@ -268,7 +268,7 @@ index 6b4c007550c3e2e405314d8931630557655ce6f1..f49ea31334c861e02252acde1e6075a2
  
      public WorldBorder() {}
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 7eb92e9168a8e330d94883471e39ec35961c601e..285512e633aac6d94ed99026972cbedd7a09a8eb 100644
+index 300139b0a08a83647f6e010191c475cc65106a58..5348626ca36269467a069cc42051e4776ce1b6b0 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -655,7 +655,8 @@ public final class CraftServer implements Server {

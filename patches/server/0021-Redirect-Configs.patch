@@ -52,7 +52,7 @@ index b55d73e39b5665f5444497e54e940e172109a76b..f6c6fde2e4157b4723706c2d39094202
          this.setAllowFlight(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.ba());
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index f414d9ba7285c9253778b3dec78aa16ded13198a..16be2ea4a1dc4689092870dfa4c51d7874bba012 100644
+index e65f4b990c24e6cee850521f9ad02c2bf4c85ad6..756be0886856aabc31e436f82948d3d069f66fef 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -303,7 +303,7 @@ public class Main {

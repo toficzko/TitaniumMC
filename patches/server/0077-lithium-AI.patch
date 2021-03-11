@@ -2071,7 +2071,7 @@ index 635c4dffc5cca2e1a1d1cc54f42292b8b4c0c466..609b7fcbb4a0e1191a11ec198ccd1e6f
          return i < 0 || i >= 256;
      }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 6abb6d9d49f536a16b06a6d2af9384faeb884b1d..6c3c00976a5ee943db33905b97256816bc89d8b9 100644
+index 8e34ccb3804a01b5bcc9c9741d1d0b6e464046e9..d37607aa3f04752aa6cb4f6180a434651aade68f 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -41,6 +41,8 @@ import java.util.stream.Collectors;
@@ -2083,7 +2083,7 @@ index 6abb6d9d49f536a16b06a6d2af9384faeb884b1d..6c3c00976a5ee943db33905b97256816
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -1866,6 +1868,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1870,6 +1872,16 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
              while (iterator.hasNext()) {
                  Entity entity = (Entity) iterator.next();
  

@@ -76,7 +76,7 @@ index 6223d1d9048e31fb10cec7f485d1556aec2c7d5e..01caa55482aa963dfe7726e652a1157a
      public ChunkGenerator(WorldChunkManager worldchunkmanager, StructureSettings structuresettings) {
          this(worldchunkmanager, worldchunkmanager, structuresettings, 0L);
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index f99e4399b5f47ca09708ff8696c01879541650c6..0b5a4a49f0a81e75da7ef0085c79a4fcc054df86 100644
+index 422ca1cedd10c91aab8834f82d8079ac8874ffaf..f9354571bdb84cf5a4c9c1c379d0888fb5478027 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
 @@ -11,6 +11,7 @@ import java.util.Collections;
@@ -305,7 +305,7 @@ index 763b69770444035f0378f69ab9661d6236fdeac4..e055290e1fa3501d024e4b1153239415
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 6e92cfcdfcda34d9308be94842e694fa5411464c..f817dc8ba8f9578cb2fa7843f961b003e357a37c 100644
+index a35fc3c9fa7ebe4aa9ba82d2ecae553b07424cab..a83f9753c0b8fe18e304f8f462b27d53092d337b 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -58,6 +58,18 @@ import org.spigotmc.AsyncCatcher;
@@ -327,7 +327,7 @@ index 6e92cfcdfcda34d9308be94842e694fa5411464c..f817dc8ba8f9578cb2fa7843f961b003
      private static final Logger LOGGER = LogManager.getLogger();
      public static final int GOLDEN_TICKET = 33 + ChunkStatus.b();
      // Paper start - faster copying
-@@ -1255,7 +1267,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1258,7 +1270,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                  return;
              }
              // Paper end
@@ -379,10 +379,10 @@ index d98ac030e205dbb1512ef6b837e2f3fdd208e231..451ea5b703d01664942899ca62cf789e
      }
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 6c3c00976a5ee943db33905b97256816bc89d8b9..1a960e1f839b435da29321ad01751b5df9a630fc 100644
+index d37607aa3f04752aa6cb4f6180a434651aade68f..e6cf4037e13b02469239404b3d2a19b15e3edafa 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -2672,28 +2672,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2676,28 +2676,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
          // Paper start
          BlockPosition blockposition1 = blockposition.immutableCopy();

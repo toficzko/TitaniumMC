@@ -5,7 +5,7 @@ Subject: [PATCH] Config to ignore nearby mobs when sleeping
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 02b8e07d61a67118886505353077e0dd439eb2a8..49e1a433f0908dc93e5a9216995a50bda14304e3 100644
+index eb62597449081656a05073e5bbf878f893166b53..e384a24d9b46587f66ee3e712a8206b1ca1f3877 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -1311,7 +1311,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

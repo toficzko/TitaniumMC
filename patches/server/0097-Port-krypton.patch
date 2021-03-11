@@ -207,7 +207,7 @@ index 2aaa8770edfd8acc6861c23176e405863858b275..b1e1aa95b5d7a1555428327f2e7fd0ea
      }
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 16be2ea4a1dc4689092870dfa4c51d7874bba012..e231b2c71f96452f2eb96d8f2059dfa5146c298e 100644
+index 756be0886856aabc31e436f82948d3d069f66fef..c1dd04b57e8ffeb343b0efdec36d6fb36c16884f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -10,6 +10,7 @@ import java.util.List;

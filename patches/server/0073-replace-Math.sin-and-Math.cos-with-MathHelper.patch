@@ -80,10 +80,10 @@ index 476f692df79e98779271cc5a395276ab9c755a58..75b89fbbc8bce25a8a0edebe6a6d0d2e
                  this.i.setMot(this.i.getMot().add(d4 * d5, d7 * (d6 + d5) * 0.25D + (double) f2 * d2 * 0.1D, d4 * d6));
                  ControllerLook controllerlook = this.i.getControllerLook();
 diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
-index 9452eae41bbad0305b3d66ce2fe20667effd2bdf..9bf8f50e9a892b747b27e937092e4b4942d6010e 100644
+index 1730108aa67802ed15407c45542b6223ca86634f..348d7c093014ed4e26c6c08553892aaeb8c38dad 100644
 --- a/src/main/java/net/minecraft/server/EntityHuman.java
 +++ b/src/main/java/net/minecraft/server/EntityHuman.java
-@@ -604,7 +604,7 @@ public abstract class EntityHuman extends EntityLiving {
+@@ -610,7 +610,7 @@ public abstract class EntityHuman extends EntityLiving {
                  float f5 = this.random.nextFloat() * 6.2831855F;
                  float f6 = 0.02F * this.random.nextFloat();
  
@@ -93,7 +93,7 @@ index 9452eae41bbad0305b3d66ce2fe20667effd2bdf..9bf8f50e9a892b747b27e937092e4b49
  
              // CraftBukkit start - fire PlayerDropItemEvent
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index e1228f08d4d472e5a31318a0f6c53f3ef72ddee4..f71eb53498c7c002a29d308b72dca5e817557416 100644
+index d11bb46b8dbf170ff8a9c6f63d2fd05728f7f415..6f33b7666264a33920b8e669f4d138c156bf20fc 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -160,15 +160,15 @@ public class EntityPlayer extends EntityHuman implements ICrafting {

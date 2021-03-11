@@ -350,7 +350,7 @@ index 5745ac2e932ba934604072951a33edf2fa16b3cb..93ce6c5905225776111e09df11931dfb
              if (iblockdata.getBlock() instanceof BlockBed) {
                  this.world.setTypeAndData(blockposition, (IBlockData) iblockdata.set(BlockBed.OCCUPIED, false), 3);
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 4d63ca7b486dc083dee48c0424603904ba9e918d..e1228f08d4d472e5a31318a0f6c53f3ef72ddee4 100644
+index bf143aae623305b716eb1ee8e190d3e0e694f328..d11bb46b8dbf170ff8a9c6f63d2fd05728f7f415 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -525,6 +525,10 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -392,7 +392,7 @@ index 352131afbb2fc54c0e92b2fc10dd8be83694f041..635c4dffc5cca2e1a1d1cc54f42292b8
      protected static final Logger LOGGER = LogManager.getLogger();
      public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 88e6ee95972310c7dd3878f7dae55e852fd7cc4a..6abb6d9d49f536a16b06a6d2af9384faeb884b1d 100644
+index 426496ce2f08fc6c7d713267f735964f04eb22f1..8e34ccb3804a01b5bcc9c9741d1d0b6e464046e9 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -56,8 +56,9 @@ import org.bukkit.event.weather.LightningStrikeEvent;

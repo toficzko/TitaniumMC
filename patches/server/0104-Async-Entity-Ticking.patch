@@ -146,7 +146,7 @@ index 74ba8de1bf70a8bd212906d3dd39bb435c917585..07b24e43e591acdcf3ee5e2b795bac8e
      }
  
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 1a960e1f839b435da29321ad01751b5df9a630fc..84c636af575a77853debfa81d490537f6a5c3f48 100644
+index e6cf4037e13b02469239404b3d2a19b15e3edafa..754a9285dbea70aa71e0ec741cf9f3a8968fe395 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
@@ -316,7 +316,7 @@ index 1a960e1f839b435da29321ad01751b5df9a630fc..84c636af575a77853debfa81d490537f
      public void a(Entity entity, Entity entity1) {
          if (!entity1.dead && entity1.getVehicle() == entity) {
              if (entity1 instanceof EntityHuman || this.getChunkProvider().a(entity1)) {
-@@ -1906,7 +1924,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -1910,7 +1928,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          chunkProvider.getLightEngine().queue.remove(chunk.getPos().pair()); // Yatopia - unregister from light queue
      }
  
@@ -325,7 +325,7 @@ index 1a960e1f839b435da29321ad01751b5df9a630fc..84c636af575a77853debfa81d490537f
          org.spigotmc.AsyncCatcher.catchOp("entity unregister"); // Spigot
          this.entitiesForIteration.remove(entity); // Tuinity
          // Paper start - fix entity registration issues
-@@ -2014,7 +2032,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2018,7 +2036,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          }
      }
  
@@ -334,7 +334,7 @@ index 1a960e1f839b435da29321ad01751b5df9a630fc..84c636af575a77853debfa81d490537f
          com.tuinity.tuinity.chunk.SingleThreadChunkRegionManager.RegionSection<PlayerChunkMap.RegionData> section =
                  this.getChunkProvider().playerChunkMap.dataRegionManager.getRegionSection(entity.chunkX, entity.chunkZ);
          if (section != null) {
-@@ -2050,7 +2068,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2054,7 +2072,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          }
      }
  
@@ -343,7 +343,7 @@ index 1a960e1f839b435da29321ad01751b5df9a630fc..84c636af575a77853debfa81d490537f
          com.tuinity.tuinity.chunk.SingleThreadChunkRegionManager.RegionSection<PlayerChunkMap.RegionData> section =
                  this.getChunkProvider().playerChunkMap.dataRegionManager.getRegionSection(entity.chunkX, entity.chunkZ);
          if (section != null) {
-@@ -2078,7 +2096,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2082,7 +2100,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      }
      // Tuinity end - optimise notify()
  
@@ -352,7 +352,7 @@ index 1a960e1f839b435da29321ad01751b5df9a630fc..84c636af575a77853debfa81d490537f
          org.spigotmc.AsyncCatcher.catchOp("entity register"); // Spigot
          // Paper start - don't double enqueue entity registration
          //noinspection ObjectEquality
-@@ -2155,16 +2173,20 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2159,16 +2177,20 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
      }
  
      public void removeEntity(Entity entity) {
@@ -381,7 +381,7 @@ index 1a960e1f839b435da29321ad01751b5df9a630fc..84c636af575a77853debfa81d490537f
      private void removeEntityFromChunk(Entity entity) {
          Chunk ichunkaccess = entity.getCurrentChunk(); // Paper - getChunkAt(x,z,full,false) is broken by CraftBukkit as it won't return an unloading chunk. Use our current chunk reference as this points to what chunk they need to be removed from anyways
  
-@@ -2173,6 +2195,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2177,6 +2199,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
          }
  
      }

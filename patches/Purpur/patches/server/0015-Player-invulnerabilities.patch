@@ -5,7 +5,7 @@ Subject: [PATCH] Player invulnerabilities
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 58a50c222f6e8b43a7369a57e9ea3a8050bb6090..34f6f14ec0d3db02a8590b3ca641ed464b27abb6 100644
+index e35fdbf915f627c2b9c9ca6314805006aa495e5f..ee1bb58ce2fdaa4cc347476b8f040c346d029cf1 100644
 --- a/src/main/java/net/minecraft/server/EntityPlayer.java
 +++ b/src/main/java/net/minecraft/server/EntityPlayer.java
 @@ -154,6 +154,8 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
@@ -47,7 +47,7 @@ index 58a50c222f6e8b43a7369a57e9ea3a8050bb6090..34f6f14ec0d3db02a8590b3ca641ed46
              return this;
          }
      }
-@@ -2347,9 +2356,17 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+@@ -2358,9 +2367,17 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
  
      @Override
      public boolean isFrozen() { // Paper - protected > public
