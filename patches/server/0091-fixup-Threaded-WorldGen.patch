@@ -1,188 +1,37 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: ishland <ishlandmc@yeah.net>
-Date: Fri, 5 Feb 2021 23:13:42 +0800
+Date: Sat, 20 Feb 2021 22:39:16 +0800
 Subject: [PATCH] fixup! Threaded WorldGen
 
 
-diff --git a/src/main/java/net/minecraft/server/ChunkStatus.java b/src/main/java/net/minecraft/server/ChunkStatus.java
-index 9db252b1ae864e00673bbb154539f244260f07ce..e0048b0bdf9b0c78c812dc111f451fafb8127a2a 100644
---- a/src/main/java/net/minecraft/server/ChunkStatus.java
-+++ b/src/main/java/net/minecraft/server/ChunkStatus.java
-@@ -57,7 +57,7 @@ public class ChunkStatus {
-     // Yatopia end
-     private static final EnumSet<HeightMap.Type> n = EnumSet.of(HeightMap.Type.OCEAN_FLOOR_WG, HeightMap.Type.WORLD_SURFACE_WG);
-     private static final EnumSet<HeightMap.Type> o = EnumSet.of(HeightMap.Type.OCEAN_FLOOR, HeightMap.Type.WORLD_SURFACE, HeightMap.Type.MOTION_BLOCKING, HeightMap.Type.MOTION_BLOCKING_NO_LEAVES);
--    private static final ChunkStatus.c p = (chunkstatus, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess) -> {
-+    private static final ChunkStatus.c p = (chunkstatus, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess, priority) -> { // Yatopia
-         if (ichunkaccess instanceof ProtoChunk && !ichunkaccess.getChunkStatus().b(chunkstatus)) {
-             ((ProtoChunk) ichunkaccess).a(chunkstatus);
+diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+index f9354571bdb84cf5a4c9c1c379d0888fb5478027..bf0964b531c6da58b52ec70119c2a9f10be2785e 100644
+--- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
++++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
+@@ -815,16 +815,18 @@ public class ChunkProviderServer extends IChunkProvider {
+ 
+     // Yatopia start - reduce scheduling overhead
+     final ConcurrentLinkedQueue<Runnable> poiQueue = new ConcurrentLinkedQueue<>();
+-    private boolean runPoiQueueNext() { // TODO flush poi queue?
+-        try {
+-            final Runnable runnable = poiQueue.poll();
+-            if (runnable != null)
++    private boolean runPoiQueueNext() {
++        boolean hasWork = false;
++        Runnable runnable;
++        while ((runnable = poiQueue.poll()) != null) {
++            hasWork = true;
++            try {
+                 runnable.run();
+-            return runnable != null;
+-        } catch (Throwable t) {
+-            t.printStackTrace();
++            } catch (Throwable t) {
++                t.printStackTrace();
++            }
          }
-@@ -66,14 +66,14 @@ public class ChunkStatus {
-     };
-     public static final ChunkStatus EMPTY = a("empty", (ChunkStatus) null, -1, ChunkStatus.n, ChunkStatus.Type.PROTOCHUNK, (worldserver, chunkgenerator, list, ichunkaccess) -> {
-     });
--    public static final ChunkStatus STRUCTURE_STARTS = a("structure_starts", ChunkStatus.EMPTY, 0, ChunkStatus.n, ChunkStatus.Type.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess) -> {
-+    public static final ChunkStatus STRUCTURE_STARTS = a("structure_starts", ChunkStatus.EMPTY, 0, ChunkStatus.n, ChunkStatus.Type.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess, priority) -> { // Yatopia
-         CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> result = CompletableFuture.completedFuture(Either.left(ichunkaccess));
-         if (!ichunkaccess.getChunkStatus().b(chunkstatus)) {
-             if (worldserver.worldDataServer.getGeneratorSettings().shouldGenerateMapFeatures()) { // CraftBukkit
-                 result = CompletableFuture.supplyAsync(() -> {
-                     chunkgenerator.createStructures(worldserver.r(), worldserver.getStructureManager(), ichunkaccess, definedstructuremanager, worldserver.getSeed());
-                     return Either.left(ichunkaccess);
--                }, command -> worldGenExecutor.execute(new org.yatopiamc.yatopia.server.executors.PrioritizedRunnable(() -> com.destroystokyo.paper.io.chunk.ChunkTaskManager.hasChunkWait(worldserver, ichunkaccess.getPos().x, ichunkaccess.getPos().z) ? Integer.MIN_VALUE : 0, command)));
-+                }, command -> worldGenExecutor.execute(new org.yatopiamc.yatopia.server.executors.PrioritizedRunnable(() -> com.destroystokyo.paper.io.chunk.ChunkTaskManager.hasChunkWait(worldserver, ichunkaccess.getPos().x, ichunkaccess.getPos().z) ? Integer.MIN_VALUE : priority, command)));
-             }
-             if (ichunkaccess instanceof ProtoChunk) {
-                 result.thenRun(() -> ((ProtoChunk) ichunkaccess).a(chunkstatus));
-@@ -104,7 +104,7 @@ public class ChunkStatus {
-     public static final ChunkStatus LIQUID_CARVERS = a("liquid_carvers", ChunkStatus.CARVERS, 0, ChunkStatus.o, ChunkStatus.Type.PROTOCHUNK, (worldserver, chunkgenerator, list, ichunkaccess) -> {
-         chunkgenerator.doCarving(worldserver.getSeed(), worldserver.d(), ichunkaccess, WorldGenStage.Features.LIQUID);
-     });
--    public static final ChunkStatus FEATURES = a("features", ChunkStatus.LIQUID_CARVERS, 8, ChunkStatus.o, ChunkStatus.Type.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess) -> {
-+    public static final ChunkStatus FEATURES = a("features", ChunkStatus.LIQUID_CARVERS, 8, ChunkStatus.o, ChunkStatus.Type.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess, priority) -> { // Yatopia
-         // Yatopia start - threaded WorldGen
-         return chunkgenerator.featureGenLock.acquireLock().toCompletableFuture().thenComposeAsync(token -> {
-         try {
-@@ -123,12 +123,12 @@ public class ChunkStatus {
-         }
- 
-         return CompletableFuture.completedFuture(Either.left(ichunkaccess));
--        }, command -> featureGenExecutor.execute(new org.yatopiamc.yatopia.server.executors.PrioritizedRunnable(() -> com.destroystokyo.paper.io.chunk.ChunkTaskManager.hasChunkWait(worldserver, ichunkaccess.getPos().x, ichunkaccess.getPos().z) ? Integer.MIN_VALUE : 0, command)));
-+        }, command -> featureGenExecutor.execute(new org.yatopiamc.yatopia.server.executors.PrioritizedRunnable(() -> com.destroystokyo.paper.io.chunk.ChunkTaskManager.hasChunkWait(worldserver, ichunkaccess.getPos().x, ichunkaccess.getPos().z) ? Integer.MIN_VALUE : priority, command)));
-         // Yatopia end
-     });
--    public static final ChunkStatus LIGHT = a("light", ChunkStatus.FEATURES, 1, ChunkStatus.o, ChunkStatus.Type.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess) -> {
-+    public static final ChunkStatus LIGHT = a("light", ChunkStatus.FEATURES, 1, ChunkStatus.o, ChunkStatus.Type.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess, priority) -> { // Yatopia
-         return a(chunkstatus, lightenginethreaded, ichunkaccess);
--    }, (chunkstatus, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess) -> {
-+    }, (chunkstatus, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess, priority) -> { // Yatopia
-         return a(chunkstatus, lightenginethreaded, ichunkaccess);
-     });
-     public static final ChunkStatus SPAWN = a("spawn", ChunkStatus.LIGHT, 0, ChunkStatus.o, ChunkStatus.Type.PROTOCHUNK, (worldserver, chunkgenerator, list, ichunkaccess) -> {
-@@ -136,9 +136,9 @@ public class ChunkStatus {
-     });
-     public static final ChunkStatus HEIGHTMAPS = a("heightmaps", ChunkStatus.SPAWN, 0, ChunkStatus.o, ChunkStatus.Type.PROTOCHUNK, (worldserver, chunkgenerator, list, ichunkaccess) -> {
-     });
--    public static final ChunkStatus FULL = a("full", ChunkStatus.HEIGHTMAPS, 0, ChunkStatus.o, ChunkStatus.Type.LEVELCHUNK, (chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess) -> {
-+    public static final ChunkStatus FULL = a("full", ChunkStatus.HEIGHTMAPS, 0, ChunkStatus.o, ChunkStatus.Type.LEVELCHUNK, (chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess, priority) -> { // Yatopia
-         return (CompletableFuture) function.apply(ichunkaccess);
--    }, (chunkstatus, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess) -> {
-+    }, (chunkstatus, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess, priority) -> { // Yatopia
-         return (CompletableFuture) function.apply(ichunkaccess);
-     });
-     private static final List<ChunkStatus> q = ImmutableList.of(ChunkStatus.FULL, ChunkStatus.FEATURES, ChunkStatus.LIQUID_CARVERS, ChunkStatus.STRUCTURE_STARTS, ChunkStatus.STRUCTURE_STARTS, ChunkStatus.STRUCTURE_STARTS, ChunkStatus.STRUCTURE_STARTS, ChunkStatus.STRUCTURE_STARTS, ChunkStatus.STRUCTURE_STARTS, ChunkStatus.STRUCTURE_STARTS, ChunkStatus.STRUCTURE_STARTS);
-@@ -242,11 +242,23 @@ public class ChunkStatus {
+-        return false;
++        return hasWork;
      }
  
-     public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> a(WorldServer worldserver, ChunkGenerator chunkgenerator, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, List<IChunkAccess> list) {
--        return this.v.doWork(this, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, (IChunkAccess) list.get(list.size() / 2));
-+        // Yatopia start - add priority param
-+        return runGenerationTask(worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, Integer.MAX_VALUE);
-+    }
-+
-+    public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> runGenerationTask(WorldServer worldserver, ChunkGenerator chunkgenerator, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, List<IChunkAccess> list, int priority) {
-+        return this.v.doWork(this, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, (IChunkAccess) list.get(list.size() / 2), priority);
-+        // Yatopia end
-     }
- 
-     public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> a(WorldServer worldserver, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, IChunkAccess ichunkaccess) {
--        return this.w.doWork(this, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess);
-+        // Yatopia start - add priority param
-+        return runLoadTask(worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess, Integer.MAX_VALUE);
-+    }
-+
-+    public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> runLoadTask(WorldServer worldserver, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, IChunkAccess ichunkaccess, int priority) {
-+        return this.w.doWork(this, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess, priority);
-+        // Yatopia end
-     }
- 
-     public final int getNeighborRadius() { return this.f(); } // Paper - OBFHELPER
-@@ -297,6 +309,13 @@ public class ChunkStatus {
- 
-         @Override
-         default CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> doWork(ChunkStatus chunkstatus, WorldServer worldserver, ChunkGenerator chunkgenerator, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, List<IChunkAccess> list, IChunkAccess ichunkaccess) {
-+            // Yatopia start - add priority param
-+            return doWork(chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess, Integer.MAX_VALUE);
-+        }
-+
-+        @Override
-+        default CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> doWork(ChunkStatus chunkstatus, WorldServer worldserver, ChunkGenerator chunkgenerator, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, List<IChunkAccess> list, IChunkAccess ichunkaccess, int priority) {
-+            // Yatopia end
-             // Yatopia start - threaded worldGen
-             return CompletableFuture.supplyAsync(() -> {
-             if (!ichunkaccess.getChunkStatus().b(chunkstatus)) {
-@@ -306,7 +325,7 @@ public class ChunkStatus {
-                 }
-             }
-             return Either.left(ichunkaccess);
--            }, command -> worldGenExecutor.execute(new org.yatopiamc.yatopia.server.executors.PrioritizedRunnable(() -> com.destroystokyo.paper.io.chunk.ChunkTaskManager.hasChunkWait(worldserver, ichunkaccess.getPos().x, ichunkaccess.getPos().z) ? Integer.MIN_VALUE : 0, command)));
-+            }, command -> worldGenExecutor.execute(new org.yatopiamc.yatopia.server.executors.PrioritizedRunnable(() -> com.destroystokyo.paper.io.chunk.ChunkTaskManager.hasChunkWait(worldserver, ichunkaccess.getPos().x, ichunkaccess.getPos().z) ? Integer.MIN_VALUE : priority, command)));
- 
-             // Yatopia end
-         }
-@@ -316,11 +335,23 @@ public class ChunkStatus {
- 
-     interface c {
- 
--        CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> doWork(ChunkStatus chunkstatus, WorldServer worldserver, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, IChunkAccess ichunkaccess);
-+        // Yatopia start - add priority param
-+        default CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> doWork(ChunkStatus chunkstatus, WorldServer worldserver, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, IChunkAccess ichunkaccess) {
-+            return this.doWork(chunkstatus, worldserver, definedstructuremanager, lightenginethreaded, function, ichunkaccess, Integer.MAX_VALUE);
-+        }
-+
-+        CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> doWork(ChunkStatus chunkstatus, WorldServer worldserver, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, IChunkAccess ichunkaccess, int priority);
-+        // Yatopia end
-     }
- 
-     interface b {
- 
--        CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> doWork(ChunkStatus chunkstatus, WorldServer worldserver, ChunkGenerator chunkgenerator, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, List<IChunkAccess> list, IChunkAccess ichunkaccess);
-+        // Yatopia start - add priority param
-+        default CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> doWork(ChunkStatus chunkstatus, WorldServer worldserver, ChunkGenerator chunkgenerator, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, List<IChunkAccess> list, IChunkAccess ichunkaccess) {
-+            return doWork(chunkstatus, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, ichunkaccess, Integer.MAX_VALUE);
-+        }
-+
-+        CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> doWork(ChunkStatus chunkstatus, WorldServer worldserver, ChunkGenerator chunkgenerator, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, List<IChunkAccess> list, IChunkAccess ichunkaccess, int priority);
-+        // Yatopia end
-     }
- }
-diff --git a/src/main/java/net/minecraft/server/PlayerChunk.java b/src/main/java/net/minecraft/server/PlayerChunk.java
-index 3a851285cc86701eb03855f7bdc44c274155d149..79854605012663e152cfad96e2fa78591b500868 100644
---- a/src/main/java/net/minecraft/server/PlayerChunk.java
-+++ b/src/main/java/net/minecraft/server/PlayerChunk.java
-@@ -560,6 +560,7 @@ public class PlayerChunk {
-         return this.ticketLevel;
-     }
- 
-+    public int getPriority() { return k(); } // Yatopia - OBFHELPER
-     public int k() {
-         return this.n;
-     }
-diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 00488454a33e9a6aa8fe5600c7d0b33092d1d875..dfb9eba756137f0131f2ceb097ed791b6121a835 100644
---- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
-+++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1131,9 +1131,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
-                         if (chunkstatus == ChunkStatus.LIGHT) {
-                             completablefuture1 = this.b(playerchunk, chunkstatus);
-                         } else {
--                            completablefuture1 = chunkstatus.a(this.world, this.definedStructureManager, this.lightEngine, (ichunkaccess1) -> {
-+                            completablefuture1 = chunkstatus.runLoadTask(this.world, this.definedStructureManager, this.lightEngine, (ichunkaccess1) -> { // Yatopia
-                                 return this.c(playerchunk);
--                            }, ichunkaccess);
-+                            }, ichunkaccess, playerchunk.getPriority()); // Yatopia
-                         }
- 
-                         this.worldLoadListener.a(chunkcoordintpair, chunkstatus);
-@@ -1244,9 +1244,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
-         return completablefuture.thenComposeAsync((either) -> {
-             return either.map((list) -> { // Paper - Shut up.
-                 try {
--                    CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> completablefuture1 = chunkstatus.a(this.world, this.chunkGenerator, this.definedStructureManager, this.lightEngine, (ichunkaccess) -> {
-+                    CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> completablefuture1 = chunkstatus.runGenerationTask(this.world, this.chunkGenerator, this.definedStructureManager, this.lightEngine, (ichunkaccess) -> {
-                         return this.c(playerchunk);
--                    }, list);
-+                    }, list, playerchunk.getPriority());
- 
-                     this.worldLoadListener.a(chunkcoordintpair, chunkstatus);
-                     return completablefuture1;
+     public boolean runTasks() {

@@ -252,7 +252,7 @@ index d6a086f59d9df8ef7f727e6a83fa51a14995123e..7ad41d363954d7ed7f22bb450254d70b
          this.world.getMethodProfiler().exit();
          this.world.getMethodProfiler().enter("mob tick");
 diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 934b17fdc0dc05a6b0ab0eb0b881854c334e1826..a248a7b0f1f44fdaea91e9e149af1e2562f920a6 100644
+index 2062d9479b532ebcd5d7ba35da5dc553091f4a3f..5fea5e9fabfb600a61f969c74d402f98e130073e 100644
 --- a/src/main/java/net/minecraft/server/EntityLiving.java
 +++ b/src/main/java/net/minecraft/server/EntityLiving.java
 @@ -2128,6 +2128,7 @@ public abstract class EntityLiving extends Entity {
@@ -264,7 +264,7 @@ index 934b17fdc0dc05a6b0ab0eb0b881854c334e1826..a248a7b0f1f44fdaea91e9e149af1e25
          return this.getAttributeMap().c(attributebase);
      }
 diff --git a/src/main/java/net/minecraft/server/Navigation.java b/src/main/java/net/minecraft/server/Navigation.java
-index a4c42e6892271cdb5b432420a01061d599b9c5fe..5363729acf7a74a6ca6089e895f99becc85c3b6c 100644
+index da15615a19474d5db9bd46c3d772f467ec58b133..873dde8f2cc58c0eea41e6ff7f2918340334be93 100644
 --- a/src/main/java/net/minecraft/server/Navigation.java
 +++ b/src/main/java/net/minecraft/server/Navigation.java
 @@ -2,7 +2,7 @@ package net.minecraft.server;
@@ -374,7 +374,7 @@ index c6162740b01b51a49cfa312722d82856610e823c..8d5a096f33549e9f51c80055479f29e2
  
      protected boolean p() {
 diff --git a/src/main/java/net/minecraft/server/NavigationFlying.java b/src/main/java/net/minecraft/server/NavigationFlying.java
-index a21b4785c4267cb6956ec798c67382993806da6f..54b45c207de1037959c6e0c21db73a211a1b8699 100644
+index 013bdfe5540ae594a7f9cbe3ef8dc54dfb25afd4..498771aafd6b2c786c84eba190dad8ff22a16100 100644
 --- a/src/main/java/net/minecraft/server/NavigationFlying.java
 +++ b/src/main/java/net/minecraft/server/NavigationFlying.java
 @@ -1,6 +1,6 @@

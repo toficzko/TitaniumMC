@@ -297,10 +297,10 @@ index 67fe985dd13762867d6fd8fe81876cab75c08078..1989847c1e1087bed9006df67e4d075b
          return this.isSneaking();
      }
 diff --git a/src/main/java/net/minecraft/server/MathHelper.java b/src/main/java/net/minecraft/server/MathHelper.java
-index a336c6a18665652e5b5aa856f22b28124fdde368..96cf06555282cf07b693ec8e64f09792e76111f1 100644
+index 77d2cc821ca712b38fa05199f0d3178fed708f19..6b9dcefc4b19ad3ae66cbea875be14c2a432c758 100644
 --- a/src/main/java/net/minecraft/server/MathHelper.java
 +++ b/src/main/java/net/minecraft/server/MathHelper.java
-@@ -224,6 +224,7 @@ public class MathHelper {
+@@ -205,6 +205,7 @@ public class MathHelper {
          return c(f, f + f3, f2);
      }
  

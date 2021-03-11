@@ -102,7 +102,7 @@ index 0000000000000000000000000000000000000000..22cfc43889d0ad0a6f2c085c82f2791a
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/MathHelper.java b/src/main/java/net/minecraft/server/MathHelper.java
-index 520a32d6fd62ee6c08de7a531448e4f3ddfe7939..a336c6a18665652e5b5aa856f22b28124fdde368 100644
+index b3c2b461b2a654a9e37a57f2f62b3ba8b5bb1634..77d2cc821ca712b38fa05199f0d3178fed708f19 100644
 --- a/src/main/java/net/minecraft/server/MathHelper.java
 +++ b/src/main/java/net/minecraft/server/MathHelper.java
 @@ -1,5 +1,7 @@
@@ -142,4 +142,4 @@ index 520a32d6fd62ee6c08de7a531448e4f3ddfe7939..a336c6a18665652e5b5aa856f22b2812
 +        return CompactSineLUT.cos(f); // Yatopia - Port lithium
      }
  
-     public static float sin(double f) {
+     public static float c(float f) {

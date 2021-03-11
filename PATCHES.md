@@ -410,7 +410,6 @@ This is an overview over all patches that are currently used.
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fully remove snooper      | Simon Gardling |  |
-| server |  jafama fast math      | Simon Gardling |  |
 | server |  lithium AI      | JellySquid |  |
 | server |  lithium DataTrackerMixin      | JellySquid | tr7zw |
 | server |  lithium HashedList      | JellySquid |  |
@@ -438,7 +437,6 @@ This is an overview over all patches that are currently used.
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
 | api |  remove sync and async checks      | Simon Gardling |  |
 | server |  remove world size checks      | Simon Gardling |  |
-| server |  replace Math.sin and Math.cos with MathHelper      | Simon Gardling |  |
 | server |  tic-tacs: unblocking      | Gegy |  |
 | server |  unsafe pom changes      | Simon Gardling |  |
 | api |  unsafe pom changes      | Simon Gardling |  |
