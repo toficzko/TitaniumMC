@@ -5,10 +5,10 @@ Subject: [PATCH] unsafe pom changes
 
 
 diff --git a/pom.xml b/pom.xml
-index 0d8380d779ded94078825a26b5bcd3085cb463b1..65aae6f9dc81e24e06b45b5bd519e00c08d76a8a 100644
+index b0573ea83e251ee8f490edadec2f2e4b8e94f00f..a64f64c6bd5445960946db07bd0dd402a8fc5346 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -113,7 +113,7 @@
+@@ -96,7 +96,7 @@
          <dependency>
              <groupId>it.unimi.dsi</groupId>
              <artifactId>fastutil</artifactId>
@@ -17,7 +17,7 @@ index 0d8380d779ded94078825a26b5bcd3085cb463b1..65aae6f9dc81e24e06b45b5bd519e00c
              <scope>provided</scope>
          </dependency>
          <dependency>
-@@ -126,7 +126,7 @@
+@@ -109,7 +109,7 @@
          <dependency>
              <groupId>com.google.code.findbugs</groupId>
              <artifactId>jsr305</artifactId>
@@ -26,7 +26,7 @@ index 0d8380d779ded94078825a26b5bcd3085cb463b1..65aae6f9dc81e24e06b45b5bd519e00c
              <scope>compile</scope>
          </dependency>
          <!-- used in previous versions of the API -->
-@@ -140,14 +140,14 @@
+@@ -123,14 +123,14 @@
          <dependency>
              <groupId>com.google.guava</groupId>
              <artifactId>guava</artifactId>
@@ -43,7 +43,7 @@ index 0d8380d779ded94078825a26b5bcd3085cb463b1..65aae6f9dc81e24e06b45b5bd519e00c
              <scope>compile</scope>
          </dependency>
          <dependency>
-@@ -174,7 +174,7 @@
+@@ -157,7 +157,7 @@
          <dependency>
              <groupId>org.slf4j</groupId>
              <artifactId>slf4j-api</artifactId>
@@ -52,7 +52,7 @@ index 0d8380d779ded94078825a26b5bcd3085cb463b1..65aae6f9dc81e24e06b45b5bd519e00c
              <scope>compile</scope>
          </dependency>
          <!-- testing -->
-@@ -187,7 +187,7 @@
+@@ -170,7 +170,7 @@
          <dependency>
              <groupId>org.hamcrest</groupId>
              <artifactId>hamcrest-library</artifactId>
@@ -61,7 +61,7 @@ index 0d8380d779ded94078825a26b5bcd3085cb463b1..65aae6f9dc81e24e06b45b5bd519e00c
              <scope>test</scope>
          </dependency>
          <dependency>
-@@ -314,7 +314,7 @@
+@@ -296,7 +296,7 @@
                  <version>3.2.0</version>
                  <configuration>
                      <links>

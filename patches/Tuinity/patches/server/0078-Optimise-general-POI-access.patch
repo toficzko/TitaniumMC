@@ -3,15 +3,39 @@ From: Spottedleaf <Spottedleaf@users.noreply.github.com>
 Date: Sun, 31 Jan 2021 02:29:24 -0800
 Subject: [PATCH] Optimise general POI access
 
-TODO on merge doc this & delete villager steam patch and move
-its diff here
+There are a couple of problems with mojang's POI code.
+Firstly, it's all streams. Unsurprisingly, stacking
+streams on top of each other is horrible for performance
+and ultimately took up half of a villager's tick!
+
+Secondly, sometime's the search radius is large and there are
+a significant number of poi entries per chunk section. Even
+removing streams at this point doesn't help much. The only solution
+is to start at the search point and iterate outwards. This
+type of approach shows massive gains for portals, simply because
+we can avoid sync loading a large area of chunks. I also tested
+a massive farm I found in JellySquid's discord, which showed
+to benefit significantly simply because the farm had so many
+portal blocks that searching through them all was very slow.
+
+Great care has been taken so that behavior remains identical to
+vanilla, however I cannot account for oddball Stream API
+implementations, if they even exist (streams can technically
+be loose with iteration order in a sorted stream given its
+source stream is not tagged with ordered, and mojang does not
+tag the source stream as ordered). However in my testing on openjdk
+there showed no difference, as expected.
+
+This patch also specifically optimises other areas of code to
+use PoiAccess. For example, some villager AI and portaling code
+had to be specifically modified.
 
 diff --git a/src/main/java/com/tuinity/tuinity/util/PoiAccess.java b/src/main/java/com/tuinity/tuinity/util/PoiAccess.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f521c36c1355b76c82bbf80f505c181384553275
+index 0000000000000000000000000000000000000000..ef0b766709fd9369b5ae458148259291583fe565
 --- /dev/null
 +++ b/src/main/java/com/tuinity/tuinity/util/PoiAccess.java
-@@ -0,0 +1,811 @@
+@@ -0,0 +1,812 @@
 +package com.tuinity.tuinity.util;
 +
 +import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
@@ -582,18 +606,19 @@ index 0000000000000000000000000000000000000000..f521c36c1355b76c82bbf80f505c1813
 +                        continue;
 +                    }
 +
-+                    if (dataRange > furthestDistanceSquared) {
-+                        if (totalRecords >= max) {
-+                            // out of range for distance check
-+                            continue;
-+                        } else {
-+                            furthestDistanceSquared = dataRange;
-+                        }
++                    if (dataRange > furthestDistanceSquared && totalRecords >= max) {
++                        // out of range for distance check
++                        continue;
 +                    }
 +
 +                    if (positionPredicate != null && !positionPredicate.test(poiPosition)) {
 +                        // filter by position
 +                        continue;
++                    }
++
++                    if (dataRange > furthestDistanceSquared) {
++                        // we know totalRecords < max, so this entry is now our furthest
++                        furthestDistanceSquared = dataRange;
 +                    }
 +
 +                    closestRecords.computeIfAbsent(dataRange, (final double key) -> {
@@ -823,6 +848,23 @@ index 0000000000000000000000000000000000000000..f521c36c1355b76c82bbf80f505c1813
 +        throw new RuntimeException();
 +    }
 +}
+diff --git a/src/main/java/net/minecraft/server/BehaviorFindPosition.java b/src/main/java/net/minecraft/server/BehaviorFindPosition.java
+index 275d4cad8ff0dd64b74ef8f8056cdef093523f97..83702e07dff72b639af32c8ba9e831e58da92a10 100644
+--- a/src/main/java/net/minecraft/server/BehaviorFindPosition.java
++++ b/src/main/java/net/minecraft/server/BehaviorFindPosition.java
+@@ -74,7 +74,11 @@ public class BehaviorFindPosition extends Behavior<EntityCreature> {
+                 return true;
+             }
+         };
+-        Set<BlockPosition> set = (Set) villageplace.b(this.b.c(), predicate, entitycreature.getChunkCoordinates(), 48, VillagePlace.Occupancy.HAS_SPACE).limit(5L).collect(Collectors.toSet());
++        // Tuinity start - optimise POI access
++        java.util.List<BlockPosition> poiposes = new java.util.ArrayList<>();
++        com.tuinity.tuinity.util.PoiAccess.findNearestPoiPositions(villageplace, this.b.c(), predicate, entitycreature.getChunkCoordinates(), 48, 48*48, VillagePlace.Occupancy.HAS_SPACE, false, 5, poiposes);
++        Set<BlockPosition> set = new java.util.HashSet<>(poiposes);
++        // Tuinity end - optimise POI access
+         PathEntity pathentity = entitycreature.getNavigation().a(set, this.b.d());
+ 
+         if (pathentity != null && pathentity.j()) {
 diff --git a/src/main/java/net/minecraft/server/PortalTravelAgent.java b/src/main/java/net/minecraft/server/PortalTravelAgent.java
 index e10995ec30dd9a10d781b3c1709fd2db5a9becdd..77aa805267497f91231d63067d62ad3f10508216 100644
 --- a/src/main/java/net/minecraft/server/PortalTravelAgent.java
@@ -890,6 +932,25 @@ index 79a11d17a2822b192dec5981d0344ae689c3d385..d1ea47654db190e7cb7fa4ec1ac002f6
      protected Optional<R> d(long i) {
          SectionPosition sectionposition = SectionPosition.a(i);
  
+diff --git a/src/main/java/net/minecraft/server/SensorNearestBed.java b/src/main/java/net/minecraft/server/SensorNearestBed.java
+index 83025d69e8a0732f16581fcfeaef5c1a45d70b63..89f8ce32225bc560b9927273f5984c6206360ac7 100644
+--- a/src/main/java/net/minecraft/server/SensorNearestBed.java
++++ b/src/main/java/net/minecraft/server/SensorNearestBed.java
+@@ -40,8 +40,12 @@ public class SensorNearestBed extends Sensor<EntityInsentient> {
+                     return true;
+                 }
+             };
+-            Stream<BlockPosition> stream = villageplace.a(VillagePlaceType.r.c(), predicate, entityinsentient.getChunkCoordinates(), 48, VillagePlace.Occupancy.ANY);
+-            PathEntity pathentity = entityinsentient.getNavigation().a(stream, VillagePlaceType.r.d());
++            // Tuinity start - optimise POI access
++            java.util.List<BlockPosition> poiposes = new java.util.ArrayList<>();
++            // don't ask me why it's unbounded. ask mojang.
++            com.tuinity.tuinity.util.PoiAccess.findAnyPoiPositions(villageplace, VillagePlaceType.r.c(), predicate, entityinsentient.getChunkCoordinates(), 48, VillagePlace.Occupancy.ANY, false, Integer.MAX_VALUE, poiposes);
++            PathEntity pathentity = entityinsentient.getNavigation().a(new java.util.HashSet<>(poiposes), VillagePlaceType.r.d());
++            // Tuinity end - optimise POI access
+ 
+             if (pathentity != null && pathentity.j()) {
+                 BlockPosition blockposition = pathentity.m();
 diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
 index fce9967912628c232fe41ccc17fe2296f001ec61..245bdedd17b844dcd13aa0b60dffb1cac6a5bdb8 100644
 --- a/src/main/java/net/minecraft/server/VillagePlace.java

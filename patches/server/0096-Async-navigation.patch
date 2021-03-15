@@ -286,13 +286,13 @@ index da15615a19474d5db9bd46c3d772f467ec58b133..873dde8f2cc58c0eea41e6ff7f291834
                          if (!this.a(pathtype)) {
                              return false;
 diff --git a/src/main/java/net/minecraft/server/NavigationAbstract.java b/src/main/java/net/minecraft/server/NavigationAbstract.java
-index c6162740b01b51a49cfa312722d82856610e823c..8d5a096f33549e9f51c80055479f29e27375eee8 100644
+index 21898e1d3884a3e92c49814ecf2b666a008f74ed..31f8f480be7d2f828e3920499ea5f15ac9a8e0fa 100644
 --- a/src/main/java/net/minecraft/server/NavigationAbstract.java
 +++ b/src/main/java/net/minecraft/server/NavigationAbstract.java
 @@ -9,24 +9,40 @@ import javax.annotation.Nullable;
  public abstract class NavigationAbstract {
  
-     protected final EntityInsentient a; public Entity getEntity() { return a; } // Paper - OBFHELPER
+     protected final EntityInsentient a; public final EntityInsentient getEntity() { return a; } // Paper - OBFHELPER // Tuinity - match types
 +    public EntityInsentient getEntityInsentient() { return a; } // Yatopia - OBFHELPER
      protected final World b;
 +    protected final World getWorld() { return this.b; } // Yatopia - OBFHELPER
@@ -316,7 +316,7 @@ index c6162740b01b51a49cfa312722d82856610e823c..8d5a096f33549e9f51c80055479f29e2
      protected double k;
 +    protected final double getCurrentNodeTimeout() { return this.k; } protected final void setCurrentNodeTimeout(double timeout) { this.k = timeout; } // Yatopia - OBFHELPER
      protected float l;
-+    protected final float getChebyshevMinimumReachProximity() { return this.l; } protected final void setChebyshevMinimumReachProximity(float proximity) { this.l = proximity; } // Yatopia - OBFHELPER
++     protected final float getChebyshevMinimumReachProximity() { return this.l; } protected final void setChebyshevMinimumReachProximity(float proximity) { this.l = proximity; } // Yatopia - OBFHELPER
      protected boolean m; protected final boolean needsPathRecalculation() { return this.m; } // Tuinity - OBFHELPER
      protected long n;
      protected PathfinderAbstract o;

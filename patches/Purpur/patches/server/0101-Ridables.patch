@@ -4889,7 +4889,7 @@ index dc9f2a1a132b3a7925bd62aa1da0512afd90b8b1..b7e540dfeeabb13227596ecfc6eddabf
              Entity entity1 = this.getShooter();
              // Paper start - Cancel hit for vanished players
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index a3ddf2839738e089a02d841f5b6fd759c3047305..85c14df768ec844b710bf2b32eb7f85c9e6b47ea 100644
+index 1fa06582ff843e62a8a4701d98b3f5cad8770a73..16a03a92b786da366ecf84b3cc79499654d0a899 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1418,6 +1418,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -5015,7 +5015,7 @@ index d86a23c6febc638080c0d26857839918db22ce93..af46e9ccfcc24e8222fdd49d66c3ba20
      // Purpur end
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 59301aad8c257758cb0fe9709901847925d60be4..33b41dc393e302c114f2ea69e789505b7ec77935 100644
+index af7c9562cb7eac9d1e985d5337c8d127d875bcfb..ee74d3a9bb6938c83509fa09840a1c243d03c389 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -102,6 +102,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {

@@ -147,7 +147,7 @@ index 9db252b1ae864e00673bbb154539f244260f07ce..e0048b0bdf9b0c78c812dc111f451faf
      }
  }
 diff --git a/src/main/java/net/minecraft/server/PlayerChunk.java b/src/main/java/net/minecraft/server/PlayerChunk.java
-index 3a851285cc86701eb03855f7bdc44c274155d149..79854605012663e152cfad96e2fa78591b500868 100644
+index dcf13e62264f97384fb2f6c30cbc183a63cf3f97..e357e6d2d4c59474eaed135251f25153890fe0de 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunk.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunk.java
 @@ -560,6 +560,7 @@ public class PlayerChunk {
@@ -159,10 +159,10 @@ index 3a851285cc86701eb03855f7bdc44c274155d149..79854605012663e152cfad96e2fa7859
          return this.n;
      }
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 00488454a33e9a6aa8fe5600c7d0b33092d1d875..dfb9eba756137f0131f2ceb097ed791b6121a835 100644
+index 2db751b024eca1a2292d510132bfae51ce3ddf13..1fdca622dcc9ba8c9c296ec6ca14da989ba38ed8 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1131,9 +1131,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1226,9 +1226,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                          if (chunkstatus == ChunkStatus.LIGHT) {
                              completablefuture1 = this.b(playerchunk, chunkstatus);
                          } else {
@@ -174,7 +174,7 @@ index 00488454a33e9a6aa8fe5600c7d0b33092d1d875..dfb9eba756137f0131f2ceb097ed791b
                          }
  
                          this.worldLoadListener.a(chunkcoordintpair, chunkstatus);
-@@ -1244,9 +1244,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1339,9 +1339,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          return completablefuture.thenComposeAsync((either) -> {
              return either.map((list) -> { // Paper - Shut up.
                  try {

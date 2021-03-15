@@ -5,7 +5,7 @@ Subject: [PATCH] cache default block/fluid states in World.java
 
 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 609b7fcbb4a0e1191a11ec198ccd1e6f61075db4..5af4e46fdca48358f66e3b22cfb1a956fc495db2 100644
+index 7af5cee6068fe1b165a072366e390f2b5bfb1e99..7cf47dfc16f94348bf24162cd482b9c489b5a6eb 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -39,6 +39,11 @@ import net.gegy1000.tictacs.NonBlockingWorldAccess;

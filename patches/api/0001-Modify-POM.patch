@@ -5,10 +5,10 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index 821df3413345c613eccff158f8081cf9ba848a14..405fc0bacbc329b8232fdbbcd737e7c3afbee81e 100644
+index feaa36dc9a113c5b0c45eed2c3b8a3d10e8b4ca7..2e1456e2c77862a79f4bfe6459f93b46e12661f6 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -3,27 +3,40 @@
+@@ -3,18 +3,18 @@
           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
      <modelVersion>4.0.0</modelVersion>
      <parent>
@@ -32,11 +32,7 @@ index 821df3413345c613eccff158f8081cf9ba848a14..405fc0bacbc329b8232fdbbcd737e7c3
      <description>An enhanced plugin API for Minecraft servers.</description>
  
      <properties>
-         <!-- <skipTests>true</skipTests> Paper - This [was] not going to end well -->
--        <maven.compiler.source>1.8</maven.compiler.source>
--        <maven.compiler.target>1.8</maven.compiler.target>
-+        <maven.compiler.source>11</maven.compiler.source>
-+        <maven.compiler.target>11</maven.compiler.target>
+@@ -24,6 +24,19 @@
          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
      </properties>
  
@@ -54,5 +50,5 @@ index 821df3413345c613eccff158f8081cf9ba848a14..405fc0bacbc329b8232fdbbcd737e7c3
 +    <!-- Yatopia end -->
 +
      <repositories>
-         <!--
-             If you are a plugin developer, please use https://hub.spigotmc.org/nexus/content/repositories/snapshots/
+         <repository>
+             <id>sonatype</id>

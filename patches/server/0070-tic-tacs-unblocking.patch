@@ -42,7 +42,7 @@ index 0000000000000000000000000000000000000000..9bf6f73e2a7fc4f3cd07e10fde287c40
 +}
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index c1487c066213417faeec7a9461026aa01db2e8c1..67fe985dd13762867d6fd8fe81876cab75c08078 100644
+index d27ce58e5a8a0373de8303340e6a38d7155c57fc..fb3454c3ccf813017450a0e09005396ff3bdb77b 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -50,8 +50,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
@@ -167,7 +167,7 @@ index c1487c066213417faeec7a9461026aa01db2e8c1..67fe985dd13762867d6fd8fe81876cab
  
          if (iblockdata.h() != EnumRenderType.INVISIBLE) {
              Vec3D vec3d = this.getMot();
-@@ -2736,7 +2745,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2737,7 +2746,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
              EnumDirection enumdirection1 = aenumdirection[j];
  
              blockposition_mutableblockposition.a((BaseBlockPosition) blockposition, enumdirection1);
@@ -176,7 +176,7 @@ index c1487c066213417faeec7a9461026aa01db2e8c1..67fe985dd13762867d6fd8fe81876cab
                  double d4 = vec3d.a(enumdirection1.n());
                  double d5 = enumdirection1.e() == EnumDirection.EnumAxisDirection.POSITIVE ? 1.0D - d4 : d4;
  
-@@ -2959,14 +2968,14 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2960,14 +2969,14 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
  
                  return (ShapeDetectorShape) this.findOrCreatePortal(worldserver, blockposition, flag2, event.getSearchRadius(), event.getCanCreatePortal(), event.getCreationRadius()).map((blockutil_rectangle) -> {
                      // CraftBukkit end
@@ -193,7 +193,7 @@ index c1487c066213417faeec7a9461026aa01db2e8c1..67fe985dd13762867d6fd8fe81876cab
                          });
  
                          vec3d = this.a(enumdirection_enumaxis, blockutil_rectangle1);
-@@ -3333,6 +3342,9 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -3334,6 +3343,9 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
      }
  
      public boolean cl() {
@@ -203,7 +203,7 @@ index c1487c066213417faeec7a9461026aa01db2e8c1..67fe985dd13762867d6fd8fe81876cab
          boolean flag = this.au;
  
          this.au = false;
-@@ -3536,7 +3548,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -3537,7 +3549,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
                  for (int i2 = k; i2 < l; ++i2) {
                      for (int j2 = i1; j2 < j1; ++j2) {
                          blockposition_mutableblockposition.d(l1, i2, j2);
@@ -377,7 +377,7 @@ index a3d6ab9f76d40d1d4998bc942084cae503e3dfd5..6eeb60ed8deb2d01ea2be835f1dce7bd
          return this.a;
      }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 352131afbb2fc54c0e92b2fc10dd8be83694f041..635c4dffc5cca2e1a1d1cc54f42292b8b4c0c466 100644
+index 3404b607fa7b855db93e1edfdb357904debdd129..376437e8a42de67111b3e0388106d36d083b0cd9 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -33,7 +33,9 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
@@ -392,7 +392,7 @@ index 352131afbb2fc54c0e92b2fc10dd8be83694f041..635c4dffc5cca2e1a1d1cc54f42292b8
      protected static final Logger LOGGER = LogManager.getLogger();
      public static final Codec<ResourceKey<World>> f = MinecraftKey.a.xmap(ResourceKey.b(IRegistry.L), ResourceKey::a);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 426496ce2f08fc6c7d713267f735964f04eb22f1..8e34ccb3804a01b5bcc9c9741d1d0b6e464046e9 100644
+index c528641620e296daf67e381287167d7632d8fe29..88f49aeed010bcd77e71fcff68df63281a102e8f 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -56,8 +56,9 @@ import org.bukkit.event.weather.LightningStrikeEvent;

@@ -7,10 +7,10 @@ A massive improvement to world generation.
 This patch actually schedules chunk status upgrade later rather than doing it right away.
 
 diff --git a/pom.xml b/pom.xml
-index 5bc87f52e3f524dc582eaf3e9f42e5ff2cb5f6e9..15a35832dc6e73faf43bf6297df766ebf65b0752 100644
+index 664d852ce786f88f46bc0ea8d20fab3b5925a6ff..30d1664afe9a54ed417f4e14d28a0f6f121e18ff 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -209,6 +209,12 @@
+@@ -202,6 +202,12 @@
              <artifactId>commons-rng-core</artifactId>
              <version>1.3</version>
          </dependency>
@@ -76,7 +76,7 @@ index 6223d1d9048e31fb10cec7f485d1556aec2c7d5e..01caa55482aa963dfe7726e652a1157a
      public ChunkGenerator(WorldChunkManager worldchunkmanager, StructureSettings structuresettings) {
          this(worldchunkmanager, worldchunkmanager, structuresettings, 0L);
 diff --git a/src/main/java/net/minecraft/server/ChunkProviderServer.java b/src/main/java/net/minecraft/server/ChunkProviderServer.java
-index 422ca1cedd10c91aab8834f82d8079ac8874ffaf..f9354571bdb84cf5a4c9c1c379d0888fb5478027 100644
+index 5897d462d350dfbd1464feb92ecf77725651c694..95fc35fec32fed74c93ac1447e6f34e806e0d007 100644
 --- a/src/main/java/net/minecraft/server/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/ChunkProviderServer.java
 @@ -11,6 +11,7 @@ import java.util.Collections;
@@ -292,7 +292,7 @@ index 7abf0e4b7e96dd367b9d03cbc62ac7bb03542d0a..76a76c26650bca73828d7893a537a023
          return i == j ? true : GenLayers.a.get(i) == GenLayers.a.get(j);
      }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 763b69770444035f0378f69ab9661d6236fdeac4..e055290e1fa3501d024e4b115323941549bb1372 100644
+index 6ef08d29f6057e01b63f54accaa09af62892d9d5..834495a1e5807e0f36c4c4c07dcbc5e1261ceb75 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -843,6 +843,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -305,10 +305,10 @@ index 763b69770444035f0378f69ab9661d6236fdeac4..e055290e1fa3501d024e4b1153239415
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index a35fc3c9fa7ebe4aa9ba82d2ecae553b07424cab..a83f9753c0b8fe18e304f8f462b27d53092d337b 100644
+index 74bb2573aa4f52a30341b3763f60a895d7b7a068..f29ead51df77b5def8d70f4944c3a3821323e1d2 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -58,6 +58,18 @@ import org.spigotmc.AsyncCatcher;
+@@ -59,6 +59,18 @@ import org.spigotmc.AsyncCatcher;
  
  public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
@@ -327,7 +327,7 @@ index a35fc3c9fa7ebe4aa9ba82d2ecae553b07424cab..a83f9753c0b8fe18e304f8f462b27d53
      private static final Logger LOGGER = LogManager.getLogger();
      public static final int GOLDEN_TICKET = 33 + ChunkStatus.b();
      // Paper start - faster copying
-@@ -1258,7 +1270,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1353,7 +1365,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                  return;
              }
              // Paper end
@@ -379,10 +379,10 @@ index d98ac030e205dbb1512ef6b837e2f3fdd208e231..451ea5b703d01664942899ca62cf789e
      }
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index d37607aa3f04752aa6cb4f6180a434651aade68f..e6cf4037e13b02469239404b3d2a19b15e3edafa 100644
+index 011d8bd375388a38db11099de77fb563d92136c4..b8d352c5af18c4d9b2fda16cfb031959d8c9e874 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -2676,28 +2676,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -2639,28 +2639,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
          // Paper start
          BlockPosition blockposition1 = blockposition.immutableCopy();

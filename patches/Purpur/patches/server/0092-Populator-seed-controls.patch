@@ -18,7 +18,7 @@ index 5e672a0660d0aceffcdb26d185590ca18aa4f023..4b171a2a60e24947e884f8988920f335
              }
              final Object val = config.get(key);
 diff --git a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
-index a7bf1dbbcc888f22ecf70cae6d4dea8a1d695285..5155a79f78eba532d0f1314ca7f4e667d0c5e30f 100644
+index eb53f0a9012884ce2ab6b6d8cfeefaffa3a48ead..8f95c3c22a4f3f90f001e34ded081708ede59454 100644
 --- a/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 +++ b/src/main/java/com/tuinity/tuinity/config/TuinityConfig.java
 @@ -1,5 +1,6 @@
@@ -50,10 +50,10 @@ index a7bf1dbbcc888f22ecf70cae6d4dea8a1d695285..5155a79f78eba532d0f1314ca7f4e667
  }
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/server/BiomeBase.java b/src/main/java/net/minecraft/server/BiomeBase.java
-index 0854ac9ef586b378420d9899f3afd2755e6f9f33..df6874c1cf5fc5764dc575866aab87883b6cf035 100644
+index 3fc101552e3c229076c91a1cfa45206b4cc7a04c..60d5c08706dc8b2f895ff7083d3a611a73ac19d2 100644
 --- a/src/main/java/net/minecraft/server/BiomeBase.java
 +++ b/src/main/java/net/minecraft/server/BiomeBase.java
-@@ -189,6 +189,10 @@ public final class BiomeBase {
+@@ -227,6 +227,10 @@ public final class BiomeBase {
          return this.k;
      }
  
@@ -64,7 +64,7 @@ index 0854ac9ef586b378420d9899f3afd2755e6f9f33..df6874c1cf5fc5764dc575866aab8788
      public void a(StructureManager structuremanager, ChunkGenerator chunkgenerator, RegionLimitedWorldAccess regionlimitedworldaccess, long i, SeededRandom seededrandom, BlockPosition blockposition) {
          List<List<Supplier<WorldGenFeatureConfigured<?, ?>>>> list = this.k.c();
          int j = WorldGenStage.Decoration.values().length;
-@@ -225,12 +229,24 @@ public final class BiomeBase {
+@@ -263,12 +267,24 @@ public final class BiomeBase {
                  }
              }
  

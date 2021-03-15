@@ -42,7 +42,7 @@ index af46e9ccfcc24e8222fdd49d66c3ba2057633021..452dbbf572ad38716c81ae9087388407
          this.generator = gen;
          this.world = new CraftWorld((WorldServer) this, gen, env);
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 33b41dc393e302c114f2ea69e789505b7ec77935..adc6420b63730929de491cb0a57d898ef02bb7e8 100644
+index ee74d3a9bb6938c83509fa09840a1c243d03c389..baeca1fcb81c9f83e488a23be3cf66de3af65ba1 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -436,7 +436,24 @@ public class WorldServer extends World implements GeneratorAccessSeed {

@@ -6,7 +6,7 @@ Subject: [PATCH] New Network System
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index 21694e5de48f098d0b4071ffbbaee0b3c8dd6f6a..5bc87f52e3f524dc582eaf3e9f42e5ff2cb5f6e9 100644
+index 1772d3341d8ecfa0037c6ae2e63c44bbdcf6c4ed..664d852ce786f88f46bc0ea8d20fab3b5925a6ff 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -62,6 +62,14 @@
@@ -25,10 +25,10 @@ index 21694e5de48f098d0b4071ffbbaee0b3c8dd6f6a..5bc87f52e3f524dc582eaf3e9f42e5ff
              <groupId>io.papermc</groupId>
              <artifactId>minecraft-server</artifactId>
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index f7cf231ff6f26e3d30423d04a05ff6c6844872ca..763b69770444035f0378f69ab9661d6236fdeac4 100644
+index 62c80bd91656adafa03e1bb4f01734e659aa0d77..6ef08d29f6057e01b63f54accaa09af62892d9d5 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1758,6 +1758,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1762,6 +1762,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          return true;
      }
  

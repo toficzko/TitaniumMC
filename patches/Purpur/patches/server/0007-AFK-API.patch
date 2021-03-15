@@ -193,7 +193,7 @@ index 9146b60cff0aa06e2f6b6003bfe9e2be9d2f0d56..bba8dc8fd10dc34179ca3c8cf471fbb3
                                      if (from.getX() != Double.MAX_VALUE) {
                                          Location oldTo = to.clone();
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 9c77be805eb71c409a5d41c2730338583527e447..d8e39d29a792bf8a65884f18743befe29a86791e 100644
+index a77fceac7c9e79a6bac05becc21bcb6bf2a1a7c7..be532af2a0de6927a268c631c25f062f370c72ba 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -887,7 +887,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
@@ -205,7 +205,7 @@ index 9c77be805eb71c409a5d41c2730338583527e447..d8e39d29a792bf8a65884f18743befe2
          })) {
              // CraftBukkit start
              long l = this.worldData.getDayTime() + 24000L;
-@@ -1224,7 +1224,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1231,7 +1231,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
              while (iterator.hasNext()) {
                  EntityPlayer entityplayer = (EntityPlayer) iterator.next();
  

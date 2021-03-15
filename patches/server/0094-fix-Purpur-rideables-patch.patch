@@ -5,7 +5,7 @@ Subject: [PATCH] fix Purpur rideables patch
 
 
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 1989847c1e1087bed9006df67e4d075b0347822d..477f3a6b8d9968b8be2bba5e708917ee933fca7b 100644
+index af424fed348638c46d29daafa9ae17552b99d430..81658f91c96544ac46d7ae666a0de87673ba4ee4 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -85,7 +85,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke

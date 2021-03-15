@@ -92,10 +92,10 @@ index 11ad785b2408ba94f9d80c4af3a81e0c0e7e9a64..42ffb688d933a33e484a816390b91abf
              if (i > 0L) {
                  worldborder.transitionSizeBetween(d1, d0, i);
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index bd43204760663363fcc53c1a8c175668809f96b0..67725d06cba08cb171fad1600f4ea545393a7dc4 100644
+index d3e2c5d4a755e0bee4c0a13204544e91a41c292c..70df77f4553806fddd075b6a59ee2a2e4f8d9795 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -562,7 +562,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+@@ -561,7 +561,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
  
      @Override
      public int au() {
@@ -131,7 +131,7 @@ index fe5937d890762ab37a90f189c4992af389d2c41d..d2520b7ee84f1e307faca2018c75f79d
          this.enableJmxMonitoring = this.getBoolean("enable-jmx-monitoring", false);
          this.enableStatus = this.getBoolean("enable-status", true);
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index e8090d425f36e60c5182adbf0c318ef3edb869ce..c1487c066213417faeec7a9461026aa01db2e8c1 100644
+index 30283ec708864e102e311d22e8c85e5abc9dfb3b..d27ce58e5a8a0373de8303340e6a38d7155c57fc 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -1550,6 +1550,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
@@ -154,7 +154,7 @@ index e8090d425f36e60c5182adbf0c318ef3edb869ce..c1487c066213417faeec7a9461026aa0
          if (valid) world.getChunkAt((int) Math.floor(this.locX()) >> 4, (int) Math.floor(this.locZ()) >> 4); // CraftBukkit // Paper
      }
  
-@@ -2924,10 +2930,17 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2925,10 +2931,17 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
                  return null;
              } else {
                  WorldBorder worldborder = worldserver.getWorldBorder();
@@ -187,10 +187,10 @@ index eb7282c33dd4f0bb26b9ccafc42bd92e6fdb997e..13bf0a6b9a7bb7d16748a620bbd0dd31
  
      @Deprecated
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index c0be5153d117208edf69459728d57e11e26b8955..e7ed05998b180d58a9c97d6fc3293c45c752847a 100644
+index e98779a3b8569b62c88c59bb8c5a95994f641f51..2df2f619715f38040feff48409022957092b9c16 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1874,7 +1874,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1878,7 +1878,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
      }
  
      public int au() {
@@ -215,7 +215,7 @@ index 0364c923792acb30dc600db8ed4f05f8d5597e1d..a1ed80a50eaedf53ffd22b08450e9312
  
      private static boolean b(PacketPlayInVehicleMove packetplayinvehiclemove) {
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index c93fb9998b99d77c2c271a099d5b2355c7d5fe5d..352131afbb2fc54c0e92b2fc10dd8be83694f041 100644
+index a4b8505705061bd01a50e68d04e620a000f6084f..3404b607fa7b855db93e1edfdb357904debdd129 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -460,7 +460,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {

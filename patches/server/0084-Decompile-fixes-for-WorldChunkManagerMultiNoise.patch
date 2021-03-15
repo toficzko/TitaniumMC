@@ -6,7 +6,7 @@ Subject: [PATCH] Decompile fixes for WorldChunkManagerMultiNoise
 who knows what duplex is doing
 
 diff --git a/src/main/java/net/minecraft/server/BiomeBase.java b/src/main/java/net/minecraft/server/BiomeBase.java
-index df6874c1cf5fc5764dc575866aab87883b6cf035..d84dbecff591ea5acd35c9141e6ad4c931ee71db 100644
+index 60d5c08706dc8b2f895ff7083d3a611a73ac19d2..ad9b4378a2385dde14be9b43d6cafceb2bec9b0e 100644
 --- a/src/main/java/net/minecraft/server/BiomeBase.java
 +++ b/src/main/java/net/minecraft/server/BiomeBase.java
 @@ -20,6 +20,13 @@ import org.apache.logging.log4j.Logger;

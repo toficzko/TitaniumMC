@@ -5,7 +5,7 @@ Subject: [PATCH] Fix lead fall dmg config
 
 
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 94af972e115491d0f4394dd290ec2d9d426b8d32..e8090d425f36e60c5182adbf0c318ef3edb869ce 100644
+index fc8d9bea592ada25c8cf123a4bb472b924d65cbb..30283ec708864e102e311d22e8c85e5abc9dfb3b 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
 @@ -1300,6 +1300,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke

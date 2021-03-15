@@ -19,7 +19,7 @@ index cc6e6f245ee5e73bd570cf42381bf55ee0b364d3..2f8ec64c26f5ed239b4dd9f9532c402d
              StackTraceElement[] astacktraceelement = this.h;
              int i = astacktraceelement.length;
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 67e27a2931acd281803f8003069fac54245d4df6..c0be5153d117208edf69459728d57e11e26b8955 100644
+index 232f3f74d0c5eb2603496188efea8684482a61ef..e98779a3b8569b62c88c59bb8c5a95994f641f51 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1047,7 +1047,11 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -108,10 +108,10 @@ index 0668d383db1f3a81d1053954d72678c7ac5aecec..7b9f83e63d0f9cd83a246be33af4ab91
                              ChatComponentText chatcomponenttext = new ChatComponentText("Internal server error");
  
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index c79088ed191fe8539bdee5efa9872036efa4671f..c93fb9998b99d77c2c271a099d5b2355c7d5fe5d 100644
+index c3909bc3ec2601010b28949258cf52fd8e8446a9..a4b8505705061bd01a50e68d04e620a000f6084f 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -1019,6 +1019,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -1024,6 +1024,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
                          // Paper start - Prevent tile entity and entity crashes
                          String msg = "TileEntity threw exception at " + tileentity.world.getWorld().getName() + ":" + tileentity.position.getX() + "," + tileentity.position.getY() + "," + tileentity.position.getZ();
                          System.err.println(msg);

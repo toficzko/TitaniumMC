@@ -221,10 +221,10 @@ index 4e3f01bc79b6ed2a322155f29f1d0dcf298c8b82..ac1ea2f0c15bccf94f203194a5a7b10e
      }
  }
 diff --git a/src/main/java/net/minecraft/server/SpawnerCreature.java b/src/main/java/net/minecraft/server/SpawnerCreature.java
-index a77b1d61b9dcb0a2a27d7e50357eaf44c99a661e..ae17950438132c5084210252bd345517131d5a99 100644
+index 53fd0549c965b2252ad80648d61ff1f7cd2b837a..ad520cb36afd0f011b6337f3e42efb01f740a950 100644
 --- a/src/main/java/net/minecraft/server/SpawnerCreature.java
 +++ b/src/main/java/net/minecraft/server/SpawnerCreature.java
-@@ -385,6 +385,7 @@ public final class SpawnerCreature {
+@@ -394,6 +394,7 @@ public final class SpawnerCreature {
          return new BlockPosition(i, l, j);
      }
  

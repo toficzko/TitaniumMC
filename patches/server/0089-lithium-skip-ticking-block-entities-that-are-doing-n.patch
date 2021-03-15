@@ -1229,7 +1229,7 @@ index ab553f408b31cb7e2d281cc3d8fe42e19dc717d9..6e426d8e4c6e3768730b0d66267f44c1
  
      @Nullable
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 5af4e46fdca48358f66e3b22cfb1a956fc495db2..74ba8de1bf70a8bd212906d3dd39bb435c917585 100644
+index 7cf47dfc16f94348bf24162cd482b9c489b5a6eb..ef87629eae2b7cef0cdc611fbe0cd94f90a3b443 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -37,7 +37,11 @@ import org.bukkit.event.block.BlockPhysicsEvent;
@@ -1252,7 +1252,7 @@ index 5af4e46fdca48358f66e3b22cfb1a956fc495db2..74ba8de1bf70a8bd212906d3dd39bb43
 -    public final List<TileEntity> tileEntityListTick = me.jellysquid.mods.lithium.common.util.collections.HashedList.wrapper(Lists.newArrayList()); // Yatopia
 +    public List<TileEntity> tileEntityListTick = me.jellysquid.mods.lithium.common.util.collections.HashedList.wrapper(Lists.newArrayList()); // Yatopia
      protected final List<TileEntity> tileEntityListPending = me.jellysquid.mods.lithium.common.util.collections.HashedList.wrapper(Lists.newArrayList()); // Yatopia
-     protected final java.util.Set<TileEntity> tileEntityListUnload = com.google.common.collect.Sets.newHashSet();
+     protected final java.util.Set<TileEntity> tileEntityListUnload = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>()); // Airplane - use set with faster contains
 +    // Yatopia start - lithium: skip ticking block entities that are doing nothing
 +    private MaskedTickingBlockEntityList<TileEntity> tileEntityListTick$lithium;
 +
@@ -1289,7 +1289,7 @@ index 5af4e46fdca48358f66e3b22cfb1a956fc495db2..74ba8de1bf70a8bd212906d3dd39bb43
      public void tickBlockEntities() {
          GameProfilerFiller gameprofilerfiller = this.getMethodProfiler();
  
-@@ -1004,11 +1027,19 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -1009,11 +1032,19 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
  
          this.tickingTileEntities = true;
          // Spigot start
@@ -1309,7 +1309,7 @@ index 5af4e46fdca48358f66e3b22cfb1a956fc495db2..74ba8de1bf70a8bd212906d3dd39bb43
              // Spigot start
              if (tileentity == null) {
                  getServer().getLogger().severe("Spigot has detected a null entity and has removed it, preventing a crash");
-@@ -1046,8 +1077,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -1051,8 +1082,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
                          throwable.printStackTrace();
                          getServer().getPluginManager().callEvent(new ServerExceptionEvent(new ServerInternalException(msg, throwable)));
                          // Paper end
@@ -1319,7 +1319,7 @@ index 5af4e46fdca48358f66e3b22cfb1a956fc495db2..74ba8de1bf70a8bd212906d3dd39bb43
                          continue;
                          // Paper end
                          // Spigot start
-@@ -1060,8 +1090,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+@@ -1065,8 +1095,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
  
              if (tileentity.isRemoved()) {
                  // Spigot start

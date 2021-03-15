@@ -32,7 +32,7 @@ index d2520b7ee84f1e307faca2018c75f79d75ed707d..adda2a0af7814ae04d0ce84ae4d39800
          this.enableCommandBlock = this.getBoolean("enable-command-block", false);
          this.spawnProtection = this.getInt("spawn-protection", 16);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e7ed05998b180d58a9c97d6fc3293c45c752847a..f7cf231ff6f26e3d30423d04a05ff6c6844872ca 100644
+index 2df2f619715f38040feff48409022957092b9c16..62c80bd91656adafa03e1bb4f01734e659aa0d77 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -79,7 +79,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas

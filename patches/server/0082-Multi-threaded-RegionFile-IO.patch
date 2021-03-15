@@ -226,7 +226,7 @@ index ee906b594b306906c170180a29a8b61997d05168..7e348fcb813707fee830082b826932e0
          if (this.closed) {
              this.pollTasks(true); // this ensures we've emptied the queue
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e055290e1fa3501d024e4b115323941549bb1372..c0498d03a8d3097eb7e54c8cf74bf7ca41cac6b7 100644
+index 834495a1e5807e0f36c4c4c07dcbc5e1261ceb75..2bf8e6399dd9984cfe31aa47915cc0d16bcfe974 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -845,7 +845,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -239,10 +239,10 @@ index e055290e1fa3501d024e4b115323941549bb1372..c0498d03a8d3097eb7e54c8cf74bf7ca
          SystemUtils.shutdownServerThreadPool(); // Paper
          LOGGER.info("Closing Server");
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index a83f9753c0b8fe18e304f8f462b27d53092d337b..00488454a33e9a6aa8fe5600c7d0b33092d1d875 100644
+index f29ead51df77b5def8d70f4944c3a3821323e1d2..2db751b024eca1a2292d510132bfae51ce3ddf13 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1623,7 +1623,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1718,7 +1718,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      @Nullable
      @Override
      public NBTTagCompound read(ChunkCoordIntPair chunkcoordintpair) throws IOException {
@@ -251,7 +251,7 @@ index a83f9753c0b8fe18e304f8f462b27d53092d337b..00488454a33e9a6aa8fe5600c7d0b330
              NBTTagCompound ret = com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE
                  .loadChunkDataAsyncFuture(this.world, chunkcoordintpair.x, chunkcoordintpair.z, com.destroystokyo.paper.io.IOUtil.getPriorityForCurrentThread(),
                      false, true, true).join().chunkData;
-@@ -1638,7 +1638,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1733,7 +1733,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
  
      @Override
      public void write(ChunkCoordIntPair chunkcoordintpair, NBTTagCompound nbttagcompound) throws IOException {

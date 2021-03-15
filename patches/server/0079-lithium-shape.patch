@@ -285,10 +285,10 @@ index b74b8b796c6da0d478d2b9a88c64b07196415068..d717c1856201bf7155b78507e86bc90c
  
      public boolean b(IBlockData iblockdata, IBlockAccess iblockaccess, BlockPosition blockposition) {
 diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 67fe985dd13762867d6fd8fe81876cab75c08078..1989847c1e1087bed9006df67e4d075b0347822d 100644
+index fb3454c3ccf813017450a0e09005396ff3bdb77b..af424fed348638c46d29daafa9ae17552b99d430 100644
 --- a/src/main/java/net/minecraft/server/Entity.java
 +++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -2551,6 +2551,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2552,6 +2552,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
          return this.isSneaking();
      }
  
