@@ -422,7 +422,7 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..991135c3c915b34c5cc520219766d558
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e79ca66618d6302be3bb571782033d4607db66ad
+index 0000000000000000000000000000000000000000..6dd389867c30907a569de7a79b5eb653b07b0f1b
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 @@ -0,0 +1,187 @@
@@ -490,14 +490,14 @@ index 0000000000000000000000000000000000000000..e79ca66618d6302be3bb571782033d46
 +        try {
 +            worldserver.currentlyTickingEntities.push(entity);
 +            if (!(entity instanceof EntityHuman) && !worldserver.getChunkProvider().a(entity)) {
-+                worldserver.chunkCheck(entity);
++                worldserver.chunkCheck(entity); // investigate
 +            } else {
 +                ++TimingHistory.entityTicks;
 +                co.aikar.timings.Timing timer;
 +                final boolean isActive = org.spigotmc.ActivationRange.checkIfActive(entity);
 +                timer = isActive ? entity.getEntityType().tickTimer.startTiming() : entity.getEntityType().inactiveTickTimer.startTiming();
 +                try {
-+                    entity.g(entity.locX(), entity.locY(), entity.locZ());
++                    entity.g(entity.locX(), entity.locY(), entity.locZ()); // investigate
 +                    entity.lastYaw = entity.yaw;
 +                    entity.lastPitch = entity.pitch;
 +                    if (entity.inChunk) {
