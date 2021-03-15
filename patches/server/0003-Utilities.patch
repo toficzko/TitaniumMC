@@ -9,10 +9,10 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index 4f7ddd682c2bd51cc14d0fe59637ee24c74cd4be..09040789149e349014f9348d1c888d811bd899ae 100644
+index b1d7f9b3418666d5879d30d1ea1ed4c0287441c5..541ed8f0d5ec552901622d972378c838214a644b 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -188,6 +188,12 @@
+@@ -204,6 +204,12 @@
              <artifactId>jafama</artifactId>
              <version>2.3.2</version>
          </dependency>
@@ -24,7 +24,7 @@ index 4f7ddd682c2bd51cc14d0fe59637ee24c74cd4be..09040789149e349014f9348d1c888d81
 +        </dependency>
      </dependencies>
  
-     <repositories>
+     <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/util/Constants.java b/src/main/java/org/yatopiamc/yatopia/server/util/Constants.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..ac5235155eb1b5515165fc9648b7c9d7a0713b44

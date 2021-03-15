@@ -385,6 +385,7 @@ This is an overview over all patches that are currently used.
 | server |  Swap priority of checks in chunk ticking      | Paul Sauve |  |
 | server |  Swaps the predicate order of collision      | ㄗㄠˋ ㄑㄧˊ |  |
 | server |  Threaded WorldGen      | ishland |  |
+| server |  Tick fluids config      | BillyGalbreath |  |
 | server |  Time scoreboard search      | Spottedleaf |  |
 | server |  Timings stuff      | William Blake Galbreath |  |
 | server |  Toggle for Zombified Piglin death always counting as player      | jmp |  |

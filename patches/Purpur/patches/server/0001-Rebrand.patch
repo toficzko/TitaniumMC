@@ -5,7 +5,7 @@ Subject: [PATCH] Rebrand
 
 
 diff --git a/pom.xml b/pom.xml
-index e83e4241a56fe131a75fe21cc1518992c089da2c..752d62eb3b87ab24260ec2c029bae0d2b0e3b908 100644
+index d9b46ca2fb2ec8f76f3c781d9250fdc68ad7e363..e4ce1760a7dbd9329ff185cc3744d77d9759723d 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -27,8 +27,10 @@

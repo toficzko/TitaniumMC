@@ -5,10 +5,10 @@ Subject: [PATCH] mysql 8.0.23
 
 
 diff --git a/pom.xml b/pom.xml
-index 30d1664afe9a54ed417f4e14d28a0f6f121e18ff..cec9487c97f575b141c585acd7f7dc9893d8bfcc 100644
+index b009af097dc5bb5c8cd7f445df73fee60f9f288a..ea9f80b096e044c815b2ef71023e46eac0cd13c8 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -154,7 +154,7 @@
+@@ -170,7 +170,7 @@
          <dependency>
              <groupId>mysql</groupId>
              <artifactId>mysql-connector-java</artifactId>
