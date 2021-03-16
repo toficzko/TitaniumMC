@@ -5,7 +5,7 @@ Subject: [PATCH] Zombie horse naturally spawn
 
 
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index be532af2a0de6927a268c631c25f062f370c72ba..4f0159cd0b7a438084a3fc9cf681dbce6e41a125 100644
+index 0ec9aaec0bcacad922d601b10104e7e3f59c8cc8..382cd4ce96d06b74b49d635d915782a165c76eab 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -1104,12 +1104,18 @@ public class WorldServer extends World implements GeneratorAccessSeed {

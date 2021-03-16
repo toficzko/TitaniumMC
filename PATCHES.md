@@ -96,6 +96,7 @@ This is an overview over all patches that are currently used.
 | server |  Attempt to recalculate regionfile header if it is corrupt      | Spottedleaf |  |
 | server |  Avoid double I/O operation on load player file      | ㄗㄠˋ ㄑㄧˊ |  |
 | server |  Barrels and enderchests 6 rows      | William Blake Galbreath |  |
+| server |  Be aware of entity teleports when chunk checking entities      | Spottedleaf |  |
 | server |  Brand changes      | Spottedleaf |  |
 | server |  Brandings      | YatopiaMC |  |
 | server |  Breedable Polar Bears      | William Blake Galbreath |  |
@@ -142,7 +143,6 @@ This is an overview over all patches that are currently used.
 | server |  Cows eat mushrooms      | William Blake Galbreath |  |
 | server |  Crying obsidian valid for portal frames      | William Blake Galbreath |  |
 | server |  Custom Locale Support      | Zoe |  |
-| server |  Custom table implementation for blockstate state lookups      | Spottedleaf |  |
 | server |  Customizable wither health and healing      | jmp |  |
 | server |  Decompile fixes for WorldChunkManagerMultiNoise      | ishland |  |
 | api |  Default permissions      | William Blake Galbreath |  |

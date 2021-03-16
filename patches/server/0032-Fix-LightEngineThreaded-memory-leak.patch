@@ -18,10 +18,10 @@ index b2f51a6786d4bb92c9cbbceeea812375b1a49bd6..d16157dcbc6f36fa0c8284784641e544
              return this.size == 0 && this.pendingTasks.isEmpty();
          }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index e695cf764cab6d64ea5bb00af03b25f4930946dd..c528641620e296daf67e381287167d7632d8fe29 100644
+index db3c0815096442151e276c23751a0a2e4c6e12a8..7d32a27bccf9fe65336b59aa8b40db5f10004880 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -1906,6 +1906,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1934,6 +1934,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
          }
          // Paper end
  

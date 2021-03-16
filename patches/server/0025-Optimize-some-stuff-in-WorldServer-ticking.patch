@@ -6,7 +6,7 @@ Subject: [PATCH] Optimize some stuff in WorldServer ticking
 Replaced some streams and some array lists with glue lists
 
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 4e7700443c4f0725c0d032b620f84fcfadbde7a1..e695cf764cab6d64ea5bb00af03b25f4930946dd 100644
+index c34791933ce2290d0d77c3dd45196916c5b324c2..db3c0815096442151e276c23751a0a2e4c6e12a8 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
 @@ -885,12 +885,21 @@ public class WorldServer extends World implements GeneratorAccessSeed {
@@ -60,7 +60,7 @@ index 4e7700443c4f0725c0d032b620f84fcfadbde7a1..e695cf764cab6d64ea5bb00af03b25f4
      }
  
      // Paper start - optimise random block ticking
-@@ -1920,8 +1927,9 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1948,8 +1955,9 @@ public class WorldServer extends World implements GeneratorAccessSeed {
          // Spigot start
          if ( entity instanceof EntityHuman )
          {
@@ -71,7 +71,7 @@ index 4e7700443c4f0725c0d032b620f84fcfadbde7a1..e695cf764cab6d64ea5bb00af03b25f4
                  for (Object o : worldData.data.values() )
                  {
                      if ( o instanceof WorldMap )
-@@ -1938,7 +1946,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1966,7 +1974,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
                          }
                      }
                  }
