@@ -414,7 +414,6 @@ This is an overview over all patches that are currently used.
 | server |  cache default block/fluid states in World.java      | Simon Gardling |  |
 | server |  dont load chunks for physics      | Aikar |  |
 | server |  enable asyncChunks no matter what      | Simon Gardling |  |
-| server |  finally remove worldborder      | Simon Gardling |  |
 | server |  fix Purpur rideables patch      | Simon Gardling |  |
 | server |  fix typo from mojang      | Simon Gardling |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
