@@ -337,7 +337,6 @@ This is an overview over all patches that are currently used.
 | server |  Redirect Configs      | tr7zw |  |
 | server |  Redstone deactivates spawners      | draycia |  |
 | server |  Reduce allocation rate from crammed entities      | Spottedleaf |  |
-| server |  Reduce allocs &amp; improve perf of StructureManager      | Paul Sauve |  |
 | server |  Reduce chunk loading &amp; lookups      | Paul Sauve |  |
 | server |  Reduce entity chunk ticking checks from 3 to 1      | Paul Sauve |  |
 | server |  Reduce iterator allocation from chunk gen      | Spottedleaf |  |
