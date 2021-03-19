@@ -404,10 +404,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..8de65c8be7781890b893242b4f16f18c
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..0c30f112d7b17c62dd2f8fe0b3616a2c5fb8fcec
+index 0000000000000000000000000000000000000000..1209562acead870c2490285cb354acf393ddedc8
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,197 @@
+@@ -0,0 +1,173 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -439,10 +439,11 @@ index 0000000000000000000000000000000000000000..0c30f112d7b17c62dd2f8fe0b3616a2c
 +public class AsyncEntityManager {
 +
 +    public final ExecutorService entityTickPool = Executors.newFixedThreadPool(org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntityThreads);
-+    public final List<Runnable> runnableList = new ArrayList<Runnable>();
 +    private final CopyOnWriteArrayList<Entity> targetEntitiesRemove = new CopyOnWriteArrayList<>();
 +    private final CopyOnWriteArrayList<Entity> targetEntitiesTickSync = new CopyOnWriteArrayList<>();
 +    private final CopyOnWriteArrayList<Entity> targetEntitiesInactiveSync = new CopyOnWriteArrayList<>();
++    private final CopyOnWriteArrayList<Entity> targetEntitiesInactiveAsync = new CopyOnWriteArrayList<>();
++
 +
 +    WorldServer worldserver;
 +
@@ -450,13 +451,23 @@ index 0000000000000000000000000000000000000000..0c30f112d7b17c62dd2f8fe0b3616a2c
 +        this.worldserver = worldserver;
 +    }
 +
++    public void entityCommonTick(Entity entity) {
++        if (entity.inChunk) {
++            for (Entity entity1 : entity.getPassengers()) {
++                worldserver.tickPassenger(entity, entity1); // Note: may want to add a queue for this later
++            }
++        }
++    }
++
 +    public void entityInactiveTick(Entity entity) {
 +        entity.inactiveTick();
++        entityCommonTick(entity);
 +    }
 +
 +    public void entityActiveTick(Entity entity) {
 +        entity.tick();
 +        entity.postTick();
++        entityCommonTick(entity);
 +    }
 +
 +    public boolean shouldTickEntityAsync(Entity entity) {
@@ -468,70 +479,33 @@ index 0000000000000000000000000000000000000000..0c30f112d7b17c62dd2f8fe0b3616a2c
 +    }
 +
 +    public void entityJoinedWorld(Entity entity) {
-+        try {
-+            if (worldserver.currentlyTickingEntity.get() == null) {
-+                worldserver.currentlyTickingEntity.lazySet(entity);
-+            }
-+            if (!(entity instanceof EntityHuman) && !worldserver.getChunkProvider().a(entity)) {
-+                worldserver.chunkCheck(entity); // investigate
-+            } else {
-+                ++TimingHistory.entityTicks;
-+                co.aikar.timings.Timing timer;
-+                final boolean isActive = org.spigotmc.ActivationRange.checkIfActive(entity);
-+                timer = isActive ? entity.getEntityType().tickTimer.startTiming() : entity.getEntityType().inactiveTickTimer.startTiming();
-+                try {
-+                    entity.g(entity.locX(), entity.locY(), entity.locZ()); // investigate
-+                    entity.lastYaw = entity.yaw;
-+                    entity.lastPitch = entity.pitch;
-+                    if (entity.inChunk) {
-+                        ++entity.ticksLived;
-+                        GameProfilerFiller gameprofilerfiller = worldserver.getMethodProfiler();
-+                        gameprofilerfiller.a(() -> IRegistry.ENTITY_TYPE.getKey(entity.getEntityType()).toString());
-+                        gameprofilerfiller.c("tickNonPassenger");
-+                        if (isActive) {
-+                            /*
-+                            TimingHistory.activatedEntityTicks++;
-+                            if (YatopiaConfig.asyncActiveEntities && shouldTickEntityAsync(entity)) {
-+                                runnableList.add(new Runnable(){
-+                                    @Override
-+                                    public void run() {
-+                                        entityActiveTick(entity);
-+                                    }
-+                                });
-+                            } else {
-+                                targetEntitiesTickSync.add(entity);
-+                            }
-+                            */
-+                            targetEntitiesTickSync.add(entity);
-+                        } else {
-+                            if (YatopiaConfig.asyncAllInactiveEntities) {
-+                                runnableList.add(new Runnable(){
-+                                    @Override
-+                                    public void run() {
-+                                        entityInactiveTick(entity);
-+                                    }
-+                                });
-+                            } else {
-+                                targetEntitiesInactiveSync.add(entity);
-+                            }
-+                        }
-+                        gameprofilerfiller.exit();
-+                    }
-+
-+                    worldserver.chunkCheck(entity);
-+                } finally {
-+                    timer.stopTiming();
-+                }
-+                if (entity.inChunk) {
-+                    for (Entity entity1 : entity.getPassengers()) {
-+                        worldserver.tickPassenger(entity, entity1); // Note: may want to add a queue for this later
++        if (worldserver.currentlyTickingEntity.get() == null) {
++            worldserver.currentlyTickingEntity.lazySet(entity);
++        }
++        if (!(entity instanceof EntityHuman) && !worldserver.getChunkProvider().a(entity)) {
++            worldserver.chunkCheck(entity); // investigate
++        } else {
++            final boolean isActive = org.spigotmc.ActivationRange.checkIfActive(entity);
++            entity.g(entity.locX(), entity.locY(), entity.locZ()); // investigate
++            entity.lastYaw = entity.yaw;
++            entity.lastPitch = entity.pitch;
++            if (entity.inChunk) {
++                ++entity.ticksLived;
++                GameProfilerFiller gameprofilerfiller = worldserver.getMethodProfiler();
++                gameprofilerfiller.a(() -> IRegistry.ENTITY_TYPE.getKey(entity.getEntityType()).toString());
++                gameprofilerfiller.c("tickNonPassenger");
++                if (isActive) {
++                    targetEntitiesTickSync.add(entity);
++                } else {
++                    if (YatopiaConfig.asyncAllInactiveEntities) {
++                        targetEntitiesInactiveAsync.add(entity);
++                    } else {
++                        targetEntitiesInactiveSync.add(entity);
 +                    }
 +                }
++                gameprofilerfiller.exit();
 +            }
-+        } finally {
-+            if (worldserver.currentlyTickingEntity.get() == entity) {
-+                worldserver.currentlyTickingEntity.lazySet(null);
-+            }
++            worldserver.chunkCheck(entity);
 +        }
 +    }
 +
@@ -558,8 +532,9 @@ index 0000000000000000000000000000000000000000..0c30f112d7b17c62dd2f8fe0b3616a2c
 +        for (Entity entity : entityList) {
 +            tickEntity(entity, gameprofilerfiller);
 +        }
-+
-+        runnableList.stream().map(runnable -> CompletableFuture.runAsync(() -> runnable.run(), entityTickPool)).collect(Collectors.toSet());
++        // targetEntitiesInactiveAsync.stream().map(entity -> CompletableFuture.runAsync(() -> entityInactiveTick(entity), entityTickPool)).collect(Collectors.toSet());
++        
++        targetEntitiesInactiveAsync.parallelStream().forEach(entity -> entityInactiveTick(entity));
 +
 +        // Ticks some active entities sync
 +        for (Entity entity : targetEntitiesTickSync) {
@@ -591,16 +566,17 @@ index 0000000000000000000000000000000000000000..0c30f112d7b17c62dd2f8fe0b3616a2c
 +        targetEntitiesRemove.clear();
 +        targetEntitiesTickSync.clear();
 +        targetEntitiesInactiveSync.clear();
-+        runnableList.clear();
 +        shutdownExecutors();
 +    }
 +
 +    public void shutdownExecutors() {
 +        if (!org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities) return; // If config isn't enabled, just return because the threadpools are empty
 +        entityTickPool.shutdown();
-+        try {
-+            entityTickPool.awaitTermination(9999999, TimeUnit.DAYS);
-+        } catch (InterruptedException ignored) {
++        while (!entityTickPool.isTerminated()) {
++            try {
++                entityTickPool.awaitTermination(9999999, TimeUnit.DAYS);
++            } catch (InterruptedException ignored) {
++            }
 +        }
 +    }
 +
