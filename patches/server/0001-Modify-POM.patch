@@ -5,7 +5,7 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index e4ce1760a7dbd9329ff185cc3744d77d9759723d..b1d7f9b3418666d5879d30d1ea1ed4c0287441c5 100644
+index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1e1b2fe92 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,11 +1,11 @@
@@ -88,7 +88,7 @@ index e4ce1760a7dbd9329ff185cc3744d77d9759723d..b1d7f9b3418666d5879d30d1ea1ed4c0
              <groupId>io.netty</groupId>
              <artifactId>netty-all</artifactId>
 -            <version>4.1.50.Final</version>
-+            <version>4.1.59.Final</version>
++            <version>4.1.60.Final</version>
          </dependency>
          <!-- Tuinity end - fix compile issue (cannot see new api) by moving netty include BEFORE server jar -->
          <dependency>

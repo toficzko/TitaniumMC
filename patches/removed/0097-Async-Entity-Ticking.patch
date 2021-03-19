@@ -406,10 +406,10 @@ index cb6ddf318ed07f05e32f8149e7b8be37bb6f1cf1..991135c3c915b34c5cc520219766d558
  }
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..91753529cc1faaf9795f2035b2e9e3fbee59bf84
+index 0000000000000000000000000000000000000000..16f15e864f60457d124e1d1b1c51a6b58d17b7b2
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/yatopia/server/ticking/AsyncEntityManager.java
-@@ -0,0 +1,191 @@
+@@ -0,0 +1,203 @@
 +package org.yatopiamc.yatopia.server.ticking;
 +
 +import net.minecraft.server.Entity;
@@ -424,6 +424,7 @@ index 0000000000000000000000000000000000000000..91753529cc1faaf9795f2035b2e9e3fb
 +import net.minecraft.server.IRegistry;
 +
 +import java.util.List;
++import java.util.ArrayList;
 +import java.util.concurrent.CompletableFuture;
 +import java.util.concurrent.CopyOnWriteArrayList;
 +import org.bukkit.Server;
@@ -440,7 +441,8 @@ index 0000000000000000000000000000000000000000..91753529cc1faaf9795f2035b2e9e3fb
 +public class AsyncEntityManager {
 +
 +    public final ExecutorService entityTickPool = Executors.newFixedThreadPool(org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntityThreads);
-+
++    public final List<Runnable> runnableList = new ArrayList<Runnable>();
++    
 +    private final CopyOnWriteArrayList<Entity> targetEntitiesTick = new CopyOnWriteArrayList<>();
 +    private final CopyOnWriteArrayList<Entity> targetEntitiesInactive = new CopyOnWriteArrayList<>();
 +    private final CopyOnWriteArrayList<Entity> targetEntitiesRemove = new CopyOnWriteArrayList<>();
@@ -494,13 +496,23 @@ index 0000000000000000000000000000000000000000..91753529cc1faaf9795f2035b2e9e3fb
 +                        if (isActive) {
 +                            TimingHistory.activatedEntityTicks++;
 +                            if (YatopiaConfig.asyncActiveEntities && shouldTickEntityAsync(entity)) {
-+                                targetEntitiesTick.add(entity);
++                                runnableList.add(new Runnable(){
++                                    @Override
++                                    public void run() {
++                                        entityActiveTick(entity);
++                                    }
++                                });
 +                            } else {
 +                                targetEntitiesTickSync.add(entity);
 +                            }
 +                        } else {
 +                            if (YatopiaConfig.asyncInactiveEntities && shouldTickEntityAsync(entity)) {
-+                                targetEntitiesInactive.add(entity);
++                                runnableList.add(new Runnable(){
++                                    @Override
++                                    public void run() {
++                                        entityInactiveTick(entity);
++                                    }
++                                });
 +                            } else {
 +                                targetEntitiesInactiveSync.add(entity);
 +                            }
@@ -550,10 +562,12 @@ index 0000000000000000000000000000000000000000..91753529cc1faaf9795f2035b2e9e3fb
 +        }
 +
 +        // Ticks active entities
-+        targetEntitiesTick.stream().map(entity -> CompletableFuture.runAsync(() -> entityActiveTick(entity), entityTickPool)).collect(Collectors.toSet());
++        // targetEntitiesTick.stream().map(entity -> CompletableFuture.runAsync(() -> entityActiveTick(entity), entityTickPool)).collect(Collectors.toSet());
 +
 +        // Ticks inactive entities
-+        targetEntitiesInactive.stream().map(entity -> CompletableFuture.runAsync(() -> entityInactiveTick(entity), entityTickPool)).collect(Collectors.toSet());
++        // targetEntitiesInactive.stream().map(entity -> CompletableFuture.runAsync(() -> entityInactiveTick(entity), entityTickPool)).collect(Collectors.toSet());
++
++        runnableList.stream().map(runnable -> CompletableFuture.runAsync(() -> runnable.run(), entityTickPool)).collect(Collectors.toSet());
 +
 +        // Ticks some active entities sync
 +        for (Entity entity : targetEntitiesTickSync) {
@@ -582,21 +596,19 @@ index 0000000000000000000000000000000000000000..91753529cc1faaf9795f2035b2e9e3fb
 +        gameprofilerfiller.exit();
 +
 +        // Clears queues of entities for next tick
-+        targetEntitiesTick.clear();
-+        targetEntitiesInactive.clear();
 +        targetEntitiesRemove.clear();
 +        targetEntitiesTickSync.clear();
 +        targetEntitiesInactiveSync.clear();
++        runnableList.clear();
++        shutdownExecutors();
 +    }
 +
 +    public void shutdownExecutors() {
 +        if (!org.yatopiamc.yatopia.server.YatopiaConfig.asyncEntities) return; // If config isn't enabled, just return because the threadpools are empty
 +        entityTickPool.shutdown();
-+        while (!entityTickPool.isTerminated()) {
-+            try {
-+                entityTickPool.awaitTermination(30, TimeUnit.SECONDS);
-+            } catch (InterruptedException ignored) {
-+            }
++        try {
++            entityTickPool.awaitTermination(9999999, TimeUnit.DAYS);
++        } catch (InterruptedException ignored) {
 +        }
 +    }
 +

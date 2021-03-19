@@ -6,11 +6,11 @@ Subject: [PATCH] New Network System
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index af608bd63fec95929cd61ba4e70e1e59ff9473b0..f1182fe6fad622aa04512fd2c307df7b8b866c96 100644
+index dbe2d39059d6f1be2aee3a5ede720aca21263938..bb54958b986ec0a067ff8036efbf444a302d2d96 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -78,6 +78,14 @@
-             <version>4.1.59.Final</version>
+             <version>4.1.60.Final</version>
          </dependency>
          <!-- Tuinity end - fix compile issue (cannot see new api) by moving netty include BEFORE server jar -->
 +        <!-- Yatopia start - Add IOUring beta support -->
