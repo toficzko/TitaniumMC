@@ -1,0 +1,67 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Fri, 19 Mar 2021 10:06:16 +0000
+Subject: [PATCH] remove pointless bitwise operations
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index fa74a0d663a7ee5beb2794db753b0c5716c2df47..78ec5e47539e6713a4bd107ad26480eba7bf6ec6 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -801,7 +801,7 @@ public abstract class EntityLiving extends Entity {
+             if (flag1 && i > 0) {
+                 double d0 = (double) (i >> 16 & 255) / 255.0D;
+                 double d1 = (double) (i >> 8 & 255) / 255.0D;
+-                double d2 = (double) (i >> 0 & 255) / 255.0D;
++                double d2 = (double) (i & 255) / 255.0D;
+ 
+                 this.world.addParticle(flag ? Particles.AMBIENT_ENTITY_EFFECT : Particles.ENTITY_EFFECT, this.d(0.5D), this.cF(), this.g(0.5D), d0, d1, d2);
+             }
+diff --git a/src/main/java/net/minecraft/server/EntityTippedArrow.java b/src/main/java/net/minecraft/server/EntityTippedArrow.java
+index 2715cfdd60b2b80cf5e245da124c4fcb6138df5b..54836f1301f165403eff2e2ecfa8b385850f489e 100644
+--- a/src/main/java/net/minecraft/server/EntityTippedArrow.java
++++ b/src/main/java/net/minecraft/server/EntityTippedArrow.java
+@@ -110,7 +110,7 @@ public class EntityTippedArrow extends EntityArrow {
+         if (j != -1 && i > 0) {
+             double d0 = (double) (j >> 16 & 255) / 255.0D;
+             double d1 = (double) (j >> 8 & 255) / 255.0D;
+-            double d2 = (double) (j >> 0 & 255) / 255.0D;
++            double d2 = (double) (j & 255) / 255.0D;
+ 
+             for (int k = 0; k < i; ++k) {
+                 this.world.addParticle(Particles.ENTITY_EFFECT, this.d(0.5D), this.cF(), this.g(0.5D), d0, d1, d2);
+diff --git a/src/main/java/net/minecraft/server/PotionUtil.java b/src/main/java/net/minecraft/server/PotionUtil.java
+index 57ab78260c387b60090d956b512a093160426181..83ce33221e37043aab527192f127aa44129554b7 100644
+--- a/src/main/java/net/minecraft/server/PotionUtil.java
++++ b/src/main/java/net/minecraft/server/PotionUtil.java
+@@ -85,7 +85,7 @@ public class PotionUtil {
+ 
+                     f += (float) (l * (k >> 16 & 255)) / 255.0F;
+                     f1 += (float) (l * (k >> 8 & 255)) / 255.0F;
+-                    f2 += (float) (l * (k >> 0 & 255)) / 255.0F;
++                    f2 += (float) (l * (k & 255)) / 255.0F;
+                     j += l;
+                 }
+             }
+diff --git a/src/main/java/net/minecraft/server/SectionPosition.java b/src/main/java/net/minecraft/server/SectionPosition.java
+index c1e8a2cf070fd06c4b70a8f78ca7672d069294a6..bc577fe1031026649b257c90ce675b15cd351da5 100644
+--- a/src/main/java/net/minecraft/server/SectionPosition.java
++++ b/src/main/java/net/minecraft/server/SectionPosition.java
+@@ -65,7 +65,7 @@ public class SectionPosition extends BaseBlockPosition {
+     }
+ 
+     public static int b(short short0) {
+-        return short0 >>> 0 & 15;
++        return short0 & 15;
+     }
+ 
+     public static int c(short short0) {
+@@ -94,7 +94,7 @@ public class SectionPosition extends BaseBlockPosition {
+ 
+     public static int unpackX(long i){ return b(i); } // Yatopia - OBFHELPER
+     public static int b(long i) {
+-        return (int) (i << 0 >> 42);
++        return (int) (i >> 42);
+     }
+ 
+     public static int unpackY(long i){ return c(i); } // Yatopia - OBFHELPER

@@ -1,0 +1,2036 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Fri, 19 Mar 2021 10:07:03 +0000
+Subject: [PATCH] simplify conditional expressions
+
+
+diff --git a/src/main/java/net/minecraft/server/AxisAlignedBB.java b/src/main/java/net/minecraft/server/AxisAlignedBB.java
+index e1d2e5f61b01f812d53a41cd8ba5d45b5f8c7f19..9bd59bde93b69a7ed6c43f949d9f1b22f99a99c1 100644
+--- a/src/main/java/net/minecraft/server/AxisAlignedBB.java
++++ b/src/main/java/net/minecraft/server/AxisAlignedBB.java
+@@ -235,7 +235,7 @@ public class AxisAlignedBB {
+         } else {
+             AxisAlignedBB axisalignedbb = (AxisAlignedBB) object;
+ 
+-            return Double.compare(axisalignedbb.minX, this.minX) != 0 ? false : (Double.compare(axisalignedbb.minY, this.minY) != 0 ? false : (Double.compare(axisalignedbb.minZ, this.minZ) != 0 ? false : (Double.compare(axisalignedbb.maxX, this.maxX) != 0 ? false : (Double.compare(axisalignedbb.maxY, this.maxY) != 0 ? false : Double.compare(axisalignedbb.maxZ, this.maxZ) == 0))));
++            return Double.compare(axisalignedbb.minX, this.minX) == 0 && (Double.compare(axisalignedbb.minY, this.minY) == 0 && (Double.compare(axisalignedbb.minZ, this.minZ) == 0 && (Double.compare(axisalignedbb.maxX, this.maxX) == 0 && (Double.compare(axisalignedbb.maxY, this.maxY) == 0 && Double.compare(axisalignedbb.maxZ, this.maxZ) == 0))));
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/BaseBlockPosition.java b/src/main/java/net/minecraft/server/BaseBlockPosition.java
+index 6fbc2fb83881bb7f46385c279dbbbeecd4748113..2c93e446b6c7bb3c1c8f7dc1050067068c4224ed 100644
+--- a/src/main/java/net/minecraft/server/BaseBlockPosition.java
++++ b/src/main/java/net/minecraft/server/BaseBlockPosition.java
+@@ -48,7 +48,7 @@ public class BaseBlockPosition implements Comparable<BaseBlockPosition> {
+         } else {
+             BaseBlockPosition baseblockposition = (BaseBlockPosition) object;
+ 
+-            return this.getX() != baseblockposition.getX() ? false : (this.getY() != baseblockposition.getY() ? false : this.getZ() == baseblockposition.getZ());
++            return this.getX() == baseblockposition.getX() && (this.getY() == baseblockposition.getY() && this.getZ() == baseblockposition.getZ());
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/BehaviorController.java b/src/main/java/net/minecraft/server/BehaviorController.java
+index 4ad771dc05b0dc39c69957cdf2f1299a14b854b8..7460d93e381041b19bb55b01f2b9d56b792078aa 100644
+--- a/src/main/java/net/minecraft/server/BehaviorController.java
++++ b/src/main/java/net/minecraft/server/BehaviorController.java
+@@ -206,7 +206,7 @@ public class BehaviorController<E extends EntityLiving> {
+     }
+ 
+     public <U> boolean b(MemoryModuleType<U> memorymoduletype, U u0) {
+-        return !this.hasMemory(memorymoduletype) ? false : this.getMemory(memorymoduletype).filter((object) -> {
++        return this.hasMemory(memorymoduletype) && this.getMemory(memorymoduletype).filter((object) -> {
+             return object.equals(u0);
+         }).isPresent();
+     }
+@@ -215,7 +215,7 @@ public class BehaviorController<E extends EntityLiving> {
+     public boolean a(MemoryModuleType<?> memorymoduletype, MemoryStatus memorystatus) {
+         Optional<? extends ExpirableMemory<?>> optional = (Optional) this.memories.get(memorymoduletype);
+ 
+-        return optional == null ? false : memorystatus == MemoryStatus.REGISTERED || memorystatus == MemoryStatus.VALUE_PRESENT && optional.isPresent() || memorystatus == MemoryStatus.VALUE_ABSENT && !optional.isPresent();
++        return optional != null && (memorystatus == MemoryStatus.REGISTERED || memorystatus == MemoryStatus.VALUE_PRESENT && optional.isPresent() || memorystatus == MemoryStatus.VALUE_ABSENT && !optional.isPresent());
+     }
+ 
+     public Schedule getSchedule() {
+diff --git a/src/main/java/net/minecraft/server/BehaviorMakeLove.java b/src/main/java/net/minecraft/server/BehaviorMakeLove.java
+index d22b1742e2bf9c390590851de45b2e66f1444b47..2c8f3c9eaecec5df251f7cc06543a97a96deb675 100644
+--- a/src/main/java/net/minecraft/server/BehaviorMakeLove.java
++++ b/src/main/java/net/minecraft/server/BehaviorMakeLove.java
+@@ -76,7 +76,7 @@ public class BehaviorMakeLove extends Behavior<EntityVillager> {
+             return entityageable.getEntityType() == EntityTypes.VILLAGER;
+         });
+ 
+-        return !optional.isPresent() ? false : BehaviorUtil.a(behaviorcontroller, MemoryModuleType.BREED_TARGET, EntityTypes.VILLAGER) && entityvillager.canBreed() && ((EntityAgeable) optional.get()).canBreed();
++        return optional.isPresent() && BehaviorUtil.a(behaviorcontroller, MemoryModuleType.BREED_TARGET, EntityTypes.VILLAGER) && entityvillager.canBreed() && ((EntityAgeable) optional.get()).canBreed();
+     }
+ 
+     private Optional<BlockPosition> b(WorldServer worldserver, EntityVillager entityvillager) {
+diff --git a/src/main/java/net/minecraft/server/BehaviorUtil.java b/src/main/java/net/minecraft/server/BehaviorUtil.java
+index b788685331bc28e0d339e6600b5805a2bed4cf27..c5d4488db06045ec0504271c20e504b0a73710ce 100644
+--- a/src/main/java/net/minecraft/server/BehaviorUtil.java
++++ b/src/main/java/net/minecraft/server/BehaviorUtil.java
+@@ -140,7 +140,7 @@ public class BehaviorUtil {
+     public static boolean c(EntityLiving entityliving, EntityLiving entityliving1) {
+         BehaviorController<?> behaviorcontroller = entityliving.getBehaviorController();
+ 
+-        return !behaviorcontroller.hasMemory(MemoryModuleType.VISIBLE_MOBS) ? false : ((List) behaviorcontroller.getMemory(MemoryModuleType.VISIBLE_MOBS).get()).contains(entityliving1);
++        return behaviorcontroller.hasMemory(MemoryModuleType.VISIBLE_MOBS) && ((List) behaviorcontroller.getMemory(MemoryModuleType.VISIBLE_MOBS).get()).contains(entityliving1);
+     }
+ 
+     public static EntityLiving a(EntityLiving entityliving, Optional<EntityLiving> optional, EntityLiving entityliving1) {
+diff --git a/src/main/java/net/minecraft/server/BiomeBase.java b/src/main/java/net/minecraft/server/BiomeBase.java
+index ad9b4378a2385dde14be9b43d6cafceb2bec9b0e..d494b8d46574cba7cb00632265d2548432987288 100644
+--- a/src/main/java/net/minecraft/server/BiomeBase.java
++++ b/src/main/java/net/minecraft/server/BiomeBase.java
+@@ -407,7 +407,7 @@ public final class BiomeBase {
+             } else if (object != null && this.getClass() == object.getClass()) {
+                 BiomeBase.c biomebase_c = (BiomeBase.c) object;
+ 
+-                return Float.compare(biomebase_c.b, this.b) != 0 ? false : (Float.compare(biomebase_c.c, this.c) != 0 ? false : (Float.compare(biomebase_c.d, this.d) != 0 ? false : Float.compare(biomebase_c.e, this.e) == 0));
++                return Float.compare(biomebase_c.b, this.b) == 0 && (Float.compare(biomebase_c.c, this.c) == 0 && (Float.compare(biomebase_c.d, this.d) == 0 && Float.compare(biomebase_c.e, this.e) == 0));
+             } else {
+                 return false;
+             }
+diff --git a/src/main/java/net/minecraft/server/BlockBase.java b/src/main/java/net/minecraft/server/BlockBase.java
+index 4f67173fda95be586de0fdcfc9571fa315a4110c..37f8dd8237d1e8617932d0ce435c2c929a040681 100644
+--- a/src/main/java/net/minecraft/server/BlockBase.java
++++ b/src/main/java/net/minecraft/server/BlockBase.java
+@@ -531,7 +531,7 @@ public abstract class BlockBase {
+             } else {
+                 IBlockData iblockdata = this.p();
+ 
+-                return iblockdata.l() ? Block.a(iblockdata.c(iblockaccess, blockposition)) : false;
++                return iblockdata.l() && Block.a(iblockdata.c(iblockaccess, blockposition));
+             }
+         }
+ 
+diff --git a/src/main/java/net/minecraft/server/BlockFireAbstract.java b/src/main/java/net/minecraft/server/BlockFireAbstract.java
+index 420a0c9229a0d28b5f6eee11a5babb14e69d858d..32edd18f5e569cc1c9fb94f33910ec2ffaf90063 100644
+--- a/src/main/java/net/minecraft/server/BlockFireAbstract.java
++++ b/src/main/java/net/minecraft/server/BlockFireAbstract.java
+@@ -89,7 +89,7 @@ public abstract class BlockFireAbstract extends Block {
+     public static boolean a(World world, BlockPosition blockposition, EnumDirection enumdirection) {
+         IBlockData iblockdata = world.getType(blockposition);
+ 
+-        return !iblockdata.isAir() ? false : a((IBlockAccess) world, blockposition).canPlace(world, blockposition) || b(world, blockposition, enumdirection);
++        return iblockdata.isAir() && (a((IBlockAccess) world, blockposition).canPlace(world, blockposition) || b(world, blockposition, enumdirection));
+     }
+ 
+     private static boolean b(World world, BlockPosition blockposition, EnumDirection enumdirection) {
+diff --git a/src/main/java/net/minecraft/server/BlockMushroom.java b/src/main/java/net/minecraft/server/BlockMushroom.java
+index e1a98a1901649c08bb05707877b7f2d8a8f3c068..9c52566cbe3d1843c77188a2d251e84dcad6f03b 100644
+--- a/src/main/java/net/minecraft/server/BlockMushroom.java
++++ b/src/main/java/net/minecraft/server/BlockMushroom.java
+@@ -62,7 +62,7 @@ public class BlockMushroom extends BlockPlant implements IBlockFragilePlantEleme
+         BlockPosition blockposition1 = blockposition.down();
+         IBlockData iblockdata1 = iworldreader.getType(blockposition1);
+ 
+-        return iblockdata1.a((Tag) TagsBlock.aD) ? true : iworldreader.getLightLevel(blockposition, 0) < 13 && this.c(iblockdata1, (IBlockAccess) iworldreader, blockposition1);
++        return iblockdata1.a((Tag) TagsBlock.aD) || iworldreader.getLightLevel(blockposition, 0) < 13 && this.c(iblockdata1, (IBlockAccess) iworldreader, blockposition1);
+     }
+ 
+     public boolean a(WorldServer worldserver, BlockPosition blockposition, IBlockData iblockdata, Random random) {
+diff --git a/src/main/java/net/minecraft/server/BlockPlant.java b/src/main/java/net/minecraft/server/BlockPlant.java
+index a830305f0e334ad87e6b9ed94230ff611d997d7e..832472b28864f71d597b2f809c712185614fc877 100644
+--- a/src/main/java/net/minecraft/server/BlockPlant.java
++++ b/src/main/java/net/minecraft/server/BlockPlant.java
+@@ -36,6 +36,6 @@ public class BlockPlant extends Block {
+ 
+     @Override
+     public boolean a(IBlockData iblockdata, IBlockAccess iblockaccess, BlockPosition blockposition, PathMode pathmode) {
+-        return pathmode == PathMode.AIR && !this.at ? true : super.a(iblockdata, iblockaccess, blockposition, pathmode);
++        return pathmode == PathMode.AIR && !this.at || super.a(iblockdata, iblockaccess, blockposition, pathmode);
+     }
+ }
+diff --git a/src/main/java/net/minecraft/server/BlockPoweredRail.java b/src/main/java/net/minecraft/server/BlockPoweredRail.java
+index d39b87b17694290b5f62191e59e5c1098c4f0a37..f4a53638e6b158093ccddd40f8049700345cac44 100644
+--- a/src/main/java/net/minecraft/server/BlockPoweredRail.java
++++ b/src/main/java/net/minecraft/server/BlockPoweredRail.java
+@@ -82,7 +82,7 @@ public class BlockPoweredRail extends BlockMinecartTrackAbstract {
+                     blockpropertytrackposition = BlockPropertyTrackPosition.NORTH_SOUTH;
+             }
+ 
+-            return this.a(world, new BlockPosition(j, k, l), flag, i, blockpropertytrackposition) ? true : flag1 && this.a(world, new BlockPosition(j, k - 1, l), flag, i, blockpropertytrackposition);
++            return this.a(world, new BlockPosition(j, k, l), flag, i, blockpropertytrackposition) || flag1 && this.a(world, new BlockPosition(j, k - 1, l), flag, i, blockpropertytrackposition);
+         }
+     }
+ 
+@@ -94,7 +94,7 @@ public class BlockPoweredRail extends BlockMinecartTrackAbstract {
+         } else {
+             BlockPropertyTrackPosition blockpropertytrackposition1 = (BlockPropertyTrackPosition) iblockdata.get(BlockPoweredRail.SHAPE);
+ 
+-            return blockpropertytrackposition == BlockPropertyTrackPosition.EAST_WEST && (blockpropertytrackposition1 == BlockPropertyTrackPosition.NORTH_SOUTH || blockpropertytrackposition1 == BlockPropertyTrackPosition.ASCENDING_NORTH || blockpropertytrackposition1 == BlockPropertyTrackPosition.ASCENDING_SOUTH) ? false : (blockpropertytrackposition == BlockPropertyTrackPosition.NORTH_SOUTH && (blockpropertytrackposition1 == BlockPropertyTrackPosition.EAST_WEST || blockpropertytrackposition1 == BlockPropertyTrackPosition.ASCENDING_EAST || blockpropertytrackposition1 == BlockPropertyTrackPosition.ASCENDING_WEST) ? false : ((Boolean) iblockdata.get(BlockPoweredRail.POWERED) ? (world.isBlockIndirectlyPowered(blockposition) ? true : this.a(world, blockposition, iblockdata, flag, i + 1)) : false));
++            return (blockpropertytrackposition != BlockPropertyTrackPosition.EAST_WEST || (blockpropertytrackposition1 != BlockPropertyTrackPosition.NORTH_SOUTH && blockpropertytrackposition1 != BlockPropertyTrackPosition.ASCENDING_NORTH && blockpropertytrackposition1 != BlockPropertyTrackPosition.ASCENDING_SOUTH)) && ((blockpropertytrackposition != BlockPropertyTrackPosition.NORTH_SOUTH || (blockpropertytrackposition1 != BlockPropertyTrackPosition.EAST_WEST && blockpropertytrackposition1 != BlockPropertyTrackPosition.ASCENDING_EAST && blockpropertytrackposition1 != BlockPropertyTrackPosition.ASCENDING_WEST)) && ((Boolean) iblockdata.get(BlockPoweredRail.POWERED) && (world.isBlockIndirectlyPowered(blockposition) || this.a(world, blockposition, iblockdata, flag, i + 1))));
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/BlockRedstoneComparator.java b/src/main/java/net/minecraft/server/BlockRedstoneComparator.java
+index 3e771f6d770932b8b71b9e13c3adf71ac9249709..916c831092f053f47dba81df6d242ef4761925f2 100644
+--- a/src/main/java/net/minecraft/server/BlockRedstoneComparator.java
++++ b/src/main/java/net/minecraft/server/BlockRedstoneComparator.java
+@@ -40,7 +40,7 @@ public class BlockRedstoneComparator extends BlockDiodeAbstract implements ITile
+         } else {
+             int j = this.b((IWorldReader) world, blockposition, iblockdata);
+ 
+-            return i > j ? true : i == j && iblockdata.get(BlockRedstoneComparator.MODE) == BlockPropertyComparatorMode.COMPARE;
++            return i > j || i == j && iblockdata.get(BlockRedstoneComparator.MODE) == BlockPropertyComparatorMode.COMPARE;
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/BlockSnow.java b/src/main/java/net/minecraft/server/BlockSnow.java
+index 21fd6689e1e6e837debc3c39d155402bca084595..57b3b714481afa6f18b43642a826d740aca348b2 100644
+--- a/src/main/java/net/minecraft/server/BlockSnow.java
++++ b/src/main/java/net/minecraft/server/BlockSnow.java
+@@ -93,7 +93,7 @@ public class BlockSnow extends Block {
+     public boolean a(IBlockData iblockdata, BlockActionContext blockactioncontext) {
+         int i = (Integer) iblockdata.get(BlockSnow.LAYERS);
+ 
+-        return blockactioncontext.getItemStack().getItem() == this.getItem() && i < 8 ? (blockactioncontext.c() ? blockactioncontext.getClickedFace() == EnumDirection.UP : true) : i == 1;
++        return blockactioncontext.getItemStack().getItem() == this.getItem() && i < 8 ? (!blockactioncontext.c() || blockactioncontext.getClickedFace() == EnumDirection.UP) : i == 1;
+     }
+ 
+     @Nullable
+diff --git a/src/main/java/net/minecraft/server/BlockTurtleEgg.java b/src/main/java/net/minecraft/server/BlockTurtleEgg.java
+index 276aac9afd5d987cf388a87718453c4737049073..39095e4f4c2272871eb88a8d0862db0154b5eea0 100644
+--- a/src/main/java/net/minecraft/server/BlockTurtleEgg.java
++++ b/src/main/java/net/minecraft/server/BlockTurtleEgg.java
+@@ -130,7 +130,7 @@ public class BlockTurtleEgg extends Block {
+     private boolean a(World world) {
+         float f = world.f(1.0F);
+ 
+-        return (double) f < 0.69D && (double) f > 0.65D ? true : world.random.nextInt(500) == 0;
++        return (double) f < 0.69D && (double) f > 0.65D || world.random.nextInt(500) == 0;
+     }
+ 
+     @Override
+@@ -141,7 +141,7 @@ public class BlockTurtleEgg extends Block {
+ 
+     @Override
+     public boolean a(IBlockData iblockdata, BlockActionContext blockactioncontext) {
+-        return blockactioncontext.getItemStack().getItem() == this.getItem() && (Integer) iblockdata.get(BlockTurtleEgg.b) < 4 ? true : super.a(iblockdata, blockactioncontext);
++        return blockactioncontext.getItemStack().getItem() == this.getItem() && (Integer) iblockdata.get(BlockTurtleEgg.b) < 4 || super.a(iblockdata, blockactioncontext);
+     }
+ 
+     @Nullable
+diff --git a/src/main/java/net/minecraft/server/BlockWitherSkull.java b/src/main/java/net/minecraft/server/BlockWitherSkull.java
+index daad51753d3f08350ad72813c7249bbbb049e7f1..f3f3e1b6893661a8ec913a437284ffb69a494d62 100644
+--- a/src/main/java/net/minecraft/server/BlockWitherSkull.java
++++ b/src/main/java/net/minecraft/server/BlockWitherSkull.java
+@@ -89,7 +89,7 @@ public class BlockWitherSkull extends BlockSkull {
+     }
+ 
+     public static boolean b(World world, BlockPosition blockposition, ItemStack itemstack) {
+-        return itemstack.getItem() == Items.WITHER_SKELETON_SKULL && blockposition.getY() >= 2 && world.getDifficulty() != EnumDifficulty.PEACEFUL && !world.isClientSide ? d().a(world, blockposition) != null : false;
++        return itemstack.getItem() == Items.WITHER_SKELETON_SKULL && blockposition.getY() >= 2 && world.getDifficulty() != EnumDifficulty.PEACEFUL && !world.isClientSide && d().a(world, blockposition) != null;
+     }
+ 
+     private static ShapeDetector c() {
+diff --git a/src/main/java/net/minecraft/server/ChunkRegionLoader.java b/src/main/java/net/minecraft/server/ChunkRegionLoader.java
+index 1a596028138ce03c0a3d0ef918c93681b4873301..d921b913fbf5f075a0cfbffb06e56f88822fe9b5 100644
+--- a/src/main/java/net/minecraft/server/ChunkRegionLoader.java
++++ b/src/main/java/net/minecraft/server/ChunkRegionLoader.java
+@@ -484,7 +484,7 @@ public class ChunkRegionLoader {
+ 
+         nbttagcompound1.set("Sections", nbttaglist);
+         if (flag) {
+-            nbttagcompound1.setBoolean("isLightOn", com.tuinity.tuinity.config.TuinityConfig.useNewLightEngine ? false : true); if (com.tuinity.tuinity.config.TuinityConfig.useNewLightEngine) nbttagcompound1.setInt(STARLIGHT_VERSION_TAG, STARLIGHT_LIGHT_VERSION); // Tuinity
++            nbttagcompound1.setBoolean("isLightOn", !com.tuinity.tuinity.config.TuinityConfig.useNewLightEngine); if (com.tuinity.tuinity.config.TuinityConfig.useNewLightEngine) nbttagcompound1.setInt(STARLIGHT_VERSION_TAG, STARLIGHT_LIGHT_VERSION); // Tuinity
+         }
+ 
+         BiomeStorage biomestorage = ichunkaccess.getBiomeIndex();
+diff --git a/src/main/java/net/minecraft/server/Container.java b/src/main/java/net/minecraft/server/Container.java
+index 1eb75f24c76934cea110e5d67d28c93639b1bc77..6b3b88d00e7b3107090f2eec83c05100278e99ed 100644
+--- a/src/main/java/net/minecraft/server/Container.java
++++ b/src/main/java/net/minecraft/server/Container.java
+@@ -66,7 +66,7 @@ public abstract class Container {
+ 
+     protected static boolean a(ContainerAccess containeraccess, EntityHuman entityhuman, Block block) {
+         return (Boolean) containeraccess.a((world, blockposition) -> {
+-            return !world.getType(blockposition).a(block) ? false : entityhuman.h((double) blockposition.getX() + 0.5D, (double) blockposition.getY() + 0.5D, (double) blockposition.getZ() + 0.5D) <= 64.0D;
++            return world.getType(blockposition).a(block) && entityhuman.h((double) blockposition.getX() + 0.5D, (double) blockposition.getY() + 0.5D, (double) blockposition.getZ() + 0.5D) <= 64.0D;
+         }, true);
+     }
+ 
+@@ -662,7 +662,7 @@ public abstract class Container {
+     }
+ 
+     public static boolean a(int i, EntityHuman entityhuman) {
+-        return i == 0 ? true : (i == 1 ? true : i == 2 && entityhuman.abilities.canInstantlyBuild);
++        return i == 0 || (i == 1 || i == 2 && entityhuman.abilities.canInstantlyBuild);
+     }
+ 
+     protected void d() {
+diff --git a/src/main/java/net/minecraft/server/ContainerAnvilAbstract.java b/src/main/java/net/minecraft/server/ContainerAnvilAbstract.java
+index 1b7724422fc5d6a99fe60837d1f48585775a933a..c271e7a19994d40fb7ee99dec08b7a659506e059 100644
+--- a/src/main/java/net/minecraft/server/ContainerAnvilAbstract.java
++++ b/src/main/java/net/minecraft/server/ContainerAnvilAbstract.java
+@@ -82,7 +82,7 @@ public abstract class ContainerAnvilAbstract extends Container {
+     public boolean canUse(EntityHuman entityhuman) {
+         if (!this.checkReachable) return true; // CraftBukkit
+         return (Boolean) this.containerAccess.a((world, blockposition) -> {
+-            return !this.a(world.getType(blockposition)) ? false : entityhuman.h((double) blockposition.getX() + 0.5D, (double) blockposition.getY() + 0.5D, (double) blockposition.getZ() + 0.5D) <= 64.0D;
++            return this.a(world.getType(blockposition)) && entityhuman.h((double) blockposition.getX() + 0.5D, (double) blockposition.getY() + 0.5D, (double) blockposition.getZ() + 0.5D) <= 64.0D;
+         }, true);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/CriterionTrigger.java b/src/main/java/net/minecraft/server/CriterionTrigger.java
+index 6fd3671c37a4fc42aa438a93d5a749b52f618b1e..0decfe443134e0f0bcb65aa502dbca5cadf3b8a1 100644
+--- a/src/main/java/net/minecraft/server/CriterionTrigger.java
++++ b/src/main/java/net/minecraft/server/CriterionTrigger.java
+@@ -41,7 +41,7 @@ public interface CriterionTrigger<T extends CriterionInstance> {
+             } else if (object != null && this.getClass() == object.getClass()) {
+                 CriterionTrigger.a<?> criteriontrigger_a = (CriterionTrigger.a) object;
+ 
+-                return !this.a.equals(criteriontrigger_a.a) ? false : (!this.b.equals(criteriontrigger_a.b) ? false : this.c.equals(criteriontrigger_a.c));
++                return this.a.equals(criteriontrigger_a.a) && (this.b.equals(criteriontrigger_a.b) && this.c.equals(criteriontrigger_a.c));
+             } else {
+                 return false;
+             }
+diff --git a/src/main/java/net/minecraft/server/EnchantmentWeaponDamage.java b/src/main/java/net/minecraft/server/EnchantmentWeaponDamage.java
+index 4571cdf0217d840a32427efeeb5d8b993bdcf326..7cd0a97c432c818bfc4eafca65c09882168e10e1 100644
+--- a/src/main/java/net/minecraft/server/EnchantmentWeaponDamage.java
++++ b/src/main/java/net/minecraft/server/EnchantmentWeaponDamage.java
+@@ -40,7 +40,7 @@ public class EnchantmentWeaponDamage extends Enchantment {
+ 
+     @Override
+     public boolean canEnchant(ItemStack itemstack) {
+-        return itemstack.getItem() instanceof ItemAxe ? true : super.canEnchant(itemstack);
++        return itemstack.getItem() instanceof ItemAxe || super.canEnchant(itemstack);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index 1c11db82157e1459121335962e67122ae79798dd..b86154c1052801f7686af5f4834548cbba594299 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -373,7 +373,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+     }
+ 
+     public boolean addScoreboardTag(String s) {
+-        return this.ay.size() >= 1024 ? false : this.ay.add(s);
++        return this.ay.size() < 1024 && this.ay.add(s);
+     }
+ 
+     public boolean removeScoreboardTag(String s) {
+@@ -391,7 +391,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+     }
+ 
+     public boolean equals(Object object) {
+-        return object instanceof Entity ? ((Entity) object).id == this.id : false;
++        return object instanceof Entity && ((Entity) object).id == this.id;
+     }
+ 
+     public int hashCode() {
+@@ -1787,7 +1787,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+     }
+ 
+     public boolean d(NBTTagCompound nbttagcompound) {
+-        return this.isPassenger() ? false : this.a_(nbttagcompound);
++        return !this.isPassenger() && this.a_(nbttagcompound);
+     }
+ 
+     public NBTTagCompound save(NBTTagCompound nbttagcompound) {
+diff --git a/src/main/java/net/minecraft/server/EntityAnimal.java b/src/main/java/net/minecraft/server/EntityAnimal.java
+index c1d2b12418464203c1da8af8da61a9cc9305bb65..46c706f979e860afd2d4e91b66f86650006cd6fc 100644
+--- a/src/main/java/net/minecraft/server/EntityAnimal.java
++++ b/src/main/java/net/minecraft/server/EntityAnimal.java
+@@ -197,7 +197,7 @@ public abstract class EntityAnimal extends EntityAgeable {
+     }
+ 
+     public boolean mate(EntityAnimal entityanimal) {
+-        return entityanimal == this ? false : (entityanimal.getClass() != this.getClass() ? false : this.isInLove() && entityanimal.isInLove());
++        return entityanimal != this && (entityanimal.getClass() == this.getClass() && this.isInLove() && entityanimal.isInLove());
+     }
+ 
+     public void a(WorldServer worldserver, EntityAnimal entityanimal) {
+diff --git a/src/main/java/net/minecraft/server/EntityBee.java b/src/main/java/net/minecraft/server/EntityBee.java
+index 03d136c3c5791c6905578282f1ddce6314eb3034..44dcf380e172ba21e13a55f1de20e7afdf026342 100644
+--- a/src/main/java/net/minecraft/server/EntityBee.java
++++ b/src/main/java/net/minecraft/server/EntityBee.java
+@@ -378,7 +378,7 @@ public class EntityBee extends EntityAnimal implements IEntityAngerable, EntityB
+         if (!this.world.isLoadedAndInBounds(blockposition)) return false; // Paper
+         TileEntity tileentity = this.world.getTileEntity(blockposition);
+ 
+-        return tileentity instanceof TileEntityBeehive ? !((TileEntityBeehive) tileentity).isFull() : false;
++        return tileentity instanceof TileEntityBeehive && !((TileEntityBeehive) tileentity).isFull();
+     }
+ 
+     public boolean hasHivePos() {
+@@ -689,7 +689,7 @@ public class EntityBee extends EntityAnimal implements IEntityAngerable, EntityB
+ 
+         @Override
+         public boolean g() {
+-            return EntityBee.this.getNumCropsGrownSincePollination() >= 10 ? false : (EntityBee.this.random.nextFloat() < 0.3F ? false : EntityBee.this.hasNectar() && EntityBee.this.fj());
++            return EntityBee.this.getNumCropsGrownSincePollination() < 10 && (!(EntityBee.this.random.nextFloat() < 0.3F) && EntityBee.this.hasNectar() && EntityBee.this.fj());
+         }
+ 
+         @Override
+@@ -808,7 +808,7 @@ public class EntityBee extends EntityAnimal implements IEntityAngerable, EntityB
+     class k extends EntityBee.a {
+ 
+         private final Predicate<IBlockData> c = (iblockdata) -> {
+-            return iblockdata.a((Tag) TagsBlock.TALL_FLOWERS) ? (iblockdata.a(Blocks.SUNFLOWER) ? iblockdata.get(BlockTallPlant.HALF) == BlockPropertyDoubleBlockHalf.UPPER : true) : iblockdata.a((Tag) TagsBlock.SMALL_FLOWERS);
++            return iblockdata.a((Tag) TagsBlock.TALL_FLOWERS) ? (!iblockdata.a(Blocks.SUNFLOWER) || iblockdata.get(BlockTallPlant.HALF) == BlockPropertyDoubleBlockHalf.UPPER) : iblockdata.a((Tag) TagsBlock.SMALL_FLOWERS);
+         };
+         private int d = 0;
+         private int e = 0;
+diff --git a/src/main/java/net/minecraft/server/EntityCat.java b/src/main/java/net/minecraft/server/EntityCat.java
+index 9c163a8cefbb8537e1730a43d32754e6de512bd6..c9ab05b9ffa7424900c39cef0f6acb29ec686136 100644
+--- a/src/main/java/net/minecraft/server/EntityCat.java
++++ b/src/main/java/net/minecraft/server/EntityCat.java
+@@ -590,7 +590,7 @@ public class EntityCat extends EntityTameableAnimal {
+ 
+         @Override
+         protected boolean g() {
+-            return this.chosenTarget != null && this.chosenTarget.equals(this.target) ? false : super.g();
++            return (this.chosenTarget == null || !this.chosenTarget.equals(this.target)) && super.g();
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityComplexPart.java b/src/main/java/net/minecraft/server/EntityComplexPart.java
+index 26ff230ef774999bfe37b3327a7cf711799cbf2f..0c7c52f1203cad9e1c4a0bd9d3bb6cb105f3947f 100644
+--- a/src/main/java/net/minecraft/server/EntityComplexPart.java
++++ b/src/main/java/net/minecraft/server/EntityComplexPart.java
+@@ -30,7 +30,7 @@ public class EntityComplexPart extends Entity {
+ 
+     @Override
+     public boolean damageEntity(DamageSource damagesource, float f) {
+-        return this.isInvulnerable(damagesource) ? false : this.owner.a(this, damagesource, f);
++        return !this.isInvulnerable(damagesource) && this.owner.a(this, damagesource, f);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityDolphin.java b/src/main/java/net/minecraft/server/EntityDolphin.java
+index 82021ba825d6a36191174acf83d109a5c74f6db8..be6481390016be8d4c142e820791491139f85d3f 100644
+--- a/src/main/java/net/minecraft/server/EntityDolphin.java
++++ b/src/main/java/net/minecraft/server/EntityDolphin.java
+@@ -214,7 +214,7 @@ public class EntityDolphin extends EntityWaterAnimal {
+     public boolean e(ItemStack itemstack) {
+         EnumItemSlot enumitemslot = EntityInsentient.j(itemstack);
+ 
+-        return !this.getEquipment(enumitemslot).isEmpty() ? false : enumitemslot == EnumItemSlot.MAINHAND && super.e(itemstack);
++        return this.getEquipment(enumitemslot).isEmpty() && enumitemslot == EnumItemSlot.MAINHAND && super.e(itemstack);
+     }
+ 
+     @Override
+@@ -339,7 +339,7 @@ public class EntityDolphin extends EntityWaterAnimal {
+     protected boolean eN() {
+         BlockPosition blockposition = this.getNavigation().h();
+ 
+-        return blockposition != null ? blockposition.a((IPosition) this.getPositionVector(), 12.0D) : false;
++        return blockposition != null && blockposition.a((IPosition) this.getPositionVector(), 12.0D);
+     }
+ 
+     @Override
+@@ -479,7 +479,7 @@ public class EntityDolphin extends EntityWaterAnimal {
+         @Override
+         public boolean a() {
+             this.c = this.a.world.a(EntityDolphin.bp, (EntityLiving) this.a);
+-            return this.c == null ? false : this.c.isSwimming() && this.a.getGoalTarget() != this.c;
++            return this.c != null && this.c.isSwimming() && this.a.getGoalTarget() != this.c;
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityDrowned.java b/src/main/java/net/minecraft/server/EntityDrowned.java
+index a766910663e47b05d1e38908b5db7471199993c7..74d78b911d99d047fba2459cdcd9af90ccd2bbe7 100644
+--- a/src/main/java/net/minecraft/server/EntityDrowned.java
++++ b/src/main/java/net/minecraft/server/EntityDrowned.java
+@@ -156,7 +156,7 @@ public class EntityDrowned extends EntityZombie implements IRangedEntity {
+ 
+     @Override
+     protected boolean a(ItemStack itemstack, ItemStack itemstack1) {
+-        return itemstack1.getItem() == Items.NAUTILUS_SHELL ? false : (itemstack1.getItem() == Items.TRIDENT ? (itemstack.getItem() == Items.TRIDENT ? itemstack.getDamage() < itemstack1.getDamage() : false) : (itemstack.getItem() == Items.TRIDENT ? true : super.a(itemstack, itemstack1)));
++        return itemstack1.getItem() != Items.NAUTILUS_SHELL && (itemstack1.getItem() == Items.TRIDENT ? (itemstack.getItem() == Items.TRIDENT && itemstack.getDamage() < itemstack1.getDamage()) : (itemstack.getItem() == Items.TRIDENT || super.a(itemstack, itemstack1)));
+     }
+ 
+     @Override
+@@ -170,7 +170,7 @@ public class EntityDrowned extends EntityZombie implements IRangedEntity {
+     }
+ 
+     public boolean i(@Nullable EntityLiving entityliving) {
+-        return entityliving != null ? !this.world.isDay() || entityliving.isInWater() : false;
++        return entityliving != null && (!this.world.isDay() || entityliving.isInWater());
+     }
+ 
+     @Override
+@@ -404,7 +404,7 @@ public class EntityDrowned extends EntityZombie implements IRangedEntity {
+         protected boolean a(IWorldReader iworldreader, BlockPosition blockposition) {
+             BlockPosition blockposition1 = blockposition.up();
+ 
+-            return iworldreader.isEmpty(blockposition1) && iworldreader.isEmpty(blockposition1.up()) ? iworldreader.getType(blockposition).a((IBlockAccess) iworldreader, blockposition, (Entity) this.g) : false;
++            return iworldreader.isEmpty(blockposition1) && iworldreader.isEmpty(blockposition1.up()) && iworldreader.getType(blockposition).a((IBlockAccess) iworldreader, blockposition, (Entity) this.g);
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityEnderman.java b/src/main/java/net/minecraft/server/EntityEnderman.java
+index e7568e3df10bc07e9b3b05caa9d41398925cf4d7..d64bd61e2515da36c34ce8dc048b87dce3bb31ce 100644
+--- a/src/main/java/net/minecraft/server/EntityEnderman.java
++++ b/src/main/java/net/minecraft/server/EntityEnderman.java
+@@ -207,7 +207,7 @@ public class EntityEnderman extends EntityMonster implements IEntityAngerable {
+             vec3d1 = vec3d1.d();
+             double d1 = vec3d.b(vec3d1);
+ 
+-            return d1 > 1.0D - 0.025D / d0 ? entityhuman.hasLineOfSight(this) : false;
++            return d1 > 1.0D - 0.025D / d0 && entityhuman.hasLineOfSight(this);
+         }
+     }
+ 
+@@ -399,7 +399,7 @@ public class EntityEnderman extends EntityMonster implements IEntityAngerable {
+         @Override
+         public boolean a() {
+             if (!enderman.world.purpurConfig.endermanAllowGriefing) return false; // Purpur
+-            return this.enderman.getCarried() != null ? false : (!this.enderman.world.purpurConfig.endermanBypassMobGriefing && !this.enderman.world.getGameRules().getBoolean(GameRules.MOB_GRIEFING) ? false : this.enderman.getRandom().nextInt(20) == 0); // Purpur
++            return this.enderman.getCarried() == null && ((this.enderman.world.purpurConfig.endermanBypassMobGriefing || this.enderman.world.getGameRules().getBoolean(GameRules.MOB_GRIEFING)) && this.enderman.getRandom().nextInt(20) == 0); // Purpur
+         }
+ 
+         @Override
+@@ -442,7 +442,7 @@ public class EntityEnderman extends EntityMonster implements IEntityAngerable {
+         @Override
+         public boolean a() {
+             if (!getEnderman().world.purpurConfig.endermanAllowGriefing) return false; // Purpur
+-            return this.a.getCarried() == null ? false : (!this.a.world.purpurConfig.endermanBypassMobGriefing && !this.a.world.getGameRules().getBoolean(GameRules.MOB_GRIEFING) ? false : this.a.getRandom().nextInt(2000) == 0); // Purpur
++            return this.a.getCarried() != null && ((this.a.world.purpurConfig.endermanBypassMobGriefing || this.a.world.getGameRules().getBoolean(GameRules.MOB_GRIEFING)) && this.a.getRandom().nextInt(2000) == 0); // Purpur
+         }
+ 
+         @Override
+@@ -496,7 +496,7 @@ public class EntityEnderman extends EntityMonster implements IEntityAngerable {
+             } else {
+                 double d0 = this.b.h((Entity) this.a);
+ 
+-                return d0 > 256.0D ? false : this.a.g((EntityHuman) this.b);
++                return !(d0 > 256.0D) && this.a.g((EntityHuman) this.b);
+             }
+         }
+ 
+@@ -557,7 +557,7 @@ public class EntityEnderman extends EntityMonster implements IEntityAngerable {
+                     return true;
+                 }
+             } else {
+-                return this.c != null && this.n.a(this.i, this.c) ? true : super.b();
++                return this.c != null && this.n.a(this.i, this.c) || super.b();
+             }
+         }
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityEvoker.java b/src/main/java/net/minecraft/server/EntityEvoker.java
+index 5f24c36bf45a656e220475449113786732a47c56..6ff0f40ff30f5132c98e12f5c2e5a4b92064d639 100644
+--- a/src/main/java/net/minecraft/server/EntityEvoker.java
++++ b/src/main/java/net/minecraft/server/EntityEvoker.java
+@@ -80,7 +80,7 @@ public class EntityEvoker extends EntityIllagerWizard {
+ 
+     @Override
+     public boolean r(Entity entity) {
+-        return entity == null ? false : (entity == this ? true : (super.r(entity) ? true : (entity instanceof EntityVex ? this.r(((EntityVex) entity).eK()) : (entity instanceof EntityLiving && ((EntityLiving) entity).getMonsterType() == EnumMonsterType.ILLAGER ? this.getScoreboardTeam() == null && entity.getScoreboardTeam() == null : false))));
++        return entity != null && (entity == this || (super.r(entity) || (entity instanceof EntityVex ? this.r(((EntityVex) entity).eK()) : (entity instanceof EntityLiving && ((EntityLiving) entity).getMonsterType() == EnumMonsterType.ILLAGER && this.getScoreboardTeam() == null && entity.getScoreboardTeam() == null))));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityFox.java b/src/main/java/net/minecraft/server/EntityFox.java
+index 8ac53539b8b879345ac95025f11421e7c2fa7355..c7fa1778b327161b14f682e961c6e2c069032776 100644
+--- a/src/main/java/net/minecraft/server/EntityFox.java
++++ b/src/main/java/net/minecraft/server/EntityFox.java
+@@ -417,7 +417,7 @@ public class EntityFox extends EntityAnimal {
+     public boolean e(ItemStack itemstack) {
+         EnumItemSlot enumitemslot = EntityInsentient.j(itemstack);
+ 
+-        return !this.getEquipment(enumitemslot).isEmpty() ? false : enumitemslot == EnumItemSlot.MAINHAND && super.e(itemstack);
++        return this.getEquipment(enumitemslot).isEmpty() && enumitemslot == EnumItemSlot.MAINHAND && super.e(itemstack);
+     }
+ 
+     @Override
+@@ -1109,7 +1109,7 @@ public class EntityFox extends EntityAnimal {
+ 
+         @Override
+         public boolean a() {
+-            return EntityFox.this.aR == 0.0F && EntityFox.this.aS == 0.0F && EntityFox.this.aT == 0.0F ? this.j() || EntityFox.this.isSleeping() : false;
++            return EntityFox.this.aR == 0.0F && EntityFox.this.aS == 0.0F && EntityFox.this.aT == 0.0F && (this.j() || EntityFox.this.isSleeping());
+         }
+ 
+         @Override
+@@ -1168,7 +1168,7 @@ public class EntityFox extends EntityAnimal {
+         public c() {}
+ 
+         public boolean test(EntityLiving entityliving) {
+-            return entityliving instanceof EntityFox ? false : (!(entityliving instanceof EntityChicken) && !(entityliving instanceof EntityRabbit) && !(entityliving instanceof EntityMonster) ? (entityliving instanceof EntityTameableAnimal ? !((EntityTameableAnimal) entityliving).isTamed() : (entityliving instanceof EntityHuman && (entityliving.isSpectator() || ((EntityHuman) entityliving).isCreative()) ? false : (EntityFox.this.c(entityliving.getUniqueID()) ? false : !entityliving.isSleeping() && !entityliving.bx()))) : true);
++            return !(entityliving instanceof EntityFox) && (entityliving instanceof EntityChicken || entityliving instanceof EntityRabbit || entityliving instanceof EntityMonster || (entityliving instanceof EntityTameableAnimal ? !((EntityTameableAnimal) entityliving).isTamed() : ((!(entityliving instanceof EntityHuman) || (!entityliving.isSpectator() && !((EntityHuman) entityliving).isCreative())) && (!EntityFox.this.c(entityliving.getUniqueID()) && !entityliving.isSleeping() && !entityliving.bx()))));
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityHanging.java b/src/main/java/net/minecraft/server/EntityHanging.java
+index 747b0b7e6f7412751e8fa7ab98fe642a78760a87..96a6e1f26fdeccab8d89dc6819964a6ba6ea697a 100644
+--- a/src/main/java/net/minecraft/server/EntityHanging.java
++++ b/src/main/java/net/minecraft/server/EntityHanging.java
+@@ -165,7 +165,7 @@ public abstract class EntityHanging extends Entity {
+         if (entity instanceof EntityHuman) {
+             EntityHuman entityhuman = (EntityHuman) entity;
+ 
+-            return !this.world.a(entityhuman, this.blockPosition) ? true : this.damageEntity(DamageSource.playerAttack(entityhuman), 0.0F);
++            return !this.world.a(entityhuman, this.blockPosition) || this.damageEntity(DamageSource.playerAttack(entityhuman), 0.0F);
+         } else {
+             return false;
+         }
+diff --git a/src/main/java/net/minecraft/server/EntityHorse.java b/src/main/java/net/minecraft/server/EntityHorse.java
+index e78e89d187f923239f23e37d5141e2e69b056360..edc52c7df473e9ac5785405930c2a447721c9e70 100644
+--- a/src/main/java/net/minecraft/server/EntityHorse.java
++++ b/src/main/java/net/minecraft/server/EntityHorse.java
+@@ -231,7 +231,7 @@ public class EntityHorse extends EntityHorseAbstract {
+ 
+     @Override
+     public boolean mate(EntityAnimal entityanimal) {
+-        return entityanimal == this ? false : (!(entityanimal instanceof EntityHorseDonkey) && !(entityanimal instanceof EntityHorse) ? false : this.fo() && ((EntityHorseAbstract) entityanimal).fo());
++        return entityanimal != this && ((entityanimal instanceof EntityHorseDonkey || entityanimal instanceof EntityHorse) && this.fo() && ((EntityHorseAbstract) entityanimal).fo());
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityHorseDonkey.java b/src/main/java/net/minecraft/server/EntityHorseDonkey.java
+index 5b7c0e9c6cce440ed54a97803a4275eea497935a..6648f97fe5226fa92538f61ccb9c29a9d9bac1de 100644
+--- a/src/main/java/net/minecraft/server/EntityHorseDonkey.java
++++ b/src/main/java/net/minecraft/server/EntityHorseDonkey.java
+@@ -67,7 +67,7 @@ public class EntityHorseDonkey extends EntityHorseChestedAbstract {
+ 
+     @Override
+     public boolean mate(EntityAnimal entityanimal) {
+-        return entityanimal == this ? false : (!(entityanimal instanceof EntityHorseDonkey) && !(entityanimal instanceof EntityHorse) ? false : this.fo() && ((EntityHorseAbstract) entityanimal).fo());
++        return entityanimal != this && ((entityanimal instanceof EntityHorseDonkey || entityanimal instanceof EntityHorse) && this.fo() && ((EntityHorseAbstract) entityanimal).fo());
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
+index 61ecc5582f90adbedd85a42100212b1f4b36946d..adfedfcb1a3fed6c4668da81436b5f80656b97b9 100644
+--- a/src/main/java/net/minecraft/server/EntityHuman.java
++++ b/src/main/java/net/minecraft/server/EntityHuman.java
+@@ -762,7 +762,7 @@ public abstract class EntityHuman extends EntityLiving {
+ 
+     @Override
+     public boolean isInvulnerable(DamageSource damagesource) {
+-        return super.isInvulnerable(damagesource) ? true : (damagesource == DamageSource.DROWN ? !this.world.getGameRules().getBoolean(GameRules.DROWNING_DAMAGE) : (damagesource == DamageSource.FALL ? !this.world.getGameRules().getBoolean(GameRules.FALL_DAMAGE) : (damagesource.isFire() ? !this.world.getGameRules().getBoolean(GameRules.FIRE_DAMAGE) : false)));
++        return super.isInvulnerable(damagesource) || (damagesource == DamageSource.DROWN ? !this.world.getGameRules().getBoolean(GameRules.DROWNING_DAMAGE) : (damagesource == DamageSource.FALL ? !this.world.getGameRules().getBoolean(GameRules.FALL_DAMAGE) : (damagesource.isFire() && !this.world.getGameRules().getBoolean(GameRules.FIRE_DAMAGE))));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityIllagerIllusioner.java b/src/main/java/net/minecraft/server/EntityIllagerIllusioner.java
+index b0a5c36d1132e2558a1fefbd9f8dd26448400086..146fcc22e0ecc7f2c3181a3cbc88835caa088fdf 100644
+--- a/src/main/java/net/minecraft/server/EntityIllagerIllusioner.java
++++ b/src/main/java/net/minecraft/server/EntityIllagerIllusioner.java
+@@ -119,7 +119,7 @@ public class EntityIllagerIllusioner extends EntityIllagerWizard implements IRan
+ 
+     @Override
+     public boolean r(Entity entity) {
+-        return super.r(entity) ? true : (entity instanceof EntityLiving && ((EntityLiving) entity).getMonsterType() == EnumMonsterType.ILLAGER ? this.getScoreboardTeam() == null && entity.getScoreboardTeam() == null : false);
++        return super.r(entity) || (entity instanceof EntityLiving && ((EntityLiving) entity).getMonsterType() == EnumMonsterType.ILLAGER && this.getScoreboardTeam() == null && entity.getScoreboardTeam() == null);
+     }
+ 
+     @Override
+@@ -179,7 +179,7 @@ public class EntityIllagerIllusioner extends EntityIllagerWizard implements IRan
+ 
+         @Override
+         public boolean a() {
+-            return !super.a() ? false : (EntityIllagerIllusioner.this.getGoalTarget() == null ? false : (EntityIllagerIllusioner.this.getGoalTarget().getId() == this.e ? false : EntityIllagerIllusioner.this.world.getDamageScaler(EntityIllagerIllusioner.this.getChunkCoordinates()).a((float) EnumDifficulty.NORMAL.ordinal())));
++            return super.a() && (EntityIllagerIllusioner.this.getGoalTarget() != null && (EntityIllagerIllusioner.this.getGoalTarget().getId() == this.e ? false : EntityIllagerIllusioner.this.world.getDamageScaler(EntityIllagerIllusioner.this.getChunkCoordinates()).a((float) EnumDifficulty.NORMAL.ordinal())));
+         }
+ 
+         @Override
+@@ -222,7 +222,7 @@ public class EntityIllagerIllusioner extends EntityIllagerWizard implements IRan
+ 
+         @Override
+         public boolean a() {
+-            return !super.a() ? false : !EntityIllagerIllusioner.this.hasEffect(MobEffects.INVISIBILITY);
++            return super.a() && !EntityIllagerIllusioner.this.hasEffect(MobEffects.INVISIBILITY);
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityIllagerWizard.java b/src/main/java/net/minecraft/server/EntityIllagerWizard.java
+index e24d1c1cfd928b76fdab0bb030d68208e4c4ef28..2a78caab32256200cbfb3fbc0e81ac8005708d27 100644
+--- a/src/main/java/net/minecraft/server/EntityIllagerWizard.java
++++ b/src/main/java/net/minecraft/server/EntityIllagerWizard.java
+@@ -115,7 +115,7 @@ public abstract class EntityIllagerWizard extends EntityIllagerAbstract {
+         public boolean a() {
+             EntityLiving entityliving = EntityIllagerWizard.this.getGoalTarget();
+ 
+-            return entityliving != null && entityliving.isAlive() ? (EntityIllagerWizard.this.eW() ? false : EntityIllagerWizard.this.ticksLived >= this.c) : false;
++            return entityliving != null && entityliving.isAlive() && (!EntityIllagerWizard.this.eW() && EntityIllagerWizard.this.ticksLived >= this.c);
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityInsentient.java b/src/main/java/net/minecraft/server/EntityInsentient.java
+index 88c1cf325bfd6f7e1dbe29414eb7b0fbdff87b2c..16507233492c6b396dbcb74990beac38fe61c8e0 100644
+--- a/src/main/java/net/minecraft/server/EntityInsentient.java
++++ b/src/main/java/net/minecraft/server/EntityInsentient.java
+@@ -712,11 +712,11 @@ public abstract class EntityInsentient extends EntityLiving {
+     }
+ 
+     public boolean b(ItemStack itemstack, ItemStack itemstack1) {
+-        return itemstack.getDamage() >= itemstack1.getDamage() && (!itemstack.hasTag() || itemstack1.hasTag()) ? (itemstack.hasTag() && itemstack1.hasTag() ? itemstack.getTag().getKeys().stream().anyMatch((s) -> {
++        return itemstack.getDamage() < itemstack1.getDamage() || (itemstack.hasTag() && !itemstack1.hasTag()) || (itemstack.hasTag() && itemstack1.hasTag() && itemstack.getTag().getKeys().stream().anyMatch((s) -> {
+             return !s.equals("Damage");
+         }) && !itemstack1.getTag().getKeys().stream().anyMatch((s) -> {
+             return !s.equals("Damage");
+-        }) : false) : true;
++        }));
+     }
+ 
+     public boolean canPickup(ItemStack itemstack) {
+@@ -1263,7 +1263,7 @@ public abstract class EntityInsentient extends EntityLiving {
+     }
+ 
+     public boolean a(BlockPosition blockposition) {
+-        return this.bA == -1.0F ? true : this.bz.j(blockposition) < (double) (this.bA * this.bA);
++        return this.bA == -1.0F || this.bz.j(blockposition) < (double) (this.bA * this.bA);
+     }
+ 
+     public void a(BlockPosition blockposition, int i) {
+@@ -1543,7 +1543,7 @@ public abstract class EntityInsentient extends EntityLiving {
+ 
+     @Override
+     public boolean c(EntityLiving entityliving) {
+-        return entityliving.getEntityType() == EntityTypes.PLAYER && ((EntityHuman) entityliving).abilities.isInvulnerable ? false : super.c(entityliving);
++        return (entityliving.getEntityType() != EntityTypes.PLAYER || !((EntityHuman) entityliving).abilities.isInvulnerable) && super.c(entityliving);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityIronGolem.java b/src/main/java/net/minecraft/server/EntityIronGolem.java
+index 3e224eeb7bdcd0d1c6bd46012366c9d9878dd2a2..e1ce7216aaab86464fb58a875dc2dee55dcc857e 100644
+--- a/src/main/java/net/minecraft/server/EntityIronGolem.java
++++ b/src/main/java/net/minecraft/server/EntityIronGolem.java
+@@ -114,7 +114,7 @@ public class EntityIronGolem extends EntityGolem implements IEntityAngerable {
+ 
+     @Override
+     public boolean a(EntityTypes<?> entitytypes) {
+-        return this.isPlayerCreated() && entitytypes == EntityTypes.PLAYER ? false : (entitytypes == EntityTypes.CREEPER ? false : super.a(entitytypes));
++        return (!this.isPlayerCreated() || entitytypes != EntityTypes.PLAYER) && (entitytypes == EntityTypes.CREEPER ? false : super.a(entitytypes));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityItem.java b/src/main/java/net/minecraft/server/EntityItem.java
+index b20151f09594756da0c364d8fc95f4f592af36f1..4480836610b1e14b5aaf45de5325be04763efb85 100644
+--- a/src/main/java/net/minecraft/server/EntityItem.java
++++ b/src/main/java/net/minecraft/server/EntityItem.java
+@@ -250,7 +250,7 @@ public class EntityItem extends Entity implements HopperPusher {
+     }
+ 
+     public static boolean a(ItemStack itemstack, ItemStack itemstack1) {
+-        return itemstack1.getItem() != itemstack.getItem() ? false : (itemstack1.getCount() + itemstack.getCount() > itemstack1.getMaxStackSize() ? false : (itemstack1.hasTag() ^ itemstack.hasTag() ? false : !itemstack1.hasTag() || itemstack1.getTag().equals(itemstack.getTag())));
++        return itemstack1.getItem() == itemstack.getItem() && (itemstack1.getCount() + itemstack.getCount() <= itemstack1.getMaxStackSize() && (!(itemstack1.hasTag() ^ itemstack.hasTag()) && (!itemstack1.hasTag() || itemstack1.getTag().equals(itemstack.getTag()))));
+     }
+ 
+     public static ItemStack a(ItemStack itemstack, ItemStack itemstack1, int i) {
+diff --git a/src/main/java/net/minecraft/server/EntityItemFrame.java b/src/main/java/net/minecraft/server/EntityItemFrame.java
+index 372be937f1cf95775e37931f326f6a77836968f3..410df822cd2cb7854ca8a3836a47e4724fde6c31 100644
+--- a/src/main/java/net/minecraft/server/EntityItemFrame.java
++++ b/src/main/java/net/minecraft/server/EntityItemFrame.java
+@@ -103,7 +103,7 @@ public class EntityItemFrame extends EntityHanging {
+         } else {
+             IBlockData iblockdata = this.world.getType(this.blockPosition.shift(this.direction.opposite()));
+ 
+-            return !iblockdata.getMaterial().isBuildable() && (!this.direction.n().d() || !BlockDiodeAbstract.isDiode(iblockdata)) ? false : this.world.getEntities(this, this.getBoundingBox(), EntityItemFrame.b).isEmpty();
++            return (iblockdata.getMaterial().isBuildable() || (this.direction.n().d() && BlockDiodeAbstract.isDiode(iblockdata))) && this.world.getEntities(this, this.getBoundingBox(), EntityItemFrame.b).isEmpty();
+         }
+     }
+ 
+@@ -137,7 +137,7 @@ public class EntityItemFrame extends EntityHanging {
+     @Override
+     public boolean damageEntity(DamageSource damagesource, float f) {
+         if (this.fixed) {
+-            return damagesource != DamageSource.OUT_OF_WORLD && !damagesource.v() ? false : super.damageEntity(damagesource, f);
++            return (damagesource == DamageSource.OUT_OF_WORLD || damagesource.v()) && super.damageEntity(damagesource, f);
+         } else if (this.isInvulnerable(damagesource)) {
+             return false;
+         } else if (!damagesource.isExplosion() && !this.getItem().isEmpty()) {
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index 78ec5e47539e6713a4bd107ad26480eba7bf6ec6..8dd7c37632515d83b3ddfb6db7492581d5d80fa4 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -3455,7 +3455,7 @@ public abstract class EntityLiving extends Entity {
+         if (this.isHandRaised() && !this.activeItem.isEmpty()) {
+             Item item = this.activeItem.getItem();
+ 
+-            return item.d_(this.activeItem) != EnumAnimation.BLOCK ? false : item.e_(this.activeItem) - this.bd >= getShieldBlockingDelay(); // Paper - shieldBlockingDelay
++            return item.d_(this.activeItem) == EnumAnimation.BLOCK && item.e_(this.activeItem) - this.bd >= getShieldBlockingDelay(); // Paper - shieldBlockingDelay
+         } else {
+             return false;
+         }
+diff --git a/src/main/java/net/minecraft/server/EntityMinecartContainer.java b/src/main/java/net/minecraft/server/EntityMinecartContainer.java
+index 2625d3f5dae37f251a72b5c6218f2c103912e753..e9194c1a00feeffb516cdf8168bd689b9bdcddcf 100644
+--- a/src/main/java/net/minecraft/server/EntityMinecartContainer.java
++++ b/src/main/java/net/minecraft/server/EntityMinecartContainer.java
+@@ -182,7 +182,7 @@ public abstract class EntityMinecartContainer extends EntityMinecartAbstract imp
+ 
+     @Override
+     public boolean a(EntityHuman entityhuman) {
+-        return this.dead ? false : entityhuman.h((Entity) this) <= 64.0D;
++        return !this.dead && entityhuman.h((Entity) this) <= 64.0D;
+     }
+ 
+     @Nullable
+diff --git a/src/main/java/net/minecraft/server/EntityMinecartTNT.java b/src/main/java/net/minecraft/server/EntityMinecartTNT.java
+index 3dfe3d13ac713c963256a662b52f54716e397672..ec03273a85292721063549f829d7c79a5b5fe1ba 100644
+--- a/src/main/java/net/minecraft/server/EntityMinecartTNT.java
++++ b/src/main/java/net/minecraft/server/EntityMinecartTNT.java
+@@ -137,7 +137,7 @@ public class EntityMinecartTNT extends EntityMinecartAbstract {
+ 
+     @Override
+     public boolean a(Explosion explosion, IBlockAccess iblockaccess, BlockPosition blockposition, IBlockData iblockdata, float f) {
+-        return this.x() && (iblockdata.a((Tag) TagsBlock.RAILS) || iblockaccess.getType(blockposition.up()).a((Tag) TagsBlock.RAILS)) ? false : super.a(explosion, iblockaccess, blockposition, iblockdata, f);
++        return (!this.x() || (!iblockdata.a((Tag) TagsBlock.RAILS) && !iblockaccess.getType(blockposition.up()).a((Tag) TagsBlock.RAILS))) && super.a(explosion, iblockaccess, blockposition, iblockdata, f);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityMonster.java b/src/main/java/net/minecraft/server/EntityMonster.java
+index 74426693c47b6437a4597ddd1b961aae79d7a866..791b19d5c60776052bf5aaf7f69658a6d3f7a521 100644
+--- a/src/main/java/net/minecraft/server/EntityMonster.java
++++ b/src/main/java/net/minecraft/server/EntityMonster.java
+@@ -49,7 +49,7 @@ public abstract class EntityMonster extends EntityCreature implements IMonster {
+ 
+     @Override
+     public boolean damageEntity(DamageSource damagesource, float f) {
+-        return this.isInvulnerable(damagesource) ? false : super.damageEntity(damagesource, f);
++        return !this.isInvulnerable(damagesource) && super.damageEntity(damagesource, f);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityOcelot.java b/src/main/java/net/minecraft/server/EntityOcelot.java
+index b8368cf397c26d06f2827a1a786e1f241b810cce..e17158d72b9c0bb9d0578b0e229927e90c277efc 100644
+--- a/src/main/java/net/minecraft/server/EntityOcelot.java
++++ b/src/main/java/net/minecraft/server/EntityOcelot.java
+@@ -149,7 +149,7 @@ public class EntityOcelot extends EntityAnimal {
+ 
+     @Override
+     public boolean damageEntity(DamageSource damagesource, float f) {
+-        return this.isInvulnerable(damagesource) ? false : super.damageEntity(damagesource, f);
++        return !this.isInvulnerable(damagesource) && super.damageEntity(damagesource, f);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityPanda.java b/src/main/java/net/minecraft/server/EntityPanda.java
+index d9627b289b34b148cc0070a90e7f1c6e6f325b8a..d9d81f83b9f7bb459ad8ed93c30262df0e68779e 100644
+--- a/src/main/java/net/minecraft/server/EntityPanda.java
++++ b/src/main/java/net/minecraft/server/EntityPanda.java
+@@ -82,7 +82,7 @@ public class EntityPanda extends EntityAnimal {
+     public boolean e(ItemStack itemstack) {
+         EnumItemSlot enumitemslot = EntityInsentient.j(itemstack);
+ 
+-        return !this.getEquipment(enumitemslot).isEmpty() ? false : enumitemslot == EnumItemSlot.MAINHAND && super.e(itemstack);
++        return this.getEquipment(enumitemslot).isEmpty() && enumitemslot == EnumItemSlot.MAINHAND && super.e(itemstack);
+     }
+ 
+     public int eK() {
+@@ -732,7 +732,7 @@ public class EntityPanda extends EntityAnimal {
+ 
+         @Override
+         public boolean b() {
+-            return !this.a.isInWater() && (this.a.isLazy() || this.a.random.nextInt(600) != 1) ? this.a.random.nextInt(2000) != 1 : false;
++            return !this.a.isInWater() && (this.a.isLazy() || this.a.random.nextInt(600) != 1) && this.a.random.nextInt(2000) != 1;
+         }
+ 
+         @Override
+@@ -769,7 +769,7 @@ public class EntityPanda extends EntityAnimal {
+ 
+         @Override
+         public boolean b() {
+-            return !EntityPanda.this.isInWater() && (EntityPanda.this.isLazy() || EntityPanda.this.random.nextInt(600) != 1) ? EntityPanda.this.random.nextInt(2000) != 1 : false;
++            return !EntityPanda.this.isInWater() && (EntityPanda.this.isLazy() || EntityPanda.this.random.nextInt(600) != 1) && EntityPanda.this.random.nextInt(2000) != 1;
+         }
+ 
+         @Override
+@@ -891,7 +891,7 @@ public class EntityPanda extends EntityAnimal {
+ 
+         @Override
+         public boolean a() {
+-            return this.a.isBaby() && this.a.fh() ? (this.a.isWeak() && this.a.random.nextInt(500) == 1 ? true : this.a.random.nextInt(6000) == 1) : false;
++            return this.a.isBaby() && this.a.fh() && (this.a.isWeak() && this.a.random.nextInt(500) == 1 || this.a.random.nextInt(6000) == 1);
+         }
+ 
+         @Override
+@@ -934,7 +934,7 @@ public class EntityPanda extends EntityAnimal {
+                         j = (int) ((float) j + f2 / Math.abs(f2));
+                     }
+ 
+-                    return this.a.world.getType(this.a.getChunkCoordinates().b(i, -1, j)).isAir() ? true : (this.a.isPlayful() && this.a.random.nextInt(60) == 1 ? true : this.a.random.nextInt(500) == 1);
++                    return this.a.world.getType(this.a.getChunkCoordinates().b(i, -1, j)).isAir() || (this.a.isPlayful() && this.a.random.nextInt(60) == 1 || this.a.random.nextInt(500) == 1);
+                 }
+             } else {
+                 return false;
+diff --git a/src/main/java/net/minecraft/server/EntityPigZombie.java b/src/main/java/net/minecraft/server/EntityPigZombie.java
+index 7c426f3b1c65f4e2f4997c8b69c27e8df8f334c0..9a9910463b8053fb9616b021c4c2e652b5690a37 100644
+--- a/src/main/java/net/minecraft/server/EntityPigZombie.java
++++ b/src/main/java/net/minecraft/server/EntityPigZombie.java
+@@ -213,7 +213,7 @@ public class EntityPigZombie extends EntityZombie implements IEntityAngerable {
+ 
+     @Override
+     public boolean damageEntity(DamageSource damagesource, float f) {
+-        return this.isInvulnerable(damagesource) ? false : super.damageEntity(damagesource, f);
++        return !this.isInvulnerable(damagesource) && super.damageEntity(damagesource, f);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityPiglin.java b/src/main/java/net/minecraft/server/EntityPiglin.java
+index 4849829df1041568a9fcac6d16501fc0606d95da..5d4c01dd2084cad5f43dcbc2ee19f74e370d3a73 100644
+--- a/src/main/java/net/minecraft/server/EntityPiglin.java
++++ b/src/main/java/net/minecraft/server/EntityPiglin.java
+@@ -332,7 +332,7 @@ public class EntityPiglin extends EntityPiglinAbstract implements ICrossbow {
+             boolean flag = PiglinAI.a(itemstack.getItem()) || itemstack.getItem() == Items.CROSSBOW;
+             boolean flag1 = PiglinAI.a(itemstack1.getItem()) || itemstack1.getItem() == Items.CROSSBOW;
+ 
+-            return flag && !flag1 ? true : (!flag && flag1 ? false : (this.eM() && itemstack.getItem() != Items.CROSSBOW && itemstack1.getItem() == Items.CROSSBOW ? false : super.a(itemstack, itemstack1)));
++            return flag && !flag1 || ((flag || !flag1) && ((!this.eM() || itemstack.getItem() == Items.CROSSBOW || itemstack1.getItem() != Items.CROSSBOW) && super.a(itemstack, itemstack1)));
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityPiglinBrute.java b/src/main/java/net/minecraft/server/EntityPiglinBrute.java
+index 50e42cd8ccd48efe6251a37762953f7f55d18277..fd318025a45b21cfd5066203f442bb89f675947c 100644
+--- a/src/main/java/net/minecraft/server/EntityPiglinBrute.java
++++ b/src/main/java/net/minecraft/server/EntityPiglinBrute.java
+@@ -71,7 +71,7 @@ public class EntityPiglinBrute extends EntityPiglinAbstract {
+ 
+     @Override
+     public boolean i(ItemStack itemstack) {
+-        return itemstack.getItem() == Items.GOLDEN_AXE ? super.i(itemstack) : false;
++        return itemstack.getItem() == Items.GOLDEN_AXE && super.i(itemstack);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityPillager.java b/src/main/java/net/minecraft/server/EntityPillager.java
+index 99b2d50d3958a9341d01108000f2719d271bdfd5..85af517aced3bdc31c8789119d0d25fff6bd1923 100644
+--- a/src/main/java/net/minecraft/server/EntityPillager.java
++++ b/src/main/java/net/minecraft/server/EntityPillager.java
+@@ -148,7 +148,7 @@ public class EntityPillager extends EntityIllagerAbstract implements ICrossbow {
+ 
+     @Override
+     public boolean r(Entity entity) {
+-        return super.r(entity) ? true : (entity instanceof EntityLiving && ((EntityLiving) entity).getMonsterType() == EnumMonsterType.ILLAGER ? this.getScoreboardTeam() == null && entity.getScoreboardTeam() == null : false);
++        return super.r(entity) || (entity instanceof EntityLiving && ((EntityLiving) entity).getMonsterType() == EnumMonsterType.ILLAGER && this.getScoreboardTeam() == null && entity.getScoreboardTeam() == null);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
+index 8e2711371e188f787ce6f7a4a85940f67fe864a3..7bdcb3d23174b764e0a097bb65c96f707d332a6b 100644
+--- a/src/main/java/net/minecraft/server/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/EntityPlayer.java
+@@ -1064,7 +1064,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+ 
+     @Override
+     public boolean a(EntityHuman entityhuman) {
+-        return !this.canPvP() ? false : super.a(entityhuman);
++        return this.canPvP() && super.a(entityhuman);
+     }
+ 
+     private boolean canPvP() {
+@@ -1271,7 +1271,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+ 
+     @Override
+     public boolean a(EntityPlayer entityplayer) {
+-        return entityplayer.isSpectator() ? this.getSpecatorTarget() == this : (this.isSpectator() ? false : super.a(entityplayer));
++        return entityplayer.isSpectator() ? this.getSpecatorTarget() == this : (!this.isSpectator() && super.a(entityplayer));
+     }
+ 
+     private void a(TileEntity tileentity) {
+diff --git a/src/main/java/net/minecraft/server/EntityPolarBear.java b/src/main/java/net/minecraft/server/EntityPolarBear.java
+index 84d0a1453e38662228356ad9b9094a5b1de832d8..27c439ce8c5b65c1bcdf1ea09cc7c7dc19476cae 100644
+--- a/src/main/java/net/minecraft/server/EntityPolarBear.java
++++ b/src/main/java/net/minecraft/server/EntityPolarBear.java
+@@ -282,7 +282,7 @@ public class EntityPolarBear extends EntityAnimal implements IEntityAngerable {
+ 
+         @Override
+         public boolean a() {
+-            return !EntityPolarBear.this.isBaby() && !EntityPolarBear.this.isBurning() ? false : super.a();
++            return (EntityPolarBear.this.isBaby() || EntityPolarBear.this.isBurning()) && super.a();
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityPufferFish.java b/src/main/java/net/minecraft/server/EntityPufferFish.java
+index 0a1172d6d4ad15c2a0a844768aa5e74f071ba1d0..b8d1ee88ba59a614f30a6f8edbe733c29c4edd4d 100644
+--- a/src/main/java/net/minecraft/server/EntityPufferFish.java
++++ b/src/main/java/net/minecraft/server/EntityPufferFish.java
+@@ -10,7 +10,7 @@ public class EntityPufferFish extends EntityFish {
+     private int c;
+     private int d;
+     private static final Predicate<EntityLiving> bo = (entityliving) -> {
+-        return entityliving == null ? false : (entityliving instanceof EntityHuman && (entityliving.isSpectator() || ((EntityHuman) entityliving).isCreative()) ? false : entityliving.getMonsterType() != EnumMonsterType.WATER_MOB);
++        return entityliving != null && ((!(entityliving instanceof EntityHuman) || (!entityliving.isSpectator() && !((EntityHuman) entityliving).isCreative())) && entityliving.getMonsterType() != EnumMonsterType.WATER_MOB);
+     };
+ 
+     public EntityPufferFish(EntityTypes<? extends EntityPufferFish> entitytypes, World world) {
+diff --git a/src/main/java/net/minecraft/server/EntityRabbit.java b/src/main/java/net/minecraft/server/EntityRabbit.java
+index 6559dcafac6cb9673dccdbd44f18e9802b3ac3c2..bcf5f99529f3fac8e72e2d08175a3300ac4cafe3 100644
+--- a/src/main/java/net/minecraft/server/EntityRabbit.java
++++ b/src/main/java/net/minecraft/server/EntityRabbit.java
+@@ -326,7 +326,7 @@ public class EntityRabbit extends EntityAnimal {
+ 
+     @Override
+     public boolean damageEntity(DamageSource damagesource, float f) {
+-        return this.isInvulnerable(damagesource) ? false : super.damageEntity(damagesource, f);
++        return !this.isInvulnerable(damagesource) && super.damageEntity(damagesource, f);
+     }
+ 
+     private boolean b(Item item) {
+diff --git a/src/main/java/net/minecraft/server/EntityRaider.java b/src/main/java/net/minecraft/server/EntityRaider.java
+index e0f6f0eafad36085cee42ed2695af2d70308b0c0..0d47ad4211f2e654ae69d6ee3cde9a0aa1aaa833 100644
+--- a/src/main/java/net/minecraft/server/EntityRaider.java
++++ b/src/main/java/net/minecraft/server/EntityRaider.java
+@@ -307,7 +307,7 @@ public abstract class EntityRaider extends EntityMonsterPatrolling {
+ 
+         @Override
+         public boolean b() {
+-            return this.a.getNavigation().m() ? false : this.a.getGoalTarget() == null && !this.c.a((IPosition) this.a.getPositionVector(), (double) (this.a.getWidth() + (float) this.e)) && !this.f;
++            return !this.a.getNavigation().m() && this.a.getGoalTarget() == null && !this.c.a((IPosition) this.a.getPositionVector(), (double) (this.a.getWidth() + (float) this.e)) && !this.f;
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityShulker.java b/src/main/java/net/minecraft/server/EntityShulker.java
+index 0b7bc140e7b2720604a188a163d0164836e4df6a..36f89c1e7395c576ad5145c317752c9bf527b4ae 100644
+--- a/src/main/java/net/minecraft/server/EntityShulker.java
++++ b/src/main/java/net/minecraft/server/EntityShulker.java
+@@ -449,7 +449,7 @@ public class EntityShulker extends EntityGolem implements IMonster {
+ 
+         @Override
+         public boolean a() {
+-            return this.e.getScoreboardTeam() == null ? false : super.a();
++            return this.e.getScoreboardTeam() != null && super.a();
+         }
+ 
+         @Override
+@@ -468,7 +468,7 @@ public class EntityShulker extends EntityGolem implements IMonster {
+ 
+         @Override
+         public boolean a() {
+-            return EntityShulker.this.world.getDifficulty() == EnumDifficulty.PEACEFUL ? false : super.a();
++            return EntityShulker.this.world.getDifficulty() != EnumDifficulty.PEACEFUL && super.a();
+         }
+ 
+         @Override
+@@ -491,7 +491,7 @@ public class EntityShulker extends EntityGolem implements IMonster {
+         public boolean a() {
+             EntityLiving entityliving = EntityShulker.this.getGoalTarget();
+ 
+-            return entityliving != null && entityliving.isAlive() ? EntityShulker.this.world.getDifficulty() != EnumDifficulty.PEACEFUL : false;
++            return entityliving != null && entityliving.isAlive() && EntityShulker.this.world.getDifficulty() != EnumDifficulty.PEACEFUL;
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntitySpider.java b/src/main/java/net/minecraft/server/EntitySpider.java
+index 9001ca50b8d9f77b0d997511b70c39b2712df67a..d384abd79851024175610dfd2ab61204b45c2d87 100644
+--- a/src/main/java/net/minecraft/server/EntitySpider.java
++++ b/src/main/java/net/minecraft/server/EntitySpider.java
+@@ -112,7 +112,7 @@ public class EntitySpider extends EntityMonster {
+ 
+     @Override
+     public boolean d(MobEffect mobeffect) {
+-        return mobeffect.getMobEffect() == MobEffects.POISON ? false : super.d(mobeffect);
++        return mobeffect.getMobEffect() != MobEffects.POISON && super.d(mobeffect);
+     }
+ 
+     public boolean eL() {
+@@ -177,7 +177,7 @@ public class EntitySpider extends EntityMonster {
+         public boolean a() {
+             float f = this.e.aR();
+ 
+-            return f >= 0.5F ? false : super.a();
++            return !(f >= 0.5F) && super.a();
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/EntitySquid.java b/src/main/java/net/minecraft/server/EntitySquid.java
+index 918cd774bc7e9f84ddbc1e65b4cb4d661eb127a5..be0d223efce26d66f834c10e0bee997f4a3b76ae 100644
+--- a/src/main/java/net/minecraft/server/EntitySquid.java
++++ b/src/main/java/net/minecraft/server/EntitySquid.java
+@@ -234,7 +234,7 @@ public class EntitySquid extends EntityWaterAnimal {
+         public boolean a() {
+             EntityLiving entityliving = EntitySquid.this.getLastDamager();
+ 
+-            return EntitySquid.this.isInWater() && entityliving != null ? EntitySquid.this.h((Entity) entityliving) < 100.0D : false;
++            return EntitySquid.this.isInWater() && entityliving != null && EntitySquid.this.h((Entity) entityliving) < 100.0D;
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityStrider.java b/src/main/java/net/minecraft/server/EntityStrider.java
+index 4f8edc7314bcc11f93db56cb7c552db489086d67..8975a604572fa816bffc13602472b3cb11767c96 100644
+--- a/src/main/java/net/minecraft/server/EntityStrider.java
++++ b/src/main/java/net/minecraft/server/EntityStrider.java
+@@ -493,7 +493,7 @@ public class EntityStrider extends EntityAnimal implements ISteerable, ISaddleab
+ 
+         @Override
+         protected boolean a(PathType pathtype) {
+-            return pathtype != PathType.LAVA && pathtype != PathType.DAMAGE_FIRE && pathtype != PathType.DANGER_FIRE ? super.a(pathtype) : true;
++            return pathtype == PathType.LAVA || pathtype == PathType.DAMAGE_FIRE || pathtype == PathType.DANGER_FIRE || super.a(pathtype);
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityTameableAnimal.java b/src/main/java/net/minecraft/server/EntityTameableAnimal.java
+index 8f227678dc4ab1b7369a0c76173b3f695a570620..7841043d7084f054923374085d051da2d805218d 100644
+--- a/src/main/java/net/minecraft/server/EntityTameableAnimal.java
++++ b/src/main/java/net/minecraft/server/EntityTameableAnimal.java
+@@ -127,7 +127,7 @@ public abstract class EntityTameableAnimal extends EntityAnimal {
+ 
+     @Override
+     public boolean c(EntityLiving entityliving) {
+-        return this.i(entityliving) ? false : super.c(entityliving);
++        return !this.i(entityliving) && super.c(entityliving);
+     }
+ 
+     public boolean isOwner(EntityLiving entityLiving) { return i(entityLiving); } // Purpur - OBFHELPER
+diff --git a/src/main/java/net/minecraft/server/EntityThrownTrident.java b/src/main/java/net/minecraft/server/EntityThrownTrident.java
+index 2acbe7437df71fc27580deddee8eb7655a297b70..c169633202b1f8857b879d00c14f6f6d06ae37ec 100644
+--- a/src/main/java/net/minecraft/server/EntityThrownTrident.java
++++ b/src/main/java/net/minecraft/server/EntityThrownTrident.java
+@@ -73,7 +73,7 @@ public class EntityThrownTrident extends EntityArrow {
+     private boolean z() {
+         Entity entity = this.getShooter();
+ 
+-        return entity != null && entity.isAlive() ? !(entity instanceof EntityPlayer) || !entity.isSpectator() : false;
++        return entity != null && entity.isAlive() && (!(entity instanceof EntityPlayer) || !entity.isSpectator());
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityTurtle.java b/src/main/java/net/minecraft/server/EntityTurtle.java
+index 0233b65a996111af7bdc10e4da2d70e541411c09..f3116bd8d0d72567aa62bbe6a92ece7f6e7cfde8 100644
+--- a/src/main/java/net/minecraft/server/EntityTurtle.java
++++ b/src/main/java/net/minecraft/server/EntityTurtle.java
+@@ -425,7 +425,7 @@ public class EntityTurtle extends EntityAnimal {
+ 
+         @Override
+         public boolean a() {
+-            return this.g.isBaby() && !this.g.isInWater() ? super.a() : (!this.g.eU() && !this.g.isInWater() && !this.g.hasEgg() ? super.a() : false);
++            return this.g.isBaby() && !this.g.isInWater() ? super.a() : (!this.g.eU() && !this.g.isInWater() && !this.g.hasEgg() && super.a());
+         }
+ 
+         @Override
+@@ -465,7 +465,7 @@ public class EntityTurtle extends EntityAnimal {
+ 
+         @Override
+         public boolean a() {
+-            return this.g.hasEgg() && this.g.getHomePos().a((IPosition) this.g.getPositionVector(), 9.0D) ? super.a() : false;
++            return this.g.hasEgg() && this.g.getHomePos().a((IPosition) this.g.getPositionVector(), 9.0D) && super.a();
+         }
+ 
+         @Override
+@@ -507,7 +507,7 @@ public class EntityTurtle extends EntityAnimal {
+ 
+         @Override
+         protected boolean a(IWorldReader iworldreader, BlockPosition blockposition) {
+-            return !iworldreader.isEmpty(blockposition.up()) ? false : BlockTurtleEgg.b(iworldreader, blockposition);
++            return iworldreader.isEmpty(blockposition.up()) && BlockTurtleEgg.b(iworldreader, blockposition);
+         }
+     }
+ 
+@@ -573,7 +573,7 @@ public class EntityTurtle extends EntityAnimal {
+                 return false;
+             } else {
+                 this.d = this.b.world.a(this.a, (EntityLiving) this.b); // CraftBukkit - decompile error
+-                return this.d == null ? false : this.a(this.d.getItemInMainHand()) || this.a(this.d.getItemInOffHand());
++                return this.d != null && (this.a(this.d.getItemInMainHand()) || this.a(this.d.getItemInOffHand()));
+             }
+         }
+ 
+@@ -619,7 +619,7 @@ public class EntityTurtle extends EntityAnimal {
+ 
+         @Override
+         public boolean a() {
+-            return this.a.isBaby() ? false : (this.a.hasEgg() ? true : (this.a.getRandom().nextInt(700) != 0 ? false : !this.a.getHomePos().a((IPosition) this.a.getPositionVector(), 64.0D))) && new com.destroystokyo.paper.event.entity.TurtleGoHomeEvent((org.bukkit.entity.Turtle) this.a.getBukkitEntity()).callEvent(); // Paper
++            return !this.a.isBaby() && (this.a.hasEgg() || (this.a.getRandom().nextInt(700) == 0 && !this.a.getHomePos().a((IPosition) this.a.getPositionVector(), 64.0D))) && new com.destroystokyo.paper.event.entity.TurtleGoHomeEvent((org.bukkit.entity.Turtle) this.a.getBukkitEntity()).callEvent(); // Paper
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityTypes.java b/src/main/java/net/minecraft/server/EntityTypes.java
+index 730b91680b226df624180d64019c2984d0e29422..17c557f2b06dcc6553a30b6aba74365643320765 100644
+--- a/src/main/java/net/minecraft/server/EntityTypes.java
++++ b/src/main/java/net/minecraft/server/EntityTypes.java
+@@ -412,7 +412,7 @@ public class EntityTypes<T extends Entity> {
+     }
+ 
+     public boolean a(IBlockData iblockdata) {
+-        return this.bh.contains(iblockdata.getBlock()) ? false : (!this.bk && (iblockdata.a((Tag) TagsBlock.FIRE) || iblockdata.a(Blocks.MAGMA_BLOCK) || BlockCampfire.g(iblockdata) || iblockdata.a(Blocks.LAVA)) ? true : iblockdata.a(Blocks.WITHER_ROSE) || iblockdata.a(Blocks.SWEET_BERRY_BUSH) || iblockdata.a(Blocks.CACTUS));
++        return !this.bh.contains(iblockdata.getBlock()) && (!this.bk && (iblockdata.a((Tag) TagsBlock.FIRE) || iblockdata.a(Blocks.MAGMA_BLOCK) || BlockCampfire.g(iblockdata) || iblockdata.a(Blocks.LAVA)) || iblockdata.a(Blocks.WITHER_ROSE) || iblockdata.a(Blocks.SWEET_BERRY_BUSH) || iblockdata.a(Blocks.CACTUS));
+     }
+ 
+     public EntitySize l() {
+diff --git a/src/main/java/net/minecraft/server/EntityVex.java b/src/main/java/net/minecraft/server/EntityVex.java
+index 3fcbfc7cdf78f71d23b2e2b2990c21db6f493f31..eba5c14041bfc0c6fe3b911c9c1a7e8c0b34a02b 100644
+--- a/src/main/java/net/minecraft/server/EntityVex.java
++++ b/src/main/java/net/minecraft/server/EntityVex.java
+@@ -286,7 +286,7 @@ public class EntityVex extends EntityMonster {
+ 
+         @Override
+         public boolean a() {
+-            return EntityVex.this.getGoalTarget() != null && !EntityVex.this.getControllerMove().b() && EntityVex.this.random.nextInt(7) == 0 ? EntityVex.this.h((Entity) EntityVex.this.getGoalTarget()) > 4.0D : false;
++            return EntityVex.this.getGoalTarget() != null && !EntityVex.this.getControllerMove().b() && EntityVex.this.random.nextInt(7) == 0 && EntityVex.this.h((Entity) EntityVex.this.getGoalTarget()) > 4.0D;
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/EntityVillager.java b/src/main/java/net/minecraft/server/EntityVillager.java
+index 7fa7cdc0b369bb86946101c93e026409eb5d1c85..81404ae2445b51e9268ee951befb1250b3738874 100644
+--- a/src/main/java/net/minecraft/server/EntityVillager.java
++++ b/src/main/java/net/minecraft/server/EntityVillager.java
+@@ -1011,7 +1011,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+     }
+ 
+     public boolean a(long i) {
+-        return !this.b(this.world.getTime()) ? false : !this.bg.hasMemory(MemoryModuleType.GOLEM_DETECTED_RECENTLY);
++        return this.b(this.world.getTime()) && !this.bg.hasMemory(MemoryModuleType.GOLEM_DETECTED_RECENTLY);
+     }
+ 
+     @Nullable
+@@ -1146,6 +1146,6 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation
+     private boolean b(long i) {
+         Optional<Long> optional = this.bg.getMemory(MemoryModuleType.LAST_SLEPT);
+ 
+-        return optional.isPresent() ? i - (Long) optional.get() < 24000L : false;
++        return optional.isPresent() && i - (Long) optional.get() < 24000L;
+     }
+ }
+diff --git a/src/main/java/net/minecraft/server/EntityVindicator.java b/src/main/java/net/minecraft/server/EntityVindicator.java
+index 2a137a90828f84de15a7184203c7d0dccc0851b4..49ddbd5a2f40c0301c10794036cbf81816bd469d 100644
+--- a/src/main/java/net/minecraft/server/EntityVindicator.java
++++ b/src/main/java/net/minecraft/server/EntityVindicator.java
+@@ -120,7 +120,7 @@ public class EntityVindicator extends EntityIllagerAbstract {
+ 
+     @Override
+     public boolean r(Entity entity) {
+-        return super.r(entity) ? true : (entity instanceof EntityLiving && ((EntityLiving) entity).getMonsterType() == EnumMonsterType.ILLAGER ? this.getScoreboardTeam() == null && entity.getScoreboardTeam() == null : false);
++        return super.r(entity) || (entity instanceof EntityLiving && ((EntityLiving) entity).getMonsterType() == EnumMonsterType.ILLAGER && this.getScoreboardTeam() == null && entity.getScoreboardTeam() == null);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
+index 2c81a5d1381afa37b966625d3a6ec6cf603f466d..797fde76d8313704b4d6691728e024669737c631 100644
+--- a/src/main/java/net/minecraft/server/EntityWither.java
++++ b/src/main/java/net/minecraft/server/EntityWither.java
+@@ -684,7 +684,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
+ 
+     @Override
+     public boolean d(MobEffect mobeffect) {
+-        return mobeffect.getMobEffect() == MobEffects.WITHER ? false : super.d(mobeffect);
++        return mobeffect.getMobEffect() != MobEffects.WITHER && super.d(mobeffect);
+     }
+ 
+     class a extends PathfinderGoal {
+diff --git a/src/main/java/net/minecraft/server/EntityWolf.java b/src/main/java/net/minecraft/server/EntityWolf.java
+index 5bf2a3205671a7cb001835ab241c34bcbe47e02c..3dcf5e35cd421ec3f3e084188da1b82e27a3d55d 100644
+--- a/src/main/java/net/minecraft/server/EntityWolf.java
++++ b/src/main/java/net/minecraft/server/EntityWolf.java
+@@ -520,7 +520,7 @@ public class EntityWolf extends EntityTameableAnimal implements IEntityAngerable
+         } else {
+             EntityWolf entitywolf = (EntityWolf) entityanimal;
+ 
+-            return !entitywolf.isTamed() ? false : (entitywolf.isSitting() ? false : this.isInLove() && entitywolf.isInLove());
++            return entitywolf.isTamed() && (!entitywolf.isSitting() && this.isInLove() && entitywolf.isInLove());
+         }
+     }
+ 
+@@ -536,7 +536,7 @@ public class EntityWolf extends EntityTameableAnimal implements IEntityAngerable
+ 
+                 return !entitywolf.isTamed() || entitywolf.getOwner() != entityliving1;
+             } else {
+-                return entityliving instanceof EntityHuman && entityliving1 instanceof EntityHuman && !((EntityHuman) entityliving1).a((EntityHuman) entityliving) ? false : (entityliving instanceof EntityHorseAbstract && ((EntityHorseAbstract) entityliving).isTamed() ? false : !(entityliving instanceof EntityTameableAnimal) || !((EntityTameableAnimal) entityliving).isTamed());
++                return (!(entityliving instanceof EntityHuman) || !(entityliving1 instanceof EntityHuman) || ((EntityHuman) entityliving1).a((EntityHuman) entityliving)) && ((!(entityliving instanceof EntityHorseAbstract) || !((EntityHorseAbstract) entityliving).isTamed()) && (!(entityliving instanceof EntityTameableAnimal) || !((EntityTameableAnimal) entityliving).isTamed()));
+             }
+         } else {
+             return false;
+@@ -559,7 +559,7 @@ public class EntityWolf extends EntityTameableAnimal implements IEntityAngerable
+ 
+         @Override
+         public boolean a() {
+-            return super.a() && this.b instanceof EntityLlama ? !this.j.isTamed() && this.a((EntityLlama) this.b) : false;
++            return super.a() && this.b instanceof EntityLlama && !this.j.isTamed() && this.a((EntityLlama) this.b);
+         }
+ 
+         private boolean a(EntityLlama entityllama) {
+diff --git a/src/main/java/net/minecraft/server/EntityZombie.java b/src/main/java/net/minecraft/server/EntityZombie.java
+index d0d250ed9f4ee56c825fe7400e6056a2ee83c80b..7e2e72bb0dad0d2350fbd8b345ff60f650c24baa 100644
+--- a/src/main/java/net/minecraft/server/EntityZombie.java
++++ b/src/main/java/net/minecraft/server/EntityZombie.java
+@@ -474,7 +474,7 @@ public class EntityZombie extends EntityMonster {
+ 
+     @Override
+     public boolean canPickup(ItemStack itemstack) {
+-        return itemstack.getItem() == Items.EGG && this.isBaby() && this.isPassenger() ? false : super.canPickup(itemstack);
++        return (itemstack.getItem() != Items.EGG || !this.isBaby() || !this.isPassenger()) && super.canPickup(itemstack);
+     }
+ 
+     @Nullable
+diff --git a/src/main/java/net/minecraft/server/ExpirableListEntry.java b/src/main/java/net/minecraft/server/ExpirableListEntry.java
+index 8aa38f805dec83f8ba07d0b78d64c9c9d066ace1..261664fe220cd3f657da1128bb355662c2e5e0b8 100644
+--- a/src/main/java/net/minecraft/server/ExpirableListEntry.java
++++ b/src/main/java/net/minecraft/server/ExpirableListEntry.java
+@@ -64,7 +64,7 @@ public abstract class ExpirableListEntry<T> extends JsonListEntry<T> {
+ 
+     @Override
+     boolean hasExpired() {
+-        return this.d == null ? false : this.d.before(new Date());
++        return this.d != null && this.d.before(new Date());
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/FluidTypeFlowing.java b/src/main/java/net/minecraft/server/FluidTypeFlowing.java
+index 78dc9c4b2654e3ce6b6bdd3f9e0e1706d7a73377..c36207112bee067893f1dc1a569057e9330e9b12 100644
+--- a/src/main/java/net/minecraft/server/FluidTypeFlowing.java
++++ b/src/main/java/net/minecraft/server/FluidTypeFlowing.java
+@@ -102,7 +102,7 @@ public abstract class FluidTypeFlowing extends FluidType {
+         IBlockData iblockdata = iblockaccess.getType(blockposition);
+         Fluid fluid = iblockaccess.getFluid(blockposition);
+ 
+-        return fluid.getType().a((FluidType) this) ? false : (enumdirection == EnumDirection.UP ? true : (iblockdata.getMaterial() == Material.ICE ? false : iblockdata.d(iblockaccess, blockposition, enumdirection)));
++        return !fluid.getType().a((FluidType) this) && (enumdirection == EnumDirection.UP || (iblockdata.getMaterial() != Material.ICE && iblockdata.d(iblockaccess, blockposition, enumdirection)));
+     }
+ 
+     protected void a(GeneratorAccess generatoraccess, BlockPosition blockposition, Fluid fluid) {
+@@ -342,7 +342,7 @@ public abstract class FluidTypeFlowing extends FluidType {
+     }
+ 
+     private boolean a(IBlockAccess iblockaccess, FluidType fluidtype, BlockPosition blockposition, IBlockData iblockdata, BlockPosition blockposition1, IBlockData iblockdata1) {
+-        return !this.a(EnumDirection.DOWN, iblockaccess, blockposition, iblockdata, blockposition1, iblockdata1) ? false : (iblockdata1.getFluid().getType().a((FluidType) this) ? true : this.a(iblockaccess, blockposition1, iblockdata1, fluidtype));
++        return this.a(EnumDirection.DOWN, iblockaccess, blockposition, iblockdata, blockposition1, iblockdata1) && (iblockdata1.getFluid().getType().a((FluidType) this) || this.a(iblockaccess, blockposition1, iblockdata1, fluidtype));
+     }
+ 
+     private boolean a(IBlockAccess iblockaccess, FluidType fluidtype, BlockPosition blockposition, IBlockData iblockdata, EnumDirection enumdirection, BlockPosition blockposition1, IBlockData iblockdata1, Fluid fluid) {
+@@ -430,7 +430,7 @@ public abstract class FluidTypeFlowing extends FluidType {
+         } else if (!(block instanceof BlockDoor) && !block.a((Tag) TagsBlock.SIGNS) && block != Blocks.LADDER && block != Blocks.SUGAR_CANE && block != Blocks.BUBBLE_COLUMN) {
+             Material material = iblockdata.getMaterial();
+ 
+-            return material != Material.PORTAL && material != Material.STRUCTURE_VOID && material != Material.WATER_PLANT && material != Material.REPLACEABLE_WATER_PLANT ? !material.isSolid() : false;
++            return material != Material.PORTAL && material != Material.STRUCTURE_VOID && material != Material.WATER_PLANT && material != Material.REPLACEABLE_WATER_PLANT && !material.isSolid();
+         } else {
+             return false;
+         }
+diff --git a/src/main/java/net/minecraft/server/GameRules.java b/src/main/java/net/minecraft/server/GameRules.java
+index 22a9bf4887278a07969aaccbb2dcb749f0c8a797..c49affa9c60c117fd4b8fcd8c1149eec0602fb90 100644
+--- a/src/main/java/net/minecraft/server/GameRules.java
++++ b/src/main/java/net/minecraft/server/GameRules.java
+@@ -358,7 +358,7 @@ public class GameRules {
+         }
+ 
+         public boolean equals(Object object) {
+-            return this == object ? true : object instanceof GameRules.GameRuleKey && ((GameRules.GameRuleKey) object).a.equals(this.a);
++            return this == object || object instanceof GameRuleKey && ((GameRuleKey) object).a.equals(this.a);
+         }
+ 
+         public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/GenLayers.java b/src/main/java/net/minecraft/server/GenLayers.java
+index 76a76c26650bca73828d7893a537a0235f573e20..87d1b2dcfa14a3c666fa75e9d6729c6fb38aa696 100644
+--- a/src/main/java/net/minecraft/server/GenLayers.java
++++ b/src/main/java/net/minecraft/server/GenLayers.java
+@@ -160,7 +160,7 @@ public class GenLayers {
+     }
+     // Yatopia end
+     public static boolean a(int i, int j) {
+-        return i == j ? true : GenLayers.a.get(i) == GenLayers.a.get(j);
++        return i == j || GenLayers.a.get(i) == GenLayers.a.get(j);
+     }
+ 
+     private static void a(Int2IntOpenHashMap int2intopenhashmap, GenLayers.Type genlayers_type, int i) {
+diff --git a/src/main/java/net/minecraft/server/IEntityAngerable.java b/src/main/java/net/minecraft/server/IEntityAngerable.java
+index 5e2f5536efb3667916942cb3cd2a98a0484d2156..9b744d6a91449699e74cbfdd5d7783afc0b1186e 100644
+--- a/src/main/java/net/minecraft/server/IEntityAngerable.java
++++ b/src/main/java/net/minecraft/server/IEntityAngerable.java
+@@ -71,7 +71,7 @@ public interface IEntityAngerable {
+     }
+ 
+     default boolean a_(EntityLiving entityliving) {
+-        return !IEntitySelector.f.test(entityliving) ? false : (entityliving.getEntityType() == EntityTypes.PLAYER && this.a(entityliving.world) ? true : entityliving.getUniqueID().equals(this.getAngerTarget()));
++        return IEntitySelector.f.test(entityliving) && (entityliving.getEntityType() == EntityTypes.PLAYER && this.a(entityliving.world) || entityliving.getUniqueID().equals(this.getAngerTarget()));
+     }
+ 
+     default boolean a(World world) {
+diff --git a/src/main/java/net/minecraft/server/IEntitySelector.java b/src/main/java/net/minecraft/server/IEntitySelector.java
+index 5f85a1d513f4fdc21b64e1a2b6882e3325b98ddd..c9f0bc96a53ff5d4de51f9e3d976c67a8611f593 100644
+--- a/src/main/java/net/minecraft/server/IEntitySelector.java
++++ b/src/main/java/net/minecraft/server/IEntitySelector.java
+@@ -68,7 +68,7 @@ public final class IEntitySelector {
+                 } else {
+                     boolean flag = scoreboardteambase != null && scoreboardteambase.isAlly(scoreboardteambase1);
+ 
+-                    return (scoreboardteambase_enumteampush == ScoreboardTeamBase.EnumTeamPush.PUSH_OWN_TEAM || scoreboardteambase_enumteampush1 == ScoreboardTeamBase.EnumTeamPush.PUSH_OWN_TEAM) && flag ? false : scoreboardteambase_enumteampush != ScoreboardTeamBase.EnumTeamPush.PUSH_OTHER_TEAMS && scoreboardteambase_enumteampush1 != ScoreboardTeamBase.EnumTeamPush.PUSH_OTHER_TEAMS || flag;
++                    return ((scoreboardteambase_enumteampush != ScoreboardTeamBase.EnumTeamPush.PUSH_OWN_TEAM && scoreboardteambase_enumteampush1 != ScoreboardTeamBase.EnumTeamPush.PUSH_OWN_TEAM) || !flag) && (scoreboardteambase_enumteampush != ScoreboardTeamBase.EnumTeamPush.PUSH_OTHER_TEAMS && scoreboardteambase_enumteampush1 != ScoreboardTeamBase.EnumTeamPush.PUSH_OTHER_TEAMS || flag);
+                 }
+             }
+         }));
+diff --git a/src/main/java/net/minecraft/server/InventoryEnderChest.java b/src/main/java/net/minecraft/server/InventoryEnderChest.java
+index df11848a03d2c08e935624e46489a62bc56de1da..f684be0e646b6237e414a043c05865755ff7e0b5 100644
+--- a/src/main/java/net/minecraft/server/InventoryEnderChest.java
++++ b/src/main/java/net/minecraft/server/InventoryEnderChest.java
+@@ -93,7 +93,7 @@ public class InventoryEnderChest extends InventorySubcontainer {
+ 
+     @Override
+     public boolean a(EntityHuman entityhuman) {
+-        return this.a != null && !this.a.a(entityhuman) ? false : super.a(entityhuman);
++        return (this.a == null || this.a.a(entityhuman)) && super.a(entityhuman);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/ItemStack.java b/src/main/java/net/minecraft/server/ItemStack.java
+index cf3e4382aecd4c44c45877386eaf8fcc49657029..faca45c32da94ee657b21710c86748b7b37e9a0f 100644
+--- a/src/main/java/net/minecraft/server/ItemStack.java
++++ b/src/main/java/net/minecraft/server/ItemStack.java
+@@ -558,23 +558,23 @@ public final class ItemStack {
+     }
+ 
+     public static boolean equals(ItemStack itemstack, ItemStack itemstack1) {
+-        return itemstack.isEmpty() && itemstack1.isEmpty() ? true : (!itemstack.isEmpty() && !itemstack1.isEmpty() ? (itemstack.tag == null && itemstack1.tag != null ? false : itemstack.tag == null || itemstack.tag.equals(itemstack1.tag)) : false);
++        return itemstack.isEmpty() && itemstack1.isEmpty() || (!itemstack.isEmpty() && !itemstack1.isEmpty() && ((itemstack.tag != null || itemstack1.tag == null) && (itemstack.tag == null || itemstack.tag.equals(itemstack1.tag))));
+     }
+ 
+     public static boolean matches(ItemStack itemstack, ItemStack itemstack1) {
+-        return itemstack.isEmpty() && itemstack1.isEmpty() ? true : (!itemstack.isEmpty() && !itemstack1.isEmpty() ? itemstack.c(itemstack1) : false);
++        return itemstack.isEmpty() && itemstack1.isEmpty() || (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.c(itemstack1));
+     }
+ 
+     private boolean c(ItemStack itemstack) {
+-        return this.count != itemstack.count ? false : (this.getItem() != itemstack.getItem() ? false : (this.tag == null && itemstack.tag != null ? false : this.tag == null || this.tag.equals(itemstack.tag)));
++        return this.count == itemstack.count && (this.getItem() == itemstack.getItem() && ((this.tag != null || itemstack.tag == null) && (this.tag == null || this.tag.equals(itemstack.tag))));
+     }
+ 
+     public static boolean c(ItemStack itemstack, ItemStack itemstack1) {
+-        return itemstack == itemstack1 ? true : (!itemstack.isEmpty() && !itemstack1.isEmpty() ? itemstack.doMaterialsMatch(itemstack1) : false);
++        return itemstack == itemstack1 || (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.doMaterialsMatch(itemstack1));
+     }
+ 
+     public static boolean d(ItemStack itemstack, ItemStack itemstack1) {
+-        return itemstack == itemstack1 ? true : (!itemstack.isEmpty() && !itemstack1.isEmpty() ? itemstack.b(itemstack1) : false);
++        return itemstack == itemstack1 || (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.b(itemstack1));
+     }
+ 
+     public boolean doMaterialsMatch(ItemStack itemstack) {
+@@ -784,7 +784,7 @@ public final class ItemStack {
+     }
+ 
+     public boolean canEnchant() {
+-        return !this.getItem().f_(this) ? false : !this.hasEnchantments();
++        return this.getItem().f_(this) && !this.hasEnchantments();
+     }
+ 
+     public void addEnchantment(Enchantment enchantment, int i) {
+@@ -803,7 +803,7 @@ public final class ItemStack {
+     }
+ 
+     public boolean hasEnchantments() {
+-        return this.tag != null && this.tag.hasKeyOfType("Enchantments", 9) ? !this.tag.getList("Enchantments", 10).isEmpty() : false;
++        return this.tag != null && this.tag.hasKeyOfType("Enchantments", 9) && !this.tag.getList("Enchantments", 10).isEmpty();
+     }
+ 
+     public void getOrCreateTagAndSet(String s, NBTBase nbtbase) { a(s, nbtbase);} // Paper - OBFHELPER
+@@ -917,7 +917,7 @@ public final class ItemStack {
+     }
+ 
+     private static boolean a(ShapeDetectorBlock shapedetectorblock, @Nullable ShapeDetectorBlock shapedetectorblock1) {
+-        return shapedetectorblock1 != null && shapedetectorblock.a() == shapedetectorblock1.a() ? (shapedetectorblock.b() == null && shapedetectorblock1.b() == null ? true : (shapedetectorblock.b() != null && shapedetectorblock1.b() != null ? Objects.equals(shapedetectorblock.b().save(new NBTTagCompound()), shapedetectorblock1.b().save(new NBTTagCompound())) : false)) : false;
++        return shapedetectorblock1 != null && shapedetectorblock.a() == shapedetectorblock1.a() && (shapedetectorblock.b() == null && shapedetectorblock1.b() == null || (shapedetectorblock.b() != null && shapedetectorblock1.b() != null && Objects.equals(shapedetectorblock.b().save(new NBTTagCompound()), shapedetectorblock1.b().save(new NBTTagCompound()))));
+     }
+ 
+     public boolean a(ITagRegistry itagregistry, ShapeDetectorBlock shapedetectorblock) {
+diff --git a/src/main/java/net/minecraft/server/MobEffectList.java b/src/main/java/net/minecraft/server/MobEffectList.java
+index 8d687caf16cf1b45b7fa85b9110e923d473296e6..88cdd535185da691b9bb829a25794b40e18a1e03 100644
+--- a/src/main/java/net/minecraft/server/MobEffectList.java
++++ b/src/main/java/net/minecraft/server/MobEffectList.java
+@@ -98,13 +98,13 @@ public class MobEffectList {
+ 
+         if (this == MobEffects.REGENERATION) {
+             k = 50 >> j;
+-            return k > 0 ? i % k == 0 : true;
++            return k <= 0 || i % k == 0;
+         } else if (this == MobEffects.POISON) {
+             k = 25 >> j;
+-            return k > 0 ? i % k == 0 : true;
++            return k <= 0 || i % k == 0;
+         } else if (this == MobEffects.WITHER) {
+             k = 40 >> j;
+-            return k > 0 ? i % k == 0 : true;
++            return k <= 0 || i % k == 0;
+         } else {
+             return this == MobEffects.HUNGER;
+         }
+diff --git a/src/main/java/net/minecraft/server/NBTTagByteArray.java b/src/main/java/net/minecraft/server/NBTTagByteArray.java
+index d7ba2db6380d04d732888420a86a396e009b84c8..9f0c439ba6c071612e2f8967722eb0c5fcd4b763 100644
+--- a/src/main/java/net/minecraft/server/NBTTagByteArray.java
++++ b/src/main/java/net/minecraft/server/NBTTagByteArray.java
+@@ -95,7 +95,7 @@ public class NBTTagByteArray extends NBTList<NBTTagByte> {
+     }
+ 
+     public boolean equals(Object object) {
+-        return this == object ? true : object instanceof NBTTagByteArray && Arrays.equals(this.data, ((NBTTagByteArray) object).data);
++        return this == object || object instanceof NBTTagByteArray && Arrays.equals(this.data, ((NBTTagByteArray) object).data);
+     }
+ 
+     public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/NBTTagCompound.java b/src/main/java/net/minecraft/server/NBTTagCompound.java
+index eda06b07106bda798f496aacb8733303a45a7935..7d10626349493ba5cc0c8d3ce7a7cca1ed2bbb95 100644
+--- a/src/main/java/net/minecraft/server/NBTTagCompound.java
++++ b/src/main/java/net/minecraft/server/NBTTagCompound.java
+@@ -221,7 +221,7 @@ public class NBTTagCompound implements NBTBase {
+     public boolean hasKeyOfType(String s, int i) {
+         byte b0 = this.d(s);
+ 
+-        return b0 == i ? true : (i != 99 ? false : b0 == 1 || b0 == 2 || b0 == 3 || b0 == 4 || b0 == 5 || b0 == 6);
++        return b0 == i || (i == 99 && (b0 == 1 || b0 == 2 || b0 == 3 || b0 == 4 || b0 == 5 || b0 == 6));
+     }
+ 
+     public byte getByte(String s) {
+@@ -438,7 +438,7 @@ public class NBTTagCompound implements NBTBase {
+     }
+ 
+     public boolean equals(Object object) {
+-        return this == object ? true : object instanceof NBTTagCompound && Objects.equals(this.map, ((NBTTagCompound) object).map);
++        return this == object || object instanceof NBTTagCompound && Objects.equals(this.map, ((NBTTagCompound) object).map);
+     }
+ 
+     public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/NBTTagIntArray.java b/src/main/java/net/minecraft/server/NBTTagIntArray.java
+index b470feaf3d3f06b60966cfceb9c46b3feb6f7776..692d75b5ce5e53a46ceb20397efdbfa5714b9cb7 100644
+--- a/src/main/java/net/minecraft/server/NBTTagIntArray.java
++++ b/src/main/java/net/minecraft/server/NBTTagIntArray.java
+@@ -104,7 +104,7 @@ public class NBTTagIntArray extends NBTList<NBTTagInt> {
+     }
+ 
+     public boolean equals(Object object) {
+-        return this == object ? true : object instanceof NBTTagIntArray && Arrays.equals(this.data, ((NBTTagIntArray) object).data);
++        return this == object || object instanceof NBTTagIntArray && Arrays.equals(this.data, ((NBTTagIntArray) object).data);
+     }
+ 
+     public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/NBTTagList.java b/src/main/java/net/minecraft/server/NBTTagList.java
+index 6625f5fad9396b696188710c6b35a23f1a99862f..af78aff3f12456f65481a8705495f27b5a4b7e7a 100644
+--- a/src/main/java/net/minecraft/server/NBTTagList.java
++++ b/src/main/java/net/minecraft/server/NBTTagList.java
+@@ -286,7 +286,7 @@ public class NBTTagList extends NBTList<NBTBase> {
+     }
+ 
+     public boolean equals(Object object) {
+-        return this == object ? true : object instanceof NBTTagList && Objects.equals(this.list, ((NBTTagList) object).list);
++        return this == object || object instanceof NBTTagList && Objects.equals(this.list, ((NBTTagList) object).list);
+     }
+ 
+     public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/NBTTagString.java b/src/main/java/net/minecraft/server/NBTTagString.java
+index f36e1bd69270bdfd9fa3de4626dc0f48cad8007b..592612b46e7c381fd41badce49673f5888905c61 100644
+--- a/src/main/java/net/minecraft/server/NBTTagString.java
++++ b/src/main/java/net/minecraft/server/NBTTagString.java
+@@ -71,7 +71,7 @@ public class NBTTagString implements NBTBase {
+     }
+ 
+     public boolean equals(Object object) {
+-        return this == object ? true : object instanceof NBTTagString && Objects.equals(this.data, ((NBTTagString) object).data);
++        return this == object || object instanceof NBTTagString && Objects.equals(this.data, ((NBTTagString) object).data);
+     }
+ 
+     public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/Navigation.java b/src/main/java/net/minecraft/server/Navigation.java
+index 873dde8f2cc58c0eea41e6ff7f2918340334be93..963219e0bed8b265e51a11efc6d78d14fb8afc39 100644
+--- a/src/main/java/net/minecraft/server/Navigation.java
++++ b/src/main/java/net/minecraft/server/Navigation.java
+@@ -208,7 +208,7 @@ public class Navigation extends AsyncNavigationAbstract {
+     }
+ 
+     protected boolean a(PathType pathtype) {
+-        return pathtype == PathType.WATER ? false : (pathtype == PathType.LAVA ? false : pathtype != PathType.OPEN);
++        return pathtype != PathType.WATER && (pathtype != PathType.LAVA && pathtype != PathType.OPEN);
+     }
+ 
+     private boolean b(int i, int j, int k, int l, int i1, int j1, Vec3D vec3d, double d0, double d1) {
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalBreakDoor.java b/src/main/java/net/minecraft/server/PathfinderGoalBreakDoor.java
+index c31bacf786ea750e922c938c042656515d8b0041..15a4ff0786accea24d584bb5aa137bb14d806043 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalBreakDoor.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalBreakDoor.java
+@@ -27,7 +27,7 @@ public class PathfinderGoalBreakDoor extends PathfinderGoalDoorInteract {
+ 
+     @Override
+     public boolean a() {
+-        return !super.a() ? false : ((!this.entity.world.purpurConfig.zombieBypassMobGriefing && !this.entity.world.getGameRules().getBoolean(GameRules.MOB_GRIEFING)) ? false : this.a(this.entity.world.getDifficulty()) && !this.g()); // Purpur
++        return super.a() && ((this.entity.world.purpurConfig.zombieBypassMobGriefing || this.entity.world.getGameRules().getBoolean(GameRules.MOB_GRIEFING)) && this.a(this.entity.world.getDifficulty()) && !this.g()); // Purpur
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalFollowOwner.java b/src/main/java/net/minecraft/server/PathfinderGoalFollowOwner.java
+index de9cc71cd237b4b109886a4b1e56a0bb43afc46d..5d781f96d71945f1095a6f16d29ea1b96ed7bb94 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalFollowOwner.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalFollowOwner.java
+@@ -55,7 +55,7 @@ public class PathfinderGoalFollowOwner extends PathfinderGoal {
+ 
+     @Override
+     public boolean b() {
+-        return this.e.m() ? false : (this.a.isWillSit() ? false : this.a.h((Entity) this.b) > (double) (this.g * this.g));
++        return !this.e.m() && (!this.a.isWillSit() && this.a.h((Entity) this.b) > (double) (this.g * this.g));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalLookAtPlayer.java b/src/main/java/net/minecraft/server/PathfinderGoalLookAtPlayer.java
+index 2c92b1ef1d2381534ae4829660def9044fdee960..94c44cfc8d6ebdcc9634edd52c401eb3eef49380 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalLookAtPlayer.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalLookAtPlayer.java
+@@ -58,7 +58,7 @@ public class PathfinderGoalLookAtPlayer extends PathfinderGoal {
+ 
+     @Override
+     public boolean b() {
+-        return !this.b.isAlive() ? false : (this.a.h(this.b) > (double) (this.c * this.c) ? false : this.g > 0);
++        return this.b.isAlive() && (!(this.a.h(this.b) > (double) (this.c * this.c)) && this.g > 0);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalRemoveBlock.java b/src/main/java/net/minecraft/server/PathfinderGoalRemoveBlock.java
+index 0119eb85fbb2aa85b402f7e0ff712e83c79880a4..e6a74ae5c334f0fb6de1aa6264ab62bc3609e218 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalRemoveBlock.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalRemoveBlock.java
+@@ -39,7 +39,7 @@ public class PathfinderGoalRemoveBlock extends PathfinderGoalGotoTarget {
+     }
+ 
+     private boolean n() {
+-        return this.e != null && this.a((IWorldReader) this.a.world, this.e) ? true : this.m();
++        return this.e != null && this.a((IWorldReader) this.a.world, this.e) || this.m();
+     }
+ 
+     @Override
+@@ -142,6 +142,6 @@ public class PathfinderGoalRemoveBlock extends PathfinderGoalGotoTarget {
+     protected boolean a(IWorldReader iworldreader, BlockPosition blockposition) {
+         IChunkAccess ichunkaccess = iworldreader.getChunkIfLoadedImmediately(blockposition.getX() >> 4, blockposition.getZ() >> 4); // Paper
+ 
+-        return ichunkaccess == null ? false : ichunkaccess.getType(blockposition).a(this.g) && ichunkaccess.getType(blockposition.up()).isAir() && ichunkaccess.getType(blockposition.up(2)).isAir();
++        return ichunkaccess != null && ichunkaccess.getType(blockposition).a(this.g) && ichunkaccess.getType(blockposition.up()).isAir() && ichunkaccess.getType(blockposition.up(2)).isAir();
+     }
+ }
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalSit.java b/src/main/java/net/minecraft/server/PathfinderGoalSit.java
+index 31144e9e6e79e827687b5f42de5ec3a71bae62b5..c7fd6e665312f9a889430382aa8520dfac082a14 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalSit.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalSit.java
+@@ -27,7 +27,7 @@ public class PathfinderGoalSit extends PathfinderGoal {
+         } else {
+             EntityLiving entityliving = this.entity.getOwner();
+ 
+-            return entityliving == null ? true : (this.entity.h((Entity) entityliving) < 144.0D && entityliving.getLastDamager() != null ? false : this.entity.isWillSit());
++            return entityliving == null || ((!(this.entity.h((Entity) entityliving) < 144.0D) || entityliving.getLastDamager() == null) && this.entity.isWillSit());
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalTempt.java b/src/main/java/net/minecraft/server/PathfinderGoalTempt.java
+index 582ea29068de07edce73ab1a55d3ae7373650e16..258c09321651cbccf466095c09664df936a10718 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalTempt.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalTempt.java
+@@ -48,7 +48,7 @@ public class PathfinderGoalTempt extends PathfinderGoal {
+         } else {
+             this.target = this.a.world.a(PathfinderGoalTempt.c, (EntityLiving) this.a);
+             // CraftBukkit start
+-            boolean tempt = this.target == null ? false : this.a(this.target.getItemInMainHand()) || this.a(this.target.getItemInOffHand());
++            boolean tempt = this.target != null && (this.a(this.target.getItemInMainHand()) || this.a(this.target.getItemInOffHand()));
+             if (tempt) {
+                 EntityTargetLivingEntityEvent event = CraftEventFactory.callEntityTargetLivingEvent(this.a, this.target, EntityTargetEvent.TargetReason.TEMPT);
+                 if (event.isCancelled()) {
+diff --git a/src/main/java/net/minecraft/server/PathfinderGoalWrapped.java b/src/main/java/net/minecraft/server/PathfinderGoalWrapped.java
+index 2e56fcc32f914d2b5f4bb9d368f504f4d3e8795c..1f41f765a32698b8cfadcd9051d7909736134193 100644
+--- a/src/main/java/net/minecraft/server/PathfinderGoalWrapped.java
++++ b/src/main/java/net/minecraft/server/PathfinderGoalWrapped.java
+@@ -79,7 +79,7 @@ public class PathfinderGoalWrapped extends PathfinderGoal {
+     }
+ 
+     public boolean equals(@Nullable Object object) {
+-        return this == object ? true : (object != null && this.getClass() == object.getClass() ? this.a.equals(((PathfinderGoalWrapped) object).a) : false);
++        return this == object || (object != null && this.getClass() == object.getClass() && this.a.equals(((PathfinderGoalWrapped) object).a));
+     }
+ 
+     public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/PersistentRaid.java b/src/main/java/net/minecraft/server/PersistentRaid.java
+index cf813943a735bc63952e151fadaa9b1d9c4ce834..7913e67d302d4b7dea876cc0540b3bcb949bdcac 100644
+--- a/src/main/java/net/minecraft/server/PersistentRaid.java
++++ b/src/main/java/net/minecraft/server/PersistentRaid.java
+@@ -64,7 +64,7 @@ public class PersistentRaid extends PersistentBase {
+     }
+ 
+     public static boolean a(EntityRaider entityraider, Raid raid) {
+-        return entityraider != null && raid != null && raid.getWorld() != null ? entityraider.isAlive() && entityraider.isCanJoinRaid() && entityraider.dd() <= 2400 && entityraider.world.getDimensionManager() == raid.getWorld().getDimensionManager() : false;
++        return entityraider != null && raid != null && raid.getWorld() != null && entityraider.isAlive() && entityraider.isCanJoinRaid() && entityraider.dd() <= 2400 && entityraider.world.getDimensionManager() == raid.getWorld().getDimensionManager();
+     }
+ 
+     @Nullable
+diff --git a/src/main/java/net/minecraft/server/PersistentStructureLegacy.java b/src/main/java/net/minecraft/server/PersistentStructureLegacy.java
+index bc1d1e65ebf2ac8794dc592733c480cbf77d8191..8ed03a73fb62da01f94b544bbc933c7f3d31b1af 100644
+--- a/src/main/java/net/minecraft/server/PersistentStructureLegacy.java
++++ b/src/main/java/net/minecraft/server/PersistentStructureLegacy.java
+@@ -104,7 +104,7 @@ public class PersistentStructureLegacy {
+     }
+ 
+     private boolean a(int i, int j, String s) {
+-        return !this.c ? false : this.d.get(s) != null && ((PersistentIndexed) this.e.get(PersistentStructureLegacy.a.get(s))).b(ChunkCoordIntPair.pair(i, j));
++        return this.c && this.d.get(s) != null && ((PersistentIndexed) this.e.get(PersistentStructureLegacy.a.get(s))).b(ChunkCoordIntPair.pair(i, j));
+     }
+ 
+     private boolean a(int i, int j) {
+diff --git a/src/main/java/net/minecraft/server/PiglinAI.java b/src/main/java/net/minecraft/server/PiglinAI.java
+index 0fa81573f1384b10a4eb321ca0113b6717821bbc..2fa2ad5c7eeb166b32710398cf00e3ab106451dc 100644
+--- a/src/main/java/net/minecraft/server/PiglinAI.java
++++ b/src/main/java/net/minecraft/server/PiglinAI.java
+@@ -270,7 +270,7 @@ public class PiglinAI {
+     }
+ 
+     private static boolean a(EntityLiving entityliving, EntityLiving entityliving1) {
+-        return entityliving1.getEntityType() != EntityTypes.HOGLIN ? false : (new Random(entityliving.world.getTime())).nextFloat() < 0.1F;
++        return entityliving1.getEntityType() == EntityTypes.HOGLIN && (new Random(entityliving.world.getTime())).nextFloat() < 0.1F;
+     }
+ 
+     protected static boolean a(EntityPiglin entitypiglin, ItemStack itemstack) {
+@@ -454,7 +454,7 @@ public class PiglinAI {
+     private static boolean l(EntityPiglin entitypiglin) {
+         BehaviorController<EntityPiglin> behaviorcontroller = entitypiglin.getBehaviorController();
+ 
+-        return !behaviorcontroller.hasMemory(MemoryModuleType.AVOID_TARGET) ? false : ((EntityLiving) behaviorcontroller.getMemory(MemoryModuleType.AVOID_TARGET).get()).a((Entity) entitypiglin, 12.0D);
++        return behaviorcontroller.hasMemory(MemoryModuleType.AVOID_TARGET) && ((EntityLiving) behaviorcontroller.getMemory(MemoryModuleType.AVOID_TARGET).get()).a((Entity) entitypiglin, 12.0D);
+     }
+ 
+     protected static boolean e(EntityPiglin entitypiglin) {
+@@ -591,7 +591,7 @@ public class PiglinAI {
+             EntityLiving entityliving = (EntityLiving) behaviorcontroller.getMemory(MemoryModuleType.AVOID_TARGET).get();
+             EntityTypes<?> entitytypes = entityliving.getEntityType();
+ 
+-            return entitytypes == EntityTypes.HOGLIN ? p(entitypiglin) : (a(entitytypes) ? !behaviorcontroller.b(MemoryModuleType.NEAREST_VISIBLE_ZOMBIFIED, entityliving) : false); // CraftBukkit - decompile error
++            return entitytypes == EntityTypes.HOGLIN ? p(entitypiglin) : (a(entitytypes) && !behaviorcontroller.b(MemoryModuleType.NEAREST_VISIBLE_ZOMBIFIED, entityliving)); // CraftBukkit - decompile error
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/PistonExtendsChecker.java b/src/main/java/net/minecraft/server/PistonExtendsChecker.java
+index a38017a95bf539b4bf71a1c37da4850dc38ce99d..41d19429663ded9dad6d763f79abec269b6a3f9e 100644
+--- a/src/main/java/net/minecraft/server/PistonExtendsChecker.java
++++ b/src/main/java/net/minecraft/server/PistonExtendsChecker.java
+@@ -61,7 +61,7 @@ public class PistonExtendsChecker {
+     }
+ 
+     private static boolean a(Block block, Block block1) {
+-        return block == Blocks.HONEY_BLOCK && block1 == Blocks.SLIME_BLOCK ? false : (block == Blocks.SLIME_BLOCK && block1 == Blocks.HONEY_BLOCK ? false : a(block) || a(block1));
++        return (block != Blocks.HONEY_BLOCK || block1 != Blocks.SLIME_BLOCK) && ((block != Blocks.SLIME_BLOCK || block1 != Blocks.HONEY_BLOCK) && (a(block) || a(block1)));
+     }
+ 
+     private boolean a(BlockPosition blockposition, EnumDirection enumdirection) {
+diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+index c9bfabc07aee418e7a2e4ba4b9ba75fd726f1885..2c05e49cca318ce897c3cccdf1f15353a14433f6 100644
+--- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
++++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
+@@ -2489,7 +2489,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+         // Paper end - use distance map to optimise tracker
+ 
+         public boolean equals(Object object) {
+-            return object instanceof PlayerChunkMap.EntityTracker ? ((PlayerChunkMap.EntityTracker) object).tracker.getId() == this.tracker.getId() : false;
++            return object instanceof EntityTracker && ((EntityTracker) object).tracker.getId() == this.tracker.getId();
+         }
+ 
+         public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
+index ade56433d7d75fc704f66aec8405ec9cbf49b68c..a46d17e8250ed66d2c8f683c2932531f3fd554b9 100644
+--- a/src/main/java/net/minecraft/server/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/PlayerConnection.java
+@@ -383,7 +383,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+ 
+     private static boolean b(PacketPlayInFlying packetplayinflying) {
+         // return Doubles.isFinite(packetplayinflying.a(0.0D)) && Doubles.isFinite(packetplayinflying.b(0.0D)) && Doubles.isFinite(packetplayinflying.c(0.0D)) && Floats.isFinite(packetplayinflying.b(0.0F)) && Floats.isFinite(packetplayinflying.a(0.0F)) ? Math.abs(packetplayinflying.a(0.0D)) > 3.0E7D || Math.abs(packetplayinflying.b(0.0D)) > 3.0E7D || Math.abs(packetplayinflying.c(0.0D)) > 3.0E7D : true;
+-        return Doubles.isFinite(packetplayinflying.a(0.0D)) && Doubles.isFinite(packetplayinflying.b(0.0D)) && Doubles.isFinite(packetplayinflying.c(0.0D)) && Floats.isFinite(packetplayinflying.b(0.0F)) && Floats.isFinite(packetplayinflying.a(0.0F)) ? false : true;
++        return !Doubles.isFinite(packetplayinflying.a(0.0D)) || !Doubles.isFinite(packetplayinflying.b(0.0D)) || !Doubles.isFinite(packetplayinflying.c(0.0D)) || !Floats.isFinite(packetplayinflying.b(0.0F)) || !Floats.isFinite(packetplayinflying.a(0.0F));
+     }
+ 
+     private static boolean b(PacketPlayInVehicleMove packetplayinvehiclemove) {
+diff --git a/src/main/java/net/minecraft/server/PlayerInventory.java b/src/main/java/net/minecraft/server/PlayerInventory.java
+index aac9e14f23b59102228d2ff148a2cb63b44aaa11..829162eb85bc7f119ba4bdc0471be145f2b063de 100644
+--- a/src/main/java/net/minecraft/server/PlayerInventory.java
++++ b/src/main/java/net/minecraft/server/PlayerInventory.java
+@@ -602,7 +602,7 @@ public class PlayerInventory implements IInventory, INamableTileEntity {
+ 
+     @Override
+     public boolean a(EntityHuman entityhuman) {
+-        return this.player.dead ? false : entityhuman.h((Entity) this.player) <= 64.0D;
++        return !this.player.dead && entityhuman.h((Entity) this.player) <= 64.0D;
+     }
+ 
+     public boolean h(ItemStack itemstack) {
+diff --git a/src/main/java/net/minecraft/server/RegionFileCache.java b/src/main/java/net/minecraft/server/RegionFileCache.java
+index 8b341c14e7082fc96a464f2386a3dedea31ec59c..939c19660e30cede704eb258b51fda2e9a6815af 100644
+--- a/src/main/java/net/minecraft/server/RegionFileCache.java
++++ b/src/main/java/net/minecraft/server/RegionFileCache.java
+@@ -315,7 +315,7 @@ public class RegionFileCache implements AutoCloseable { // Paper - no final
+     public synchronized boolean chunkExists(ChunkCoordIntPair pos) throws IOException { // Paper - synchronize
+         RegionFile regionfile = getFile(pos, true);
+ 
+-        return regionfile != null ? regionfile.chunkExists(pos) : false;
++        return regionfile != null && regionfile.chunkExists(pos);
+     }
+     // CraftBukkit end
+ }
+diff --git a/src/main/java/net/minecraft/server/RemoteStatusListener.java b/src/main/java/net/minecraft/server/RemoteStatusListener.java
+index abae8aefe2cf793dd1db2b478207856cdf24fdb0..6765334f388a33a4208008c4417bf9387cc1c9b0 100644
+--- a/src/main/java/net/minecraft/server/RemoteStatusListener.java
++++ b/src/main/java/net/minecraft/server/RemoteStatusListener.java
+@@ -349,7 +349,7 @@ public class RemoteStatusListener extends RemoteConnectionThread {
+ 
+     @Override
+     public boolean a() {
+-        return this.a ? true : (!this.e() ? false : super.a());
++        return this.a || (!this.e() ? false : super.a());
+     }
+ 
+     private void a(Exception exception) {
+diff --git a/src/main/java/net/minecraft/server/SpawnerCreature.java b/src/main/java/net/minecraft/server/SpawnerCreature.java
+index 2fdd5e4424b65896f53b430effba9e6b769dd165..cf0f79fab0b6db09562755380ad690d617167938 100644
+--- a/src/main/java/net/minecraft/server/SpawnerCreature.java
++++ b/src/main/java/net/minecraft/server/SpawnerCreature.java
+@@ -330,7 +330,7 @@ public final class SpawnerCreature {
+         } else if (entitytypes.b() && a(worldserver, structuremanager, chunkgenerator, enumcreaturetype, biomesettingsmobs_c, (BlockPosition) blockposition_mutableblockposition)) {
+             EntityPositionTypes.Surface entitypositiontypes_surface = EntityPositionTypes.a(entitytypes);
+ 
+-            return !a(entitypositiontypes_surface, (IWorldReader) worldserver, blockposition_mutableblockposition, entitytypes) ? false : (!EntityPositionTypes.a(entitytypes, worldserver, EnumMobSpawn.NATURAL, blockposition_mutableblockposition, worldserver.random) ? false : worldserver.b(entitytypes.a((double) blockposition_mutableblockposition.getX() + 0.5D, (double) blockposition_mutableblockposition.getY(), (double) blockposition_mutableblockposition.getZ() + 0.5D)));
++            return a(entitypositiontypes_surface, (IWorldReader) worldserver, blockposition_mutableblockposition, entitytypes) && (EntityPositionTypes.a(entitytypes, worldserver, EnumMobSpawn.NATURAL, blockposition_mutableblockposition, worldserver.random) && worldserver.b(entitytypes.a((double) blockposition_mutableblockposition.getX() + 0.5D, (double) blockposition_mutableblockposition.getY(), (double) blockposition_mutableblockposition.getZ() + 0.5D)));
+         } else {
+             return false;
+         }
+@@ -356,7 +356,7 @@ public final class SpawnerCreature {
+     }
+ 
+     private static boolean a(WorldServer worldserver, EntityInsentient entityinsentient, double d0) {
+-        return d0 > (double) (entityinsentient.getEntityType().e().f() * entityinsentient.getEntityType().e().f()) && entityinsentient.isTypeNotPersistent(d0) ? false : entityinsentient.a((GeneratorAccess) worldserver, EnumMobSpawn.NATURAL) && entityinsentient.a((IWorldReader) worldserver);
++        return (!(d0 > (double) (entityinsentient.getEntityType().e().f() * entityinsentient.getEntityType().e().f())) || !entityinsentient.isTypeNotPersistent(d0)) && entityinsentient.a((GeneratorAccess) worldserver, EnumMobSpawn.NATURAL) && entityinsentient.a((IWorldReader) worldserver);
+     }
+ 
+     @Nullable
+@@ -395,7 +395,7 @@ public final class SpawnerCreature {
+ 
+     public static boolean canSpawn(IBlockAccess iblockaccess, BlockPosition blockposition, IBlockData iblockdata, Fluid fluid, EntityTypes entitytypes) { return a(iblockaccess, blockposition, iblockdata, fluid, entitytypes); } // Purpur - OBFHELPER
+     public static boolean a(IBlockAccess iblockaccess, BlockPosition blockposition, IBlockData iblockdata, Fluid fluid, EntityTypes<?> entitytypes) {
+-        return iblockdata.r(iblockaccess, blockposition) ? false : (iblockdata.isPowerSource() ? false : (!fluid.isEmpty() ? false : (iblockdata.a((Tag) TagsBlock.PREVENT_MOB_SPAWNING_INSIDE) ? false : !entitytypes.a(iblockdata))));
++        return !iblockdata.r(iblockaccess, blockposition) && (!iblockdata.isPowerSource() && (fluid.isEmpty() && (!iblockdata.a((Tag) TagsBlock.PREVENT_MOB_SPAWNING_INSIDE) && !entitytypes.a(iblockdata))));
+     }
+ 
+     public static boolean a(EntityPositionTypes.Surface entitypositiontypes_surface, IWorldReader iworldreader, BlockPosition blockposition, @Nullable EntityTypes<?> entitytypes) {
+@@ -416,7 +416,7 @@ public final class SpawnerCreature {
+                 default:
+                     IBlockData iblockdata1 = iworldreader.getType(blockposition2);
+ 
+-                    return !iblockdata1.a((IBlockAccess) iworldreader, blockposition2, entitytypes) ? false : a((IBlockAccess) iworldreader, blockposition, iblockdata, fluid, entitytypes) && a((IBlockAccess) iworldreader, blockposition1, iworldreader.getType(blockposition1), iworldreader.getFluid(blockposition1), entitytypes);
++                    return iblockdata1.a((IBlockAccess) iworldreader, blockposition2, entitytypes) && a((IBlockAccess) iworldreader, blockposition, iblockdata, fluid, entitytypes) && a((IBlockAccess) iworldreader, blockposition1, iworldreader.getType(blockposition1), iworldreader.getFluid(blockposition1), entitytypes);
+             }
+         } else {
+             return false;
+diff --git a/src/main/java/net/minecraft/server/ThreadedMailbox.java b/src/main/java/net/minecraft/server/ThreadedMailbox.java
+index faf4745d368993ccdf0c017937efc5be7805083b..a6458f73df68fbd0996b95695669530fcbf1f18f 100644
+--- a/src/main/java/net/minecraft/server/ThreadedMailbox.java
++++ b/src/main/java/net/minecraft/server/ThreadedMailbox.java
+@@ -49,7 +49,7 @@ public class ThreadedMailbox<T> implements Mailbox<T>, AutoCloseable, Runnable {
+     }
+ 
+     private boolean c() {
+-        return (this.c.get() & 1) != 0 ? false : !this.a.b();
++        return (this.c.get() & 1) == 0 && !this.a.b();
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/TileEntityBrewingStand.java b/src/main/java/net/minecraft/server/TileEntityBrewingStand.java
+index bc4a30a771e4cdfcccf3733dc7f8111b8dc30c82..a337d8958a7c0da2dd2b0e1cb74e74908b4d8363 100644
+--- a/src/main/java/net/minecraft/server/TileEntityBrewingStand.java
++++ b/src/main/java/net/minecraft/server/TileEntityBrewingStand.java
+@@ -324,7 +324,7 @@ public class TileEntityBrewingStand extends TileEntityContainer implements IWorl
+ 
+     @Override
+     public boolean a(EntityHuman entityhuman) {
+-        return this.world.getTileEntity(this.position) != this ? false : entityhuman.h((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D) <= 64.0D;
++        return this.world.getTileEntity(this.position) == this && entityhuman.h((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D) <= 64.0D;
+     }
+ 
+     @Override
+@@ -350,7 +350,7 @@ public class TileEntityBrewingStand extends TileEntityContainer implements IWorl
+ 
+     @Override
+     public boolean canTakeItemThroughFace(int i, ItemStack itemstack, EnumDirection enumdirection) {
+-        return i == 3 ? itemstack.getItem() == Items.GLASS_BOTTLE : true;
++        return i != 3 || itemstack.getItem() == Items.GLASS_BOTTLE;
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/TileEntityEnderChest.java b/src/main/java/net/minecraft/server/TileEntityEnderChest.java
+index 94c2bfce5059d784655d729f384c70b165432311..4146f9b39070f7aef03a63704483d769ca1c85a4 100644
+--- a/src/main/java/net/minecraft/server/TileEntityEnderChest.java
++++ b/src/main/java/net/minecraft/server/TileEntityEnderChest.java
+@@ -148,6 +148,6 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
+     }
+ 
+     public boolean a(EntityHuman entityhuman) {
+-        return this.world.getTileEntity(this.position) != this ? false : entityhuman.h((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D) <= 64.0D;
++        return this.world.getTileEntity(this.position) == this && entityhuman.h((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D) <= 64.0D;
+     }
+ }
+diff --git a/src/main/java/net/minecraft/server/TileEntityFurnace.java b/src/main/java/net/minecraft/server/TileEntityFurnace.java
+index f58f704aef365586450e5cd9ede21bdc01f74383..1718dad3d1cd6a54a8562a3d60754071f8c3d9d8 100644
+--- a/src/main/java/net/minecraft/server/TileEntityFurnace.java
++++ b/src/main/java/net/minecraft/server/TileEntityFurnace.java
+@@ -391,7 +391,7 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
+             } else {
+                 ItemStack itemstack1 = (ItemStack) this.items.get(2);
+ 
+-                return itemstack1.isEmpty() ? true : (!itemstack1.doMaterialsMatch(itemstack) ? false : (itemstack1.getCount() < this.getMaxStackSize() && itemstack1.getCount() < itemstack1.getMaxStackSize() ? true : itemstack1.getCount() < itemstack.getMaxStackSize()));
++                return itemstack1.isEmpty() || (itemstack1.doMaterialsMatch(itemstack) && (itemstack1.getCount() < this.getMaxStackSize() && itemstack1.getCount() < itemstack1.getMaxStackSize() || itemstack1.getCount() < itemstack.getMaxStackSize()));
+             }
+         } else {
+             return false;
+@@ -551,7 +551,7 @@ public abstract class TileEntityFurnace extends TileEntityContainer implements I
+ 
+     @Override
+     public boolean a(EntityHuman entityhuman) {
+-        return this.world.getTileEntity(this.position) != this ? false : entityhuman.h((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D) <= 64.0D;
++        return this.world.getTileEntity(this.position) == this && entityhuman.h((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D) <= 64.0D;
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/TileEntityHopper.java b/src/main/java/net/minecraft/server/TileEntityHopper.java
+index 985d8eb16e22e399c6511d63472ed2b15eb5e357..2b1c1fc8829c017ae606960e54eab6d8d7fb8c06 100644
+--- a/src/main/java/net/minecraft/server/TileEntityHopper.java
++++ b/src/main/java/net/minecraft/server/TileEntityHopper.java
+@@ -585,7 +585,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+     }
+ 
+     private static boolean a(IInventory iinventory, ItemStack itemstack, int i, @Nullable EnumDirection enumdirection) {
+-        return !iinventory.b(i, itemstack) ? false : !(iinventory instanceof IWorldInventory) || ((IWorldInventory) iinventory).canPlaceItemThroughFace(i, itemstack, enumdirection);
++        return iinventory.b(i, itemstack) && (!(iinventory instanceof IWorldInventory) || ((IWorldInventory) iinventory).canPlaceItemThroughFace(i, itemstack, enumdirection));
+     }
+ 
+     private static boolean canTakeItem(IInventory iinventory, ItemStack itemstack, int i, EnumDirection enumdirection) { return b(iinventory, itemstack, i, enumdirection); } // Paper - OBFHELPER
+@@ -705,7 +705,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+     }
+ 
+     private static boolean a(ItemStack itemstack, ItemStack itemstack1) {
+-        return itemstack.getItem() != itemstack1.getItem() ? false : (itemstack.getDamage() != itemstack1.getDamage() ? false : (itemstack.getCount() > itemstack.getMaxStackSize() ? false : ItemStack.equals(itemstack, itemstack1)));
++        return itemstack.getItem() == itemstack1.getItem() && (itemstack.getDamage() == itemstack1.getDamage() && (itemstack.getCount() <= itemstack.getMaxStackSize() && ItemStack.equals(itemstack, itemstack1)));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/TileEntityLectern.java b/src/main/java/net/minecraft/server/TileEntityLectern.java
+index cb628464d04d65c611a228b9d8ca07a54ec28f2f..45928f11a9673d018a6b60d0871627b2aca47950 100644
+--- a/src/main/java/net/minecraft/server/TileEntityLectern.java
++++ b/src/main/java/net/minecraft/server/TileEntityLectern.java
+@@ -131,7 +131,7 @@ public class TileEntityLectern extends TileEntity implements Clearable, ITileInv
+ 
+         @Override
+         public boolean a(EntityHuman entityhuman) {
+-            return (TileEntityLectern.this.virtual && TileEntityLectern.this.hasBook()) || TileEntityLectern.this.world.getTileEntity(TileEntityLectern.this.position) != TileEntityLectern.this ? false : (entityhuman.h((double) TileEntityLectern.this.position.getX() + 0.5D, (double) TileEntityLectern.this.position.getY() + 0.5D, (double) TileEntityLectern.this.position.getZ() + 0.5D) > 64.0D ? false : TileEntityLectern.this.hasBook()); // EMC
++            return (!TileEntityLectern.this.virtual || !TileEntityLectern.this.hasBook()) && TileEntityLectern.this.world.getTileEntity(TileEntityLectern.this.position) == TileEntityLectern.this && (!(entityhuman.h((double) TileEntityLectern.this.position.getX() + 0.5D, (double) TileEntityLectern.this.position.getY() + 0.5D, (double) TileEntityLectern.this.position.getZ() + 0.5D) > 64.0D) && TileEntityLectern.this.hasBook()); // EMC
+         }
+ 
+         @Override
+diff --git a/src/main/java/net/minecraft/server/TileEntityLootable.java b/src/main/java/net/minecraft/server/TileEntityLootable.java
+index 525e4730cb40c1ed86012cd75712c428eeb780c2..24b70dc7ffed17473e3310d50c125e1abf76ceec 100644
+--- a/src/main/java/net/minecraft/server/TileEntityLootable.java
++++ b/src/main/java/net/minecraft/server/TileEntityLootable.java
+@@ -126,7 +126,7 @@ public abstract class TileEntityLootable extends TileEntityContainer {
+ 
+     @Override
+     public boolean a(EntityHuman entityhuman) {
+-        return this.world.getTileEntity(this.position) != this ? false : entityhuman.h((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D) <= 64.0D;
++        return this.world.getTileEntity(this.position) == this && entityhuman.h((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D) <= 64.0D;
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/Vec3D.java b/src/main/java/net/minecraft/server/Vec3D.java
+index 4469fdc932d725b8e6fa4f8e3ec15c22a88ca5e7..25511ea615618bc76567f1e83c1e2fa4c1241321 100644
+--- a/src/main/java/net/minecraft/server/Vec3D.java
++++ b/src/main/java/net/minecraft/server/Vec3D.java
+@@ -137,7 +137,7 @@ public class Vec3D implements IPosition {
+         } else {
+             Vec3D vec3d = (Vec3D) object;
+ 
+-            return Double.compare(vec3d.x, this.x) != 0 ? false : (Double.compare(vec3d.y, this.y) != 0 ? false : Double.compare(vec3d.z, this.z) == 0);
++            return Double.compare(vec3d.x, this.x) == 0 && (Double.compare(vec3d.y, this.y) == 0 && Double.compare(vec3d.z, this.z) == 0);
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/VillagePlace.java b/src/main/java/net/minecraft/server/VillagePlace.java
+index ea36457481532453aa510b6d69c4a7d54624d46e..5d791260ad3edcbab0ae97bfb26aaf27241b49f0 100644
+--- a/src/main/java/net/minecraft/server/VillagePlace.java
++++ b/src/main/java/net/minecraft/server/VillagePlace.java
+@@ -386,8 +386,8 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {
+     private boolean f(long i) {
+         Optional<VillagePlaceSection> optional = this.c(i);
+ 
+-        return optional == null ? false : (Boolean) optional.map((villageplacesection) -> {
+-            return villageplacesection.a(VillagePlaceType.b, VillagePlace.Occupancy.IS_OCCUPIED).count() > 0L;
++        return optional != null && (Boolean) optional.map((villageplacesection) -> {
++            return villageplacesection.a(VillagePlaceType.b, Occupancy.IS_OCCUPIED).count() > 0L;
+         }).orElse(false);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/VillagePlaceRecord.java b/src/main/java/net/minecraft/server/VillagePlaceRecord.java
+index 6eaf9fc9cc93f79a497b07a3549d459ba66be849..e17c92650ac7f25eb2a8f993af03c97b80c9e082 100644
+--- a/src/main/java/net/minecraft/server/VillagePlaceRecord.java
++++ b/src/main/java/net/minecraft/server/VillagePlaceRecord.java
+@@ -71,7 +71,7 @@ public class VillagePlaceRecord {
+     }
+ 
+     public boolean equals(Object object) {
+-        return this == object ? true : (object != null && this.getClass() == object.getClass() ? Objects.equals(this.a, ((VillagePlaceRecord) object).a) : false);
++        return this == object || (object != null && this.getClass() == object.getClass() && Objects.equals(this.a, ((VillagePlaceRecord) object).a));
+     }
+ 
+     public int hashCode() {
+diff --git a/src/main/java/net/minecraft/server/VoxelShape.java b/src/main/java/net/minecraft/server/VoxelShape.java
+index ecfdc4f10bcbfe9e4776a5c470523d40f8b185f1..799ca44c28130efc1738a1e79fd493149f6576de 100644
+--- a/src/main/java/net/minecraft/server/VoxelShape.java
++++ b/src/main/java/net/minecraft/server/VoxelShape.java
+@@ -131,7 +131,7 @@ public abstract class VoxelShape {
+ 
+     protected int a(EnumDirection.EnumAxis enumdirection_enumaxis, double d0) {
+         return MathHelper.a(0, this.a.c(enumdirection_enumaxis) + 1, (i) -> {
+-            return i < 0 ? false : (i > this.a.c(enumdirection_enumaxis) ? true : d0 < this.a(enumdirection_enumaxis, i));
++            return i >= 0 && (i > this.a.c(enumdirection_enumaxis) || d0 < this.a(enumdirection_enumaxis, i));
+         }) - 1;
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/VoxelShapes.java b/src/main/java/net/minecraft/server/VoxelShapes.java
+index 5fca1f19293082c168faea9b520eb5a2a2b2c857..7900bac71b24cba3296166ca224dc7ed0441b6f9 100644
+--- a/src/main/java/net/minecraft/server/VoxelShapes.java
++++ b/src/main/java/net/minecraft/server/VoxelShapes.java
+@@ -455,7 +455,7 @@ public final class VoxelShapes {
+         return b_rare(voxelshape, voxelshape1);
+     }
+     public static boolean b_rare(VoxelShape voxelshape, VoxelShape voxelshape1) {
+-        return (voxelshape != b() || voxelshape != getFullUnoptimisedCube()) && (voxelshape1 != b() || voxelshape1 != getFullUnoptimisedCube()) ? ((voxelshape == VoxelShapes.getEmptyShape() || voxelshape.isEmpty()) && (voxelshape1 == VoxelShapes.getEmptyShape() || voxelshape1.isEmpty()) ? false : !c(b(), b(voxelshape, voxelshape1, OperatorBoolean.OR), OperatorBoolean.ONLY_FIRST)) : true; // Tuinity - optimise call by checking against more constant shapes
++        return (voxelshape == b() && voxelshape == getFullUnoptimisedCube()) || (voxelshape1 == b() && voxelshape1 == getFullUnoptimisedCube()) || (((voxelshape != VoxelShapes.getEmptyShape() && !voxelshape.isEmpty()) || (voxelshape1 != VoxelShapes.getEmptyShape() && !voxelshape1.isEmpty())) && !c(b(), b(voxelshape, voxelshape1, OperatorBoolean.OR), OperatorBoolean.ONLY_FIRST)); // Tuinity - optimise call by checking against more constant shapes
+     }
+ 
+     @VisibleForTesting
+diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
+index 57595b5e98061d77e42ba998f460cbf908d62052..cf96a7c90b87a542212301802ab74c14aaaa1535 100644
+--- a/src/main/java/net/minecraft/server/World.java
++++ b/src/main/java/net/minecraft/server/World.java
+@@ -1291,7 +1291,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+     }
+ 
+     public boolean p(BlockPosition blockposition) {
+-        return isOutsideWorld(blockposition) ? false : isChunkLoaded(blockposition.getX() >> 4, blockposition.getZ() >> 4); // Paper
++        return !isOutsideWorld(blockposition) && isChunkLoaded(blockposition.getX() >> 4, blockposition.getZ() >> 4); // Paper
+     }
+ 
+     public boolean a(BlockPosition blockposition, Entity entity, EnumDirection enumdirection) {
+@@ -1300,7 +1300,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+         } else {
+             IChunkAccess ichunkaccess = this.getChunkIfLoadedImmediately(blockposition.getX() >> 4, blockposition.getZ() >> 4); // Paper
+ 
+-            return ichunkaccess == null ? false : ichunkaccess.getType(blockposition).a((IBlockAccess) this, blockposition, entity, enumdirection);
++            return ichunkaccess != null && ichunkaccess.getType(blockposition).a((IBlockAccess) this, blockposition, entity, enumdirection);
+         }
+     }
+ 
+@@ -1623,7 +1623,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+     }
+ 
+     public boolean isBlockIndirectlyPowered(BlockPosition blockposition) {
+-        return this.getBlockFacePower(blockposition.down(), EnumDirection.DOWN) > 0 ? true : (this.getBlockFacePower(blockposition.up(), EnumDirection.UP) > 0 ? true : (this.getBlockFacePower(blockposition.north(), EnumDirection.NORTH) > 0 ? true : (this.getBlockFacePower(blockposition.south(), EnumDirection.SOUTH) > 0 ? true : (this.getBlockFacePower(blockposition.west(), EnumDirection.WEST) > 0 ? true : this.getBlockFacePower(blockposition.east(), EnumDirection.EAST) > 0))));
++        return this.getBlockFacePower(blockposition.down(), EnumDirection.DOWN) > 0 || (this.getBlockFacePower(blockposition.up(), EnumDirection.UP) > 0 || (this.getBlockFacePower(blockposition.north(), EnumDirection.NORTH) > 0 || (this.getBlockFacePower(blockposition.south(), EnumDirection.SOUTH) > 0 || (this.getBlockFacePower(blockposition.west(), EnumDirection.WEST) > 0 || this.getBlockFacePower(blockposition.east(), EnumDirection.EAST) > 0))));
+     }
+ 
+     public int isBlockIndirectlyGettingPowered(BlockPosition pos) { return this.s(pos); } // Paper - OBFHELPER
+@@ -1683,7 +1683,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable, NonBlocki
+     }
+ 
+     public boolean W() {
+-        return this.getDimensionManager().hasSkyLight() && !this.getDimensionManager().hasCeiling() ? (double) this.b(1.0F) > 0.9D : false;
++        return this.getDimensionManager().hasSkyLight() && !this.getDimensionManager().hasCeiling() && (double) this.b(1.0F) > 0.9D;
+     }
+ 
+     public boolean isRaining() {
+diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
+index bb7a166a8d00d22abf375ce4427e740b963dc3a9..d2c398f248ae9d78286a1d3914c0d40594dc6fbe 100644
+--- a/src/main/java/net/minecraft/server/WorldServer.java
++++ b/src/main/java/net/minecraft/server/WorldServer.java
+@@ -2671,7 +2671,7 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+     }
+ 
+     public boolean a(BlockPosition blockposition, int i) {
+-        return i > 6 ? false : this.b(SectionPosition.a(blockposition)) <= i;
++        return i <= 6 && this.b(SectionPosition.a(blockposition)) <= i;
+     }
+ 
+     public int b(SectionPosition sectionposition) {

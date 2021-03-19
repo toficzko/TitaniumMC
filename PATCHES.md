@@ -437,10 +437,14 @@ This is an overview over all patches that are currently used.
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
 | server |  lithium: optimize &#96;BlockPos.iterateOutwards&#96; by caching      | 2No2Name |  |
 | server |  lithium: skip ticking block entities that are doing nothing      | 2No2Name |  |
+| server |  misc other intellij things      | Simon Gardling |  |
 | server |  mysql 8.0.23      | Simon Gardling |  |
 | server |  print Clientbrand on login      | Simon Gardling |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
+| server |  remove pointless bitwise operations      | Simon Gardling |  |
 | api |  remove sync and async checks      | Simon Gardling |  |
 | server |  remove world size checks      | Simon Gardling |  |
+| server |  simplify conditional expressions      | Simon Gardling |  |
 | server |  tic-tacs: unblocking      | Gegy |  |
 | api |  unsafe pom changes      | Simon Gardling |  |
+| server |  use enhanced for loops      | Simon Gardling |  |
