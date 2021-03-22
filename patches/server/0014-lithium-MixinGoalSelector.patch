@@ -8,19 +8,19 @@ Only replaces the set type, might want to also port the logic rewrite in the fut
 Original code by JellySquid, licensed under GNU Lesser General Public License v3.0
 you can find the original code on https://github.com/CaffeineMC/lithium-fabric/ (Yarn mappings)
 
-diff --git a/src/main/java/net/minecraft/server/PathfinderGoalSelector.java b/src/main/java/net/minecraft/server/PathfinderGoalSelector.java
-index 9cad895c7d008487ce885cbcc2c3966645df4c19..b63f274ec0afec96b4879f9ebaed72c416d1f9d2 100644
---- a/src/main/java/net/minecraft/server/PathfinderGoalSelector.java
-+++ b/src/main/java/net/minecraft/server/PathfinderGoalSelector.java
-@@ -11,6 +11,7 @@ import java.util.function.Supplier;
- import java.util.stream.Stream;
+diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/PathfinderGoalSelector.java b/src/main/java/net/minecraft/world/entity/ai/goal/PathfinderGoalSelector.java
+index f303c5d6b2e55fc9fd8b49ec21121805e7351034..0e76758fb85870d0030e7a06a384f6411080dd01 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/goal/PathfinderGoalSelector.java
++++ b/src/main/java/net/minecraft/world/entity/ai/goal/PathfinderGoalSelector.java
+@@ -12,6 +12,7 @@ import java.util.stream.Stream;
+ import net.minecraft.util.profiling.GameProfilerFiller;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
 +import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet; // Yatopia
  
  public class PathfinderGoalSelector {
  
-@@ -27,7 +28,7 @@ public class PathfinderGoalSelector {
+@@ -28,7 +29,7 @@ public class PathfinderGoalSelector {
          }
      };
      private final Map<PathfinderGoal.Type, PathfinderGoalWrapped> c = new EnumMap(PathfinderGoal.Type.class);

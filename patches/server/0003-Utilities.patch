@@ -9,12 +9,12 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/pom.xml b/pom.xml
-index d05cc3053737b15f337beb015c20f0a1e1b2fe92..84435623eac92903ee90af1c052bc037124c75ac 100644
+index dc7bca7a09cb173af53c916d8f231249af8b1cdb..16234696393f0d61bdaa7009c80fa0996a7f1712 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -204,6 +204,12 @@
-             <artifactId>jafama</artifactId>
-             <version>2.3.2</version>
+@@ -183,6 +183,12 @@
+             <artifactId>commons-math3</artifactId>
+             <version>3.6.1</version>
          </dependency>
 +        <!-- Fast Random -->
 +        <dependency>
@@ -24,7 +24,7 @@ index d05cc3053737b15f337beb015c20f0a1e1b2fe92..84435623eac92903ee90af1c052bc037
 +        </dependency>
      </dependencies>
  
-     <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
+     <repositories>
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/util/Constants.java b/src/main/java/org/yatopiamc/yatopia/server/util/Constants.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..ac5235155eb1b5515165fc9648b7c9d7a0713b44

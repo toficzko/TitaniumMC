@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Fri, 5 Feb 2021 14:44:16 -0500
+Subject: [PATCH] remove config for Optimized Explotions (always on)
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+index cb2d35dbfa9e307fa098a66670a1126906ccaed2..e87e3e7e9c10945b4607cf88358c6f17ca9c7f0c 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+@@ -179,12 +179,6 @@ public class PaperWorldConfig {
+         log("End credits disabled: " + disableEndCredits);
+     }
+ 
+-    public boolean optimizeExplosions;
+-    private void optimizeExplosions() {
+-        optimizeExplosions = getBoolean("optimize-explosions", false);
+-        log("Optimize explosions: " + optimizeExplosions);
+-    }
+-
+     public boolean disableExplosionKnockback;
+     private void disableExplosionKnockback(){
+         disableExplosionKnockback = getBoolean("disable-explosion-knockback", false);
+diff --git a/src/main/java/net/minecraft/world/level/Explosion.java b/src/main/java/net/minecraft/world/level/Explosion.java
+index 79008bda42558ea7d28ccf51b66405a3bdb52da7..deb75916bb07fa77551a8577d5af4940a016c343 100644
+--- a/src/main/java/net/minecraft/world/level/Explosion.java
++++ b/src/main/java/net/minecraft/world/level/Explosion.java
+@@ -435,9 +435,6 @@ public class Explosion {
+     }
+     // Paper start - Optimize explosions
+     private float getBlockDensity(Vec3D vec3d, Entity entity) {
+-        if (!this.world.paperConfig.optimizeExplosions) {
+-            return a(vec3d, entity);
+-        }
+         CacheKey key = new CacheKey(this, entity.getBoundingBox());
+         Float blockDensity = this.world.explosionDensityCache.get(key);
+         if (blockDensity == null) {

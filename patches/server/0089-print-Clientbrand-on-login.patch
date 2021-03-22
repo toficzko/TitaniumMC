@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Tue, 2 Mar 2021 20:39:30 -0500
+Subject: [PATCH] print Clientbrand on login
+
+
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index 44a5eacbc4f7f5d6f47f32ec9401023aa664e000..7bf1722099d12604ee107db00cdb830b253b0e19 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -3200,6 +3200,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+             }
+         }
+ 
++        System.out.println("Client brand: "+this.clientBrandName);
+     }
+ 
+     // Paper start - brand support

@@ -5,7 +5,7 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1e1b2fe92 100644
+index cf6e53e9f483d21b17e2782816be4403fa5be717..dc7bca7a09cb173af53c916d8f231249af8b1cdb 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,11 +1,11 @@
@@ -23,14 +23,7 @@ index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1
  
      <properties>
          <!-- <skipTests>true</skipTests> Paper - This [was] not going to end well -->
-@@ -14,22 +14,53 @@
-         <bt.name>git</bt.name>
-         <minecraft.version>1.16.5</minecraft.version>
-         <minecraft_version>1_16_R3</minecraft_version>
--        <maven.compiler.source>1.8</maven.compiler.source>
--        <maven.compiler.target>1.8</maven.compiler.target>
-+        <maven.compiler.source>11</maven.compiler.source>
-+        <maven.compiler.target>11</maven.compiler.target>
+@@ -19,17 +19,26 @@
      </properties>
  
      <parent>
@@ -51,29 +44,7 @@ index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1
 +     </distributionManagement>
 +     <!-- Yatopia end -->
 +
-+    <repositories>
-+        <repository>
-+            <id>destroystokyo-repo</id>
-+            <url>https://papermc.io/repo/repository/maven-public/</url>
-+        </repository>
-+        <repository>
-+            <id>aikar</id>
-+            <url>https://repo.aikar.co/nexus/content/repositories/aikar/</url>
-+        </repository>
-+        <!-- Yatopia - Add velocity repo to fix compile -->
-+        <repository>
-+            <id>velocity</id>
-+            <url>https://nexus.velocitypowered.com/repository/maven-public/</url>
-+        </repository>
-+     </repositories>
-+
      <dependencies>
-+        <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
-+        <dependency>
-+            <groupId>org.jetbrains</groupId>
-+            <artifactId>annotations</artifactId>
-+            <version>20.1.0</version>
-+        </dependency>
          <dependency>
              <!-- Purpur start - our "upstream" is Paper (not Tuinity), so this is necessary for DependencyLoading.kt to work properly -->
 -            <groupId>net.pl3x.purpur</groupId>
@@ -83,16 +54,16 @@ index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1
              <!-- Purpur end -->
              <version>${project.version}</version>
              <scope>compile</scope>
-@@ -44,7 +75,7 @@
+@@ -44,7 +53,7 @@
          <dependency>
              <groupId>io.netty</groupId>
              <artifactId>netty-all</artifactId>
 -            <version>4.1.50.Final</version>
-+            <version>4.1.60.Final</version>
++            <version>4.1.59.Final</version>
          </dependency>
          <!-- Tuinity end - fix compile issue (cannot see new api) by moving netty include BEFORE server jar -->
          <dependency>
-@@ -61,7 +92,7 @@
+@@ -61,7 +70,7 @@
          <dependency>
              <groupId>org.jline</groupId>
              <artifactId>jline-terminal-jansi</artifactId>
@@ -101,7 +72,7 @@ index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1
              <scope>runtime</scope>
          </dependency>
          <!--
-@@ -73,19 +104,19 @@
+@@ -73,19 +82,19 @@
          <dependency>
              <groupId>org.apache.logging.log4j</groupId>
              <artifactId>log4j-core</artifactId>
@@ -124,7 +95,7 @@ index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1
              <scope>compile</scope>
              <exclusions>
                  <!-- included in minecraft-server -->
-@@ -144,14 +175,14 @@
+@@ -144,14 +153,14 @@
          <dependency>
              <groupId>org.hamcrest</groupId>
              <artifactId>hamcrest-library</artifactId>
@@ -141,8 +112,8 @@ index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1
              <scope>test</scope>
          </dependency>
          <!-- for optimized protocol handling -->
-@@ -161,19 +192,31 @@
-             <version>1.1.0-SNAPSHOT</version>
+@@ -168,6 +177,12 @@
+             <version>master-SNAPSHOT</version>
              <scope>compile</scope>
          </dependency>
 +        <!-- Fast Math -->
@@ -151,13 +122,27 @@ index e4ce1760a7dbd9329ff185cc3744d77d9759723d..d05cc3053737b15f337beb015c20f0a1
 +            <artifactId>commons-math3</artifactId>
 +            <version>3.6.1</version>
 +        </dependency>
-+        <!-- Fast Math -->
-+        <dependency>
-+            <groupId>net.jafama</groupId>
-+            <artifactId>jafama</artifactId>
-+            <version>2.3.2</version>
-+        </dependency>
      </dependencies>
+ 
+     <repositories>
+@@ -176,19 +191,32 @@
+             <id>jitpack.io</id>
+             <url>https://jitpack.io</url>
+         </repository>
++        <repository>
++            <id>destroystokyo-repo</id>
++            <url>https://papermc.io/repo/repository/maven-public/</url>
++        </repository>
++        <repository>
++            <id>aikar</id>
++            <url>https://repo.aikar.co/nexus/content/repositories/aikar/</url>
++        </repository>
++        <!-- Yatopia - Add velocity repo to fix compile -->
++        <repository>
++            <id>velocity</id>
++            <url>https://nexus.velocitypowered.com/repository/maven-public/</url>
++        </repository>
+     </repositories>
  
      <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
      <build>

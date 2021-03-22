@@ -9,7 +9,6 @@ This is an overview over all patches that are currently used.
 | Side | Patch        | Author           | CoAuthors  |
 | ----- | ------------- |:-------------:| -----:|
 | server |  (AI-Improvements) Optimized tan for ControllerLook      | bl4ckscor3 |  |
-| server |  (Airplane-Experimental) Improve mob counting      | Paul Sauve |  |
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
 | server |  (PaperPR) optimized dirt and snow spreading      | lukas81298 |  |
 | server |  AFK API      | William Blake Galbreath |  |
@@ -24,7 +23,6 @@ This is an overview over all patches that are currently used.
 | server |  Add GameProfileLookupEvent      | tr7zw |  |
 | api |  Add GameProfileLookupEvent      | tr7zw |  |
 | server |  Add IntelliJ IDEA runnable      | Zoe |  |
-| server |  Add JsonList save timings      | Ivan Pekov |  |
 | server |  Add NBT API as a first-class lib      | tr7zw |  |
 | api |  Add NBT API as a first-class lib      | tr7zw |  |
 | server |  Add StructureGenerateEvent      | Nahuel | Mariell Hoversholm |
@@ -74,8 +72,10 @@ This is an overview over all patches that are currently used.
 | server |  Add wither skeleton takes wither damage option      | William Blake Galbreath |  |
 | server |  Advancement API      | William Blake Galbreath |  |
 | api |  Advancement API      | William Blake Galbreath |  |
+| server |  Airplane Branding Changes      | Paul Sauve |  |
 | server |  Airplane Configuration      | Paul Sauve |  |
 | server |  Airplane MC Dev Fixes      | Paul Sauve |  |
+| server |  Airplane Profiler      | Paul Sauve |  |
 | server |  Allow Entities to be removed from a world while ticking      | Spottedleaf |  |
 | server |  Allow anvil colors      | William Blake Galbreath |  |
 | server |  Allow color codes in books      | William Blake Galbreath |  |
@@ -103,6 +103,7 @@ This is an overview over all patches that are currently used.
 | server |  Bring back server name      | William Blake Galbreath |  |
 | api |  Bring back server name      | William Blake Galbreath |  |
 | server |  Cache entityhuman display name      | Paul Sauve |  |
+| server |  Cache palette array      | Paul Sauve |  |
 | server |  Cat spawning options      | William Blake Galbreath |  |
 | server |  Change writes to use NORMAL priority rather than LOW      | Spottedleaf |  |
 | server |  Changeable Mob Left Handed Chance      | Ben Kerllenevich |  |
@@ -114,8 +115,10 @@ This is an overview over all patches that are currently used.
 | server |  Config migration: disable saving projectiles to disk -&gt;      | jmp |  |
 | server |  Config to allow Note Block sounds when blocked      | Encode42 |  |
 | server |  Config to always tame in Creative      | Encode42 |  |
+| server |  Config to disable Llama caravans      | Encode42 |  |
 | server |  Config to ignore Dragon Head wearers and stare aggro      | Encode42 |  |
 | server |  Config to ignore nearby mobs when sleeping      | Encode42 |  |
+| server |  Config to make Creepers explode on death      | Encode42 |  |
 | server |  Config to use infinity bows without arrows      | Encode42 |  |
 | server |  Configs for if Wither/Ender Dragon can ride vehicles      | jmp |  |
 | server |  Configurable BlockPhysicsEvent      | Mykyta Komarnytskyy |  |
@@ -133,10 +136,12 @@ This is an overview over all patches that are currently used.
 | server |  Configurable jockey options      | William Blake Galbreath |  |
 | server |  Configurable movement checks      | l_MrBoom_l |  |
 | api |  Configurable permission message upgrades      | William Blake Galbreath |  |
+| server |  Configurable ravager griefable blocks list      | BillyGalbreath |  |
 | server |  Configurable server mod name      | William Blake Galbreath |  |
 | server |  Configurable villager brain ticks      | William Blake Galbreath |  |
 | server |  Configurable villager breeding      | draycia |  |
 | server |  Configurable void damage height      | William Blake Galbreath |  |
+| api |  Conflict on change for adventure deprecations      | BillyGalbreath |  |
 | server |  Consolidate flush calls for entity tracker packets      | Spottedleaf |  |
 | server |  Controllable Minecarts      | William Blake Galbreath |  |
 | server |  Copy passenger list in enderTeleportTo      | Spottedleaf |  |
@@ -170,6 +175,7 @@ This is an overview over all patches that are currently used.
 | server |  Don&#39;t wake up entities when damage event is cancelled      | Phoenix616 |  |
 | server |  Dont run with scissors!      | JustDoom |  |
 | server |  Dont send useless entity packets      | William Blake Galbreath |  |
+| server |  Dynamic activation range      | Paul Sauve |  |
 | server |  EMC - Configurable disable give dropping      | Aikar |  |
 | server |  EMC - MonsterEggSpawnEvent      | Aikar |  |
 | api |  EMC - MonsterEggSpawnEvent      | Aikar |  |
@@ -189,7 +195,6 @@ This is an overview over all patches that are currently used.
 | server |  Fix Bukkit.createInventory() with type LECTERN      | willies952002 |  |
 | server |  Fix IndexOutOfBoundsException when sending too many changes      | Ivan Pekov |  |
 | server |  Fix LightEngineThreaded memory leak      | Ivan Pekov |  |
-| server |  Fix NPE in ControllerLookWASD and ControllerMoveWASD      | ishland |  |
 | server |  Fix NPE in pickup logic for arrow      | Spottedleaf |  |
 | server |  Fix PlayerEditBookEvent not saving new book      | BillyGalbreath |  |
 | server |  Fix chunks refusing to unload at low TPS      | Spottedleaf |  |
@@ -213,6 +218,7 @@ This is an overview over all patches that are currently used.
 | server |  Heavily optimize recipe lookups in CraftingManager      | Mykyta Komarn | Ivan Pekov, ishland |
 | server |  Highly optimise single and multi-AABB VoxelShapes and      | Spottedleaf |  |
 | server |  Highly optimize VillagePlace filtering      | Ivan Pekov |  |
+| server |  Hopper Optimizations      | Phoenix616 |  |
 | server |  Illusioners AI settings      | William Blake Galbreath |  |
 | server |  Implement TPSBar      | BillyGalbreath |  |
 | server |  Implement bed explosion options      | William Blake Galbreath |  |
@@ -261,14 +267,14 @@ This is an overview over all patches that are currently used.
 | server |  Modify POM      | YatopiaMC |  |
 | api |  Modify POM      | YatopiaMC |  |
 | server |  Modify default configs      | tr7zw |  |
-| server |  Movement options for armour stands      | Mariell Hoversholm |  |
+| server |  More debug for plugins not shutting down tasks      | Paul Sauve |  |
+| server |  Movement options for armor stands      | Mariell Hoversholm |  |
 | server |  Multi-Threaded Server Ticking Vanilla      | Spottedleaf |  |
 | server |  Multi-Threaded ticking CraftBukkit      | Spottedleaf |  |
 | server |  Multi-threaded RegionFile IO      | ishland |  |
 | server |  Multi-threaded World Upgrade      | ishland |  |
 | server |  Multithreaded entity tracking      | Paul Sauve |  |
 | server |  Name craft scheduler threads according to the plugin using      | Spottedleaf |  |
-| server |  New Network System      | Hugo Planque | Ivan Pekov |
 | server |  New nbt cache      | Hugo Planque | ishland |
 | server |  Nuke streams off BlockPosition      | Ivan Pekov |  |
 | server |  Nuke streams off SectionPosition      | Ivan Pekov |  |
@@ -321,7 +327,6 @@ This is an overview over all patches that are currently used.
 | server |  Populator seed controls      | Spottedleaf |  |
 | server |  Port Cadmium      | Lucy-t |  |
 | server |  Port LazyDFU      | Andrew Steinborn |  |
-| server |  Port krypton      | Andrew Steinborn | Hugo Planque |
 | server |  Preload ProtocolLib EnumWrappers      | ishland |  |
 | server |  Prevent light queue overfill when no players are online      | Spottedleaf |  |
 | server |  Prevent long map entry creation in light engine      | Spottedleaf |  |
@@ -337,6 +342,7 @@ This is an overview over all patches that are currently used.
 | server |  Redirect Configs      | tr7zw |  |
 | server |  Redstone deactivates spawners      | draycia |  |
 | server |  Reduce allocation rate from crammed entities      | Spottedleaf |  |
+| server |  Reduce allocs &amp; improve perf of StructureManager      | Paul Sauve |  |
 | server |  Reduce chunk loading &amp; lookups      | Paul Sauve |  |
 | server |  Reduce entity chunk ticking checks from 3 to 1      | Paul Sauve |  |
 | server |  Reduce iterator allocation from chunk gen      | Spottedleaf |  |
@@ -369,6 +375,7 @@ This is an overview over all patches that are currently used.
 | server |  Skip events if there&#39;s no listeners      | William Blake Galbreath |  |
 | server |  Smarter statistics ticking      | Mykyta Komarnytskyy |  |
 | server |  Smol entity optimisations      | Ivan Pekov |  |
+| server |  Sneak to bulk process composter      | BillyGalbreath |  |
 | server |  Snow Golem rate of fire config      | Simon Gardling |  |
 | server |  Snowman drop and put back pumpkin      | William Blake Galbreath |  |
 | api |  Spigot - Improve output of plugins command      | Parker Hawke |  |
@@ -414,7 +421,6 @@ This is an overview over all patches that are currently used.
 | server |  dont load chunks for physics      | Aikar |  |
 | server |  enable asyncChunks no matter what      | Simon Gardling |  |
 | server |  fix Purpur rideables patch      | Simon Gardling |  |
-| server |  fix typo from mojang      | Simon Gardling |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fixup! Threaded WorldGen      | ishland |  |
 | server |  fully remove snooper      | Simon Gardling |  |
@@ -438,14 +444,10 @@ This is an overview over all patches that are currently used.
 | server |  lithium: cache chunk gen sea level      | SuperCoder7979 |  |
 | server |  lithium: optimize &#96;BlockPos.iterateOutwards&#96; by caching      | 2No2Name |  |
 | server |  lithium: skip ticking block entities that are doing nothing      | 2No2Name |  |
-| server |  misc other intellij things      | Simon Gardling |  |
 | server |  mysql 8.0.23      | Simon Gardling |  |
 | server |  print Clientbrand on login      | Simon Gardling |  |
 | server |  remove config for Optimized Explotions (always on)      | Simon Gardling |  |
 | server |  remove pointless bitwise operations      | Simon Gardling |  |
 | api |  remove sync and async checks      | Simon Gardling |  |
-| server |  remove world size checks      | Simon Gardling |  |
-| server |  simplify conditional expressions      | Simon Gardling |  |
 | server |  tic-tacs: unblocking      | Gegy |  |
 | api |  unsafe pom changes      | Simon Gardling |  |
-| server |  use enhanced for loops      | Simon Gardling |  |

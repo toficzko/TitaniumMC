@@ -5,7 +5,7 @@ Subject: [PATCH] Add NBT API as a first-class lib
 
 
 diff --git a/pom.xml b/pom.xml
-index 5d315e5d3f5362598cc1a269f5aa5e0e3f938589..b0573ea83e251ee8f490edadec2f2e4b8e94f00f 100644
+index 42004d8b2028a2bf62435b708aa7a47cba223f0d..9d1e72fa2e5c1fd46c341e7c76be85b8f6ef63e0 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -46,6 +46,11 @@
@@ -129,10 +129,10 @@ index 1e25f387e053b648477a3e9dace1a6c95e7f8cba..02c5967dcc8591d4324d1218eb8c2ff0
 +    // Yatopia end
  }
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index f0c17f1342d9c70cb4fe1fc46dd8b9006037e860..24a3521d074471c0024a8d23acb7963af3e293e1 100644
+index 314658c7dac1b1fbb440ec85133e6670e52ba684..714070dcb1fc35ba4aa42a3ecece810599777c22 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
-@@ -1445,4 +1445,42 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
+@@ -1478,4 +1478,42 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
      }
  
      // Purpur end

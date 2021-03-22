@@ -1,0 +1,76 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Mon, 8 Feb 2021 16:11:47 -0500
+Subject: [PATCH] fully remove snooper
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 46b4763026677b6d440fef2c33abae2a90104bb5..965c59994ced51fe2fd1e19fe8291fa771bf86a8 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -191,7 +191,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+     public static final WorldSettings c = new WorldSettings("Demo World", EnumGamemode.SURVIVAL, false, EnumDifficulty.NORMAL, false, new GameRules(), DataPackConfiguration.a);
+     public Convertable.ConversionSession convertable;
+     public final WorldNBTStorage worldNBTStorage;
+-    private final MojangStatisticsGenerator snooper = new MojangStatisticsGenerator("server", this, SystemUtils.getMonotonicMillis());
++    // private final MojangStatisticsGenerator snooper = new MojangStatisticsGenerator("server", this, SystemUtils.getMonotonicMillis());
+     private final List<Runnable> tickables = Lists.newArrayList();
+     private final GameProfilerSwitcher m;
+     private GameProfilerFiller methodProfiler;
+@@ -929,9 +929,11 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             }
+         }
+ 
++        /*
+         if (this.snooper.d()) {
+             this.snooper.e();
+         }
++        */
+ 
+         this.dataPackResources.close();
+ 
+@@ -1451,7 +1453,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             //MinecraftServer.LOGGER.debug("Autosave finished"); // Paper
+         //} // Paper
+ 
+-        this.methodProfiler.enter("snooper");
++        // this.methodProfiler.enter("snooper");
+         // Akarin - Disable Snooper
+         /*
+         if (((DedicatedServer) this).getDedicatedServerProperties().snooperEnabled && !this.snooper.d() && this.ticks > 100) { // Spigot
+@@ -1463,7 +1465,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         }
+         */
+ 
+-        this.methodProfiler.exit();
++        // this.methodProfiler.exit();
+ 
+         // Paper start - move executeAll() into full server tick timing
+         try (co.aikar.timings.Timing ignored = MinecraftTimings.processTasksTimer.startTiming()) {
+diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
+index f33309f4c1ad92960d0634f3f5b8105c284f26a2..54e62727e9dd89eadfed7233447dbe249485b98b 100644
+--- a/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
++++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
+@@ -45,7 +45,7 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
+     public final boolean hardcore;
+     public final boolean allowNether;
+     public final boolean spawnMonsters;
+-    public final boolean snooperEnabled;
++    // public final boolean snooperEnabled;
+     public final boolean useNativeTransport;
+     public final boolean enableCommandBlock;
+     public final int spawnProtection;
+@@ -92,11 +92,13 @@ public class DedicatedServerProperties extends PropertyManager<DedicatedServerPr
+         this.hardcore = this.getBoolean("hardcore", false);
+         this.allowNether = this.getBoolean("allow-nether", true);
+         this.spawnMonsters = this.getBoolean("spawn-monsters", true);
++        /*
+         if (this.getBoolean("snooper-enabled", true)) {
+             ;
+         }
+ 
+         this.snooperEnabled = false;
++        */
+         this.useNativeTransport = this.getBoolean("use-native-transport", true);
+         this.enableCommandBlock = this.getBoolean("enable-command-block", false);
+         this.spawnProtection = this.getInt("spawn-protection", 16);

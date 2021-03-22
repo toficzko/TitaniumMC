@@ -39,7 +39,7 @@ index 2ff1b1308571d8f8056d3359e8a8ba4a589c3726..fc2120e03737f5882d6ae916db93fdcf
          int[] levelOffers = new int[offers.length];
          for (int i = 0; i < offers.length; i++) {
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index 24a3521d074471c0024a8d23acb7963af3e293e1..eb4f6f979c1348e125fba61d17f663355d8b162e 100644
+index 714070dcb1fc35ba4aa42a3ecece810599777c22..11fc3ebeeadceee7232eab4e3e9c8cce8fc73829 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
 @@ -81,6 +81,7 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor

@@ -1,0 +1,59 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: JellySquid <jellysquid+atwork@protonmail.com>
+Date: Sun, 24 Jan 2021 22:55:55 +0100
+Subject: [PATCH] lithium entity
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
+index 3e7a691e32f993ea9cecebae3a73290497fea318..149386063f18632421376a7571d0393816728fed 100644
+--- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
++++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
+@@ -285,6 +285,10 @@ public abstract class EntityLiving extends Entity {
+     public NearbyEntityListenerMulti getListener() {
+         return this.tracker;
+     }
++
++    private IBlockData lastStateAtFeet = null;
++
++    private long lastPos = Long.MIN_VALUE;
+     // Yatopia end
+     protected void initAttributes() {} // Purpur
+ 
+@@ -362,6 +366,10 @@ public abstract class EntityLiving extends Entity {
+ 
+     @Override
+     public void entityBaseTick() {
++        // Yatopia start - port lithium
++        this.lastStateAtFeet = null;
++        this.lastPos = Long.MIN_VALUE;
++        // Yatopia end
+         this.ar = this.as;
+         if (this.justCreated) {
+             this.getBedPosition().ifPresent(this::a);
+@@ -1785,6 +1793,26 @@ public abstract class EntityLiving extends Entity {
+ 
+     public IBlockData ds() {
+         return this.world.getBlockStateIfLoaded(this.getChunkCoordinates());
++        /*
++        // Yatopia start - port lithium
++        int x = MathHelper.floor(this.locX());
++        int y = MathHelper.floor(this.locY());
++        int z = MathHelper.floor(this.locZ());
++
++        long pos = getChunkCoordinates().asLong();
++
++        if (this.lastPos == pos) {
++            return this.lastStateAtFeet;
++        }
++
++        IBlockData state = this.world.getType(getChunkCoordinates());
++
++        this.lastPos = pos;
++        this.lastStateAtFeet = state;
++
++        return state;
++        // Yatopia end
++        */
+     }
+ 
+     private boolean c(BlockPosition blockposition, IBlockData iblockdata) {

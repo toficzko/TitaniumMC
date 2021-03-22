@@ -1,0 +1,559 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: "tsao-chi@the-lingo.org" <tsao-chi@the-lingo.org>
+Date: Tue, 4 Aug 2020 18:29:57 +0200
+Subject: [PATCH] Async navigation
+
+Co-Authored By: Mariell Hoversholm <proximyst@proximyst.com>
+
+This is a ported and safer version of Akarin's async navigation.
+
+diff --git a/src/main/java/net/minecraft/server/AsyncNavigationAbstract.java b/src/main/java/net/minecraft/server/AsyncNavigationAbstract.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c9901b583c9
+--- /dev/null
++++ b/src/main/java/net/minecraft/server/AsyncNavigationAbstract.java
+@@ -0,0 +1,183 @@
++package net.minecraft.server;
++
++import com.google.common.collect.ImmutableSet;
++
++import java.util.Set;
++import java.util.concurrent.ExecutorService;
++import java.util.concurrent.Executors;
++
++/**
++ * A {@link NavigationAbstract} which supports executing its navigation later on with its own threads.
++ * <p>
++ * The {@link #tick()} method does <i>not</i> force asynchronous navigation. If plugins want to use that, it works.
++ */
++public abstract class AsyncNavigationAbstract extends NavigationAbstract {
++    protected static final ExecutorService NAVIGATION_EXECUTOR = Executors.newFixedThreadPool(
++        Integer.getInteger(
++            "Paper.WorkerThreadCount",
++            Math.min(8, Math.max(Runtime.getRuntime().availableProcessors() - 2, 1))
++        ),
++        runnable -> {
++            Thread thread = new Thread();
++            thread.setDaemon(true); // Don't hinder the server from shutting down.
++            thread.setPriority(Thread.NORM_PRIORITY - 1); // Navigation should not be the 1st concern of the server
++            thread.setName("Navigation thread");
++            return thread;
++        });
++
++    protected long lastPathfindAsync; // NavigationAbstract#n equivalent for async pathfinds
++
++    public AsyncNavigationAbstract(EntityInsentient entityinsentient, World world) {
++        super(entityinsentient, world);
++    }
++
++    public void asyncRecalculatePath() {
++        if (this.getWorld().getTime() - this.lastPathfindAsync <= 20L) {
++            asyncTick(getCurrentPath());
++            return;
++        }
++
++        if (this.getCurrentTarget() == null)
++            return;
++
++        this.lastPathfindAsync = this.getWorld().getTime();
++
++        BlockPosition chunkCoordinates = this.getEntityInsentient().getChunkCoordinates();
++        int followRange = (int) Math.floor(this.getEntityInsentient().getAttributeValue(GenericAttributes.FOLLOW_RANGE) + 8F);
++        ChunkCache cache = new ChunkCache(
++            this.getWorld(),
++            chunkCoordinates.add(-followRange, -followRange, -followRange),
++            chunkCoordinates.add(followRange, followRange, followRange)
++        );
++
++        if (this.getCurrentPath() != null && !this.getCurrentPath().isDone()) {
++            asyncTick(this.getCurrentPath());
++            return;
++        }
++
++        NAVIGATION_EXECUTOR.execute(() -> {
++            PathEntity path = this.asyncFindPathToAny(cache, ImmutableSet.of(this.getCurrentTarget()), this.getCurrentDistance());
++            this.getWorld().getMinecraftServer().processQueue.add(() -> {
++                if (path != null && path.getDestination() != null)
++                    this.setCurrentTarget(path.getDestination());
++
++                this.setCurrentPath(path);
++            });
++        });
++    }
++
++    // Essentially #a(Set<BlockPosition> set, int i, boolean flag, int j) except without event.
++    // TODO: Add an async pathfinding event
++    public PathEntity asyncFindPathToAny(ChunkCache chunkCache, Set<BlockPosition> positions, int range) {
++        if (this.getEntityInsentient().locY() < 0.0D
++            || !this.isAtValidPosition())
++            // Can't path below the world and in invalid positions.
++            return null;
++
++        return this.getPathfinder().findPathToAny(
++            chunkCache,
++            this.getEntityInsentient(),
++            positions,
++            this.getCurrentPathStartTime(),
++            range,
++            this.getRangeMultiplier()
++        );
++    }
++
++    public void asyncTick() {
++        incrementTick();
++        asyncRecalculatePath();
++    }
++
++    public void asyncTick(PathEntity path) {
++        if (shouldContinueSearching(path)) return;
++
++        Vec3D vector;
++        if (this.isAtValidPosition())
++            this.applyPath(path);
++        else if (path.getNextIndex() < path.getSize()) {
++            vector = this.getImaginaryEntityPosition();
++            Vec3D position = path.getPosition(this.getEntityInsentient(), path.getNextIndex());
++
++            if (vector.getY() > position.getY()
++                && !this.getEntityInsentient().isOnGround()
++                && Math.floor(vector.getX()) == Math.floor(vector.getX())
++                && Math.floor(vector.getZ()) == Math.floor(vector.getZ())) {
++                path.setNextIndex(path.getNextIndex() + 1);
++            }
++        }
++
++        if (shouldContinueSearching(path)) return;
++
++        vector = path.getPosition(this.getEntityInsentient());
++        BlockPosition pos = new BlockPosition(vector);
++
++        this.getEntityInsentient().getControllerMove().setTargetPosition(
++            vector.getX(),
++            this.getWorld().getType(pos.down()).isAir()
++                ? vector.getY()
++                : PathfinderNormal.getFeetY(this.getWorld(), pos),
++            vector.getZ(),
++            this.getSpeed()
++        );
++    }
++
++    protected void applyPath(PathEntity path) {
++        Vec3D vector = this.getImaginaryEntityPosition();
++
++        float entityWidth = this.getEntityInsentient().getWidth();
++        this.setChebyshevMinimumReachProximity(
++            entityWidth > 0.75F
++                ? entityWidth / 2F
++                : 0.75F - entityWidth / 2F
++        );
++
++        BaseBlockPosition nextPosition = path.getNext();
++        double x = Math.abs(this.getEntityInsentient().locX() - nextPosition.getX() - 0.5D);
++        double y = Math.abs(this.getEntityInsentient().locY() - nextPosition.getY());
++        double z = Math.abs(this.getEntityInsentient().locZ() - nextPosition.getZ() - 0.5D);
++        boolean hasReachedDestination = x < this.getChebyshevMinimumReachProximity()
++            && z < this.getChebyshevMinimumReachProximity()
++            && y < 1D;
++
++        if (hasReachedDestination || this.getEntityInsentient().isAcceptablePathType(path.getCurrentPoint().getType()) && this.shouldTargetNextNodeInDirection(vector))
++            path.setNextIndex(path.getNextIndex() + 1);
++
++        if (this.getCurrentTick() - this.getCurrentPathStartTime() > 100) {
++            if (vector.distanceSquared(this.getCurrentPathStartPosition()) < 2.25D) {
++                this.stopPathfinding();
++            }
++
++            this.setCurrentPathStartTime(this.getCurrentTick());
++            this.setCurrentPathStartPosition(vector);
++        }
++
++        if (shouldContinueSearching(getCurrentPath())) return;
++
++        nextPosition = path.getNext();
++        if (nextPosition.equals(this.getLastNodePosition())) {
++            this.addToCurrentNodeStartTickMs(SystemUtils.getMonotonicMillis() - this.getLastActiveTickMs());
++        } else {
++            this.setLastNodePosition(nextPosition);
++            this.setCurrentNodeTimeout(
++                this.getEntityInsentient().getSpeed() > 0F
++                    // TODO: OBFHELPERs
++                    ? vector.f(Vec3D.c(nextPosition)) / (double) this.getEntityInsentient().getSpeed() * 1000D
++                    : 0D
++            );
++        }
++
++        if (this.getCurrentNodeTimeout() > 0D
++            && (double) this.getCurrentNodeStartTickMs() > this.getCurrentNodeTimeout() * 3D) {
++            this.resetStuckTimeout();
++            this.stopPathfinding();
++        }
++
++        this.setLastActiveTickMs(SystemUtils.getMonotonicMillis());
++    }
++
++    public final boolean shouldContinueSearching(PathEntity path) {
++        // We must not have more to do in the existing path.
++        return path == null || path.isDone();
++    }
++}
+diff --git a/src/main/java/net/minecraft/world/entity/EntityInsentient.java b/src/main/java/net/minecraft/world/entity/EntityInsentient.java
+index e9793954c872baacfe7be80ecf3888e848dc924f..9d8ced471bcc59f0e9d6c5010d164c09ca89e71a 100644
+--- a/src/main/java/net/minecraft/world/entity/EntityInsentient.java
++++ b/src/main/java/net/minecraft/world/entity/EntityInsentient.java
+@@ -187,6 +187,7 @@ public abstract class EntityInsentient extends EntityLiving {
+         this.bt.put(pathtype, f);
+     }
+ 
++    public final boolean isAcceptablePathType(PathType pathtype) { return this.b(pathtype); } // Yatopia - OBFHELPER
+     public boolean b(PathType pathtype) {
+         return pathtype != PathType.DANGER_FIRE && pathtype != PathType.DANGER_CACTUS && pathtype != PathType.DANGER_OTHER && pathtype != PathType.WALKABLE_DOOR;
+     }
+@@ -875,6 +876,11 @@ public abstract class EntityInsentient extends EntityLiving {
+         this.goalSelector.doTick();
+         this.world.getMethodProfiler().exit();
+         this.world.getMethodProfiler().enter("navigation");
++        // Yatopia start
++        if (this.navigation instanceof AsyncNavigationAbstract)
++            ((AsyncNavigationAbstract) this.navigation).asyncTick();
++        else
++        // Yatopia end
+         this.navigation.c();
+         this.world.getMethodProfiler().exit();
+         this.world.getMethodProfiler().enter("mob tick");
+diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
+index 149386063f18632421376a7571d0393816728fed..a23b5477083c150229fcb47409b91268a1610606 100644
+--- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
++++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
+@@ -2222,6 +2222,7 @@ public abstract class EntityLiving extends Entity {
+         return this.getAttributeMap().a(attributebase);
+     }
+ 
++    public final double getAttributeValue(AttributeBase attributebase) { return this.b(attributebase); } // Yatopia - OBFHELPER
+     public double b(AttributeBase attributebase) {
+         return this.getAttributeMap().c(attributebase);
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/ai/control/ControllerMove.java b/src/main/java/net/minecraft/world/entity/ai/control/ControllerMove.java
+index 434229b146978ba7dc08a83ea55fdb3ab743fbf8..f9447bc705a6b165769691034ee80c92b72c7b77 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/control/ControllerMove.java
++++ b/src/main/java/net/minecraft/world/entity/ai/control/ControllerMove.java
+@@ -38,6 +38,7 @@ public class ControllerMove {
+         return this.e;
+     }
+ 
++    public final void setTargetPosition(double x, double y, double z, double speedModifier) { this.a(x, y, z, speedModifier); } // Yatopia - OBFHELPER
+     public void a(double d0, double d1, double d2, double d3) {
+         this.b = d0;
+         this.c = d1;
+diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/Navigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/Navigation.java
+index 703d06b2b29f1500301d82df78dc377141085145..d4674955a64a78b4b89f5644b59cbd5d721d4311 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/navigation/Navigation.java
++++ b/src/main/java/net/minecraft/world/entity/ai/navigation/Navigation.java
+@@ -17,7 +17,7 @@ import net.minecraft.world.level.pathfinder.Pathfinder;
+ import net.minecraft.world.level.pathfinder.PathfinderNormal;
+ import net.minecraft.world.phys.Vec3D;
+ 
+-public class Navigation extends NavigationAbstract {
++public class Navigation extends AsyncNavigationAbstract {
+ 
+     private boolean p;
+ 
+@@ -198,7 +198,7 @@ public class Navigation extends NavigationAbstract {
+                     double d3 = (double) j2 + 0.5D - vec3d.z;
+ 
+                     if (d2 * d0 + d3 * d1 >= 0.0D) {
+-                        PathType pathtype = this.o.a(this.b, i2, j - 1, j2, this.a, l, i1, j1, true, true);
++                        PathType pathtype = this.o.a(this.getNodeCreator().getChunkCache(), i2, j - 1, j2, this.a, l, i1, j1, true, true); // Yatopia - use chunk cache
+ 
+                         if (!this.a(pathtype)) {
+                             return false;
+diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationAbstract.java b/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationAbstract.java
+index 0c8f3e424a631aca98f83f570aff91c833aaf4b9..b55baf8315cad0002f991019ec3c4bebe5af46c9 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationAbstract.java
++++ b/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationAbstract.java
+@@ -31,24 +31,40 @@ import net.minecraft.world.phys.Vec3D;
+ public abstract class NavigationAbstract {
+ 
+     protected final EntityInsentient a; public final EntityInsentient getEntity() { return a; } // Paper - OBFHELPER // Tuinity - match types
++    public EntityInsentient getEntityInsentient() { return a; } // Yatopia - OBFHELPER
+     protected final World b;
++    protected final World getWorld() { return this.b; } // Yatopia - OBFHELPER
+     @Nullable
+     protected PathEntity c; protected final PathEntity getCurrentPath() { return this.c; } // Paper - OBFHELPER
++    protected final void setCurrentPath(PathEntity path) { this.c = path; } // Yatopia - OBFHELPER
+     protected double d;
++    protected final double getSpeed() { return this.d; } // Yatopia - OBFHELPER
+     protected int e;
++    protected final int getCurrentTick() { return this.e; } protected final void incrementTick() { ++this.e; } // Yatopia - OBFHELPER
+     protected int f;
++    protected final int getCurrentPathStartTime() { return this.f; } protected final void setCurrentPathStartTime(int time) { this.f = time; } // Yatopia - OBFHELPER
+     protected Vec3D g;
++    protected final Vec3D getCurrentPathStartPosition() { return this.g; } protected final void setCurrentPathStartPosition(Vec3D position) { this.g = position; } // Yatopia - OBFHELPER
+     protected BaseBlockPosition h;
++    protected final BaseBlockPosition getLastNodePosition() { return this.h; } protected final void setLastNodePosition(BaseBlockPosition position) { this.h = position; } // Yatopia - OBFHELPER
+     protected long i;
++    protected final long getCurrentNodeStartTickMs() { return this.i; } protected final void addToCurrentNodeStartTickMs(long amount) { this.i += amount; } // Yatopia - OBFHELPER
+     protected long j;
++    protected final long getLastActiveTickMs() { return this.j; } protected final void setLastActiveTickMs(long ms) { this.j = ms; } // Yatopia - OBFHELPER
+     protected double k;
++    protected final double getCurrentNodeTimeout() { return this.k; } protected final void setCurrentNodeTimeout(double timeout) { this.k = timeout; } // Yatopia - OBFHELPER
+     protected float l;
++     protected final float getChebyshevMinimumReachProximity() { return this.l; } protected final void setChebyshevMinimumReachProximity(float proximity) { this.l = proximity; } // Yatopia - OBFHELPER
+     protected boolean m; protected final boolean needsPathRecalculation() { return this.m; } // Tuinity - OBFHELPER
+     protected long n;
+     protected PathfinderAbstract o;
++    protected final PathfinderAbstract getNodeCreator() { return this.o; } // Yatopia - OBFHELPER
+     private BlockPosition p;
++    protected final BlockPosition getCurrentTarget() { return this.p; } protected final void setCurrentTarget(BlockPosition target) { this.p = target; } // Yatopia - OBFHELPER
+     private int q;
++    protected final int getCurrentDistance() { return this.q; } // Yatopia - OBFHELPER
+     private float r;
++    protected final float getRangeMultiplier() { return this.r; } // Yatopia - OBFHELPER
+     private final Pathfinder s; public Pathfinder getPathfinder() { return this.s; } // Paper - OBFHELPER
+     private boolean t;
+     private co.aikar.timings.Timing timing; // Yatopia
+@@ -95,6 +111,7 @@ public abstract class NavigationAbstract {
+         return this.m;
+     }
+ 
++    public final void recalculatePath() { this.j(); } // Yatopia - OBFHELPER
+     public void j() {
+         if (this.b.getTime() - this.n > 20L) {
+             if (this.p != null) {
+@@ -254,6 +271,7 @@ public abstract class NavigationAbstract {
+         return this.c;
+     }
+ 
++    public final void tick() { c(); } // Yatopia - OBFHELPER
+     public void c() {
+         // Yatopia start
+         timing.startTiming();
+@@ -310,6 +328,7 @@ public abstract class NavigationAbstract {
+         this.a(vec3d);
+     }
+ 
++    protected final boolean shouldTargetNextNodeInDirection(Vec3D direction) { return this.b(direction); } // Paper - OBFHELPER
+     private boolean b(Vec3D vec3d) {
+         if (this.c.f() + 1 >= this.c.e()) {
+             return false;
+@@ -367,6 +386,7 @@ public abstract class NavigationAbstract {
+         this.o();
+     }
+ 
++    protected final void resetStuckTimeout() { this.f(); } // Paper - OBFHELPER
+     private void f() {
+         this.h = BaseBlockPosition.ZERO;
+         this.i = 0L;
+@@ -387,8 +407,10 @@ public abstract class NavigationAbstract {
+         this.c = null;
+     }
+ 
++    protected final Vec3D getImaginaryEntityPosition() { return this.b(); } // Yatopia - OBFHELPER
+     protected abstract Vec3D b();
+ 
++    protected final boolean isAtValidPosition() { return this.a(); } // Yatopia - OBFHELPER
+     protected abstract boolean a();
+ 
+     protected boolean p() {
+diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationFlying.java b/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationFlying.java
+index f5664b8c0762f775f3cd106d156eb74b48bcedc2..9186b45dd9f9d7ee554a0e8ea48b47d7a3dc8143 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationFlying.java
++++ b/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationFlying.java
+@@ -12,7 +12,7 @@ import net.minecraft.world.level.pathfinder.Pathfinder;
+ import net.minecraft.world.level.pathfinder.PathfinderFlying;
+ import net.minecraft.world.phys.Vec3D;
+ 
+-public class NavigationFlying extends NavigationAbstract {
++public class NavigationFlying extends AsyncNavigationAbstract { // Yatopia - async navigation
+ 
+     public NavigationFlying(EntityInsentient entityinsentient, World world) {
+         super(entityinsentient, world);
+@@ -67,6 +67,39 @@ public class NavigationFlying extends NavigationAbstract {
+         }
+     }
+ 
++    @Override
++    public void asyncTick(PathEntity path) {
++        if (shouldContinueSearching(path)) return;
++
++        Vec3D vector;
++        if (this.isAtValidPosition())
++            this.applyPath(path);
++        else if (path.getNextIndex() < path.getSize()) {
++            vector = this.getImaginaryEntityPosition();
++            Vec3D position = path.getPosition(this.getEntityInsentient(), path.getNextIndex());
++
++            if (vector.getY() > position.getY()
++                && !this.getEntityInsentient().isOnGround()
++                && Math.floor(this.getEntityInsentient().locX()) == Math.floor(vector.getX())
++                && Math.floor(this.getEntityInsentient().locY()) == Math.floor(vector.getY())
++                && Math.floor(this.getEntityInsentient().locZ()) == Math.floor(vector.getZ())) {
++                path.setNextIndex(path.getNextIndex() + 1);
++            }
++        }
++
++        if (shouldContinueSearching(path)) return;
++
++        vector = path.getPosition(this.getEntityInsentient());
++        BlockPosition pos = new BlockPosition(vector);
++
++        this.getEntityInsentient().getControllerMove().setTargetPosition(
++            vector.getX(),
++            vector.getY(),
++            vector.getZ(),
++            this.getSpeed()
++        );
++    }
++
+     @Override
+     protected boolean a(Vec3D vec3d, Vec3D vec3d1, int i, int j, int k) {
+         int l = MathHelper.floor(vec3d.x);
+diff --git a/src/main/java/net/minecraft/world/entity/animal/EntityBee.java b/src/main/java/net/minecraft/world/entity/animal/EntityBee.java
+index 052960fde2318495e68dd3ea97b987e01e8c5547..6976502b2e207fe7709517cc8454696796b2fef2 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/EntityBee.java
++++ b/src/main/java/net/minecraft/world/entity/animal/EntityBee.java
+@@ -584,6 +584,14 @@ public class EntityBee extends EntityAnimal implements IEntityAngerable, EntityB
+                     super.c();
+                 }
+             }
++            // Yatopia start
++            @Override
++            public void asyncTick() {
++                if (!EntityBee.this.bC.k()) {
++                    super.asyncTick();
++                }
++            }
++            // Yatopia end
+         };
+ 
+         navigationflying.a(false);
+diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathEntity.java b/src/main/java/net/minecraft/world/level/pathfinder/PathEntity.java
+index 81c3cb9da3f901d2bcf384f7113bdc5c60f9962f..ca0c75db8d06200f36348e40672f3b995fdae6c7 100644
+--- a/src/main/java/net/minecraft/world/level/pathfinder/PathEntity.java
++++ b/src/main/java/net/minecraft/world/level/pathfinder/PathEntity.java
+@@ -32,6 +32,7 @@ public class PathEntity {
+         return this.e <= 0;
+     }
+ 
++    public final boolean isDone() { return this.c(); } // Yatopia - OBFHELPER
+     public boolean c() {
+         return this.e >= this.a.size();
+     }
+@@ -56,6 +57,7 @@ public class PathEntity {
+         this.a.set(i, pathpoint);
+     }
+ 
++    public final int getSize() { return this.e(); } // Yatopia - OBFHELPER
+     public int e() {
+         return this.a.size();
+     }
+@@ -64,10 +66,12 @@ public class PathEntity {
+         return this.e;
+     }
+ 
++    public final void setNextIndex(int index) { this.c(index); } // Yatopia - OBFHELPER
+     public void c(int i) {
+         this.e = i;
+     }
+ 
++    public final Vec3D getPosition(Entity entity, int index) { return this.a(entity, index); } // Yatopia - OBFHELPER
+     public Vec3D a(Entity entity, int i) {
+         PathPoint pathpoint = (PathPoint) this.a.get(i);
+         double d0 = (double) pathpoint.a + (double) ((int) (entity.getWidth() + 1.0F)) * 0.5D;
+@@ -81,6 +85,7 @@ public class PathEntity {
+         return ((PathPoint) this.a.get(i)).a();
+     }
+ 
++    public final Vec3D getPosition(Entity entity) { return this.a(entity); } // Yatopia - OBFHELPER
+     public Vec3D a(Entity entity) {
+         return this.a(entity, this.e);
+     }
+@@ -89,6 +94,7 @@ public class PathEntity {
+         return ((PathPoint) this.a.get(this.e)).a();
+     }
+ 
++    public final PathPoint getCurrentPoint() { return this.h(); } // Yatopia - OBFHELPER
+     public PathPoint h() {
+         return (PathPoint) this.a.get(this.e);
+     }
+@@ -125,6 +131,7 @@ public class PathEntity {
+         return "Path(length=" + this.a.size() + ")";
+     }
+ 
++    public final BlockPosition getDestination() { return this.m(); } // Yatopia - OBFHELPER
+     public BlockPosition m() {
+         return this.f;
+     }
+diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathPoint.java b/src/main/java/net/minecraft/world/level/pathfinder/PathPoint.java
+index c260b0ca70cb18811158761c574aee9c3166da28..442443fda07e6350267fc696a192481f538307c2 100644
+--- a/src/main/java/net/minecraft/world/level/pathfinder/PathPoint.java
++++ b/src/main/java/net/minecraft/world/level/pathfinder/PathPoint.java
+@@ -18,6 +18,7 @@ public class PathPoint {
+     public float j;
+     public float k;
+     public PathType l;
++    public final PathType getType() { return this.l; } // Yatopia - OBFHELPER
+ 
+     public PathPoint(int i, int j, int k) {
+         this.l = PathType.BLOCKED;
+diff --git a/src/main/java/net/minecraft/world/level/pathfinder/Pathfinder.java b/src/main/java/net/minecraft/world/level/pathfinder/Pathfinder.java
+index 5dbd1dca0a06bf11169f66a226a33f65269e5bcd..ed1016927fb8847db8def06fe21cc36b9235355e 100644
+--- a/src/main/java/net/minecraft/world/level/pathfinder/Pathfinder.java
++++ b/src/main/java/net/minecraft/world/level/pathfinder/Pathfinder.java
+@@ -30,6 +30,7 @@ public class Pathfinder {
+         this.b = i;
+     }
+ 
++    @Nullable public PathEntity findPathToAny(ChunkCache chunkcache, EntityInsentient entityinsentient, Set<BlockPosition> set, float f, int i, float f1) { return a(chunkcache, entityinsentient, set, f, i, f1); } // Yatopia - OBFHELPER
+     @Nullable
+     public PathEntity a(ChunkCache chunkcache, EntityInsentient entityinsentient, Set<BlockPosition> set, float f, int i, float f1) {
+         this.d.a();
+diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderAbstract.java b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderAbstract.java
+index 88be03bd77656235322522c3782b9f9a878b86b1..3a84740c60974aa36edd613dec3800aaa940a5e8 100644
+--- a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderAbstract.java
++++ b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderAbstract.java
+@@ -11,6 +11,7 @@ import net.minecraft.world.level.IBlockAccess;
+ public abstract class PathfinderAbstract {
+ 
+     protected ChunkCache a;
++    protected final ChunkCache getChunkCache() { return this.a; } // Yatopia - OBFHELPER
+     protected EntityInsentient b;
+     protected final Int2ObjectMap<PathPoint> c = new Int2ObjectOpenHashMap();
+     protected int d;
+diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderNormal.java b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderNormal.java
+index a4523186caced0cf427af441fe714277a6a44b05..0c997d30b96548f76be81fc6a4b117d8c8d66a9a 100644
+--- a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderNormal.java
++++ b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderNormal.java
+@@ -224,6 +224,7 @@ public class PathfinderNormal extends PathfinderAbstract {
+         return true;
+     }
+ 
++    public static double getFeetY(IBlockAccess iblockaccess, BlockPosition blockposition) { return a(iblockaccess, blockposition); } // Yatopia - OBFHELPER
+     public static double a(IBlockAccess iblockaccess, BlockPosition blockposition) {
+         BlockPosition blockposition1 = blockposition.down();
+         VoxelShape voxelshape = iblockaccess.getType(blockposition1).getCollisionShape(iblockaccess, blockposition1);
+diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderTurtle.java b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderTurtle.java
+index 86d849567cc6bc09f33716001ce4a2e8b7bd6188..c73c83dcff9a6da5824d8b908ea74a1df540d48a 100644
+--- a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderTurtle.java
++++ b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderTurtle.java
+@@ -161,7 +161,7 @@ public class PathfinderTurtle extends PathfinderNormal {
+                 if (pathtype == PathType.OPEN) {
+                     AxisAlignedBB axisalignedbb = new AxisAlignedBB((double) i - d2 + 0.5D, (double) j + 0.001D, (double) k - d2 + 0.5D, (double) i + d2 + 0.5D, (double) ((float) j + this.b.getHeight()), (double) k + d2 + 0.5D);
+ 
+-                    if (!this.b.world.getCubes(this.b, axisalignedbb)) {
++                    if (!this.getChunkCache().getCubes(this.b, axisalignedbb)) { // Yatopia - use chunk cache
+                         return null;
+                     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderWater.java b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderWater.java
+index cd5676aa4a2bce60a57e91c2eb0b88e97ee626f1..40d26d33f2bbf52a5036719ac0c704d38aec8628 100644
+--- a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderWater.java
++++ b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderWater.java
+@@ -72,7 +72,7 @@ public class PathfinderWater extends PathfinderAbstract {
+     @Override
+     protected PathPoint a(int i, int j, int k) {
+         PathPoint pathpoint = null;
+-        PathType pathtype = this.a(this.b.world, i, j, k);
++        PathType pathtype = this.a(this.getChunkCache(), i, j, k); // Yatopia - use chunk cache
+         float f = this.b.a(pathtype);
+ 
+         if (f >= 0.0F) {
