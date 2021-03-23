@@ -9,7 +9,7 @@ This is a ported and safer version of Akarin's async navigation.
 
 diff --git a/src/main/java/net/minecraft/server/AsyncNavigationAbstract.java b/src/main/java/net/minecraft/server/AsyncNavigationAbstract.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c9901b583c9
+index 0000000000000000000000000000000000000000..5d09aac215094a38bb1043eeb3991bd3f309fd3c
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/AsyncNavigationAbstract.java
 @@ -0,0 +1,183 @@
@@ -57,8 +57,8 @@ index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c99
 +
 +        this.lastPathfindAsync = this.getWorld().getTime();
 +
-+        BlockPosition chunkCoordinates = this.getEntityInsentient().getChunkCoordinates();
-+        int followRange = (int) Math.floor(this.getEntityInsentient().getAttributeValue(GenericAttributes.FOLLOW_RANGE) + 8F);
++        BlockPosition chunkCoordinates = this.getEntity().getChunkCoordinates();
++        int followRange = (int) Math.floor(this.getEntity().getAttributeValue(GenericAttributes.FOLLOW_RANGE) + 8F);
 +        ChunkCache cache = new ChunkCache(
 +            this.getWorld(),
 +            chunkCoordinates.add(-followRange, -followRange, -followRange),
@@ -84,14 +84,14 @@ index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c99
 +    // Essentially #a(Set<BlockPosition> set, int i, boolean flag, int j) except without event.
 +    // TODO: Add an async pathfinding event
 +    public PathEntity asyncFindPathToAny(ChunkCache chunkCache, Set<BlockPosition> positions, int range) {
-+        if (this.getEntityInsentient().locY() < 0.0D
++        if (this.getEntity().locY() < 0.0D
 +            || !this.isAtValidPosition())
 +            // Can't path below the world and in invalid positions.
 +            return null;
 +
 +        return this.getPathfinder().findPathToAny(
 +            chunkCache,
-+            this.getEntityInsentient(),
++            this.getEntity(),
 +            positions,
 +            this.getCurrentPathStartTime(),
 +            range,
@@ -112,10 +112,10 @@ index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c99
 +            this.applyPath(path);
 +        else if (path.getNextIndex() < path.getSize()) {
 +            vector = this.getImaginaryEntityPosition();
-+            Vec3D position = path.getPosition(this.getEntityInsentient(), path.getNextIndex());
++            Vec3D position = path.getPosition(this.getEntity(), path.getNextIndex());
 +
 +            if (vector.getY() > position.getY()
-+                && !this.getEntityInsentient().isOnGround()
++                && !this.getEntity().isOnGround()
 +                && Math.floor(vector.getX()) == Math.floor(vector.getX())
 +                && Math.floor(vector.getZ()) == Math.floor(vector.getZ())) {
 +                path.setNextIndex(path.getNextIndex() + 1);
@@ -124,10 +124,10 @@ index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c99
 +
 +        if (shouldContinueSearching(path)) return;
 +
-+        vector = path.getPosition(this.getEntityInsentient());
++        vector = path.getPosition(this.getEntity());
 +        BlockPosition pos = new BlockPosition(vector);
 +
-+        this.getEntityInsentient().getControllerMove().setTargetPosition(
++        this.getEntity().getControllerMove().setTargetPosition(
 +            vector.getX(),
 +            this.getWorld().getType(pos.down()).isAir()
 +                ? vector.getY()
@@ -140,7 +140,7 @@ index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c99
 +    protected void applyPath(PathEntity path) {
 +        Vec3D vector = this.getImaginaryEntityPosition();
 +
-+        float entityWidth = this.getEntityInsentient().getWidth();
++        float entityWidth = this.getEntity().getWidth();
 +        this.setChebyshevMinimumReachProximity(
 +            entityWidth > 0.75F
 +                ? entityWidth / 2F
@@ -148,14 +148,14 @@ index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c99
 +        );
 +
 +        BaseBlockPosition nextPosition = path.getNext();
-+        double x = Math.abs(this.getEntityInsentient().locX() - nextPosition.getX() - 0.5D);
-+        double y = Math.abs(this.getEntityInsentient().locY() - nextPosition.getY());
-+        double z = Math.abs(this.getEntityInsentient().locZ() - nextPosition.getZ() - 0.5D);
++        double x = Math.abs(this.getEntity().locX() - nextPosition.getX() - 0.5D);
++        double y = Math.abs(this.getEntity().locY() - nextPosition.getY());
++        double z = Math.abs(this.getEntity().locZ() - nextPosition.getZ() - 0.5D);
 +        boolean hasReachedDestination = x < this.getChebyshevMinimumReachProximity()
 +            && z < this.getChebyshevMinimumReachProximity()
 +            && y < 1D;
 +
-+        if (hasReachedDestination || this.getEntityInsentient().isAcceptablePathType(path.getCurrentPoint().getType()) && this.shouldTargetNextNodeInDirection(vector))
++        if (hasReachedDestination || this.getEntity().isAcceptablePathType(path.getCurrentPoint().getType()) && this.shouldTargetNextNodeInDirection(vector))
 +            path.setNextIndex(path.getNextIndex() + 1);
 +
 +        if (this.getCurrentTick() - this.getCurrentPathStartTime() > 100) {
@@ -175,9 +175,9 @@ index 0000000000000000000000000000000000000000..856580fa3784bc1889747520572a7c99
 +        } else {
 +            this.setLastNodePosition(nextPosition);
 +            this.setCurrentNodeTimeout(
-+                this.getEntityInsentient().getSpeed() > 0F
++                this.getEntity().getSpeed() > 0F
 +                    // TODO: OBFHELPERs
-+                    ? vector.f(Vec3D.c(nextPosition)) / (double) this.getEntityInsentient().getSpeed() * 1000D
++                    ? vector.f(Vec3D.c(nextPosition)) / (double) this.getEntity().getSpeed() * 1000D
 +                    : 0D
 +            );
 +        }
@@ -267,14 +267,14 @@ index 703d06b2b29f1500301d82df78dc377141085145..d4674955a64a78b4b89f5644b59cbd5d
                          if (!this.a(pathtype)) {
                              return false;
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationAbstract.java b/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationAbstract.java
-index 0c8f3e424a631aca98f83f570aff91c833aaf4b9..b55baf8315cad0002f991019ec3c4bebe5af46c9 100644
+index 0c8f3e424a631aca98f83f570aff91c833aaf4b9..7793265375ca0fbe4b885a29171863e920dc49e5 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationAbstract.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationAbstract.java
 @@ -31,24 +31,40 @@ import net.minecraft.world.phys.Vec3D;
  public abstract class NavigationAbstract {
  
      protected final EntityInsentient a; public final EntityInsentient getEntity() { return a; } // Paper - OBFHELPER // Tuinity - match types
-+    public EntityInsentient getEntityInsentient() { return a; } // Yatopia - OBFHELPER
++
      protected final World b;
 +    protected final World getWorld() { return this.b; } // Yatopia - OBFHELPER
      @Nullable
@@ -355,7 +355,7 @@ index 0c8f3e424a631aca98f83f570aff91c833aaf4b9..b55baf8315cad0002f991019ec3c4beb
  
      protected boolean p() {
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationFlying.java b/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationFlying.java
-index f5664b8c0762f775f3cd106d156eb74b48bcedc2..9186b45dd9f9d7ee554a0e8ea48b47d7a3dc8143 100644
+index f5664b8c0762f775f3cd106d156eb74b48bcedc2..8edc73022e80a694c51ee9107a969cd4d9ac4c54 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationFlying.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/NavigationFlying.java
 @@ -12,7 +12,7 @@ import net.minecraft.world.level.pathfinder.Pathfinder;
@@ -380,23 +380,23 @@ index f5664b8c0762f775f3cd106d156eb74b48bcedc2..9186b45dd9f9d7ee554a0e8ea48b47d7
 +            this.applyPath(path);
 +        else if (path.getNextIndex() < path.getSize()) {
 +            vector = this.getImaginaryEntityPosition();
-+            Vec3D position = path.getPosition(this.getEntityInsentient(), path.getNextIndex());
++            Vec3D position = path.getPosition(this.getEntity(), path.getNextIndex());
 +
 +            if (vector.getY() > position.getY()
-+                && !this.getEntityInsentient().isOnGround()
-+                && Math.floor(this.getEntityInsentient().locX()) == Math.floor(vector.getX())
-+                && Math.floor(this.getEntityInsentient().locY()) == Math.floor(vector.getY())
-+                && Math.floor(this.getEntityInsentient().locZ()) == Math.floor(vector.getZ())) {
++                && !this.getEntity().isOnGround()
++                && Math.floor(this.getEntity().locX()) == Math.floor(vector.getX())
++                && Math.floor(this.getEntity().locY()) == Math.floor(vector.getY())
++                && Math.floor(this.getEntity().locZ()) == Math.floor(vector.getZ())) {
 +                path.setNextIndex(path.getNextIndex() + 1);
 +            }
 +        }
 +
 +        if (shouldContinueSearching(path)) return;
 +
-+        vector = path.getPosition(this.getEntityInsentient());
++        vector = path.getPosition(this.getEntity());
 +        BlockPosition pos = new BlockPosition(vector);
 +
-+        this.getEntityInsentient().getControllerMove().setTargetPosition(
++        this.getEntity().getControllerMove().setTargetPosition(
 +            vector.getX(),
 +            vector.getY(),
 +            vector.getZ(),
