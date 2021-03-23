@@ -221,7 +221,7 @@ index e9793954c872baacfe7be80ecf3888e848dc924f..9d8ced471bcc59f0e9d6c5010d164c09
          this.world.getMethodProfiler().exit();
          this.world.getMethodProfiler().enter("mob tick");
 diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
-index 149386063f18632421376a7571d0393816728fed..a23b5477083c150229fcb47409b91268a1610606 100644
+index dc15593b8222b5e912a757e98fdf162d063e8d44..4e53149270f2c51041ad165f4241b87312ff307d 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
 @@ -2222,6 +2222,7 @@ public abstract class EntityLiving extends Entity {

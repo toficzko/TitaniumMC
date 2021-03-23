@@ -89,7 +89,7 @@ index 965c59994ced51fe2fd1e19fe8291fa771bf86a8..2e5bf6967e5cdfff93a52d2e6bebb0af
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
 diff --git a/src/main/java/net/minecraft/server/level/ChunkProviderServer.java b/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
-index 87c87b9767003652814c3726eece64470dbb69a8..13459acdb420287797660ade84636cf65f83762e 100644
+index dc1b7db4d39d4dfa65d60e5a059d3b94def6cf62..d33dd16fd8c14daea0b6820e0176be6f3f0a2dca 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
 @@ -11,6 +11,7 @@ import java.util.Collections;
@@ -174,7 +174,7 @@ index 58d2f1a10186e889bdd2249724a7f21f3a0a6a6e..3f2737da23b2d74643ae713420f6aaac
              return CompletableFuture.completedFuture(either);
          }, this.mainInvokingExecutor);
 diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
-index 1551da32c61deb3c584eff8df5461efdcad0a405..a8b68ea2298f73b69e59934cf742759adc7a9d61 100644
+index 2cae3659634e2cd2e1c9d724fb05c13da55e0ef7..0a215fa0d706210cc9a72526230a9e4bcf537d06 100644
 --- a/src/main/java/net/minecraft/server/level/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/level/WorldServer.java
 @@ -2786,28 +2786,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki

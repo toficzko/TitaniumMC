@@ -5,7 +5,7 @@ Subject: [PATCH] fixup! Threaded WorldGen
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkProviderServer.java b/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
-index 13459acdb420287797660ade84636cf65f83762e..1d0a409bef46bde859e25feb0848b1fba48923a3 100644
+index d33dd16fd8c14daea0b6820e0176be6f3f0a2dca..3af060c1ac1f2a474168223473198cc42c7739e7 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkProviderServer.java
 @@ -841,16 +841,18 @@ public class ChunkProviderServer extends IChunkProvider {

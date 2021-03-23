@@ -57,7 +57,7 @@ index e6bc64037f79a1380bcb99ff3c4455e0d9cb8d5d..8c8c699e5bac1795f60cb43a60acc494
              if (valid && !this.isSpectator() || this.world.isLoaded(this.getChunkCoordinates())) { // Paper - don't tick dead players that are not in the world currently (pending respawn)
                  super.tick();
 diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
-index 2339408eef835090a0e4f873395c84704592a8f5..73ee057c599015035057cf3273ca7f04dae93b7c 100644
+index 79bf15085cf173db39959941788a5a835493b412..19332445edb8b9ae86ba9d8810c3c55bf4628552 100644
 --- a/src/main/java/net/minecraft/server/level/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/level/WorldServer.java
 @@ -176,8 +176,9 @@ import org.bukkit.event.weather.LightningStrikeEvent;
@@ -72,7 +72,7 @@ index 2339408eef835090a0e4f873395c84704592a8f5..73ee057c599015035057cf3273ca7f04
      public static final BlockPosition a = new BlockPosition(100, 50, 0);
      private static final Logger LOGGER = LogManager.getLogger();
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 729b846612ec4e96e818723b39cac27d46091377..657fc1ba0dbbddd913dcf94f5fed1cf5c1d56cb8 100644
+index 4492f2579da79bd58def922894f40422fbeaf54c..62bc23e38ce23f178f8c58ba0291d1b69c4545f2 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -142,9 +142,12 @@ import org.bukkit.event.entity.EntityPoseChangeEvent;
@@ -242,7 +242,7 @@ index 729b846612ec4e96e818723b39cac27d46091377..657fc1ba0dbbddd913dcf94f5fed1cf5
                          if (fluid.a(tag)) {
                              double d2 = (double) ((float) i2 + fluid.getHeight(this.world, blockposition_mutableblockposition));
 diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
-index 5d60bd3d65f0bee901d72363b6ba21a55b8abf8c..1983d92bd1b99b9b841fc4c7e3e6528becd877fc 100644
+index acccb79200d15bfd7f53adf925d6c8f50050d346..3c07a8e1b564551e2b8378b645185b4eba626764 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
 @@ -140,6 +140,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;
@@ -261,7 +261,7 @@ index 5d60bd3d65f0bee901d72363b6ba21a55b8abf8c..1983d92bd1b99b9b841fc4c7e3e6528b
 +            if (this.a((Tag) TagsFluid.WATER) && !this.world.getBlockStateIfLoaded(new BlockPosition(this.locX(), this.getHeadY(), this.locZ())).a(Blocks.BUBBLE_COLUMN)) {
                  if (!this.canBreatheUnderwater() && !MobEffectUtil.c(this) && !flag1) {  // Paper - use OBFHELPER so it can be overridden
                      this.setAirTicks(this.l(this.getAirTicks()));
-                     if (this.getAirTicks() == -20) {
+                     if (this.getAirTicks() == -this.world.purpurConfig.drowningDamageInterval) { // Purpur
 @@ -486,7 +487,7 @@ public abstract class EntityLiving extends Entity {
      }
  

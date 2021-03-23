@@ -269,7 +269,7 @@ index 0fa900566bd84156ac18a59b4bca436f67e8eb4b..2d5edd3740299f373f47e596356aa2d6
          int j = i - 1;
  
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 657fc1ba0dbbddd913dcf94f5fed1cf5c1d56cb8..177f6f7b2a63c77d9dc472619498a08f5d3ff36c 100644
+index 62bc23e38ce23f178f8c58ba0291d1b69c4545f2..e22dcbbb6812c559809b5140e48bef56b3fe28d9 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -2640,6 +2640,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, ne

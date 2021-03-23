@@ -27,7 +27,7 @@ index 716f91246c4a45fd49af806afd1781f11ff3b346..b5581a39855a23b57c0bcedd5f5213ee
  
      public static int unpackY(long i){ return c(i); } // Yatopia - OBFHELPER
 diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
-index a23b5477083c150229fcb47409b91268a1610606..15f7c200c1ca4a4bd21892855090f75c683e2f25 100644
+index 4e53149270f2c51041ad165f4241b87312ff307d..f854e41d177a556889cf6214f0a9965e0af37394 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
 @@ -898,7 +898,7 @@ public abstract class EntityLiving extends Entity {

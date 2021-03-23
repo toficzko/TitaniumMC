@@ -5,7 +5,7 @@ Subject: [PATCH] lithium entity
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
-index 3e7a691e32f993ea9cecebae3a73290497fea318..149386063f18632421376a7571d0393816728fed 100644
+index 80d7e1e319e9c007a93afd0d024ec8a4941aec55..dc15593b8222b5e912a757e98fdf162d063e8d44 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
 @@ -285,6 +285,10 @@ public abstract class EntityLiving extends Entity {

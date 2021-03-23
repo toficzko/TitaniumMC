@@ -864,7 +864,7 @@ index a206a729b3afa01bf591fa4da1e5c14902da4778..716f91246c4a45fd49af806afd1781f1
          return (int) (i << 22 >> 42);
      }
 diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
-index 73ee057c599015035057cf3273ca7f04dae93b7c..1551da32c61deb3c584eff8df5461efdcad0a405 100644
+index 19332445edb8b9ae86ba9d8810c3c55bf4628552..2cae3659634e2cd2e1c9d724fb05c13da55e0ef7 100644
 --- a/src/main/java/net/minecraft/server/level/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/level/WorldServer.java
 @@ -177,6 +177,7 @@ import org.bukkit.event.world.TimeSkipEvent;
@@ -893,7 +893,7 @@ index 73ee057c599015035057cf3273ca7f04dae93b7c..1551da32c61deb3c584eff8df5461efd
                      if (false && this.tickingEntities) { // Tuinity
                          throw (IllegalStateException) SystemUtils.c((Throwable) (new IllegalStateException("Removing entity while ticking!")));
 diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
-index 1983d92bd1b99b9b841fc4c7e3e6528becd877fc..3e7a691e32f993ea9cecebae3a73290497fea318 100644
+index 3c07a8e1b564551e2b8378b645185b4eba626764..80d7e1e319e9c007a93afd0d024ec8a4941aec55 100644
 --- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
 +++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
 @@ -139,11 +139,12 @@ import org.bukkit.event.entity.EntityResurrectEvent;
