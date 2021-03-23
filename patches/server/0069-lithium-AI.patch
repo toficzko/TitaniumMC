@@ -220,7 +220,7 @@ index 0000000000000000000000000000000000000000..4427f2171671896c978908b1c3d72b3f
 +}
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java b/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..88d700cc6dd4a613f853ff82818fa968f9a9092c
+index 0000000000000000000000000000000000000000..23ea99d0ec8622eadadc2073022e59c4aac8dc3a
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/entity/tracker/EntityTrackerEngine.java
 @@ -0,0 +1,254 @@
@@ -230,7 +230,7 @@ index 0000000000000000000000000000000000000000..88d700cc6dd4a613f853ff82818fa968
 +import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 +import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 +import me.jellysquid.mods.lithium.common.entity.tracker.nearby.NearbyEntityListener;
-+import net.minecraft.world.level.block.BlockPosition;
++import net.minecraft.core.BlockPosition;
 +import net.minecraft.world.entity.EntityLiving;
 +import net.minecraft.core.SectionPosition;
 +import net.minecraft.world.level.levelgen.structure.StructureBoundingBox;
@@ -747,13 +747,13 @@ index 0000000000000000000000000000000000000000..a94a40dcc3502d29950e5e387d658232
 +}
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/world/WorldHelper.java b/src/main/java/me/jellysquid/mods/lithium/common/world/WorldHelper.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f64f9c034f0950cfad0d12a2882cc693cf0d2fd6
+index 0000000000000000000000000000000000000000..5959d66582342f614bdadb2a1ef163e4fff25341
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/world/WorldHelper.java
 @@ -0,0 +1,18 @@
 +package me.jellysquid.mods.lithium.common.world;
 +
-+import net.minecraft.world.level.block.BlockPosition;
++import net.minecraft.core.BlockPosition;
 +
 +public class WorldHelper {
 +
@@ -771,14 +771,14 @@ index 0000000000000000000000000000000000000000..f64f9c034f0950cfad0d12a2882cc693
 +}
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/world/interests/PointOfInterestCollectors.java b/src/main/java/me/jellysquid/mods/lithium/common/world/interests/PointOfInterestCollectors.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4cceeb8d194d2cddbe6db5ab245a8c1a7ea4cd50
+index 0000000000000000000000000000000000000000..069b204764d04b126ac8ef30eae8f7e1234badf5
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/world/interests/PointOfInterestCollectors.java
 @@ -0,0 +1,28 @@
 +package me.jellysquid.mods.lithium.common.world.interests;
 +
 +import me.jellysquid.mods.lithium.common.util.Collector;
-+import net.minecraft.world.level.block.BlockPosition;
++import net.minecraft.core.BlockPosition;
 +import net.minecraft.world.entity.ai.village.poi.VillagePlace;
 +import net.minecraft.world.entity.ai.village.poi.VillagePlaceRecord;
 +import net.minecraft.world.entity.ai.village.poi.VillagePlaceSection;
@@ -1626,7 +1626,7 @@ index 406822895c5ec66e140e8ec2795031b071447ec0..4bea209b5cf883c67576434e70a7cc24
          return i < 0 || i >= 256;
      }
 diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index eecb17e887bf0d1680a5fb5198a8b4246c14e548..61c76162a3b8b06cd444ee71680f5154267f8706 100644
+index eecb17e887bf0d1680a5fb5198a8b4246c14e548..3319c419a9eaf91224396c8b19eb057abd8094e6 100644
 --- a/src/main/java/net/minecraft/world/level/block/Block.java
 +++ b/src/main/java/net/minecraft/world/level/block/Block.java
 @@ -55,6 +55,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
@@ -1643,11 +1643,11 @@ index eecb17e887bf0d1680a5fb5198a8b4246c14e548..61c76162a3b8b06cd444ee71680f5154
      // Paper end
 +
 +    // Yatopia start - Port lithium
-+    public PathType getPathNodeType(IBlockData state) {
++    public net.minecraft.world.level.pathfinder.PathType getPathNodeType(IBlockData state) {
 +        return PathNodeDefaults.getNodeType(state);
 +    }
 +
-+    public PathType getNeighborPathNodeType(IBlockData state) {
++    public net.minecraft.world.level.pathfinder.PathType getNeighborPathNodeType(IBlockData state) {
 +        return PathNodeDefaults.getNeighborNodeType(state);
 +    }
 +    // Yatopia end
@@ -1656,7 +1656,7 @@ index eecb17e887bf0d1680a5fb5198a8b4246c14e548..61c76162a3b8b06cd444ee71680f5154
      @Nullable
      private String name;
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
-index 324359fb5c479072bde27bcbaa4b15749204171a..6aaee0e7e6e9b7c9232d5e9aef33d2d695930be4 100644
+index 324359fb5c479072bde27bcbaa4b15749204171a..d7679e660821951437052aa2b038db13ac2e2c2f 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
 @@ -2,6 +2,8 @@ package net.minecraft.world.level.block.state;
@@ -1672,8 +1672,8 @@ index 324359fb5c479072bde27bcbaa4b15749204171a..6aaee0e7e6e9b7c9232d5e9aef33d2d6
  
      public abstract static class BlockData extends IBlockDataHolder<Block, IBlockData> {
  
-+        public PathType pathNodeType = PathType.OPEN; // Yatopia - Port lithium
-+        public PathType pathNodeTypeNeighbor = PathType.OPEN; // Yatopia - Port lithium
++        public net.minecraft.world.level.pathfinder.PathType pathNodeType = PathType.OPEN; // Yatopia - Port lithium
++        public net.minecraft.world.level.pathfinder.PathType pathNodeTypeNeighbor = PathType.OPEN; // Yatopia - Port lithium
          private final int b; public final int getEmittedLight() { return this.b; } // Tuinity - OBFHELPER
          private final boolean e; public final boolean isTransparentOnSomeFaces() { return this.e; } // Tuinity - OBFHELPER
          private final boolean f;
@@ -1682,11 +1682,11 @@ index 324359fb5c479072bde27bcbaa4b15749204171a..6aaee0e7e6e9b7c9232d5e9aef33d2d6
          // Tuinity end
  
 +        // Yatopia start - Port lithium
-+        public PathType getPathNodeType() {
++        public net.minecraft.world.level.pathfinder.PathType getPathNodeType() {
 +            return this.pathNodeType;
 +        }
 +
-+        public PathType getNeighborPathNodeType() {
++        public net.minecraft.world.level.pathfinder.PathType getNeighborPathNodeType() {
 +            return this.pathNodeTypeNeighbor;
 +        }
 +        // Yatopia end

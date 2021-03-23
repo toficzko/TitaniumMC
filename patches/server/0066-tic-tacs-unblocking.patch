@@ -7,7 +7,7 @@ Code originally licenced under LGPLv3 for the tic-tacs project: https://github.c
 
 diff --git a/src/main/java/net/gegy1000/tictacs/NonBlockingWorldAccess.java b/src/main/java/net/gegy1000/tictacs/NonBlockingWorldAccess.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..87438a6e936fe273578a406e530aa752966fd37c
+index 0000000000000000000000000000000000000000..0d99f3b4930045632d88fa4acb3b8159ee9cf9f3
 --- /dev/null
 +++ b/src/main/java/net/gegy1000/tictacs/NonBlockingWorldAccess.java
 @@ -0,0 +1,29 @@
@@ -17,7 +17,7 @@ index 0000000000000000000000000000000000000000..87438a6e936fe273578a406e530aa752
 +import net.minecraft.world.level.block.Blocks;
 +import net.minecraft.world.level.material.Fluid;
 +import net.minecraft.world.level.material.FluidTypes;
-+import net.minecraft.world.level.block.BlockPosition;
++import net.minecraft.core.BlockPosition;
 +import net.minecraft.world.level.IWorldReader;
 +import net.minecraft.world.level.material.FluidTypes;
 +

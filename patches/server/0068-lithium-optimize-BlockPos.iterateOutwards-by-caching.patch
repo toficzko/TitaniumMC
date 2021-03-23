@@ -8,7 +8,7 @@ Code taken from: https://github.com/CaffeineMC/lithium-fabric/pull/123 by 2No2Na
 
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/cached_blockpos_iteration/IterateOutwardsCache.java b/src/main/java/me/jellysquid/mods/lithium/common/cached_blockpos_iteration/IterateOutwardsCache.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7f434eec3585b23b66469619253cbaffb65086b4
+index 0000000000000000000000000000000000000000..50e9df6056f713b2f1eaf0cb4a23875e0c6c2e2c
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/cached_blockpos_iteration/IterateOutwardsCache.java
 @@ -0,0 +1,72 @@
@@ -16,7 +16,7 @@ index 0000000000000000000000000000000000000000..7f434eec3585b23b66469619253cbaff
 +
 +import it.unimi.dsi.fastutil.longs.LongArrayList;
 +import it.unimi.dsi.fastutil.longs.LongList;
-+import net.minecraft.world.level.block.BlockPosition;
++import net.minecraft.core.BlockPosition;
 +
 +import java.util.Iterator;
 +import java.util.Random;
@@ -87,7 +87,7 @@ index 0000000000000000000000000000000000000000..7f434eec3585b23b66469619253cbaff
 \ No newline at end of file
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/cached_blockpos_iteration/LongList2BlockPosMutableIterable.java b/src/main/java/me/jellysquid/mods/lithium/common/cached_blockpos_iteration/LongList2BlockPosMutableIterable.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e896f115f5a1ba2b645f1f45af61b67abfb141b3
+index 0000000000000000000000000000000000000000..e2e4f7968a399b4641df07b2931fff6dbc85ddb3
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/cached_blockpos_iteration/LongList2BlockPosMutableIterable.java
 @@ -0,0 +1,47 @@
@@ -95,7 +95,7 @@ index 0000000000000000000000000000000000000000..e896f115f5a1ba2b645f1f45af61b67a
 +
 +import it.unimi.dsi.fastutil.longs.LongIterator;
 +import it.unimi.dsi.fastutil.longs.LongList;
-+import net.minecraft.world.level.block.BlockPosition;
++import net.minecraft.core.BlockPosition;
 +
 +import java.util.Iterator;
 +
@@ -127,7 +127,7 @@ index 0000000000000000000000000000000000000000..e896f115f5a1ba2b645f1f45af61b67a
 +            }
 +
 +            @Override
-+            public net.minecraft.world.level.block.BlockPosition next() {
++            public BlockPosition next() {
 +                long nextPos = this.it.nextLong();
 +                return this.pos.setValues(
 +                        LongList2BlockPosMutableIterable.this.xOffset + BlockPosition.unpackLongX(nextPos),

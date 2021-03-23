@@ -11,10 +11,10 @@ Portions of this patch that were sourced from Lithium were remapped from Yarn ma
 Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 
 diff --git a/src/main/java/net/minecraft/world/level/block/BlockComposter.java b/src/main/java/net/minecraft/world/level/block/BlockComposter.java
-index 2d6abc0b8b3c9860110f0b5f1df1b3b3bbf30673..21d56458e17cd791b2c9e63799a15ffbc86e6afb 100644
+index c0b235d5edf3cd14021696d1b4f76ce3de41f5d5..0b58efe27878f1a07579f2e02d3939edefb47933 100644
 --- a/src/main/java/net/minecraft/world/level/block/BlockComposter.java
 +++ b/src/main/java/net/minecraft/world/level/block/BlockComposter.java
-@@ -357,7 +357,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
+@@ -356,7 +356,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
  
          @Override
          public int[] getSlotsForFace(EnumDirection enumdirection) {
@@ -23,7 +23,7 @@ index 2d6abc0b8b3c9860110f0b5f1df1b3b3bbf30673..21d56458e17cd791b2c9e63799a15ffb
          }
  
          @Override
-@@ -407,7 +407,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
+@@ -406,7 +406,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
  
          @Override
          public int[] getSlotsForFace(EnumDirection enumdirection) {
@@ -32,7 +32,7 @@ index 2d6abc0b8b3c9860110f0b5f1df1b3b3bbf30673..21d56458e17cd791b2c9e63799a15ffb
          }
  
          @Override
-@@ -443,7 +443,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
+@@ -442,7 +442,7 @@ public class BlockComposter extends Block implements IInventoryHolder {
  
          @Override
          public int[] getSlotsForFace(EnumDirection enumdirection) {

@@ -6,13 +6,13 @@ Subject: [PATCH] lithium shape
 
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/block/LithiumEntityShapeContext.java b/src/main/java/me/jellysquid/mods/lithium/common/block/LithiumEntityShapeContext.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ec0387f493f8f338d55d8fa778e127a856c4c0c7
+index 0000000000000000000000000000000000000000..85d55d144a38a16d0f148a29cd11985d7febe880
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/block/LithiumEntityShapeContext.java
 @@ -0,0 +1,55 @@
 +package me.jellysquid.mods.lithium.common.block;
 +
-+import net.minecraft.world.level.block.BlockPosition;
++import net.minecraft.core.BlockPosition;
 +import net.minecraft.world.entity.Entity;
 +import net.minecraft.world.entity.EntityLiving;
 +import net.minecraft.core.EnumDirection;
@@ -281,7 +281,7 @@ index 62bc23e38ce23f178f8c58ba0291d1b69c4545f2..e22dcbbb6812c559809b5140e48bef56
          return this.isSneaking();
      }
 diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index 61c76162a3b8b06cd444ee71680f5154267f8706..8722e73cc3af14511ffc14cf6eae8ccb725284b0 100644
+index 3319c419a9eaf91224396c8b19eb057abd8094e6..9dee9ff25ba12f4de6d9080176c371627215b029 100644
 --- a/src/main/java/net/minecraft/world/level/block/Block.java
 +++ b/src/main/java/net/minecraft/world/level/block/Block.java
 @@ -56,6 +56,7 @@ import net.minecraft.world.phys.shapes.VoxelShapes;

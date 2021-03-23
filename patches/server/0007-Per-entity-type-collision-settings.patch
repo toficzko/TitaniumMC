@@ -14,12 +14,12 @@ The whole code is based around 1 class, the EntityFilter class. Whole filtering 
 Co-authored-by: tr7zw <tr7zw@live.de>
 
 diff --git a/src/main/java/de/minebench/origami/OrigamiConfig.java b/src/main/java/de/minebench/origami/OrigamiConfig.java
-index 27599f422be266ad2fdbda49617661801c2c1991..2457b240f3b49dbd5fe0eb603d86418fd65f0205 100644
+index a1a585f5b4b2c10c41b184636149c8dde2a3ae51..f52b514848d11f4d9fe846fdbd111ff00a28cf4e 100644
 --- a/src/main/java/de/minebench/origami/OrigamiConfig.java
 +++ b/src/main/java/de/minebench/origami/OrigamiConfig.java
-@@ -135,6 +135,39 @@ public final class OrigamiConfig {
-         private void pigmenDontTargetUnlessHit() {
-             pigmenDontTargetUnlessHit = getBoolean("pigmen.dont-target-unless-hit", pigmenDontTargetUnlessHit);
+@@ -120,6 +120,39 @@ public final class OrigamiConfig {
+                 Bukkit.getLogger().info("Returning matching chunk rom fast search directly instead of loading it.");
+             }
          }
 +
 +        // Yatopia start

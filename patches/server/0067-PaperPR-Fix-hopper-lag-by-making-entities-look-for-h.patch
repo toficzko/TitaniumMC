@@ -41,20 +41,22 @@ index e87e3e7e9c10945b4607cf88358c6f17ca9c7f0c..e175189865867cb9ce818a63c8daa53a
  }
 diff --git a/src/main/java/io/papermc/paper/HopperPusher.java b/src/main/java/io/papermc/paper/HopperPusher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..da9fff1f183d0c0547a8ee3b98176c93eae4f8dc
+index 0000000000000000000000000000000000000000..cb8c48272e88ac03695c015d38dc75f260c87826
 --- /dev/null
 +++ b/src/main/java/io/papermc/paper/HopperPusher.java
-@@ -0,0 +1,95 @@
+@@ -0,0 +1,97 @@
 +package io.papermc.paper;
 +
-+import net.minecraft.world.phys.AxisAlignedBB;
-+import net.minecraft.world.level.block.BlockPosition;
-+import net.minecraft.world.level.block.Blocks;
-+import net.minecraft.world.entity.Entity;
++
++import net.minecraft.core.BlockPosition;
 +import net.minecraft.server.MinecraftServer;
++import net.minecraft.world.entity.Entity;
++import net.minecraft.world.level.World;
++import net.minecraft.world.level.block.Blocks;
 +import net.minecraft.world.level.block.entity.TileEntity;
 +import net.minecraft.world.level.block.entity.TileEntityHopper;
-+import net.minecraft.world.level.World;
++import net.minecraft.world.phys.AxisAlignedBB;
++
 +
 +public interface HopperPusher {
 +
@@ -141,10 +143,18 @@ index 0000000000000000000000000000000000000000..da9fff1f183d0c0547a8ee3b98176c93
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/world/entity/item/EntityItem.java b/src/main/java/net/minecraft/world/entity/item/EntityItem.java
-index eb115279d9d4730c06a1a70b8503756bc1a3b4ae..8ca1839ede6c199691e1f7cc568765d46d4b33c2 100644
+index 8cf0c5772c52a9e3754ec9fa053d13f57db1a9ee..351f3105fe40b7839632e56fd963c76eea354b53 100644
 --- a/src/main/java/net/minecraft/world/entity/item/EntityItem.java
 +++ b/src/main/java/net/minecraft/world/entity/item/EntityItem.java
-@@ -41,7 +41,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
+@@ -31,6 +31,7 @@ import net.minecraft.world.item.Item;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.World;
++import net.minecraft.world.level.block.entity.TileEntityHopper; // Paper - hopper fix
+ import net.minecraft.world.phys.Vec3D;
+ 
+ // CraftBukkit start
+@@ -41,7 +42,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
  // CraftBukkit end
  import org.bukkit.event.player.PlayerAttemptPickupItemEvent; // Paper
  
@@ -155,7 +165,7 @@ index eb115279d9d4730c06a1a70b8503756bc1a3b4ae..8ca1839ede6c199691e1f7cc568765d4
  
      private static final DataWatcherObject<ItemStack> ITEM = DataWatcher.a(EntityItem.class, DataWatcherRegistry.g);
      public int age;
-@@ -74,6 +76,19 @@ public class EntityItem extends Entity {
+@@ -74,6 +77,19 @@ public class EntityItem extends Entity {
          this.setItemStack(itemstack);
      }
  
@@ -175,7 +185,7 @@ index eb115279d9d4730c06a1a70b8503756bc1a3b4ae..8ca1839ede6c199691e1f7cc568765d4
      @Override
      protected boolean playStepSound() {
          return false;
-@@ -90,6 +105,7 @@ public class EntityItem extends Entity {
+@@ -90,6 +106,7 @@ public class EntityItem extends Entity {
              this.die();
          } else {
              super.tick();
@@ -183,7 +193,7 @@ index eb115279d9d4730c06a1a70b8503756bc1a3b4ae..8ca1839ede6c199691e1f7cc568765d4
              // CraftBukkit start - Use wall time for pickup and despawn timers
              int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
              if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
-@@ -190,6 +206,7 @@ public class EntityItem extends Entity {
+@@ -183,6 +200,7 @@ public class EntityItem extends Entity {
      // Spigot start - copied from above
      @Override
      public void inactiveTick() {
@@ -192,10 +202,18 @@ index eb115279d9d4730c06a1a70b8503756bc1a3b4ae..8ca1839ede6c199691e1f7cc568765d4
          int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
          if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
 diff --git a/src/main/java/net/minecraft/world/entity/vehicle/EntityMinecartContainer.java b/src/main/java/net/minecraft/world/entity/vehicle/EntityMinecartContainer.java
-index b688ff6534e069bc631e2cb84bb1deb3e4f1914a..fc2e75e00e9973dce15e585fbc7a88c4658b5017 100644
+index 0166d11cb540a536390f486e1069d6119d8d23d6..f4f81883d7f325688b79afe9c4e55541cd0a518b 100644
 --- a/src/main/java/net/minecraft/world/entity/vehicle/EntityMinecartContainer.java
 +++ b/src/main/java/net/minecraft/world/entity/vehicle/EntityMinecartContainer.java
-@@ -35,9 +35,10 @@ import org.bukkit.Location;
+@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.Container;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.GameRules;
+ import net.minecraft.world.level.World;
++import net.minecraft.world.level.block.entity.TileEntityHopper; // Paper - hopper fix
+ import net.minecraft.world.level.storage.loot.LootTable;
+ import net.minecraft.world.level.storage.loot.LootTableInfo;
+ import net.minecraft.world.level.storage.loot.parameters.LootContextParameterSets;
+@@ -35,9 +36,10 @@ import org.bukkit.Location;
  import org.bukkit.craftbukkit.entity.CraftHumanEntity;
  import org.bukkit.entity.HumanEntity;
  import org.bukkit.inventory.InventoryHolder;
@@ -207,7 +225,7 @@ index b688ff6534e069bc631e2cb84bb1deb3e4f1914a..fc2e75e00e9973dce15e585fbc7a88c4
  
      private NonNullList<ItemStack> items;
      private boolean c;
-@@ -72,6 +73,31 @@ public abstract class EntityMinecartContainer extends EntityMinecartAbstract imp
+@@ -72,6 +74,31 @@ public abstract class EntityMinecartContainer extends EntityMinecartAbstract imp
          return null;
      }
  
@@ -240,10 +258,10 @@ index b688ff6534e069bc631e2cb84bb1deb3e4f1914a..fc2e75e00e9973dce15e585fbc7a88c4
      public int getMaxStackSize() {
          return maxStack;
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/TileEntityHopper.java b/src/main/java/net/minecraft/world/level/block/entity/TileEntityHopper.java
-index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5e87cebdd 100644
+index 537dc52e5ff3325555ee6049bc7f277952983b76..c76cd906f59060608c0f7f3e6dc974bffb5054fc 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/TileEntityHopper.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/TileEntityHopper.java
-@@ -87,6 +87,12 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -86,6 +86,12 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
          this.j = -1;
      }
  
@@ -256,16 +274,16 @@ index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5
      @Override
      public void load(IBlockData iblockdata, NBTTagCompound nbttagcompound) {
          super.load(iblockdata, nbttagcompound);
-@@ -146,7 +152,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -145,7 +151,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
                  boolean result = this.a(() -> {
                      return a((IHopper) this);
                  });
--                if (!result && this.world.spigotConfig.hopperCheck > 1 && this.world.spigotConfig.hopperCheck > this.getCooldown()) { // Origami - only set check cooldown if it's bigger than already set one
-+                if (!result && this.world.spigotConfig.hopperCheck > 1 && this.world.spigotConfig.hopperCheck > this.getCooldown() && !world.paperConfig.isHopperPushBased) { // Origami - only set check cooldown if it's bigger than already set one
+-                if (!result && this.world.spigotConfig.hopperCheck > 1) {
++                if (!result && this.world.spigotConfig.hopperCheck > 1 && !world.paperConfig.isHopperPushBased /* Paper */) {
                      this.setCooldown(this.world.spigotConfig.hopperCheck);
                  }
                  // Spigot end
-@@ -205,6 +211,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -180,6 +186,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
          }
      }
  
@@ -273,7 +291,7 @@ index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5
      private boolean j() {
          Iterator iterator = this.items.iterator();
  
-@@ -379,10 +386,20 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -348,10 +355,20 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
              ((EntityMinecartHopper) hopper).setCooldown(hopper.getWorld().spigotConfig.hopperTransfer / 2);
          }
      }
@@ -295,7 +313,7 @@ index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5
  
          if (iinventory == null) {
              return false;
-@@ -490,8 +507,21 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -459,8 +476,21 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
      }
  
      public static boolean a(IHopper ihopper) {
@@ -318,7 +336,7 @@ index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5
          if (iinventory != null) {
              EnumDirection enumdirection = EnumDirection.DOWN;
  
-@@ -506,7 +536,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -475,7 +505,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
                  }
              });
              // Paper end
@@ -327,15 +345,15 @@ index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5
              Iterator iterator = c(ihopper).iterator();
  
              EntityItem entityitem;
-@@ -522,6 +552,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
-             if (ihopper instanceof TileEntityHopper) ((TileEntityHopper) ihopper).shouldTick = true; // Origami - don't tick empty hoppers
+@@ -490,6 +520,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+ 
              return true;
          }
 +        return false; // Paper
      }
  
      private static boolean a(IHopper ihopper, IInventory iinventory, int i, EnumDirection enumdirection) {// Paper - method unused as logic is inlined above
-@@ -571,6 +602,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -539,6 +570,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
          return false;
      }
  
@@ -343,7 +361,7 @@ index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5
      public static boolean a(IInventory iinventory, EntityItem entityitem) {
          boolean flag = false;
          // CraftBukkit start
-@@ -676,6 +708,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -644,6 +676,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
          return b(this.getWorld(), this.position.shift(enumdirection));
      }
  
@@ -351,7 +369,7 @@ index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5
      @Nullable
      public static IInventory b(IHopper ihopper) {
          return a(ihopper.getWorld(), ihopper.x(), ihopper.z() + 1.0D, ihopper.A());
-@@ -697,6 +730,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -665,6 +698,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
          return a(world, (double) blockposition.getX() + 0.5D, (double) blockposition.getY() + 0.5D, (double) blockposition.getZ() + 0.5D, true); // Paper
      }
  
@@ -359,7 +377,7 @@ index a859e12571ceff2199842e03df77b21ee9d689f2..5d1ce828460c9466504c2c22e9582ab5
      @Nullable
      public static IInventory a(World world, double d0, double d1, double d2) { return a(world, d0, d1, d2, false); } // Paper - overload to default false
      public static IInventory a(World world, double d0, double d1, double d2, boolean optimizeEntities) { // Paper
-@@ -753,6 +787,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
+@@ -721,6 +755,7 @@ public class TileEntityHopper extends TileEntityLootable implements IHopper, ITi
          this.j = i;
      }
  

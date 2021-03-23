@@ -10,7 +10,6 @@ This is an overview over all patches that are currently used.
 | ----- | ------------- |:-------------:| -----:|
 | server |  (AI-Improvements) Optimized tan for ControllerLook      | bl4ckscor3 |  |
 | server |  (PaperPR) Fix hopper lag by making entities look for hoppers.      | Techcable | Yannick Lamprecht |
-| server |  (PaperPR) optimized dirt and snow spreading      | lukas81298 |  |
 | server |  AFK API      | William Blake Galbreath |  |
 | api |  AFK API      | William Blake Galbreath |  |
 | server |  Ability to re-add farmland mechanics from Alpha      | Yive |  |
@@ -52,7 +51,6 @@ This is an overview over all patches that are currently used.
 | server |  Add option to allow loyalty on tridents to work in the void      | William Blake Galbreath |  |
 | server |  Add option to disable dolphin treasure searching      | William Blake Galbreath |  |
 | server |  Add option to disable mushroom block updates      | William Blake Galbreath |  |
-| server |  Add option to disable observer clocks      | Phoenix616 |  |
 | server |  Add option to disable zombie aggressiveness towards villagers      | nitricspace |  |
 | api |  Add option to disable zombie aggressiveness towards villagers      | nitricspace |  |
 | server |  Add option to set armorstand step height      | William Blake Galbreath |  |
@@ -203,7 +201,6 @@ This is an overview over all patches that are currently used.
 | server |  Fix PlayerEditBookEvent not saving new book      | BillyGalbreath |  |
 | server |  Fix chunks refusing to unload at low TPS      | Spottedleaf |  |
 | server |  Fix cow rotation when shearing mooshroom      | William Blake Galbreath |  |
-| server |  Fix exp drop of zombie pigmen (MC-56653)      | Phoenix616 |  |
 | server |  Fix incorrect isRealPlayer init      | Spottedleaf |  |
 | api |  Fix javadoc warnings (missing @param and @return)      | BillyGalbreath |  |
 | server |  Fix lead fall dmg config      | tr7zw |  |
@@ -222,7 +219,6 @@ This is an overview over all patches that are currently used.
 | server |  Heavily optimize recipe lookups in CraftingManager      | Mykyta Komarn | Ivan Pekov, ishland |
 | server |  Highly optimise single and multi-AABB VoxelShapes and      | Spottedleaf |  |
 | server |  Highly optimize VillagePlace filtering      | Ivan Pekov |  |
-| server |  Hopper Optimizations      | Phoenix616 |  |
 | server |  Illusioners AI settings      | William Blake Galbreath |  |
 | server |  Implement TPSBar      | BillyGalbreath |  |
 | server |  Implement bed explosion options      | William Blake Galbreath |  |
