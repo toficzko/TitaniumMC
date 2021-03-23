@@ -95,7 +95,6 @@ This is an overview over all patches that are currently used.
 | api |  Anvil API      | William Blake Galbreath |  |
 | server |  Apply display names from item forms of entities to entities      | jmp |  |
 | server |  Arrows should not reset despawn counter      | William Blake Galbreath |  |
-| server |  Async navigation      | &quot;tsao-chi@the-lingo.org&quot; |  |
 | server |  Attempt to recalculate regionfile header if it is corrupt      | Spottedleaf |  |
 | server |  Avoid double I/O operation on load player file      | ㄗㄠˋ ㄑㄧˊ |  |
 | server |  Barrels and enderchests 6 rows      | William Blake Galbreath |  |
