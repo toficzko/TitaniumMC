@@ -864,7 +864,7 @@ index a206a729b3afa01bf591fa4da1e5c14902da4778..716f91246c4a45fd49af806afd1781f1
          return (int) (i << 22 >> 42);
      }
 diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
-index 19332445edb8b9ae86ba9d8810c3c55bf4628552..2cae3659634e2cd2e1c9d724fb05c13da55e0ef7 100644
+index 4c1cf25eb3ec6b21d122074e3b62c61b7161c15e..0cf96ee7e8c64b832ffae07ea2fa88c259e05dd9 100644
 --- a/src/main/java/net/minecraft/server/level/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/level/WorldServer.java
 @@ -177,6 +177,7 @@ import org.bukkit.event.world.TimeSkipEvent;
@@ -1656,7 +1656,7 @@ index eecb17e887bf0d1680a5fb5198a8b4246c14e548..3319c419a9eaf91224396c8b19eb057a
      @Nullable
      private String name;
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
-index 324359fb5c479072bde27bcbaa4b15749204171a..83f055024a2b5d223da38370e009c99e56675b06 100644
+index e6c37db1a8b51dda1e9d493d8fbfecd4ddf1aeb3..4cb0213b0f786aacbb7ef2f682587ec127554e35 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
 @@ -2,6 +2,8 @@ package net.minecraft.world.level.block.state;

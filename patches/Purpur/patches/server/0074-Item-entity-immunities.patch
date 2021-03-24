@@ -42,10 +42,10 @@ index 3a66a34db2b8ac612431131cea80e57ee72de05f..70a1ff235690a5990f94bd9cf97d670b
              int i;
              int j;
 diff --git a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-index 585dbb250d975d2e9c34af26b9d5927ce734b407..58d2f1a10186e889bdd2249724a7f21f3a0a6a6e 100644
+index bb5ebacf99238223b84f3663af3ab9c6c60332eb..9097884f71d7986c8185a4b2b2a65b8c66fa7354 100644
 --- a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-@@ -2481,7 +2481,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
+@@ -2451,7 +2451,7 @@ Sections go from 0..16. Now whenever a section is not empty, it can potentially
  
      public class EntityTracker {
  

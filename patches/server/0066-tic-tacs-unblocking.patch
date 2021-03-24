@@ -57,7 +57,7 @@ index e6bc64037f79a1380bcb99ff3c4455e0d9cb8d5d..8c8c699e5bac1795f60cb43a60acc494
              if (valid && !this.isSpectator() || this.world.isLoaded(this.getChunkCoordinates())) { // Paper - don't tick dead players that are not in the world currently (pending respawn)
                  super.tick();
 diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
-index 79bf15085cf173db39959941788a5a835493b412..19332445edb8b9ae86ba9d8810c3c55bf4628552 100644
+index d42c15dc16114e362722ccfde2021a2c41680649..4c1cf25eb3ec6b21d122074e3b62c61b7161c15e 100644
 --- a/src/main/java/net/minecraft/server/level/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/level/WorldServer.java
 @@ -176,8 +176,9 @@ import org.bukkit.event.weather.LightningStrikeEvent;

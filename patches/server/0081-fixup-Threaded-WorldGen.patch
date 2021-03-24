@@ -5,7 +5,7 @@ Subject: [PATCH] fixup! Threaded WorldGen
 
 
 diff --git a/src/main/java/net/minecraft/server/level/PlayerChunk.java b/src/main/java/net/minecraft/server/level/PlayerChunk.java
-index d9b134302f739efd93f50e93c8730b474f9a8ccf..d92cbfcf5374940e3bcc7746dd68fb8171ca4df8 100644
+index 86f156587a0939b28c5cf6f64907255c1c4f8b35..716ddfb456dbb4c84e8e9c09728e7c28b5f4cff2 100644
 --- a/src/main/java/net/minecraft/server/level/PlayerChunk.java
 +++ b/src/main/java/net/minecraft/server/level/PlayerChunk.java
 @@ -586,6 +586,7 @@ public class PlayerChunk {
@@ -17,10 +17,10 @@ index d9b134302f739efd93f50e93c8730b474f9a8ccf..d92cbfcf5374940e3bcc7746dd68fb81
          return this.n;
      }
 diff --git a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-index 7b1157de77d4e24a7540c070d922b49f2a06a319..8bb1e4486be2860fb5642501bf1e4aaba3bbbd40 100644
+index 45804d494dc6f7f4cfa038a354a06e71b332251a..f7e31c9ef455263778f6f807b586ba566ad9901b 100644
 --- a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-@@ -1280,9 +1280,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1250,9 +1250,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                          if (!com.tuinity.tuinity.config.TuinityConfig.useNewLightEngine && chunkstatus == ChunkStatus.LIGHT) { // Tuinity - we use edge checks, so loading 1 radius neighbours isn't necessary
                              completablefuture1 = this.b(playerchunk, chunkstatus);
                          } else {
@@ -32,7 +32,7 @@ index 7b1157de77d4e24a7540c070d922b49f2a06a319..8bb1e4486be2860fb5642501bf1e4aab
                          }
  
                          this.worldLoadListener.a(chunkcoordintpair, chunkstatus);
-@@ -1393,9 +1393,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1363,9 +1363,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          return completablefuture.thenComposeAsync((either) -> {
              return either.map((list) -> { // Paper - Shut up.
                  try {

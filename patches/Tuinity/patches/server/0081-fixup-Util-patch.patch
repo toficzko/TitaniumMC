@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <Spottedleaf@users.noreply.github.com>
+Date: Sun, 21 Mar 2021 11:47:31 -0700
+Subject: [PATCH] fixup! Util patch
+
+
+diff --git a/src/main/java/com/tuinity/tuinity/util/misc/Delayed8WayDistancePropagator2D.java b/src/main/java/com/tuinity/tuinity/util/misc/Delayed8WayDistancePropagator2D.java
+index 606417a8aeaca2682595f417bba8e9d411999da9..cdd3c4032c1d6b34a10ba415bd4d0e377aa9af3c 100644
+--- a/src/main/java/com/tuinity/tuinity/util/misc/Delayed8WayDistancePropagator2D.java
++++ b/src/main/java/com/tuinity/tuinity/util/misc/Delayed8WayDistancePropagator2D.java
+@@ -378,11 +378,13 @@ public final class Delayed8WayDistancePropagator2D {
+         this.levelRemoveWorkQueueBitset |= (1L << level);
+     }
+ 
+-    public void propagateUpdates() {
++    public boolean propagateUpdates() {
+         if (this.updatedSources.isEmpty()) {
+-            return;
++            return false;
+         }
+ 
++        boolean ret = false;
++
+         for (final LongIterator iterator = this.updatedSources.iterator(); iterator.hasNext();) {
+             final long coordinate = iterator.nextLong();
+ 
+@@ -392,6 +394,7 @@ public final class Delayed8WayDistancePropagator2D {
+             if (currentLevel == updatedSource) {
+                 continue;
+             }
++            ret = true;
+ 
+             if (updatedSource > currentLevel) {
+                 // level increase
+@@ -412,6 +415,8 @@ public final class Delayed8WayDistancePropagator2D {
+ 
+         // now we propagate the decreases (which will then re-propagate clobbered sources)
+         this.propagateDecreases();
++
++        return ret;
+     }
+ 
+     protected void propagateIncreases() {

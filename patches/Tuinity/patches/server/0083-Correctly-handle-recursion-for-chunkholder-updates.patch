@@ -1,0 +1,38 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <Spottedleaf@users.noreply.github.com>
+Date: Sun, 21 Mar 2021 17:32:47 -0700
+Subject: [PATCH] Correctly handle recursion for chunkholder updates
+
+If a chunk ticket level is brought up while unloading it would
+cause a recursive call which would handle the increase but then
+the caller would think the chunk would be unloaded.
+
+diff --git a/src/main/java/net/minecraft/server/level/PlayerChunk.java b/src/main/java/net/minecraft/server/level/PlayerChunk.java
+index e9ab40acf8a2fa0a1ae7d05743bdf6f1b67e0ce7..86f156587a0939b28c5cf6f64907255c1c4f8b35 100644
+--- a/src/main/java/net/minecraft/server/level/PlayerChunk.java
++++ b/src/main/java/net/minecraft/server/level/PlayerChunk.java
+@@ -599,9 +599,11 @@ public class PlayerChunk {
+         this.ticketLevel = i;
+     }
+ 
++    protected long updateCount; // Tuinity - correctly handle recursion
+     protected final void handleLevelUpdate(PlayerChunkMap playerchunkmap) { this.a(playerchunkmap); } // Tuinity - OBFHELPER
+     protected void a(PlayerChunkMap playerchunkmap) {
+         com.tuinity.tuinity.util.TickThread.ensureTickThread("Async ticket level update"); // Tuinity
++        long updateCount = ++this.updateCount; // Tuinity - correctly handle recursion
+         ChunkStatus chunkstatus = getChunkStatus(this.oldTicketLevel);
+         ChunkStatus chunkstatus1 = getChunkStatus(this.ticketLevel);
+         boolean flag = this.oldTicketLevel <= PlayerChunkMap.GOLDEN_TICKET;
+@@ -631,6 +633,12 @@ public class PlayerChunk {
+ 
+             // Run callback right away if the future was already done
+             playerchunkmap.callbackExecutor.run();
++            // Tuinity start - correctly handle recursion
++            if (this.updateCount != updateCount) {
++                // something else updated ticket level for us.
++                return;
++            }
++            // Tuinity end - correctly handle recursion
+         }
+         // CraftBukkit end
+         CompletableFuture completablefuture;

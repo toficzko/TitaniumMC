@@ -142,7 +142,7 @@ index dc1b7db4d39d4dfa65d60e5a059d3b94def6cf62..d33dd16fd8c14daea0b6820e0176be6f
          if (chunkMapDistance.delayDistanceManagerTick) return false; // Paper
          if (this.playerChunkMap.unloadingPlayerChunk) { MinecraftServer.LOGGER.fatal("Cannot tick distance manager while unloading playerchunks", new Throwable()); throw new IllegalStateException("Cannot tick distance manager while unloading playerchunks"); } // Tuinity
 diff --git a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-index 58d2f1a10186e889bdd2249724a7f21f3a0a6a6e..b9d38413da1adbffd21df301f03cf181d4cd5cdc 100644
+index 9097884f71d7986c8185a4b2b2a65b8c66fa7354..194f12b775a3c857db86ec8ee5b78ee8169a0e35 100644
 --- a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 @@ -113,6 +113,18 @@ import org.spigotmc.AsyncCatcher;
@@ -164,7 +164,7 @@ index 58d2f1a10186e889bdd2249724a7f21f3a0a6a6e..b9d38413da1adbffd21df301f03cf181
      private static final Logger LOGGER = LogManager.getLogger();
      public static final int GOLDEN_TICKET = 33 + ChunkStatus.b();
      // Paper start - faster copying
-@@ -1407,7 +1419,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1377,7 +1389,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
                  return;
              }
              // Paper end
@@ -174,7 +174,7 @@ index 58d2f1a10186e889bdd2249724a7f21f3a0a6a6e..b9d38413da1adbffd21df301f03cf181
              return CompletableFuture.completedFuture(either);
          }, this.mainInvokingExecutor);
 diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
-index 2cae3659634e2cd2e1c9d724fb05c13da55e0ef7..0a215fa0d706210cc9a72526230a9e4bcf537d06 100644
+index 0cf96ee7e8c64b832ffae07ea2fa88c259e05dd9..38dc8e401324b99e1132f33f094a0c500aa1975c 100644
 --- a/src/main/java/net/minecraft/server/level/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/level/WorldServer.java
 @@ -2786,28 +2786,26 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
