@@ -226,20 +226,20 @@ index ee906b594b306906c170180a29a8b61997d05168..7e348fcb813707fee830082b826932e0
          if (this.closed) {
              this.pollTasks(true); // this ensures we've emptied the queue
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 2e5bf6967e5cdfff93a52d2e6bebb0af6dfc843a..20bfed551888194eca85641223694ecbc1642134 100644
+index e633ef50c4f0406aa8b20109ee210e947fa3afec..09c82768ee52fe6cbb247727734a6fd6688b9ed6 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -957,7 +957,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          LOGGER.info("Flushing Chunk IO");
-         PlayerChunkMap.shutdownScheduler(); // Yatopia
-         ChunkStatus.shutdownExecutors(); // Yatopia
+         net.minecraft.server.level.PlayerChunkMap.shutdownScheduler(); // Yatopia
+         net.minecraft.world.level.chunk.ChunkStatus.shutdownExecutors(); // Yatopia
 -        com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE.close(true, true); // Paper
 +        com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE.close(true); // Paper // Yatopia
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
          LOGGER.info("Closing Server");
 diff --git a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-index 3f2737da23b2d74643ae713420f6aaacf937b231..e8dff3ccbabf37fb3ed0d4f992cb75a4b99661a7 100644
+index b9d38413da1adbffd21df301f03cf181d4cd5cdc..7b1157de77d4e24a7540c070d922b49f2a06a319 100644
 --- a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 @@ -1772,7 +1772,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {

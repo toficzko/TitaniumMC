@@ -1656,7 +1656,7 @@ index eecb17e887bf0d1680a5fb5198a8b4246c14e548..3319c419a9eaf91224396c8b19eb057a
      @Nullable
      private String name;
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
-index 324359fb5c479072bde27bcbaa4b15749204171a..d7679e660821951437052aa2b038db13ac2e2c2f 100644
+index 324359fb5c479072bde27bcbaa4b15749204171a..83f055024a2b5d223da38370e009c99e56675b06 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
 @@ -2,6 +2,8 @@ package net.minecraft.world.level.block.state;
@@ -1668,7 +1668,15 @@ index 324359fb5c479072bde27bcbaa4b15749204171a..d7679e660821951437052aa2b038db13
  import java.util.Arrays;
  import java.util.Collections;
  import java.util.List;
-@@ -348,6 +350,8 @@ public abstract class BlockBase {
+@@ -62,6 +64,7 @@ import net.minecraft.world.phys.Vec3D;
+ import net.minecraft.world.phys.shapes.VoxelShape;
+ import net.minecraft.world.phys.shapes.VoxelShapeCollision;
+ import net.minecraft.world.phys.shapes.VoxelShapes;
++import net.minecraft.world.level.pathfinder.PathType;
+ 
+ public abstract class BlockBase {
+ 
+@@ -348,6 +351,8 @@ public abstract class BlockBase {
  
      public abstract static class BlockData extends IBlockDataHolder<Block, IBlockData> {
  
@@ -1677,7 +1685,7 @@ index 324359fb5c479072bde27bcbaa4b15749204171a..d7679e660821951437052aa2b038db13
          private final int b; public final int getEmittedLight() { return this.b; } // Tuinity - OBFHELPER
          private final boolean e; public final boolean isTransparentOnSomeFaces() { return this.e; } // Tuinity - OBFHELPER
          private final boolean f;
-@@ -419,6 +423,16 @@ public abstract class BlockBase {
+@@ -419,6 +424,16 @@ public abstract class BlockBase {
          }
          // Tuinity end
  
@@ -1694,7 +1702,7 @@ index 324359fb5c479072bde27bcbaa4b15749204171a..d7679e660821951437052aa2b038db13
          public void a() {
              this.fluid = this.getBlock().d(this.p()); // Paper - moved from getFluid()
              this.isTicking = this.getBlock().isTicking(this.p()); // Paper - moved from isTicking()
-@@ -428,6 +442,9 @@ public abstract class BlockBase {
+@@ -428,6 +443,9 @@ public abstract class BlockBase {
              this.shapeExceedsCube = this.a == null || this.a.c; // Tuinity - moved from actual method to here
              this.staticPathType = null; // Tuinity - cache static path type
              this.neighbourOverridePathType = null; // Tuinity - cache static path types
@@ -1705,10 +1713,18 @@ index 324359fb5c479072bde27bcbaa4b15749204171a..d7679e660821951437052aa2b038db13
              // Tuinity start - optimise culling shape cache for light
              if (this.a != null && this.a.getCullingShapeCache() != null) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/Chunk.java b/src/main/java/net/minecraft/world/level/chunk/Chunk.java
-index 4f5f9eb110cf71a966d1365c7813ba55b5127890..97812d4821b09e623f53f378bb80d74673644c25 100644
+index 4f5f9eb110cf71a966d1365c7813ba55b5127890..e9722a6e6ff2cc67fe3cd66111690aa7bf1e8f36 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/Chunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/Chunk.java
-@@ -852,6 +852,11 @@ public class Chunk implements IChunkAccess {
+@@ -68,6 +68,7 @@ import net.minecraft.world.level.material.FluidTypes;
+ import net.minecraft.world.phys.AxisAlignedBB;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import net.minecraft.world.entity.EntityLiving; // Yatopia
+ 
+ public class Chunk implements IChunkAccess {
+ 
+@@ -852,6 +853,11 @@ public class Chunk implements IChunkAccess {
          if (!this.entitySlices[i].remove(entity)) { // Tuinity - optimise hard colliding entities // Tuinity - entities by class // Tuinity
              return;
          }
@@ -1720,7 +1736,7 @@ index 4f5f9eb110cf71a966d1365c7813ba55b5127890..97812d4821b09e623f53f378bb80d746
          if (entity instanceof EntityItem) {
              itemCounts[i]--;
          } else if (entity instanceof IInventory) {
-@@ -861,6 +866,11 @@ public class Chunk implements IChunkAccess {
+@@ -861,6 +867,11 @@ public class Chunk implements IChunkAccess {
          this.markDirty(); // Paper
          // Paper end
          this.entities.remove(entity); // Paper
@@ -1929,7 +1945,7 @@ index 76e19f3a4ae988f6f3b59763d639fa5e084fa0bf..5dbd1dca0a06bf11169f66a226a33f65
          pathpoint.f = this.a(pathpoint, list); // Paper - optimize collection
          pathpoint.g = pathpoint.f;
 diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderNormal.java b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderNormal.java
-index 9d08094165cf18d99116b5c721fff888f3cb42e2..a4523186caced0cf427af441fe714277a6a44b05 100644
+index 9d08094165cf18d99116b5c721fff888f3cb42e2..175a99162415e7e77cb2ccf8e2ff60e0976c0cbb 100644
 --- a/src/main/java/net/minecraft/world/level/pathfinder/PathfinderNormal.java
 +++ b/src/main/java/net/minecraft/world/level/pathfinder/PathfinderNormal.java
 @@ -4,6 +4,9 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -1942,7 +1958,18 @@ index 9d08094165cf18d99116b5c721fff888f3cb42e2..a4523186caced0cf427af441fe714277
  import java.util.EnumSet;
  import java.util.Iterator;
  import javax.annotation.Nullable;
-@@ -476,68 +479,111 @@ public class PathfinderNormal extends PathfinderAbstract {
+@@ -30,6 +33,10 @@ import net.minecraft.world.level.material.Material;
+ import net.minecraft.world.phys.AxisAlignedBB;
+ import net.minecraft.world.phys.Vec3D;
+ import net.minecraft.world.phys.shapes.VoxelShape;
++import net.minecraft.world.level.chunk.ChunkSection; // Yatopia
++import net.minecraft.world.level.chunk.IChunkAccess; // Yatopia
++import net.minecraft.world.level.World; // Yatopia
++import net.minecraft.world.level.ICollisionAccess; // Yatopia
+ 
+ public class PathfinderNormal extends PathfinderAbstract {
+ 
+@@ -476,68 +483,111 @@ public class PathfinderNormal extends PathfinderAbstract {
          return pathtype;
      }
  

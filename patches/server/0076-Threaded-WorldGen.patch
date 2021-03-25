@@ -76,15 +76,15 @@ index ce440ae5cc843fc6101dd11fd45d9089795411e4..06de830c859f3fa04b8542a238f24aa8
          return SystemUtils.e;
      }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 965c59994ced51fe2fd1e19fe8291fa771bf86a8..2e5bf6967e5cdfff93a52d2e6bebb0af6dfc843a 100644
+index 965c59994ced51fe2fd1e19fe8291fa771bf86a8..e633ef50c4f0406aa8b20109ee210e947fa3afec 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -955,6 +955,8 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          // Spigot end
          // Paper start - move final shutdown items here
          LOGGER.info("Flushing Chunk IO");
-+        PlayerChunkMap.shutdownScheduler(); // Yatopia
-+        ChunkStatus.shutdownExecutors(); // Yatopia
++        net.minecraft.server.level.PlayerChunkMap.shutdownScheduler(); // Yatopia
++        net.minecraft.world.level.chunk.ChunkStatus.shutdownExecutors(); // Yatopia
          com.destroystokyo.paper.io.PaperFileIOThread.Holder.INSTANCE.close(true, true); // Paper
          LOGGER.info("Closing Thread Pool");
          SystemUtils.shutdownServerThreadPool(); // Paper
@@ -142,7 +142,7 @@ index dc1b7db4d39d4dfa65d60e5a059d3b94def6cf62..d33dd16fd8c14daea0b6820e0176be6f
          if (chunkMapDistance.delayDistanceManagerTick) return false; // Paper
          if (this.playerChunkMap.unloadingPlayerChunk) { MinecraftServer.LOGGER.fatal("Cannot tick distance manager while unloading playerchunks", new Throwable()); throw new IllegalStateException("Cannot tick distance manager while unloading playerchunks"); } // Tuinity
 diff --git a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-index 58d2f1a10186e889bdd2249724a7f21f3a0a6a6e..3f2737da23b2d74643ae713420f6aaacf937b231 100644
+index 58d2f1a10186e889bdd2249724a7f21f3a0a6a6e..b9d38413da1adbffd21df301f03cf181d4cd5cdc 100644
 --- a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 @@ -113,6 +113,18 @@ import org.spigotmc.AsyncCatcher;
@@ -151,7 +151,7 @@ index 58d2f1a10186e889bdd2249724a7f21f3a0a6a6e..3f2737da23b2d74643ae713420f6aaac
  
 +    // Yatopia start
 +    static final java.util.concurrent.ExecutorService worldGenScheduler = java.util.concurrent.Executors.newSingleThreadExecutor(new com.google.common.util.concurrent.ThreadFactoryBuilder().setNameFormat("Yatopia Async Chunks Scheduler").setDaemon(true).setPriority(Thread.NORM_PRIORITY - 1).build());
-+    static void shutdownScheduler() {
++    public static void shutdownScheduler() {
 +        worldGenScheduler.shutdown();
 +        while (!worldGenScheduler.isTerminated()) {
 +            try {
@@ -253,7 +253,7 @@ index ff98335155c86803b98d8c67f0b40b8d65214890..6f6a52bb2e445795f96ffbafaeed63c3
      public ChunkGenerator(WorldChunkManager worldchunkmanager, StructureSettings structuresettings) {
          this(worldchunkmanager, worldchunkmanager, structuresettings, 0L);
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java b/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
-index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..43d158137c11d06edade4fd1417b0ef7a3e0a996 100644
+index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..a01d6dfe147383242e514d2807558bf94ff8865a 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
 @@ -22,9 +22,51 @@ import net.minecraft.world.level.levelgen.HeightMap;
@@ -286,7 +286,7 @@ index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..43d158137c11d06edade4fd1417b0ef7
 +            new com.google.common.util.concurrent.ThreadFactoryBuilder().setDaemon(true).setNameFormat("Yatopia Async Chunks WorldGen Worker #%d").build()
 +    );
 +
-+    static void shutdownExecutors() {
++    public static void shutdownExecutors() {
 +        featureGenExecutor.shutdown();
 +        worldGenExecutor.shutdown();
 +        while (!featureGenExecutor.isTerminated()) {

@@ -17,7 +17,7 @@ index d9b134302f739efd93f50e93c8730b474f9a8ccf..d92cbfcf5374940e3bcc7746dd68fb81
          return this.n;
      }
 diff --git a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-index e8dff3ccbabf37fb3ed0d4f992cb75a4b99661a7..d03db300789f836202c849c35fa93098e7a94153 100644
+index 7b1157de77d4e24a7540c070d922b49f2a06a319..8bb1e4486be2860fb5642501bf1e4aaba3bbbd40 100644
 --- a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 @@ -1280,9 +1280,9 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
@@ -45,7 +45,7 @@ index e8dff3ccbabf37fb3ed0d4f992cb75a4b99661a7..d03db300789f836202c849c35fa93098
                      this.worldLoadListener.a(chunkcoordintpair, chunkstatus);
                      return completablefuture1;
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java b/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
-index 43d158137c11d06edade4fd1417b0ef7a3e0a996..f8d48ac7bd560bc41956b899bdaa91cd52d3a1de 100644
+index a01d6dfe147383242e514d2807558bf94ff8865a..b33dd2602c592f0ed5d45d0a5a1ec87f6904aaed 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
 @@ -69,7 +69,7 @@ public class ChunkStatus {

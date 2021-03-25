@@ -1105,51 +1105,6 @@ index 4b1cb089355b455c6210f2df1af797cc363997cf..0049a675557cbc05e361c12e9fb84a38
          this.j = this.i;
          this.l = this.k;
          EntityHuman entityhuman = this.world.a((double) this.position.getX() + 0.5D, (double) this.position.getY() + 0.5D, (double) this.position.getZ() + 0.5D, 3.0D, false);
-diff --git a/src/main/java/net/minecraft/world/level/block/entity/TileEntityEnderChest.java b/src/main/java/net/minecraft/world/level/block/entity/TileEntityEnderChest.java
-index 2bc4213c70be47ca8bbc24898cc92e43f4228821..43883d4e5f6766a4d101c67f18b16dd0ccc6ff02 100644
---- a/src/main/java/net/minecraft/world/level/block/entity/TileEntityEnderChest.java
-+++ b/src/main/java/net/minecraft/world/level/block/entity/TileEntityEnderChest.java
-@@ -44,8 +44,14 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
-             double d1 = (double) i + 0.5D;
- 
-             d0 = (double) k + 0.5D;
-+            // Yatopia start - lithium: skip ticking block entities that are doing nothing
-+            if (this.viewerCount == 0 && this.animationProgress == 0.0F && this.lastAnimationProgress == 0 && this.ticks != 0 && this.world != null) {
-+                ((BlockEntitySleepTracker) this.world).setAwake(this, false);
-+            }
-+            // Yatopia end
-             this.world.playSound((EntityHuman) null, d1, (double) j + 0.5D, d0, SoundEffects.BLOCK_ENDER_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.world.random.nextFloat() * 0.1F + 0.9F);
-         }
-+        this.checkWakeUp(); // Yatopia
-         // Paper start
-     }
- 
-@@ -78,6 +84,11 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
-                 double d2 = (double) k + 0.5D;
- 
-             MCUtil.scheduleTask(10, () -> {
-+                // Yatopia start - lithium: skip ticking block entities that are doing nothing
-+                if (this.viewerCount == 0 && this.animationProgress == 0.0F && this.lastAnimationProgress == 0 && this.ticks != 0 && this.world != null) {
-+                    ((BlockEntitySleepTracker) this.world).setAwake(this, false);
-+                }
-+                // Yatopia end
-                 this.world.playSound((EntityHuman) null, d0, (double) j + 0.5D, d2, SoundEffects.BLOCK_ENDER_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.world.random.nextFloat() * 0.1F + 0.9F);
-             }, "Chest Sounds");
- 
-@@ -85,11 +96,12 @@ public class TileEntityEnderChest extends TileEntity { // Paper - Remove ITickab
-                 this.a = 0.0F;
-             }
-         }
--
-+        this.checkWakeUp(); // Yatopia
-     }
- 
-     @Override
-     public boolean setProperty(int i, int j) {
-+        this.checkWakeUp();
-         if (i == 1) {
-             this.c = j;
-             return true;
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/TileEntityFurnace.java b/src/main/java/net/minecraft/world/level/block/entity/TileEntityFurnace.java
 index 8a1425f565204fedd1007862b2af9db4c9217461..6083bec6879a625168bd55944d5c21e8151b8189 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/TileEntityFurnace.java
@@ -1261,28 +1216,3 @@ index c1a90eb01689b8b91200ba49d58360d5ea2004c4..8095740f1848443e87fd52c14d19dabb
          if (i == 1) {
              this.viewingCount = j;
              if (j == 0) {
-diff --git a/src/main/java/net/minecraft/world/level/block/entity/TileEntitySkull.java b/src/main/java/net/minecraft/world/level/block/entity/TileEntitySkull.java
-index ef1a882e4414ccc6fa9791f8eb83bde00ee4f29d..21302e33ed353fa14bd51798ebf0d7b4dfc16f45 100644
---- a/src/main/java/net/minecraft/world/level/block/entity/TileEntitySkull.java
-+++ b/src/main/java/net/minecraft/world/level/block/entity/TileEntitySkull.java
-@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
- import net.minecraft.server.MinecraftServer;
- import net.minecraft.world.entity.player.EntityHuman;
- // Spigot end
-+import me.jellysquid.mods.lithium.common.world.blockentity.BlockEntitySleepTracker;
- 
- public class TileEntitySkull extends TileEntity /*implements ITickable*/ { // Paper - remove tickable
- 
-@@ -159,7 +160,11 @@ public class TileEntitySkull extends TileEntity /*implements ITickable*/ { // Pa
-                 this.h = false;
-             }
-         }
--
-+        // Yatopia start - lithium: skip ticking block entities that are doing nothing
-+        if (this.world != null) {
-+            ((BlockEntitySleepTracker) this.world).setAwake(this, false);
-+        }
-+        // Yatopia end
-     }
- 
-     @Nullable
